@@ -1,0 +1,93 @@
+{
+    "manifest_version": 2,
+    "name": "Avito Helper",
+	"short_name": "AH", 
+    "version": "3.9.0",
+	
+	"background": {
+		"scripts": [
+			"library/jquery.min.js",
+			"library/angular.min.js",
+			"background.js",
+			"contextMenu.js"
+		]
+    },
+
+    "content_scripts": [
+		{
+			"matches": ["https://adm.avito.ru/*", "https://br-analytics.ru/*"],
+			"css": ["css/main.css"],
+			
+			"js": [
+				"library/jquery.min.js", 
+				"library/jquery.cookie.min.js",
+				"library/angular.min.js",
+				// "scripts.min.js"
+
+				"scripts/main.js",
+
+				"scripts/requests/post.js",
+				"scripts/requests/get.js",
+
+				"scripts/api/holidays.js",
+				"scripts/api/notification.js",
+				"scripts/api/other.js",
+				"scripts/api/user.js",
+				"scripts/api/moder.js",
+				"scripts/api/helpdesk.js",
+				"scripts/api/comments.js",
+
+				"scripts/routes/items_item_info.js",
+				"scripts/routes/items_search.js",
+				"scripts/routes/items_comparison.js",
+				"scripts/routes/items_moder.js",
+				"scripts/routes/items_moder_new.js",
+				"scripts/routes/users_user_info.js",
+				"scripts/routes/users_search.js",
+				"scripts/routes/users_account_info.js",
+				"scripts/routes/shops_info_view.js",
+				"scripts/routes/system_access.js",
+				"scripts/routes/helpdesk.js",
+				"scripts/routes/helpdesk_details.js",
+
+				"scripts/helpers/smm.js",
+				"scripts/helpers/support.js",
+				"scripts/helpers/moderation.js",
+				"scripts/helpers/intern.js",
+				"scripts/helpers/traffic.js",
+				"scripts/helpers/infodoc.js"
+			],
+			"run_at": "document_start"
+		}
+    ],
+	
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"webNavigation",
+		"storage", 
+		"cookies",
+		"alarms",
+		"notifications",
+        "contextMenus",
+        "https://*.avito.ru/*",
+		"http://*.avitoadm.ru/*",
+		"https://br-analytics.ru/*",
+		"https://yandex.ru/*",
+		"https://google.ru/*"
+	],
+
+    "icons": {
+		"16": "image/16x16.png",
+		"55": "image/55x55.png",
+		"128": "image/128x128.png",
+		"140": "image/140x140.png",
+		"300": "image/300x300.png"
+    },
+
+    "browser_action": { 
+        "default_title": "Avito Helper", 
+        "default_icon": "image/300x300.png",
+		"default_popup": "popup.html"
+    }
+}
