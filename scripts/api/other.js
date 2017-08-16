@@ -580,6 +580,8 @@ function scrollToElem(elem) {
 }
 // скролл до элемента +++
 
+
+
 // BANANA
 
 function banana() {

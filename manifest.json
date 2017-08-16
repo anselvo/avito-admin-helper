@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Avito Helper",
 	"short_name": "AH", 
-    "version": "3.9.0",
+    "version": "3.9.1",
 	
 	"background": {
 		"scripts": [
@@ -22,6 +22,7 @@
 				"library/jquery.min.js", 
 				"library/jquery.cookie.min.js",
 				"library/angular.min.js",
+				"library/bootstrap.min.js",
 				// "scripts.min.js"
 
 				"scripts/main.js",

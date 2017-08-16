@@ -4457,3 +4457,13 @@ select.ah-form-control:focus {
     max-width: 500px;
     white-space: pre-wrap;
 }
+
+.ah-tooltip-wrapper .btn[disabled] {
+    /* don't let button block mouse events from reaching wrapper */
+    pointer-events: none;
+}
+
+.ah-tooltip-wrapper.ah-disabled {
+    /* OPTIONAL pointer-events setting above blocks cursor setting, so set it here */
+    cursor: not-allowed;
+}
