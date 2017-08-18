@@ -2907,6 +2907,7 @@ function addTicketControlTools() {
 
     attendantTL();
 }
+
 //---------- смайлы (пользователь похвалил или наругал нас) ----------//
 function addSmiles() {
     $('#sh-ticket-control-tools-container').prepend('<div class="sh-class-ticket-container" style=""><b style="vertical-align : middle; line-height : 1; font-size : 13px; font-weight : 500; color : #959595;">Классифицировать: </b></div>');
@@ -3571,9 +3572,12 @@ function blockquoteHide() {
 function showAgentInfoTicket() {
     $('#sh-line-sup').remove();
     $('#customer-claim-notification').remove();
-    
+
     // если никого нет, все падало:)
-    if ($('.helpdesk-attr-table-row:contains(Исполнитель) span:last').text() === "Назначить") return;
+    if ($('.helpdesk-attr-table-row:contains(Исполнитель) span:last').text() === "Назначить") {
+        claimReevaluation();
+        return;
+    }
     if (allUsersGlobalInfo === 'FatalError') {
         $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
@@ -3590,6 +3594,9 @@ function showAgentInfoTicket() {
     for (var i = 0; i < allUsersGlobalInfo.length; i++) {
         let user = allUsersGlobalInfo[i];
         if (user.username == currentLogin[0]) {
+            // console.log(user);
+            let teamleadLogin = user.teamlead_login;
+            claimReevaluation(teamleadLogin); // переоценка претензионщиками
             $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
         }
         
@@ -3613,9 +3620,15 @@ function showAgentInfoTicket() {
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             
             if (assigneeNameText === userFullName) {
+                let teamleadLogin = user.teamlead_login;
+                claimReevaluation(teamleadLogin); // переоценка претензионщиками
                 $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
             }
         }
+    }
+
+    if ($('#sh-line-sup').length === 0) {
+        claimReevaluation();
     }
 }
 //---------- Показывать линию саппортов в HD ----------//
@@ -3630,7 +3643,83 @@ function customerClaimNotif() {
     $(notifBlock).show();
 }
 //++++++++++ нотификация об ассигни претензионной линии ++++++++++//
-//
+
+//---------- переоценка претензионщиками ----------//
+function claimReevaluation(teamleadLogin) {
+    $('#reevaluate-ticket-container').remove();
+
+    let allowedSubd = [
+        30, // Developer
+        43, // Руководитель отдела
+        76, // Customer claims
+    ];
+
+    if (allowedSubd.indexOf(+userGlobalInfo.subdivision_id) === -1) return;
+
+    $('.helpdesk-side-panel-setting-checkbox').append(`
+        <div style="margin: 10px 0;" id="reevaluate-ticket-container" class="ah-tooltip-wrapper ah-disabled">
+        </div>
+    `);
+
+    $('#reevaluate-ticket-container').append(`
+        <button type="button" class="btn btn-default btn-block btn-sm" id="reevaluate-ticket" disabled>Переоценить обращение</button>
+    `);
+
+    let starsFired = $('.hd-ticket-header-metadata header span').filter(function() {
+        return ~this.className.indexOf('stars-star_yellow');
+    });
+
+    let btn = $('#reevaluate-ticket');
+    let btnContainer = $('#reevaluate-ticket-container');
+    if ($(starsFired).length >= 1 && $(starsFired).length <=3 && teamleadLogin) {
+        $(btn).prop('disabled', false).click(function() {
+            $('#sh-loading-layer').show();
+            getReevaluateTLTagId(teamleadLogin);
+        });
+    } else {
+        $(btnContainer).attr('data-toggle', 'tooltip')
+                .attr('data-placement', 'left')
+                .attr('title', 'Функция доступна только при наличии инфо-значка рядом с текущим Исполнителем и только для обращений с оценкой 1, 2 или 3.');
+        $(btnContainer).tooltip();
+    }
+}
+
+function getReevaluateTLTagId(leaderLogin) {
+    chrome.runtime.sendMessage({
+            action: 'XMLHttpRequest',
+            method: "GET",
+            url: "http://avitoadm.ru/support_helper/reevaluate_tags/getTag.php?leader_login="+ leaderLogin,
+        },
+
+        function(response) {
+            $('#sh-loading-layer').hide();
+            let error = false;
+            if (response === 'error') {
+                error = true;
+            }
+
+            let json;
+            let tlTagId;
+            try {
+                json = JSON.parse(response);
+                tlTagId = json.avito_desk_id;
+            } catch(e) {
+                error = true;
+            }
+
+
+            if (!tlTagId || error) {
+                alert("Не удалось определить тег для тимлидера. Пожалуйста, добавьте тег вручную.");
+            }
+            let tags = [tlTagId, 1265];
+
+            addExtraAssigneeId(localStorage.agentID);
+            addTagToTicket(tags.join(', '));
+        }
+    );
+}
+//++++++++++ переоценка претензионщиками ++++++++++//
+
 //++++++++++ парсинг айди айтемов в комменте ++++++++++//
 function parseItemIdsInTicket() {
     // console.log('parseItemIdsInTicket Func');

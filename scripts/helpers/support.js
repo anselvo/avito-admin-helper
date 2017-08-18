@@ -383,8 +383,6 @@ function addShElementsInfo() {
     parseIPInDetailsPanel(desciption, className); // парсинг IP в описании тикета
 
     sanctionIPTechInfo(); // одобрение IP в техинфо
-
-    // userCharacteristicsTestGroupNotif(); // индикация агентов из тестовой группы для портрета юзера
     
     addSearchUserBySocialBlock(); // поиск юзера по айди в соцсети
 

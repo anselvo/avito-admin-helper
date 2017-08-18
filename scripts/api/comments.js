@@ -5,8 +5,6 @@ function linksOnComments(tableClass, currentUserID) {
     var id = $('span.js-user-id').text();
     var n = $(tableClass).length;
 
-
-
     // Patterns
     var duplicateReg = /duplicate.+/i;
     var duplicatePluralReg = /(duplicates|duplicate items):.+/i;
