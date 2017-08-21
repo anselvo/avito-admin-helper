@@ -30,4 +30,9 @@ chrome.storage.local.get(function (result) {
         startTraffic();
     }
 
+    if (result.script === 'assistant') {
+        startSupport();
+        startAssistant();
+    }
+
 });

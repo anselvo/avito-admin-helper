@@ -15,7 +15,7 @@
 
     "content_scripts": [
 		{
-			"matches": ["https://adm.avito.ru/*", "https://br-analytics.ru/*"],
+			"matches": ["https://*.avito.ru/*", "https://br-analytics.ru/*"],
 			"css": ["css/main.css"],
 			
 			"js": [
@@ -23,6 +23,7 @@
 				"library/jquery.cookie.min.js",
 				"library/angular.min.js",
 				"library/bootstrap.min.js",
+				"library/jquery-ui.min.js", // Interactions
 				// "scripts.min.js"
 
 				"scripts/main.js",
@@ -37,6 +38,7 @@
 				"scripts/api/moder.js",
 				"scripts/api/helpdesk.js",
 				"scripts/api/comments.js",
+				"scripts/api/assistant.js",
 
 				"scripts/routes/items_item_info.js",
 				"scripts/routes/items_search.js",
@@ -56,7 +58,8 @@
 				"scripts/helpers/moderation.js",
 				"scripts/helpers/intern.js",
 				"scripts/helpers/traffic.js",
-				"scripts/helpers/infodoc.js"
+				"scripts/helpers/infodoc.js",
+				"scripts/helpers/assistant.js"
 			],
 			"run_at": "document_start"
 		}
