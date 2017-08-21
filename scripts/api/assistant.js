@@ -1,5 +1,6 @@
 function addAssistant() {
-    $('body').append(`
+    let body = $('body');
+    $(body).append(`
     <div class="assistant-bar">
         <span>А</span>
         <span>с</span>
@@ -12,7 +13,7 @@ function addAssistant() {
         <span>т</span>
     </div>`);
 
-    $('body').append(`
+    $(body).append(`
     <div class="assistant-modal">
         <div class="assistant-content">
             <div class="overlay-container">
@@ -161,7 +162,6 @@ function gerRegulationHead(regulation) {
 }
 
 function renderVertex(vertex) {
-    // console.log(vertex);
     let modal = $('.assistant-modal');
 
     let modalHeader = $(modal).find('.assistant-header');
@@ -224,10 +224,10 @@ function renderVertexChildren(children) {
     });
 
     $('.vertex-children-item').click(function() {
-        let prevVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
-        storeAssistantPrevVertex(prevVertex);
-        let vertex = $(this).data('vertex');
-        renderVertex(vertex);
+        let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
+        let nextVertex = $(this).data('vertex');
+        renderVertex(nextVertex);
+        storeAssistantProgress(nextVertex, currentVertex);
     });
 
     renderRegulationControls();
@@ -236,21 +236,24 @@ function renderVertexChildren(children) {
 function renderRegulationControls() {
     let modal = $('.assistant-modal');
     let modalHeader = $(modal).find('.assistant-header');
+    let modalBody = $(modal).find('.assistant-body');
+    let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
 
-    try {
-        let currentVertex = JSON.parse(localStorage['assistantCurrentVertex']);
-        let prevVertex = JSON.parse(localStorage['assistantPrevVertex']);
-        if (currentVertex.parents.length !== 0 && currentVertex.uuid !== prevVertex.uuid) {
+    if (localStorage['assistantProgress']) {
+        let progress = JSON.parse(localStorage['assistantProgress']);
+        let vertex = progress.filter(function(item) {
+            return item.uuid === currentVertex.uuid;
+        });
+        if (vertex[0]) {
             $(modalHeader).append('<button class="regulation-back regulation-control"><</button>');
+            let btnBack = $(modalHeader).find('.regulation-back');
+            $(btnBack).click(function() {
+                renderVertex(vertex[0].comeFrom);
+            });
         }
-    } catch (e) {}
-    $(modalHeader).append('<button class="regulations-list-btn regulation-control">Регламенты</button>');
+    }
 
-    let btnBack = $(modalHeader).find('.regulation-back');
-    $(btnBack).click(function() {
-        let prevVertex = JSON.parse(localStorage['assistantPrevVertex']);
-        renderVertex(prevVertex);
-    });
+    $(modalHeader).append('<button class="regulations-list-btn regulation-control">Регламенты</button>');
 
     let btnList = $(modalHeader).find('.regulations-list-btn');
     $(btnList).click(function() {
@@ -285,13 +288,37 @@ function assistantOverlayOut() {
 function storeAssistantCurrentVertex(vertex) {
     localStorage['assistantCurrentVertex'] = JSON.stringify(vertex);
 }
-function storeAssistantPrevVertex(vertex) {
-    localStorage['assistantPrevVertex'] = JSON.stringify(vertex);
+
+function storeAssistantProgress(nextVertex, currentVertex) {
+    let obj = nextVertex;
+    obj.comeFrom = currentVertex;
+    let LSKey = 'assistantProgress';
+
+    if (!localStorage[LSKey]) {
+        let arr = [];
+        arr.push(obj);
+        localStorage[LSKey] = JSON.stringify(arr);
+    } else {
+        let currentProgress = JSON.parse(localStorage[LSKey]);
+        let isExists = false;
+        for (let i = 0; i < currentProgress.length; i++) {
+            if (currentProgress[i].uuid === nextVertex.uuid) {
+                currentProgress[i] = obj;
+                isExists = true;
+            }
+        }
+
+        if (!isExists) {
+            currentProgress.push(obj);
+        }
+
+        localStorage[LSKey] = JSON.stringify(currentProgress);
+    }
 }
 
 function resetAssistant() {
     delete localStorage['assistantCurrentVertex'];
-    delete localStorage['assistantPrevVertex'];
+    delete localStorage['assistantProgress'];
 }
 
 function continueAssistant() {
