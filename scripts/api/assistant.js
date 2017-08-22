@@ -24,7 +24,9 @@ function addAssistant() {
                 </div>
                 <div class="assistant-body"></div>
                 
-                <div class="assistant-overlay"></div>
+                <div class="assistant-overlay">
+                    <div class="assistant-overlay-text">Загрузка...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -66,14 +68,14 @@ function addAssistant() {
     });
 
     document.onkeydown = function(e) {
-        if (e.altKey && e.keyCode === 83) {
+        if (e.altKey && e.shiftKey && e.keyCode === 'S'.charCodeAt(0)) {
             if (!localStorage['assistantCurrentVertex']) {
                 getRegulations();
             }
             showAssistant();
             return false;
         }
-        if (e.altKey && e.keyCode === 70) {
+        if (e.altKey && e.shiftKey && e.keyCode === 'F'.charCodeAt(0)) {
             hideAssistant();
             return false;
         }
@@ -100,8 +102,9 @@ function getRegulations() {
             } catch(e) {
                 alert(e);
             }
-            renderRegulations(regulations);
+
             resetAssistant();
+            renderRegulations(regulations);
             assistantOverlayOut();
         }
     );
@@ -169,7 +172,9 @@ function renderVertex(vertex) {
 
     try {
         $(modalTitle).text(vertex.assistantGraphs.name);
-    } catch (e){ }
+    } catch (e){
+        $(modalTitle).text('???');
+    }
 
 
     $(modalHeader).find('.regulation-control').remove();
@@ -182,8 +187,38 @@ function renderVertex(vertex) {
     </div>
     `);
 
+    renderRegulationControls();
+
     storeAssistantCurrentVertex(vertex);
     getVertexChildren(vertex.children.join('&children='));
+}
+
+function renderRegulationControls() {
+    let modal = $('.assistant-modal');
+    let modalHeader = $(modal).find('.assistant-header');
+    let modalBody = $(modal).find('.assistant-body');
+    let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
+
+    if (localStorage['assistantProgress']) {
+        let progress = JSON.parse(localStorage['assistantProgress']);
+        let vertex = progress.filter(function(item) {
+            return item.uuid === currentVertex.uuid;
+        });
+        if (vertex[0]) {
+            $(modalHeader).append('<button class="regulation-back regulation-control"><</button>');
+            let btnBack = $(modalHeader).find('.regulation-back');
+            $(btnBack).click(function() {
+                renderVertex(vertex[0].comeFrom);
+            });
+        }
+    }
+
+    $(modalHeader).append('<button class="regulations-list-btn regulation-control">Регламенты</button>');
+
+    let btnList = $(modalHeader).find('.regulations-list-btn');
+    $(btnList).click(function() {
+        getRegulations();
+    });
 }
 
 function getVertexChildren(children) {
@@ -218,7 +253,8 @@ function renderVertexChildren(children) {
     $(childrenList).empty();
     children.forEach((item) => {
         $(childrenList).append(`
-        <li class="vertex-children-item" data-vertex="${JSON.stringify(item).replace(/"/g, "&quot;")}">
+        <li class="vertex-children-item" data-vertex="${JSON.stringify(item).replace(/"/g, "&quot;")}"
+            data-clone-vertex="${JSON.stringify(item).replace(/"/g, "&quot;")}">
             ${item.description}
         </li>`);
     });
@@ -226,38 +262,10 @@ function renderVertexChildren(children) {
     $('.vertex-children-item').click(function() {
         let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
         let nextVertex = $(this).data('vertex');
-        renderVertex(nextVertex);
+        let clone = $(this).clone(true).data('vertex', $.extend( {}, $(this).data('vertex') ));
+        let cloneVertex = $(clone).data('vertex');
         storeAssistantProgress(nextVertex, currentVertex);
-    });
-
-    renderRegulationControls();
-}
-
-function renderRegulationControls() {
-    let modal = $('.assistant-modal');
-    let modalHeader = $(modal).find('.assistant-header');
-    let modalBody = $(modal).find('.assistant-body');
-    let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
-
-    if (localStorage['assistantProgress']) {
-        let progress = JSON.parse(localStorage['assistantProgress']);
-        let vertex = progress.filter(function(item) {
-            return item.uuid === currentVertex.uuid;
-        });
-        if (vertex[0]) {
-            $(modalHeader).append('<button class="regulation-back regulation-control"><</button>');
-            let btnBack = $(modalHeader).find('.regulation-back');
-            $(btnBack).click(function() {
-                renderVertex(vertex[0].comeFrom);
-            });
-        }
-    }
-
-    $(modalHeader).append('<button class="regulations-list-btn regulation-control">Регламенты</button>');
-
-    let btnList = $(modalHeader).find('.regulations-list-btn');
-    $(btnList).click(function() {
-        getRegulations();
+        renderVertex(cloneVertex);
     });
 }
 
@@ -319,6 +327,15 @@ function storeAssistantProgress(nextVertex, currentVertex) {
 function resetAssistant() {
     delete localStorage['assistantCurrentVertex'];
     delete localStorage['assistantProgress'];
+
+    let modal = $('.assistant-modal');
+    let modalBody = $(modal).find('.assistant-body');
+
+    let modalHeader = $(modal).find('.assistant-header');
+    let modalTitle = $(modalHeader).find('.assistant-title');
+    $(modalTitle).text('Выбор регламента');
+    $(modalHeader).find('.regulation-control').remove();
+    $(modalBody).empty();
 }
 
 function continueAssistant() {
