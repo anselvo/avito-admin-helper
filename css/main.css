@@ -4674,3 +4674,9 @@ select.ah-form-control:focus {
 .regulation-vertex-children li:hover:active {
     background-color: #e5e5e5;
 }
+
+.show-items-statutes {
+    float: right;
+    margin-left: 10px;
+    margin-top: -2px;
+}

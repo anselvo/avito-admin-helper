@@ -524,29 +524,39 @@ function removeMoneyCounterOperation(operation) {
 // статус объявления и причина блокировки
 function statusItem() {
     var rows = $('tr[data-oid]');
+    if (~window.location.href.indexOf('/billing/walletlog')) {
+        rows = $('.table tbody tr');
+    }
+
     var allItems = [];
     $(rows).each(function (i, row) {
-        let itemLink = $(row).find('td:eq(1) a').attr('href');
+        let itemLinkNode = $(row).find('td:eq(1) a');
+        if (~window.location.href.indexOf('/billing/walletlog')) {
+            itemLinkNode = $(row).find('td:eq(4) a');
+        }
+
+        let itemLink = $(itemLinkNode).attr('href');
 
         if (itemLink) {
-            itemId = itemLink.split('/')[4];
+            let itemId = itemLink.split('/')[4];
 
             if (!isFinite(itemId))
                 return;
 
-            $(row).find('td:eq(1) a').after('<div data-item-id="' + itemId + '"><span class="loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
+            $(itemLinkNode).after('<div data-item-id="' + itemId + '" class="parsed-item-info"><span class="loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
             allItems.push(itemId);
         }
     });
 
+    $('.show-items-statutes').prop('disabled', true);
     allItems = unique(allItems);
     allItems.forEach(function (id) {
-        getItemInfoUsersAccount(id);
+        getItemInfoRequest(id);
     });
 
 
 }
-function getItemInfoUsersAccount(itemId) {
+function getItemInfoRequest(itemId) {
     var url = "https://adm.avito.ru/items/item/info/" + itemId;
 
     var xhr = new XMLHttpRequest();
@@ -557,7 +567,12 @@ function getItemInfoUsersAccount(itemId) {
             if (xhr.status == 200) {
                 var doc = xhr.responseText;
                 var status = $(doc).find('.form-group:contains(Статус) div span:first').text().replace(' Paid', '');
-                var reason = $(doc).find('.form-group:contains(Причины) div span:first').text();
+                var reason = [];
+                $(doc).find('.form-group:contains(Причины) div span[data-id]').each(function() {
+                    reason.push($(this).text());
+                });
+                reason = reason.join(', ');
+
                 var secondStatus = '';
                 var reasonDivider = '';
 
@@ -596,12 +611,17 @@ function getItemInfoUsersAccount(itemId) {
                     reasonDivider = '- ';
                 }
 
-                $('.account-history [data-item-id="' + itemId + '"]').html('<span style="color:' + color + '; font-weight:bold;">' + status + '</span> <span>' + secondStatus + '</span> ' + reasonDivider + '<span>' + reason + '</span>');
+                $('.parsed-item-info[data-item-id="' + itemId + '"]').html('<span style="color:' + color + '; font-weight:bold;">' + status + '</span> <span>' + secondStatus + '</span> ' + reasonDivider + '<span>' + reason + '</span>');
             }
 
             if (xhr.status >= 400) {
-                $('.account-history [data-item-id="' + itemId + '"]').html('<span style="color: #e00; font-weight:bold;">' + xhr.status + '</span> <span>' + xhr.statusText + '</span> <span></span>');
+                $('.parsed-item-info[data-item-id="' + itemId + '"]').html('<span style="color: #e00; font-weight:bold;">' + xhr.status + '</span> <span>' + xhr.statusText + '</span> <span></span>');
             }
+
+            if ($('.parsed-item-info .loading-indicator-text').length === 0) {
+                $('.show-items-statutes').prop('disabled', false);
+            }
+
         }
     };
 }

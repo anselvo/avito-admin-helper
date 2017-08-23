@@ -268,9 +268,6 @@ function startSupport() {
             var userID = currentUrl.split('/');
             linksOnComments('td.is-break', userID[6]);
 
-            // Сброс форматирования текста в буфере обмена -> отключено (в HD новое поле)
-            // resetTextFormatInClipboardData();
-
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
         }
@@ -278,10 +275,10 @@ function startSupport() {
         // walletlog
         if (currentUrl.indexOf('https://adm.avito.ru/adm/billing/walletlog') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
-            // Сброс форматирования текста в буфере обмена -> отключено (в HD новое поле)
-            // resetTextFormatInClipboardData();
             // дополнения к операциям резервирования
             reservedOperation('/billing/walletlog');
+
+            addShowItemStatusBtn();
         }
 
         // users/search

@@ -52,6 +52,7 @@
 				"scripts/routes/system_access.js",
 				"scripts/routes/helpdesk.js",
 				"scripts/routes/helpdesk_details.js",
+				"scripts/routes/billing_walletlog.js",
 
 				"scripts/helpers/smm.js",
 				"scripts/helpers/support.js",
