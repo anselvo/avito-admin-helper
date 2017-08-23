@@ -464,9 +464,8 @@ input[id ^= "sh-quick-theme-btn"]:active {
     background: rgba(0, 0, 0, 0.5);
 	overflow-y: auto;
 }
-.modal-open {
+.ah-modal-open {
 	overflow: hidden;
-	padding-right: 17px;
 }
 
 #sh-tags-btn {
@@ -4466,4 +4465,212 @@ select.ah-form-control:focus {
 .ah-tooltip-wrapper.ah-disabled {
     /* OPTIONAL pointer-events setting above blocks cursor setting, so set it here */
     cursor: not-allowed;
+}
+
+.assistant-bar {
+    position: fixed;
+    z-index: 10000;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #8BC34A;
+    padding: 20px 6px;
+    border-radius: 4px 0px 0px 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.25s;
+    opacity: 0.75;
+}
+
+.assistant-bar:hover {
+    padding-left: 20px;
+    padding-right: 20px;
+    opacity: 1;
+}
+
+.assistant-bar span {
+    display: block;
+    text-align: center;
+}
+
+.assistant-modal {
+    position: fixed;
+    display: none;
+    z-index: 10000;
+    top: 0;
+    right: 0;
+    width: 450px;
+}
+
+.assistant-content {
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+    position: relative;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 0;
+    outline: 0;
+}
+.assistant-header {
+    padding: 10px 10px 4px 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: move;
+    background-color: #8BC34A;
+    color: white;
+}
+.assistant-header::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.assistant-title {
+    white-space: nowrap;
+    overflow: hidden;
+    background: #8bc34a;
+    position: relative;
+    display: inline-block;
+    width: 250px;
+}
+
+.assistant-title::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(139, 195, 74, 0.2), #8bc34a 100%);
+}
+
+.assistant-body {
+    padding: 10px;
+    transition: all 0.3s;
+    position: relative;
+    max-height: 500px;
+    overflow-y: auto;
+ }
+
+.assistant-header .control {
+    float: right;
+    opacity: 0.4;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+}
+
+.assistant-header .control:hover {
+    opacity: 1;
+}
+
+.overlay-container {
+    position: relative;
+}
+.assistant-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10180;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+.assistant-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 14px;
+    color: white;
+    transform: translate(-50%, -50%);
+}
+
+.regulation-control {
+    background-color: #8bc34a;
+    border: 1px solid #76a73d;
+    cursor: pointer;
+    float: left;
+    margin-right: 10px;
+    color: #eee;
+}
+.regulation-control:hover {
+    background-color: #6ea72d;
+    border-color: #619624;
+    color: #fff;
+}
+.regulation-control:hover:active {
+    background-color: #517d1e;
+    border-color: #406515;
+}
+
+.regulations-list {
+    padding-left: 0;
+    list-style: none;
+    counter-reset: li;
+    margin-top: 0;
+}
+
+.regulations-list li {
+    position: relative;
+    margin-bottom: 1.5em;
+    padding: 0.6em;
+    background: #FEFEFE;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #62a7de;
+    color: #4c4c4c;
+    font-weight: 700;
+    border-left-width: 40px;
+}
+
+.regulations-list li:last-child {
+    margin-bottom: 0;
+}
+
+.regulations-list li:hover {
+    border-color: #1a6fb3;
+    color: black;
+}
+.regulations-list li:hover:active {
+    background-color: #d6f2ff;
+    color: black;
+}
+
+.regulation-vertex-description {
+    font-size: 16px;
+    padding: 5px 0;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.regulation-vertex-children {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.regulation-vertex-children li {
+    padding: 10px 30px 10px 15px;
+    position: relative;
+    display: block;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #656565;
+}
+
+.regulation-vertex-children li:hover {
+    border-color: rgba(119, 119, 119, 0.44);
+    z-index: 2;
+    box-shadow: inset 0 0 0 1px rgba(119, 119, 119, 0.44);
+}
+.regulation-vertex-children li:hover:active {
+    background-color: #e5e5e5;
 }

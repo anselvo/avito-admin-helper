@@ -64,14 +64,12 @@ function resetTextFormatInClipboardData() {
 }
 
 function showModal() {
-    // $('body').addClass('modal-open');
-    $('body').css('overflow', 'hidden');
+    $('body').addClass('ah-modal-open');
     $('body').css('padding-right', '17px');
 }
 function closeModal() {
-    // $('body').removeClass('modal-open');
-    $('body').css('overflow', 'auto');
-    $('body').css('padding-right', '0px');
+    $('body').removeClass('ah-modal-open');
+    $('body').css('padding-right', 'none');
 }
 
 // dorpdown-menu ---
