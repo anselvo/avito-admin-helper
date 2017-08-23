@@ -468,26 +468,26 @@ function addSearchInformTogglers() {
 
 function addDescriptionToItemSearch() {
 	let itemList = $('[data-id]');
+    let showDescription = false;
+	let showDescriptionMarkup = false;
+
 	if (localStorage.moderationSettings) {
         let moderationSettings = JSON.parse(localStorage.moderationSettings);
-        let showDescription = moderationSettings.showDescription;
-        let showDescriptionMarkup = moderationSettings.showDescriptionMarkup;
-
-        for (let i = 0; i < itemList.length; ++i) {
-            let description = $(itemList[i]).find('[href^="/items/item/info/"]').attr('title');
-
-            if (showDescription) {
-                $(itemList[i]).find('.description-cell')
-                    .append('<div class="ah-description-post">' +
-                        '<hr>' +
-                        '<div class="ah-description-post-header">Описание:</div>' +
-                        '<div class="ah-description-post-body">' + description + '</div>' +
-                        '</div>');
-
-                if (showDescriptionMarkup) {
-                    $('.ah-description-post-body').css('white-space', 'normal');
-                }
-            }
-        }
+        showDescription = moderationSettings.showDescription;
+        showDescriptionMarkup = moderationSettings.showDescriptionMarkup;
     }
+
+	for (let i = 0; i < itemList.length; ++i) {
+		let description = $(itemList[i]).find('[href^="/items/item/info/"]').attr('title');
+
+		$(itemList[i]).find('.description-cell').append('<div class="ah-description-post" style="display: none">' +
+					'<hr>' +
+					'<div class="ah-description-post-header">Описание:</div>' +
+					'<div class="ah-description-post-body">' + description + '</div>' +
+				'</div>');
+
+		if (showDescriptionMarkup) {
+			$('.ah-description-post-body').css('white-space', 'normal');
+		}
+	}
 }

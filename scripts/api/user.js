@@ -153,9 +153,12 @@ function usersInfo(id, itemid, offset, query) {
                         }
 
                         let verify = '';
+                        let verifyDate = '';
 
-                        if ($(ruser).find('.controls-phone .i-verify').slice(i,i+1).hasClass('i-verify-checked')) verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
-                        else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
+                        if ($(ruser).find('.controls-phone .i-verify').slice(i,i+1).hasClass('i-verify-checked')) {
+                            verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
+                            verifyDate = $(phoneList[i]).find('.phone-verify-date').text();
+                        } else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
                         $('#phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
                         if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append('<span class="phoneInItem"></span>' + verify + ' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">'+number+'</a>');

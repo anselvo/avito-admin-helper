@@ -870,11 +870,11 @@ function blockUser(id, reason) {
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     request.setRequestHeader("Accept", "*/*");
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    if (reason == 'BN') request.send('reasons%5B%5D=91&id='+id);
-    else if (reason == 'BP') request.send('reasons%5B%5D=2&reasons%5B%5D=91&id='+id);
-    else if (reason == 'BB') request.send('id='+id);
-    else if (reason == 'MC') request.send('reasons%5B%5D=128&id='+id);
-    else if (reason == 'PA') request.send('reasons%5B%5D=593&id='+id);
+    if (reason === 'BN') request.send('reasons%5B%5D=91&id='+id);
+    else if (reason === 'BP') request.send('reasons%5B%5D=2&reasons%5B%5D=91&id='+id);
+    else if (reason === 'BB') request.send('id='+id);
+    else if (reason === 'MC') request.send('reasons%5B%5D=128&id='+id);
+    else if (reason === 'PA') request.send('reasons%5B%5D=593&id='+id);
 }
 
 function chanceUser(id, chance) {
