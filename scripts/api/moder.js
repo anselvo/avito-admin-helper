@@ -877,6 +877,7 @@ function getSettings() {
 
     // INFO SETTINGS
     $('.infoSetting-chbx').append('<div id="infoSetting"><b style="color:red;">Info settings:</b></div>');
+    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting16" style="margin-right: 3px;">Email</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting1" style="margin-right: 3px;">Status</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting2" style="margin-right: 3px;">Registered</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting3" style="margin-right: 3px;">Items</label>');

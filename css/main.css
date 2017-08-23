@@ -3020,6 +3020,21 @@ body:hover #shop-side-panel {
     color: #9f9f9f;
 }
 
+.ah-info-history-email-link {
+    cursor: pointer;
+    color: #1a6fb3;
+}
+
+.ah-info-history-email-link:hover {
+    color: dodgerblue;
+    text-decoration: underline;
+}
+
+.ah-info-history-email {
+    display: none;
+    font-size: 10px!important;
+}
+
 #userInfoLoadBar {
     position: absolute;
     left: 50%;

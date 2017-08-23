@@ -81,6 +81,7 @@ function usersInfo(id, itemid, offset, query) {
     let hrefitem = "https://adm.avito.ru/items/item/info/"+itemid;
 
     $('.userInfoMain').append('<div id="nameuser" class="userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>');
+    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div><div class="ah-info-history-email"></div>');
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="userInfoDiv"><b>Items:</b> </div>');
@@ -101,6 +102,7 @@ function usersInfo(id, itemid, offset, query) {
             let ruser = request.responseText;
 
             let phoneList = $(ruser).find('.controls-phone');
+            let email = $(ruser).find('.fakeemail-field').text();
             let region = $(ruser).find('[data-city-id]').val();
             let register = $(ruser).find('.form-group:contains(Зарегистрирован) div').text();
             let visit = $(ruser).find('.ip-info-list li:eq(0)').text().split("-");
@@ -115,11 +117,29 @@ function usersInfo(id, itemid, offset, query) {
             if (status.indexOf('Block')+1) color = 'red';
             if (status.indexOf('Unconfirmed')+1) color = 'orange';
 
+            $('#ah-info-email').append('<span>'+ email + '</span> (<span class="ah-info-history-email-link" user-id="' + id + '">история</span>)');
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
             $('#lastIP').append(visit[0] + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a>');
 
+            $('.ah-info-history-email-link').click(function () {
+                $('.ah-info-history-email').toggle("slow");
+            });
+
+            // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
+            let historyUrl = 'https://adm.avito.ru/users/user/'+id+'/emails/history';
+            $.ajax({
+                type: 'GET',
+                url: historyUrl,
+                success: function(data) {
+                    let content = data.content;
+                    if (content === '') $('.ah-info-history-email').append('<span style="color: #ff7e72;">Истории изменения не найдена</span>');
+                    else {
+                        $('.ah-info-history-email').append(content);
+                    }
+                }
+            });
 
             // ЗАПРОС НА ОБЪЯВЛЕНИЕ
             let requestitem = new XMLHttpRequest();
