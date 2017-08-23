@@ -3039,6 +3039,12 @@ body:hover #shop-side-panel {
     text-align: center;
 }
 
+.ah-phone-verify-date {
+    font-size: 10px;
+    color: #838383;
+    margin-left: 30px;
+}
+
 .phoneInItem {
     color: darkorange;
     font-weight: bold;

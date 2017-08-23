@@ -202,16 +202,17 @@ function postBlockRequest(id, reason){
     request.send('reasons%5B%5D='+reason+'&id='+id);
     request.onreadystatechange=function(){
         if (request.readyState === 4) {
-            $('#postBlockTable tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
+            $('#postBlockTable').find('tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
 
             if (request.status === 200) {
-                $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
+                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
             } else {
-                $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
+                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
             }
         } else {
-            $('#postBlockTable tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'});
-            $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
+            $('#postBlockTable')
+                .find('tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'})
+                .find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
         }
     };
 }
@@ -892,6 +893,7 @@ function getSettings() {
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting10" style="margin-right: 3px;">+private</label>');
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting11" style="margin-right: 3px;">+param</label>');
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting14" style="margin-right: 3px;">+item ip</label>');
+    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting15" style="margin-right: 3px;">Verify date</label>');
 
     var checkboxStatus = localStorage.checkboxInfo.split('|');
     for (var i = 0; i < checkboxStatus.length; i++) {
@@ -961,8 +963,8 @@ function getSettings() {
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
 
-    if (localStorage.addElementsForEachItem == 'true') $('input[value="activeItemsPre"]').prop('checked', true);
-    if (localStorage.imageSearchComparison == 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
+    if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
+    if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
         if ($('input[value="activeItemsPre"]').prop('checked')) {

@@ -166,6 +166,7 @@ function usersInfo(id, itemid, offset, query) {
                         if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&is_company=2&query='+query+'&date='+formatDate+'+-+Now" target="_blank">+private</a>');
                         if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&params['+firstParam+']='+firstParamVal+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">parameter</a>');
                         if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&ip='+ipItem+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">item_ip</a>');
+                        if (localStorage.checkboxInfo.indexOf('15')+1) $('#'+number).append('<div class="ah-phone-verify-date" title="Дата верификации телефона">'+verifyDate+'</div>');
                     }
 
                     $('#startTime').append(startTime);
