@@ -4131,6 +4131,13 @@ select.ah-form-control:focus {
 	padding: 0;
 }
 
+.money-counter-current-user {
+    margin-top: 6px;
+    border-top: 1px dashed #bedceb;
+    padding-top: 6px;
+    display: none;
+}
+
 /* New block users on post */
 .postBlockButton {
     display: inline-block;

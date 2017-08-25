@@ -49,7 +49,7 @@ function startInfoDoc() {
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
             // добавление кнопок подсчета в Account info
-            countMoney('infodoc');
+            countMoneyAccount();
 
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
@@ -61,6 +61,8 @@ function startInfoDoc() {
                 || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
             // дополнения к операциям резервирования
             reservedOperation('/billing/walletlog');
+
+            countMoneyWalletlog();
         }
 
         // helpdesk

@@ -258,7 +258,7 @@ function startSupport() {
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
             // добавление кнопок подсчета в Account info
-            countMoney('support');
+            countMoneyAccount();
 
             // статус объявления и причина блокировки
             statusItem();
@@ -279,6 +279,8 @@ function startSupport() {
             reservedOperation('/billing/walletlog');
 
             addShowItemStatusBtn();
+
+            countMoneyWalletlog();
         }
 
         // users/search
