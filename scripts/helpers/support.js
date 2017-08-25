@@ -252,6 +252,9 @@ function startSupport() {
 
             // убирает кнопку блока юзеров
             hideBlockUserButton();
+
+            // Обработка клика рядом с checkbox
+            chooseItem();
         }
 
         // Account info
