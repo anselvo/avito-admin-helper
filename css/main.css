@@ -4682,7 +4682,7 @@ select.ah-form-control:focus {
     background-color: #e5e5e5;
 }
 
-.show-items-statutes {
+.show-unactive-items {
     float: right;
     margin-left: 10px;
     margin-top: -2px;

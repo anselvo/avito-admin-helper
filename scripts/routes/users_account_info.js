@@ -1,6 +1,7 @@
 
 // статус объявления и причина блокировки
-function statusItem() {
+function statusItem(options) {
+    options = options || {};
     var rows = $('tr[data-oid]');
     if (~window.location.href.indexOf('/billing/walletlog')) {
         rows = $('.table tbody tr');
@@ -26,15 +27,18 @@ function statusItem() {
         }
     });
 
-    $('.show-items-statutes').prop('disabled', true);
+    if ($('.parsed-item-info .loading-indicator-text').length !== 0) {
+        $('.show-unactive-items').prop('disabled', true);
+    }
+
     allItems = unique(allItems);
     allItems.forEach(function (id) {
-        getItemInfoRequest(id);
+        getItemInfoRequest(id, options);
     });
 
 
 }
-function getItemInfoRequest(itemId) {
+function getItemInfoRequest(itemId, options) {
     var url = "https://adm.avito.ru/items/item/info/" + itemId;
 
     var xhr = new XMLHttpRequest();
@@ -89,7 +93,7 @@ function getItemInfoRequest(itemId) {
                     reasonDivider = '- ';
                 }
 
-                $('.parsed-item-info[data-item-id="' + itemId + '"]').html('<span style="color:' + color + '; font-weight:bold;">' + status + '</span> <span>' + secondStatus + '</span> ' + reasonDivider + '<span>' + reason + '</span>');
+                $('.parsed-item-info[data-item-id="' + itemId + '"]').html('<span style="color:' + color + '; font-weight:bold;" class="parsed-item-status">' + status + '</span> <span>' + secondStatus + '</span> ' + reasonDivider + '<span>' + reason + '</span>');
             }
 
             if (xhr.status >= 400) {
@@ -97,7 +101,24 @@ function getItemInfoRequest(itemId) {
             }
 
             if ($('.parsed-item-info .loading-indicator-text').length === 0) {
-                $('.show-items-statutes').prop('disabled', false);
+                let btn = $('.show-unactive-items');
+                $(btn).prop('disabled', false);
+                $('#sh-loading-layer').hide();
+
+                if (options.unactiveOnly) {
+                    $('.billing .table tbody tr').each(function() {
+                        let itemStatus = $(this).find('.parsed-item-status').text();
+                        if (itemStatus.indexOf('Blocked') === -1
+                        && itemStatus.indexOf('Expired') === -1
+                        && itemStatus.indexOf('Removed') === -1
+                        && itemStatus.indexOf('Closed') === -1
+                        && itemStatus.indexOf('Rejected') === -1) {
+                            $(this).hide();
+                        }
+                    });
+
+                    $('#reserved-operations-toogler').prop('checked', false);
+                }
             }
 
         }
