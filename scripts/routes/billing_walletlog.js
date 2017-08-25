@@ -4,7 +4,6 @@ function addShowItemStatusBtn() {
     `);
 
     $('.show-unactive-items').click(function() {
-        $('#sh-loading-layer').show();
         $('.parsed-item-info').remove();
         statusItem({unactiveOnly: true});
     });

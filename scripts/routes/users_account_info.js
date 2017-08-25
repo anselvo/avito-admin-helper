@@ -28,6 +28,7 @@ function statusItem(options) {
     });
 
     if ($('.parsed-item-info .loading-indicator-text').length !== 0) {
+        $('#sh-loading-layer').show();
         $('.show-unactive-items').prop('disabled', true);
     }
 
