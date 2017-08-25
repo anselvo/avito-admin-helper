@@ -3020,6 +3020,21 @@ body:hover #shop-side-panel {
     color: #9f9f9f;
 }
 
+.ah-info-history-email-link {
+    cursor: pointer;
+    color: #1a6fb3;
+}
+
+.ah-info-history-email-link:hover {
+    color: dodgerblue;
+    text-decoration: underline;
+}
+
+.ah-info-history-email {
+    display: none;
+    font-size: 10px!important;
+}
+
 #userInfoLoadBar {
     position: absolute;
     left: 50%;
@@ -3037,6 +3052,12 @@ body:hover #shop-side-panel {
     display: inline-block;
     width: 15px;
     text-align: center;
+}
+
+.ah-phone-verify-date {
+    font-size: 10px;
+    color: #838383;
+    margin-left: 30px;
 }
 
 .phoneInItem {
@@ -4201,7 +4222,7 @@ select.ah-form-control:focus {
     font-weight: bold;
 }
 
-.buop {
+.ah-post-block-user {
     position: fixed;
     background: white;
     border: 1px solid #eeeeee;
@@ -4218,25 +4239,24 @@ select.ah-form-control:focus {
     border-right: none;
 }
 
-.postBlockReason {
-    padding: 5px;
-    color: red;
-    cursor: pointer;
-}
 
-.postClearList {
-    padding: 5px;
-    color: #66b2ff;
-    cursor: pointer;
-}
 
-.postUserAgent {
+.ah-post-block-users {
     padding: 5px;
     cursor: pointer;
+    color:  #00008B;
 }
 
-.postBlockReason:hover, .postClearList:hover, .postUserAgent:hover {
+.ah-post-block-users:hover {
     background: #f2f2f2;
+}
+
+.ah-postBlockReason {
+    color: red;
+}
+
+.ah-postClearList {
+    color: #66b2ff;
 }
 
 #postBlockTable {
@@ -4268,9 +4288,7 @@ select.ah-form-control:focus {
     display: none;
 }
 
-.userAgent span, .postUserAgent {
-    /*color: #0079ff;*/
-    /*color: #434296;*/
+.userAgent span {
     color:  #00008B;
 }
 

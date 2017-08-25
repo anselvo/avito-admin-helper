@@ -80,7 +80,7 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
             tableUserId = tableUserId[tableUserId.length - 1];
         }
 
-        if (tableUserId == userId) {
+        if (tableUserId === userId) {
             $(elem).find('td:eq(3)').append('<span class="verified-icon"></span>');
         }
     });
@@ -110,9 +110,9 @@ function renderVerificationLog(html, phone) {
 
 // копирование телефона в буфер в формате, как на странице юзера ---
 function copyPhoneToClipboard() {
-    $('form[action="/users/search"] [name="phone"]').addClass('text-input-with-btn');
-
-    $('form[action="/users/search"] [name="phone"]').after('<button type="button" class="sh-default-btn sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px;     border-top-left-radius: 0; border-bottom-left-radius: 0; height: 34px; width: 30px; margin-left: -1px; position: relative;" title="Скопировать телефон в буфер обмена в формате, как на странице пользователя"><span class="sh-button-label sh-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button>');
+    $('form[action="/users/search"] [name="phone"]')
+        .addClass('text-input-with-btn')
+        .after('<button type="button" class="sh-default-btn sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; height: 34px; width: 30px; margin-left: -1px; position: relative;" title="Скопировать телефон в буфер обмена в формате, как на странице пользователя"><span class="sh-button-label sh-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button>');
 
     var phone;
     $('.sh-copy-tel-to-clip').click(function() {

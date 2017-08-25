@@ -61,18 +61,19 @@ function addActionButton() {
 
 
     $('body')
-        .append('<div class="postBlockChoose buop" style="display: none;">' +
-            '<div class="postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активност</div>' +
-            '<div class="postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
-            '<div class="postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
+        .append('<div class="postBlockChoose ah-post-block-user" style="display: none;">' +
+            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активност</div>' +
+            '<div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
+            '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
             '</div>')
-        .append('<div class="postBlockInfo buop" style="display: none;">' +
-            '<div class="postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
-            '<div class="postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent</span></div>' +
+        .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
+            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent</span></div>' +
+            '<div class="ah-post-block-users ah-postShowDescription"><i class="glyphicon glyphicon-sort-by-attributes"></i> <span>Показать описание</span></div>' +
+            '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
             '<table id="postBlockTable">' +
-            '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
-            '<tbody></tbody>' +
+                '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
+                '<tbody></tbody>' +
             '</table>' +
             '</div>');
 
@@ -80,7 +81,7 @@ function addActionButton() {
 }
 
 function clickActionButton() {
-    realHideElementOutClicking($('.buop'));
+    realHideElementOutClicking($('.ah-post-block-user'));
 
     $('#postBlockChoose').click(function () {
         var position = $(this).position();
@@ -94,7 +95,7 @@ function clickActionButton() {
         $('.postBlockInfo').css({bottom: 83, left: position.left - 50}).show();
     });
 
-    $('.postBlockReason').click(function () {
+    $('.ah-postBlockReason').click(function () {
         var reasonId = $(this).attr('reasonId');
 
         $('.postBlockChoose').hide();
@@ -103,22 +104,33 @@ function clickActionButton() {
         postBlockReasonList(reasonId);
     });
 
-    $('.postClearList').click(function () {
+    $('.ah-postClearList').click(function () {
         sessionStorage.postBlockID = '';
 
-        $('.buop').hide();
+        $('.ah-post-block-user').hide();
         usersListCheck();
     });
+    
+    $('.ah-postShowDescription').click(function () {
+        $('.ah-description-post').toggle();
+        if($(this).find('span').text() === 'Показать описание'){
+            $(this).find('span').text('Скрыть описание');
+        } else {
+            $(this).find('span').text('Показать описание');
+        }
 
-    $('.postUserAgent').click(function () {
+        $('.ah-post-block-user').hide();
+    });
+
+    $('.ah-postUserAgent').click(function () {
         if ($(this).find('span').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $('.postUserAgent span').text('Показать User agent').removeClass('showUserAgent');
+            $('.ah-postUserAgent span').text('Показать User agent').removeClass('showUserAgent');
         } else {
             userAgentShow();
         }
 
-        $('.buop').hide();
+        $('.ah-post-block-user').hide();
     });
 }
 
@@ -190,16 +202,17 @@ function postBlockRequest(id, reason){
     request.send('reasons%5B%5D='+reason+'&id='+id);
     request.onreadystatechange=function(){
         if (request.readyState === 4) {
-            $('#postBlockTable tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
+            $('#postBlockTable').find('tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
 
             if (request.status === 200) {
-                $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
+                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
             } else {
-                $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
+                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
             }
         } else {
-            $('#postBlockTable tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'});
-            $('#postBlockTable tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
+            $('#postBlockTable')
+                .find('tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'})
+                .find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
         }
     };
 }
@@ -209,7 +222,7 @@ function postBlockRequest(id, reason){
 // запрос на отображения информации о юзере для большого кол-ва
 
 function userAgentShow() {
-    if (!$('.postUserAgent span').attr('show')) {
+    if (!$('.ah-postUserAgent span').attr('show')) {
         let list = $('[userAgent]');
 
         for (let i = 0; i < list.length; i++) {
@@ -220,7 +233,7 @@ function userAgentShow() {
     }
 
     $('.userAgent').show();
-    $('.postUserAgent span').text('Скрыть User agent').addClass('showUserAgent').attr('show', 'true');
+    $('.ah-postUserAgent span').text('Скрыть User agent').addClass('showUserAgent').attr('show', 'true');
 }
 
 function usersInfoForManyItems(id) {
@@ -864,6 +877,7 @@ function getSettings() {
 
     // INFO SETTINGS
     $('.infoSetting-chbx').append('<div id="infoSetting"><b style="color:red;">Info settings:</b></div>');
+    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting16" style="margin-right: 3px;">Email</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting1" style="margin-right: 3px;">Status</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting2" style="margin-right: 3px;">Registered</label>');
     $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting3" style="margin-right: 3px;">Items</label>');
@@ -880,6 +894,7 @@ function getSettings() {
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting10" style="margin-right: 3px;">+private</label>');
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting11" style="margin-right: 3px;">+param</label>');
     $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting14" style="margin-right: 3px;">+item ip</label>');
+    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting15" style="margin-right: 3px;">Verify date</label>');
 
     var checkboxStatus = localStorage.checkboxInfo.split('|');
     for (var i = 0; i < checkboxStatus.length; i++) {
@@ -949,8 +964,8 @@ function getSettings() {
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
 
-    if (localStorage.addElementsForEachItem == 'true') $('input[value="activeItemsPre"]').prop('checked', true);
-    if (localStorage.imageSearchComparison == 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
+    if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
+    if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
         if ($('input[value="activeItemsPre"]').prop('checked')) {
