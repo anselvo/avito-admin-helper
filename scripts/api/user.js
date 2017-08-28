@@ -80,7 +80,11 @@ function usersInfo(id, itemid, offset, query) {
     let href = "https://adm.avito.ru/users/user/info/"+id;
     let hrefitem = "https://adm.avito.ru/items/item/info/"+itemid;
 
-    $('.userInfoMain').append('<div id="nameuser" class="userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>');
+    $('.userInfoMain')
+        .append('<div id="nameuser" class="userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>')
+        .append('<div id="ah-info-break-in" show-status="false" class="ah-info-break-in ah-info-link" title="Информация о взломе"><i class="glyphicon glyphicon-resize-full"></i></div>')
+        .append('<div class="ah-info-break-in-title userInfoDiv">Проверка пользователя на взлом</div>');
+
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div><div class="ah-info-history-email ah-info-history"></div>');
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
@@ -92,6 +96,49 @@ function usersInfo(id, itemid, offset, query) {
     if (localStorage.checkboxInfo.indexOf('6')+1) $('.userInfoMain').append('<div id="proprietary" class="userInfoDiv"><b>Proprietary:</b></div>');
     if (localStorage.checkboxInfo.indexOf('7')+1) $('.userInfoMain').append('<div id="phoneHistory" class="userInfoDiv"><b>Phones:</b><br></div>');
     if (localStorage.checkboxInfo.indexOf('12')+1) $('.userInfoMain').append('<div id="yanMap" class="userInfoDiv"><b>Address:</b></div>');
+
+    // Информация о взломе
+    $('#ah-info-break-in').click(function () {
+        let breakInDisplay = $(this).attr('show-status');
+
+        if (breakInDisplay === 'false') {
+            $('#status').hide('slow');
+            $('#registeredTime').hide('slow');
+            $('#activeItems').hide('slow');
+            $('#ipItem').hide('slow');
+            $('#proprietary').hide('slow');
+            $('#yanMap').hide('slow');
+
+            $('#ah-info-email').show('slow');
+            $('.ah-info-history-email').show('slow');
+            $('#lastIP').show('slow');
+            $('.ah-info-history-ip').show('slow');
+            $('#startTime').show('slow');
+            $('#phoneHistory').show('slow');
+            $('.ah-info-break-in-title').show('slow');
+
+            $('.ah-info-break-in .glyphicon').removeClass('glyphicon-resize-full').addClass('glyphicon-resize-small');
+            $(this).attr('show-status', 'true');
+        } else {
+            $('.ah-info-history-email').hide('slow');
+            $('.ah-info-history-ip').hide('slow');
+            $('.ah-info-break-in-title').hide('slow');
+
+            $('#status').show('slow');
+            $('#registeredTime').show('slow');
+            $('#activeItems').show('slow');
+            $('#ipItem').show('slow');
+            $('#proprietary').show('slow');
+            $('#yanMap').show('slow');
+            $('#ah-info-email').show('slow');
+            $('#lastIP').show('slow');
+            $('#startTime').show('slow');
+            $('#phoneHistory').show('slow');
+
+            $('.ah-info-break-in .glyphicon').removeClass('glyphicon-resize-small').addClass('glyphicon-resize-full');
+            $(this).attr('show-status', 'false');
+        }
+    });
 
     // ЗАПРОС НА ПОЛЬЗОВАТЕЛЯ
     let request = new XMLHttpRequest();

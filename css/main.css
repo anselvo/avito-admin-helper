@@ -3018,6 +3018,17 @@ body:hover #shop-side-panel {
     color: #9f9f9f;
 }
 
+.ah-info-break-in {
+    float: right;
+}
+
+.ah-info-break-in-title {
+    display: none;
+    text-align: center;
+    color: #61b761;
+    font-weight: bold;
+}
+
 .ah-info-link {
     cursor: pointer;
     color: #1a6fb3;

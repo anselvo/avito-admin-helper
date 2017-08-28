@@ -979,6 +979,8 @@ function requestInfoIP(ip) {
             let country = $(response).find('tr:contains(Страна) td').text();
             let city = $(response).find('tr:contains(Город) td').text();
 
+            if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
+
             $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
         }
     };
