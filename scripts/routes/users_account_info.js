@@ -1,19 +1,11 @@
 
 // статус объявления и причина блокировки
-function statusItem(options) {
-    options = options || {};
+function statusItem() {
     var rows = $('tr[data-oid]');
-    if (~window.location.href.indexOf('/billing/walletlog')) {
-        rows = $('.table tbody tr');
-    }
 
     var allItems = [];
     $(rows).each(function (i, row) {
         let itemLinkNode = $(row).find('td:eq(1) a');
-        if (~window.location.href.indexOf('/billing/walletlog')) {
-            itemLinkNode = $(row).find('td:eq(4) a');
-        }
-
         let itemLink = $(itemLinkNode).attr('href');
 
         if (itemLink) {
@@ -27,21 +19,15 @@ function statusItem(options) {
         }
     });
 
-    if ($('.parsed-item-info .loading-indicator-text').length !== 0) {
-        $('#sh-loading-layer').show();
-        $('.show-unactive-items').prop('disabled', true);
-    } else {
-        alert('На странице нет операций к объявлениям');
-    }
-
     allItems = unique(allItems);
     allItems.forEach(function (id) {
-        getItemInfoRequest(id, options);
+        getItemInfoRequest(id);
     });
 
 
 }
 function getItemInfoRequest(itemId, options) {
+    options = options || {};
     var url = "https://adm.avito.ru/items/item/info/" + itemId;
 
     var xhr = new XMLHttpRequest();
