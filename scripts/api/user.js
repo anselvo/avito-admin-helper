@@ -136,7 +136,14 @@ function usersInfo(id, itemid, offset, query) {
                     let content = data.content;
                     if (content === '') $('.ah-info-history-email').append('<span style="color: #ff7e72;">Истории изменения не найдена</span>');
                     else {
-                        $('.ah-info-history-email').append(content);
+                        let trList = $(content).find('tbody tr');
+
+                        $('.ah-info-history-email').append('<table class="ah-info-history-email-table">' +
+                                '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
+                                '<tbody></tbody>' +
+                            '</table>');
+
+                        $('.ah-info-history-email-table').append(trList);
                     }
                 }
             });

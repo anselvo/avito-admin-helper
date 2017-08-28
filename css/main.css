@@ -3035,6 +3035,26 @@ body:hover #shop-side-panel {
     font-size: 10px!important;
 }
 
+.ah-info-history-email-table {
+    font-size: 10px;
+    width: 100%;
+}
+
+.ah-info-history-email-table th {
+    background: #4CAF50;
+    color: white;
+    padding: 3px;
+}
+
+.ah-info-history-email-table td {
+    padding: 2px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ah-info-history-email-table tr:hover {
+    background-color: #f5f5f5;
+}
+
 #userInfoLoadBar {
     position: absolute;
     left: 50%;
