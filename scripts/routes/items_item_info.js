@@ -107,7 +107,35 @@ function callCenter() {
 
 function rejectByCall() {
     var id = location.href.split('/')[6];
-    $('.calls .col-xs-9').append('<input id="rbc" type="button" class="btn btn-sm btn-default calls-btn_good" value="RBC" style="color: #a12fff">');
+
+    let allRbcCount = 0;
+    let allRbcUsers = new Map();
+    $('#dataTable tbody tr').each(function() {
+        let commentText = $(this).find('td:last').text();
+        if (~commentText.indexOf('#rbc')) {
+            allRbcCount++;
+            let commentUser = $(this).find('td:eq(1)').text().trim();
+            if (allRbcUsers.has(commentUser)) {
+                allRbcUsers.set(commentUser, allRbcUsers.get(commentUser) + 1);
+            } else {
+                allRbcUsers.set(commentUser, 1);
+            }
+        }
+    });
+
+    let usersTable = $.parseHTML(`<div></div>`);
+    if (allRbcCount !== 0) {
+        usersTable = $(usersTable).append(`<div><table class="table table-condensed table-striped"><thead><tr><td><b>Пользователь</b></td><td><b>Количество</b></td></tr></thead><tbody></tbody></table></div>`);
+        allRbcUsers.forEach(function(value, key) {
+            let tableBody = $(usersTable).find('tbody');
+            $(tableBody).append(`<tr><td>${key}</td><td>${value}</td></tr>`)
+        });
+    }
+
+    $('.calls .col-xs-9').append(`<input data-html="true" data-toggle="popover" data-trigger="hover" title="" data-content="${$(usersTable).html().replace(/"/g, "&quot;")}" 
+        id="rbc" type="button" class="btn btn-sm btn-default calls-btn_good" value="RBC ${allRbcCount}" style="color: #a12fff">`);
+
+    $('#rbc').popover();
 
     $('#rbc').click(function () {
         commentOnItem(id, 'action_by_call обработано телефонной модерацией RE #rbc');

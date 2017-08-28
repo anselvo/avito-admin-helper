@@ -519,13 +519,16 @@ function helpdeskListener(tabId, url) {
 	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/take\b/)) {
 		sendMessage(tabId, 'ticketTake');
 	}
-	
-	if (url.indexOf('https://adm.avito.ru/helpdesk/api/1/user/')+1 && url.indexOf('/tickets') === -1 && url.indexOf('/admin') === -1) {
-		sendMessage(tabId, 'ticketUser');
-	}
+
+	let userPattern = /helpdesk\/api\/1\/user\/\d+$/;
+    if (userPattern.test(url)) {
+        sendMessage(tabId, 'ticketUser');
+    }
+
 	if (url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/search')+1) {	
 		sendMessage(tabId, 'ticketQueue');
 	}
+
 	if (url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/')+1 && url.indexOf('/logs') === -1) {
 		sendMessage(tabId, 'ticketInfo');
 	}
