@@ -72,7 +72,7 @@ function usersWallet(userId, offset) {
 
 // Информация о пользователе
 function usersInfo(id, itemid, offset, query) {
-    openInfoWindow(355, offset);
+    openInfoWindow(380, offset);
 
     if (!query) query = '';
     beforeID = id;
@@ -81,11 +81,11 @@ function usersInfo(id, itemid, offset, query) {
     let hrefitem = "https://adm.avito.ru/items/item/info/"+itemid;
 
     $('.userInfoMain').append('<div id="nameuser" class="userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>');
-    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div><div class="ah-info-history-email"></div>');
+    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div><div class="ah-info-history-email ah-info-history"></div>');
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="userInfoDiv"><b>Items:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div><div class="ah-info-history-ip ah-info-history"></div>');
     if (localStorage.checkboxInfo.indexOf('4')+1) $('.userInfoMain').append('<div id="ipItem" class="userInfoDiv"><b>Item IP:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('13')+1) $('.userInfoMain').append('<div id="startTime" class="userInfoDiv"><b>Start Time:</b> </div>');
     // Право собственности
@@ -105,7 +105,7 @@ function usersInfo(id, itemid, offset, query) {
             let email = $(ruser).find('.fakeemail-field').text();
             let region = $(ruser).find('[data-city-id]').val();
             let register = $(ruser).find('.form-group:contains(Зарегистрирован) div').text();
-            let visit = $(ruser).find('.ip-info-list li:eq(0)').text().split("-");
+            let visitIpTime = $(ruser).find('.ip-info-list li:eq(0)').text().split("-")[0];
             let ip = $(ruser).find('[data-ip]:eq(0)').text();
             let status = $(ruser).find('.form-group:contains(Статус) div b').text();
             let nameuser =  $(ruser).find('.form-group:contains(Название) input').attr('value');
@@ -117,15 +117,46 @@ function usersInfo(id, itemid, offset, query) {
             if (status.indexOf('Block')+1) color = 'red';
             if (status.indexOf('Unconfirmed')+1) color = 'orange';
 
-            $('#ah-info-email').append('<span>'+ email + '</span> (<span class="ah-info-history-email-link" user-id="' + id + '">история</span>)');
+            $('#ah-info-email').append('<span>'+ email + '</span> ' +
+                '<span class="ah-info-history-email-link ah-info-link" user-id="' + id + '" title="История изменения электронного адреса">' +
+                '<i class="glyphicon glyphicon-list-alt"></i>' +
+                '</span>');
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
-            $('#lastIP').append(visit[0] + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a>');
+            $('#lastIP').append(visitIpTime + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a> ' +
+                '<span class="ah-info-history-ip-link ah-info-link" user-id="' + id + '" title="История ip адресов и информация о них">' +
+                '<i class="glyphicon glyphicon-list-alt"></i>' +
+                '</span>');
 
             $('.ah-info-history-email-link').click(function () {
                 $('.ah-info-history-email').toggle("slow");
             });
+
+            $('.ah-info-history-ip-link').click(function () {
+                $('.ah-info-history-ip').toggle("slow");
+            });
+
+            // ИСТОРИЯ IP АДРЕСА
+
+            $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
+                '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
+                '<tbody></tbody>' +
+                '</table>');
+
+            let ipInfoList = $(ruser).find('.ip-info-list li');
+            for (let i = 0; i < ipInfoList.length; ++i) {
+                let ipInfo = $(ipInfoList[i]).find('.ip-info').attr('data-ip');
+                let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
+
+                $('.ah-info-history-ip-table').append('<tr>' +
+                        '<td><a href="https://adm.avito.ru/users/search?ip='+ipInfo+'" target="_blank">'+ipInfo+'</a></td>' +
+                        '<td><span ipinfo="' + ipInfo + '"></span></td>' +
+                        '<td>'+ipVisitTime+'</td>' +
+                    '</tr>');
+
+                requestInfoIP(ipInfo);
+            }
 
             // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
             let historyUrl = 'https://adm.avito.ru/users/user/'+id+'/emails/history';
@@ -138,7 +169,7 @@ function usersInfo(id, itemid, offset, query) {
                     else {
                         let trList = $(content).find('tbody tr');
 
-                        $('.ah-info-history-email').append('<table class="ah-info-history-email-table">' +
+                        $('.ah-info-history-email').append('<table class="ah-info-history-email-table ah-info-table">' +
                                 '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
                                 '<tbody></tbody>' +
                             '</table>');
