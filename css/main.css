@@ -2966,9 +2966,7 @@ body:hover #shop-side-panel {
 }
 
 .userInfo {
-
     font-size: 13px;
-    width: 355px;
     min-height: 150px;
     max-height: 600px;
     overflow: auto;
@@ -3020,19 +3018,50 @@ body:hover #shop-side-panel {
     color: #9f9f9f;
 }
 
-.ah-info-history-email-link {
+.ah-info-break-in {
+    float: right;
+}
+
+.ah-info-break-in-title {
+    display: none;
+    text-align: center;
+    color: #61b761;
+    font-weight: bold;
+}
+
+.ah-info-link {
     cursor: pointer;
     color: #1a6fb3;
 }
 
-.ah-info-history-email-link:hover {
+.ah-info-link:hover {
     color: dodgerblue;
     text-decoration: underline;
 }
 
-.ah-info-history-email {
+.ah-info-history {
     display: none;
-    font-size: 10px!important;
+    font-size: 10px;
+}
+
+.ah-info-table {
+    font-size: 10px;
+    width: 100%;
+}
+
+.ah-info-table th {
+    background: #4CAF50;
+    color: white;
+    padding: 3px;
+}
+
+.ah-info-table td {
+    padding: 2px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ah-info-table tr:hover {
+    background-color: #f5f5f5;
 }
 
 #userInfoLoadBar {
@@ -4297,12 +4326,11 @@ select.ah-form-control:focus {
     display:inline-block;
     position:fixed;
     right:0;
-    bottom:50px;
+    bottom:0;
     z-index:5;
 }
 
 #personalStatistics {
-    margin: 10px 0;
     cursor: default;
     background: rgb(241, 248, 255);
     border: 1px solid #eeeeee;
