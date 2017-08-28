@@ -309,7 +309,7 @@ function ymapapi(address) {
             let myMap;
 
             function init() {
-                $('#yanMap').append('<div id="ymap"  style="width: 325px; height: 200px; border: 1px solid rgba(0,0,0,.2);"></div>');
+                $('#yanMap').append('<div id="ymap"  style="width: 350px; height: 200px; border: 1px solid rgba(0,0,0,.2);"></div>');
 
                 myMap = new ymaps.Map("ymap", {
                     center: [55.76, 37.64],
