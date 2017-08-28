@@ -2144,7 +2144,6 @@ function addRightPanelSettingsBody(response, assume, currentTicketId) {
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-ip" value="rp-ip" class="sh-dafault-checkbox"><label for="sh-rightPanel-ip"><span>Last IP</span></label></li>');
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-ti" value="rp-ti" class="sh-dafault-checkbox"><label for="sh-rightPanel-ti"><span>Tex Info</span></label></li>');
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-type" value="rp-type" class="sh-dafault-checkbox"><label for="sh-rightPanel-type"><span>Type</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-srf" value="rp-srf" class="sh-dafault-checkbox"><label for="sh-rightPanel-srf"><span>SRF</span></label></li>');
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-manager" value="rp-manager" class="sh-dafault-checkbox"><label for="sh-rightPanel-manager"><span>Manager</span></label></li>');
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-phone" value="rp-phone" class="sh-dafault-checkbox"><label for="sh-rightPanel-phone"><span>Phone</span></label></li>');
     $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-subscription" value="rp-subscription" class="sh-dafault-checkbox"><label for="sh-rightPanel-subscription"><span>Subscription</span></label></li>');
@@ -2562,13 +2561,6 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         var colorStyle = (name == 'None') ? '' : 'color: red; font-weight: bold;';
 
         $('#userInfoTable tbody').append('<tr><td title="Персональный менеджер">Manager</td><td style="'+ colorStyle +'">'+name+'</td></tr>');
-    }
-
-    if (rightPanelSettings.indexOf('rp-srf')+1) {
-        var srf =  $(response).find('#moderation_status_text').text();
-        if (srf != undefined) {
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>SRF</td><td>'+srf+'</td></tr>');
-        }
     }
 
     if (rightPanelSettings.indexOf('rp-phone')+1) {
