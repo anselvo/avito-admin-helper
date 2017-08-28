@@ -522,7 +522,7 @@ function toggleReservedOperations(route) {
     }
 
     $(block).append(''+
-            '<div class="ah-switch-wrapper" style="float: right;"><input type="checkbox" class="ah-switch-checkbox" id="reserved-operations-toogler" ' + isCheckedAttr + '><label class="ah-switch-label" for="reserved-operations-toogler" title="Переключает режим отображения операций \'Резервирование средств...\'"><span>Показывать резервирование</span></label>'+
+            '<div class="ah-switch-wrapper" style="float: right; margin-left: 10px;"><input type="checkbox" class="ah-switch-checkbox" id="reserved-operations-toogler" ' + isCheckedAttr + '><label class="ah-switch-label" for="reserved-operations-toogler" title="Переключает режим отображения операций \'Резервирование средств...\'"><span>Показывать резервирование</span></label>'+
             '</div>');
 
     var switcher = $('#reserved-operations-toogler');

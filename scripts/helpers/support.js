@@ -252,13 +252,16 @@ function startSupport() {
 
             // убирает кнопку блока юзеров
             hideBlockUserButton();
+
+            // Обработка клика рядом с checkbox
+            chooseItem();
         }
 
         // Account info
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
             // добавление кнопок подсчета в Account info
-            countMoney('support');
+            countMoneyAccount();
 
             // статус объявления и причина блокировки
             statusItem();
@@ -268,9 +271,6 @@ function startSupport() {
             var userID = currentUrl.split('/');
             linksOnComments('td.is-break', userID[6]);
 
-            // Сброс форматирования текста в буфере обмена -> отключено (в HD новое поле)
-            // resetTextFormatInClipboardData();
-
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
         }
@@ -278,10 +278,12 @@ function startSupport() {
         // walletlog
         if (currentUrl.indexOf('https://adm.avito.ru/adm/billing/walletlog') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
-            // Сброс форматирования текста в буфере обмена -> отключено (в HD новое поле)
-            // resetTextFormatInClipboardData();
             // дополнения к операциям резервирования
             reservedOperation('/billing/walletlog');
+
+            addShowItemStatusBtn();
+
+            countMoneyWalletlog();
         }
 
         // users/search

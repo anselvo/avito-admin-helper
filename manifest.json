@@ -39,6 +39,7 @@
 				"scripts/api/helpdesk.js",
 				"scripts/api/comments.js",
 				"scripts/api/assistant.js",
+				"scripts/api/count_money.js",
 
 				"scripts/routes/items_item_info.js",
 				"scripts/routes/items_search.js",
@@ -52,6 +53,7 @@
 				"scripts/routes/system_access.js",
 				"scripts/routes/helpdesk.js",
 				"scripts/routes/helpdesk_details.js",
+				"scripts/routes/billing_walletlog.js",
 
 				"scripts/helpers/smm.js",
 				"scripts/helpers/support.js",
