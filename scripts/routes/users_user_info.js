@@ -952,31 +952,34 @@ function showCountryIP() {
     $('#showCountryIP').click(function () {
         $('span[ipinfo]').remove();
 
-        var n = $('.ip-info-list li').length;
+        let n = $('.ip-info-list li').length;
 
         for (var i = 0; i < n; ++i) {
-            var ip = $('.ip-info-list li span[data-ip]').slice(i, i + 1).attr('data-ip');
+            let tmp = $('.ip-info-list li span[data-ip]').slice(i, i + 1);
+            let ip = $(tmp).attr('data-ip');
 
             requestInfoIP(ip);
 
-            $('.ip-info-list li').slice(i, i + 1).append('<span ipinfo="' + ip + '"></span>');
+            $(tmp).after(' - <span ipinfo="' + ip + '"></span>');
         }
     });
 }
 
 function requestInfoIP(ip) {
-    var href = 'https://adm.avito.ru/ip/info?ip=' + ip;
+    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open('GET', href, true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.send();
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = xhr.responseText;
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let response = xhr.responseText;
 
-            var country = $(response).find('tr:contains(Страна) td').text();
-            var city = $(response).find('tr:contains(Город) td').text();
+            let country = $(response).find('tr:contains(Страна) td').text();
+            let city = $(response).find('tr:contains(Город) td').text();
+
+            if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
 
             $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
         }
