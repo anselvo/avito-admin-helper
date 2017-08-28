@@ -26,7 +26,7 @@ function personalStatistics() {
     });
 
     $('#personalStatistics').click(function () {
-        if (!localStorage.personalStatistics || localStorage.personalStatistics == 'false') {
+        if (!localStorage.personalStatistics || localStorage.personalStatistics === 'false') {
             localStorage.personalStatistics = true;
             personalStatisticsMouse();
         } else {
@@ -36,10 +36,11 @@ function personalStatistics() {
     });
 
     personalStatisticsMouse();
+    setFixedElemUnderFooter($('#rightShotBar'));
 }
 
 function personalStatisticsMouse() {
-    if (!localStorage.personalStatistics || localStorage.personalStatistics == 'false') {
+    if (!localStorage.personalStatistics || localStorage.personalStatistics === 'false') {
         $('.statShow').hide();
         $('.statHide').show();
         $('.statHide').mouseenter(function(){

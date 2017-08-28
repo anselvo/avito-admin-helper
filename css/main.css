@@ -4297,12 +4297,11 @@ select.ah-form-control:focus {
     display:inline-block;
     position:fixed;
     right:0;
-    bottom:50px;
+    bottom:0;
     z-index:5;
 }
 
 #personalStatistics {
-    margin: 10px 0;
     cursor: default;
     background: rgb(241, 248, 255);
     border: 1px solid #eeeeee;
