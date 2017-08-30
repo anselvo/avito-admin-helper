@@ -29,6 +29,43 @@ function premoderationsStartNew() {
 
     // убрать лишние категории для модеров
     // hideSubcategory();
+
+    abTest();
+}
+
+function abTest() {
+    let defaultValue = '[{"categoryID": "10","locationID": "660710"}]';
+
+    if (!localStorage.abTest) localStorage.abTest = defaultValue;
+
+    try {
+        let abTestInfo = JSON.parse(localStorage.abTest);
+
+        for (let i = 0; i < abTestInfo.length; ++i) {
+            markTestItems(abTestInfo[i].categoryID, abTestInfo[i].locationID);
+        }
+    } catch (e) {
+        localStorage.abTest = defaultValue;
+        outTextFrame('Неправильный JSON для A/B теста. Были назначены данные по умолчанию. ID категории - 10, ID локации - 660710');
+    }
+}
+
+function markTestItems(categoryID, locationID) {
+    $.ajax({
+        type: 'GET',
+        url: 'https://adm.avito.ru/js/locations?json=true&id='+locationID,
+        success: function(data) {
+            for (let i = 0; i < data.length; ++i) {
+                let id = data[i].id;
+
+                let items = $('tr[data-category="'+categoryID+'"][data-location="'+id+'"]');
+
+                $(items).find('.item-info-row:eq(1)')
+                    .addClass('ah-ab-test-mark')
+                    .prepend('<div class="ah-ab-test">A/B TEST</div>');
+            }
+        }
+    })
 }
 
 function hideSubcategory() {
@@ -107,6 +144,9 @@ function comparisonInfoApply() {
 
 function addComparisonInfo() {
     let content = $('.js-comparison');
+    let basedItemID = $('.comparison_show-details').attr('data-based-item');
+    let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
+
     let comparisonItemNameList = $(content).find('.comparison-item-name');
     let comparisonItemPriceList = $(content).find('.comparison-item-price');
     let comparisonItemImageBlockList = $(content).find('.gallery');
@@ -117,55 +157,16 @@ function addComparisonInfo() {
     let comparisonDescriptionList = $(content).find('.comparison-description-text');
     let comparisonRejectList = $(content).find('.btn-group-reject .moderate-block_right');
 
+    // AB test в комперисоне
+    let abTest = $(basedItemInfo).find('.ah-ab-test-mark');
+    if (abTest) {
+        $('.comparison-item-address:eq(0)').addClass('ah-ab-test-mark')
+            .prepend('<div class="ah-ab-test">A/B TEST</div>');
+    }
+
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
         find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
-
-
-        // let rejectFlags = $(comparisonRejectList[i]).find('.progress-line');
-        //
-        // console.log(rejectFlags);
-        //
-        // for (let flag of rejectFlags) {
-        //     let parent = $(flag).parents('.moderate-block-list-item_nested-list');
-        //     let parentInfo = $(flag).parent('li');
-        //     let flagReason = $(parentInfo).find('.moderate-block-list-label').text();
-        //     let flagDescription = $(parentInfo).find('.moderate-block-list-info');
-        //
-        //     let component = $(flagReason) + $(flag) + $(flagDescription);
-        //
-        //     if (parent) {
-        //         let name = $(parent).find('.moderate-block-list-label').text();
-        //
-        //         if (name.indexOf('Название')+1) {
-        //             $(comparisonItemNameList[i]).before('<div>' + component + '</div>');
-        //         }
-        //         if (name.indexOf('Цена')+1) {
-        //             $(comparisonItemPriceList[i]).prepend('<div>' + component + '</div>');
-        //
-        //         }
-        //         if (name.indexOf('Фото')+1) {
-        //             $(comparisonItemImageBlockList[i]).prepend('<div>' + component + '</div>');
-        //         }
-        //         if (name.indexOf('Описание')+1) {
-        //             $(comparisonDescriptionList[i]).prepend('<div>' + component + '</div>');
-        //         }
-        //
-        //     } else {
-        //         if (flagReason.indexOf('Неправильная категория')+1) {
-        //             $(comparisonItemParamList[i]).prepend('<div>' + component + '</div>');
-        //         }
-        //         if (flagReason.indexOf('После отклонения')+1) {
-        //             $(comparisonItemNameList[i]).before('<div>' + component + '</div>');
-        //         }
-        //         if (flagReason.indexOf('Параметр')+1) {
-        //             $(comparisonItemParamList[i]).prepend('<div>' + component + '</div>');
-        //         }
-        //     }
-        //
-        //     console.log(flagReason + " " + flagDescription);
-        // }
-
 
         let tmp = $(comparisonUserList[i]).parent().attr('class').split(' ');
         let userid = tmp[3].split('-')[2];
