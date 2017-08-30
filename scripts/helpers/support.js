@@ -3,39 +3,6 @@ var settingsGlobal = {}; // настройки (теги, проблемы в HD
 var attendantTLGlobalInfo = {}; // дежурный тимлид
 var allUsersGlobalInfo = []; // инфомрация о всех юзерах
 
-// тестовая группа для составления портрета пользователя
-var userCharacteristicsTestGroup = [
-    {id: 294,
-        adm_user_id: 1730}, // "Меншиков";"Анатолий"
-    {id: 494,
-        adm_user_id: 1846}, // "Ширяев";"Михаил"
-    {id: 525,
-        adm_user_id: 3035}, // "Слободчиков";"Никита"
-    {id: 272,
-        adm_user_id: 2201}, // "Беркут";"Максим"
-    {id: 341,
-        adm_user_id: 2671}, // "Качанов";"Даниил"
-    {id: 346,
-        adm_user_id: 2857}, // "Глазкова";"Юлия"
-    {id: 345,
-        adm_user_id: 2821}, // "Старцев";"Александр"
-    {id: 324,
-        adm_user_id: 2458}, // "Разумейко";"Владимир"
-    {id: 247,
-        adm_user_id: 2818}, // "Мамаева";"Софья"
-    {id: 397,
-        adm_user_id: 2860}, // "Павлов";"Илья"
-    {id: 405,
-        adm_user_id: 2945}, // "Сосина";"Яна"
-    {id: 145,
-        adm_user_id: 1815}, // "Тимашов";"Кирилл"
-    {id: 2,
-        adm_user_id: 560}, // "Конкин";"Роман"
-    {id: 161,
-        adm_user_id: 784}  // "Чиндяйкин";"Максим"
-];
-
-
 // индикатор премиум юзеров
 var allowedPremiumUsersSubd = [
     31, // "Поддержка профессиональных пользователей";"Владимир Туравинин"
@@ -142,8 +109,6 @@ function startSupport() {
             findAgentID(); // ID агента
 
             getTagsInfo(); // получаем инф-ию о тегах
-
-            userCharacteristics(); // Портрет пользователя
 
             getAllUsers(); // инфа обо всех пользователях
 
@@ -415,8 +380,6 @@ function addShElementsUser() {
     addMessengerLinkInTicket(); // линк на мессенджер
 
     addCopyUserMailInTicket(); // копирование мыла юзера в буфер
-
-    addUserCharacteristicsBtn(); // вызов окна портрета пользователя
 }
 
 function addShElementsQueue() {
