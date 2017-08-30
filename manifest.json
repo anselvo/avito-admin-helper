@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Avito Helper",
 	"short_name": "AH", 
-    "version": "3.9.1",
+    "version": "3.9.4",
 	
 	"background": {
 		"scripts": [
@@ -17,13 +17,13 @@
 		{
 			"matches": ["https://*.avito.ru/*", "https://br-analytics.ru/*"],
 			"css": ["css/main.css"],
-			
+
 			"js": [
 				"library/jquery.min.js", 
 				"library/jquery.cookie.min.js",
 				"library/angular.min.js",
 				"library/bootstrap.min.js",
-				"library/jquery-ui.min.js", // Interactions
+				"library/jquery-ui.min.js",
 				// "scripts.min.js"
 
 				"scripts/main.js",
