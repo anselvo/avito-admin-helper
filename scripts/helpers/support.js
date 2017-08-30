@@ -220,6 +220,8 @@ function startSupport() {
 
             // Обработка клика рядом с checkbox
             chooseItem();
+
+            searchByImageLinks();
         }
 
         // Account info
