@@ -2607,15 +2607,15 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             $('#userComments').append('<div class="ah-commentList"></div>');
 
             var commentsLength = rightPanelSettingsParse.listOpt['rp-com'];
-            if (commentsLength == "") commentsLength = 3;
-            if (tableLength < commentsLength || commentsLength == "all") commentsLength = tableLength;
+            if (commentsLength === "") commentsLength = 3;
+            if (tableLength < commentsLength || commentsLength === "all") commentsLength = tableLength;
 
             var tmp = $(response).find('#dataTable tbody tr');
 
             for (var i = 0; i < commentsLength; ++i) {
                 var date = tmp.slice(i,i+1).find('td:eq(0)').text();
                 var username = tmp.slice(i,i+1).find('td:eq(1)').text();
-                var comment = tmp.slice(i,i+1).find('td:eq(2)').text();
+                var comment = tmp.slice(i,i+1).find('td:eq(2)').text().replace(/&/g, '&amp;');
 
                 $('.ah-commentList').append('<div class="commentBlockStyle"><div class="commentStyle">'+comment+'</div><div class="commentInfoStyle"><span>'+username+'</span><span style="float: right;">'+date+'</span></div></div>');
             }
