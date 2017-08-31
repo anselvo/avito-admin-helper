@@ -158,9 +158,9 @@ function addComparisonInfo() {
     let comparisonRejectList = $(content).find('.btn-group-reject .moderate-block_right');
 
     // AB test в комперисоне
-    let abTest = $(basedItemInfo).find('.ah-ab-test-mark');
-    if (abTest) {
-        $('.comparison-item-address:eq(0)').addClass('ah-ab-test-mark')
+    if ($(basedItemInfo).find('.ah-ab-test-mark').length !== 0) {
+        $('.comparison-item-address:eq(0)')
+            .addClass('ah-ab-test-mark')
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
