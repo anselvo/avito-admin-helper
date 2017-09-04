@@ -703,3 +703,21 @@ function copyDataTooltip(targets, options) {
     });
 }
 // Копирование с тултипом +++
+
+function createNotHidingPopover(target, content, options) {
+    options = options || {};
+    let placement = options.placement || 'right';
+    let onShownFunc = options.onShownFunc || function() {};
+
+    $(target).popover({
+        animation: false,
+        html: true,
+        trigger: 'hover',
+        container: target,
+        placement: placement,
+        content: content
+    }).unbind('shown.bs.popover').on('shown.bs.popover', onShownFunc
+    ).unbind('click').click(function() {
+        $(this).popover('show');
+    });
+}

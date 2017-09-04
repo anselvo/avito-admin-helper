@@ -197,7 +197,10 @@ function hideBlockUserButton() {
 
 function copyItemOnItemInfo() {
     let subhead = ('.subhead');
-    $(subhead).append(`<button style="margin-left: 10px;" type="button" class="btn btn-sm btn-default" id="copyItem">Скопировать</button>`);
+    $(subhead).append(`
+        <button style="margin-left: 10px;" type="button" class="btn btn-sm btn-default" id="copyItem">
+        <span class="glyphicon glyphicon-copy"></span> Скопировать
+        </button>`);
     $('#copyItem').click(function () {
         let itemTitle = $(subhead).find('a').text();
         let itemId = $('form[data-item-id]').data('itemId');

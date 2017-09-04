@@ -366,6 +366,8 @@ function addShElementsInfo() {
     copyTicketId(); // копирование айди тикета
 
     addItemIdPopoverOnLeftPanel(); // поповер для айди айтема на левой панели
+
+    addIpPopoverOnLeftPanel(); // поповер для айпи на левой панели
 }
 
 function addShElementsUser() {
