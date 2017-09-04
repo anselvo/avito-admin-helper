@@ -2053,7 +2053,7 @@ function copyUserNameOnTicket() {
     if ($('#ahCopyUserName').length !== 0) return;
 
     let userNameNode = $('.helpdesk-additional-info-panel div:eq(0) div:eq(0) b');
-    $(userNameNode).wrapAll(`<span id="ahCopyUserName"></span>`);
+    $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
     copyDataTooltip(userNameNode);
 }
 
@@ -3240,11 +3240,9 @@ function copyRequesterName() {
 
     try {
         let requesterNameNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left b')[0].childNodes[1];
-        $(requesterNameNode).wrapAll(`<span id="ahCopyRequesterName"></span>`);
+        $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
         copyDataTooltip(requesterNameNode);
-    } catch (e) {
-        console.log(e);
-    }
+    } catch (e) {}
 }
 //++++++++++ Копирование имени реквестера ++++++++++//
 
@@ -3254,13 +3252,48 @@ function copyTicketId() {
 
     try {
         let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
-        $(ticketIdNode).wrapAll(`<span id="ahCopyTicketId"></span>`);
+        $(ticketIdNode).wrap(`<span id="ahCopyTicketId"></span>`);
         copyDataTooltip(ticketIdNode);
-    } catch (e) {
-        console.log(e);
-    }
+    } catch (e) {}
 }
 //++++++++++ Копирование айди тикета ++++++++++//
+
+//---------- поповер для айди айтема на левой панели ----------//
+function addItemIdPopoverOnLeftPanel() {
+    if ($('#ahItemIdOnLeftPanel').length !== 0) return;
+
+    let allEditables, itemIdBlock, itemLink, itemId;
+    try {
+        allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
+        itemIdBlock = [].find.call(allEditables, singleItem => singleItem.innerText === 'Номер объявления');
+        itemLink = $(itemIdBlock).next().find('a');
+        $(itemLink).wrap(`<span id="ahItemIdOnLeftPanel" class="ah-not-hiding-popover"></span>`);
+        itemId = $(itemLink).text();
+    } catch (e) {}
+
+    let popover = $('#ahItemIdOnLeftPanel');
+    $(popover).popover({
+        animation: false,
+        html: true,
+        trigger: 'hover',
+        container: popover,
+        content: `
+            <button type="button" class="btn btn-default btn-sm" id="copyItemIdOnLeftPanel">
+                <span class="glyphicon glyphicon-copy"></span> Скопировать
+            </button>
+        `
+    }).on('shown.bs.popover', function(){
+        let copyBtn = $(this).find('#copyItemIdOnLeftPanel');
+        $(copyBtn).unbind('click').click(function () {
+            let text = itemId;
+            chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+            outTextFrame(`Номер объявления ${text} скопирован!`);
+        });
+    }).unbind('click').click(function() {
+        $(this).popover('show');
+    });
+}
+//++++++++++ поповер для айди айтема на левой панели ++++++++++//
 
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {

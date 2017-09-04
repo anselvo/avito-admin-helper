@@ -4798,3 +4798,30 @@ select.ah-form-control:focus {
 .ah-tooltip-copied + .tooltip.right > .tooltip-arrow {
     border-right-color: #dff0d8;
 }
+
+.ah-not-hiding-popover > .popover:after {
+    content: '';
+    display: block;
+    position: absolute;
+}
+.ah-not-hiding-popover > .popover.top:after, .ah-not-hiding-popover > .popover.bottom:after {
+    height: 11px;
+    width: 100%;
+}
+.ah-not-hiding-popover > .popover.top:after {
+    top: 100%;
+}
+.ah-not-hiding-popover > .popover.bottom:after {
+    bottom: 100%;
+}
+.ah-not-hiding-popover > .popover.left:after, .ah-not-hiding-popover > .popover.right:after {
+    top: 0;
+    width: 11px;
+    height: 100%;
+}
+.ah-not-hiding-popover > .popover.left:after {
+    left: 100%;
+}
+.ah-not-hiding-popover > .popover.right:after {
+    right: 100%;
+}

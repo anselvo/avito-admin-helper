@@ -364,6 +364,8 @@ function addShElementsInfo() {
     copyRequesterName(); // копировать имя реквестера
 
     copyTicketId(); // копирование айди тикета
+
+    addItemIdPopoverOnLeftPanel(); // поповер для айди айтема на левой панели
 }
 
 function addShElementsUser() {
