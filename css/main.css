@@ -4741,3 +4741,60 @@ select.ah-form-control:focus {
 .ah-ab-test-mark {
     background: #ebd3ff;
 }
+
+.ah-copy-tooltip:hover {
+    border-bottom: 1px dotted #9E9E9E;
+}
+
+.ah-copy-tooltip + .tooltip {
+    opacity: 1 !important;
+}
+.ah-copy-tooltip + .tooltip > .tooltip-inner {
+    color: black;
+    background-color: white;
+    border: 1px solid #b8b8b8;
+    box-shadow: 0 0 6px -2px;
+    max-width: none;
+    padding: 3px 5px;
+    border-radius: 2px;
+}
+
+/*Tooltip on top*/
+.ah-copy-tooltip + .tooltip.top > .tooltip-arrow {
+    border-top-color: #afafaf;
+}
+/* Tooltip on bottom */
+.ah-copy-tooltip + .tooltip.bottom > .tooltip-arrow {
+    border-bottom-color: #afafaf;
+}
+/* Tooltip on left */
+.ah-copy-tooltip + .tooltip.left > .tooltip-arrow {
+    border-left-color: #afafaf;
+}
+/* Tooltip on right */
+.ah-copy-tooltip + .tooltip.right > .tooltip-arrow {
+    border-right-color: #afafaf;
+}
+
+.ah-tooltip-copied + .tooltip > .tooltip-inner {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+/*Tooltip on top copied*/
+.ah-tooltip-copied + .tooltip.top > .tooltip-arrow {
+    border-top-color: #dff0d8;
+}
+/* Tooltip on bottom copied*/
+.ah-tooltip-copied + .tooltip.bottom > .tooltip-arrow {
+    border-bottom-color: #dff0d8;
+}
+/* Tooltip on left copied*/
+.ah-tooltip-copied + .tooltip.left > .tooltip-arrow {
+    border-left-color: #dff0d8;
+}
+/* Tooltip on right copied*/
+.ah-tooltip-copied + .tooltip.right > .tooltip-arrow {
+    border-right-color: #dff0d8;
+}

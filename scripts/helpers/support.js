@@ -222,6 +222,8 @@ function startSupport() {
             chooseItem();
 
             searchByImageLinks();
+
+            copyItemsOnItemsSearch(); // копирование айди и неймов айтемов
         }
 
         // Account info
@@ -356,6 +358,10 @@ function addShElementsInfo() {
     addSearchUserBySocialBlock(); // поиск юзера по айди в соцсети
 
     copyCurrentTicketLink(); // копирование ссылки на тикет
+
+    copyRequesterName(); // копировать имя реквестера
+
+    copyTicketId(); // копирование айди тикета
 }
 
 function addShElementsUser() {
@@ -382,6 +388,8 @@ function addShElementsUser() {
     addMessengerLinkInTicket(); // линк на мессенджер
 
     addCopyUserMailInTicket(); // копирование мыла юзера в буфер
+
+    copyUserNameOnTicket(); // копирование имени юзера
 }
 
 function addShElementsQueue() {

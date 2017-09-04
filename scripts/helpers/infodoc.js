@@ -86,6 +86,8 @@ function infoDocTicketInfo() {
     
     // инфа об агента
     showAgentInfoTicket();
+
+    copyTicketId(); // копирование айди тикета
 }
 
 function infoDocTicketUser() {

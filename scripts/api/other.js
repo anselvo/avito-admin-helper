@@ -665,3 +665,41 @@ function addScrollTopBtn() {
     });
 }
 // кнопка вверх +++
+
+// Копирование с тултипом ---
+function copyDataTooltip(targets, options) {
+    options = options || {};
+    let placement = options.placement || 'top';
+    let title = options.title || '<div>Клик - скопировать</div>';
+    let getText = options.getText || function (elem) { return $(elem).text().trim() };
+
+    $(targets).wrap(`<span class="ah-copy-tooltip"></span>`);
+
+    let tooltips = $(targets).parents('.ah-copy-tooltip');
+    $(tooltips).tooltip({
+        html: true,
+        delay: {show: 20},
+        placement: placement,
+        title: title
+    });
+
+    $(tooltips).unbind('click').click(function () {
+        let text = getText( $(this) );
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+        let tooltipNode = $(this).next();
+
+        try {
+            let tooltipWidth = $(tooltipNode)[0].getBoundingClientRect().width;
+            $(tooltipNode)[0].style.width = tooltipWidth + 'px';
+        } catch (e) { console.log(e) }
+
+        $(this).addClass('ah-tooltip-copied');
+        let tooltipInnerNode = $(tooltipNode).find('.tooltip-inner');
+        $(tooltipInnerNode).html(`<div>Скопировано!</div>`);
+    });
+
+    $(tooltips).unbind('hidden.bs.tooltip').on('hidden.bs.tooltip', function() {
+        $(this).removeClass('ah-tooltip-copied');
+    });
+}
+// Копирование с тултипом +++

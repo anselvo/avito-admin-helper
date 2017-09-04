@@ -2048,6 +2048,15 @@ function addCopyUserMailInTicket() {
     });
 }
 
+// копирование имени юзера
+function copyUserNameOnTicket() {
+    if ($('#ahCopyUserName').length !== 0) return;
+
+    let userNameNode = $('.helpdesk-additional-info-panel div:eq(0) div:eq(0) b');
+    $(userNameNode).wrapAll(`<span id="ahCopyUserName"></span>`);
+    copyDataTooltip(userNameNode);
+}
+
 //---------- предполагаемая УЗ ----------//
 function infoAboutUser() {
     // console.log('infoAboutUser func');
@@ -2358,7 +2367,8 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     
     if (rightPanelSettings.indexOf('rp-name')+1) {
         var name = $(response).find('.form-group:contains(Название) .form-control').val();
-        $('#userInfoTable tbody').append('<tr><td>Name</td><td>'+name+'</td></tr>');
+        $('#userInfoTable tbody').append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
+        copyDataTooltip( $('#ahCopyUserNameRp') );
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
@@ -3223,6 +3233,34 @@ function copyCurrentTicketLink() {
     });
 }
 //++++++++++ Копирование ссылки на тикет ++++++++++//
+
+//---------- Копирование имени реквестера ----------//
+function copyRequesterName() {
+    if ($('#ahCopyRequesterName').length !== 0) return;
+
+    try {
+        let requesterNameNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left b')[0].childNodes[1];
+        $(requesterNameNode).wrapAll(`<span id="ahCopyRequesterName"></span>`);
+        copyDataTooltip(requesterNameNode);
+    } catch (e) {
+        console.log(e);
+    }
+}
+//++++++++++ Копирование имени реквестера ++++++++++//
+
+//---------- Копирование айди тикета ----------//
+function copyTicketId() {
+    if ($('#ahCopyTicketId').length !== 0) return;
+
+    try {
+        let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
+        $(ticketIdNode).wrapAll(`<span id="ahCopyTicketId"></span>`);
+        copyDataTooltip(ticketIdNode);
+    } catch (e) {
+        console.log(e);
+    }
+}
+//++++++++++ Копирование айди тикета ++++++++++//
 
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {
