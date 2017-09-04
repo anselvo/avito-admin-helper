@@ -204,6 +204,8 @@ function startSupport() {
                 || userGlobalInfo.subdivision === 'SD'
                 || userGlobalInfo.subdivision === 'SA')
                 allowItem();
+
+            copyItemOnItemInfo(); // копирование айди и неймов айтемов
         }
 
         // Items search

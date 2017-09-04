@@ -194,3 +194,15 @@ function allowItemRequest(id) {
 function hideBlockUserButton() {
     $('button[name="user_block"]').parents('.b-antifraud-section').hide();
 }
+
+function copyItemOnItemInfo() {
+    let subhead = ('.subhead');
+    $(subhead).append(`<button style="margin-left: 10px;" type="button" class="btn btn-sm btn-default" id="copyItem">Скопировать</button>`);
+    $('#copyItem').click(function () {
+        let itemTitle = $(subhead).find('a').text();
+        let itemId = $('form[data-item-id]').data('itemId');
+        let text = itemId + ' ' + '"'+ itemTitle +'"';
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+        outTextFrame('Скопировано!');
+    });
+}
