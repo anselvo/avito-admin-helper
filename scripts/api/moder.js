@@ -17,6 +17,8 @@ function autoOtherReasons() {
 
 function addOtherReasons(reason, parentSelector, textSelector) {
     $(reason).click(function () {
+        if (!$(this).prop("checked")) $(textSelector).val('');
+
         let content = '<div><label><input type="checkbox"/> IT, интернет, телеком</label></div>' +
             '<div><label><input type="checkbox" name="ah-other-reasons"/>Бытовые услуги</label></div>' +
             '<div><label><input type="checkbox" name="ah-other-reasons"/>Деловые услуги</label></div>' +
@@ -41,6 +43,7 @@ function addOtherReasons(reason, parentSelector, textSelector) {
             '<div><label><input type="checkbox" name="ah-other-reasons"/>Другое</label></div>';
 
         let template = '<div class="ah-other-reasons moderateBox_subitems"><div class="popover-content"></div></div>';
+
         $(this)
             .parents(parentSelector)
             .popover({html: true, template: template, content: content})
