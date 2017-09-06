@@ -32,20 +32,6 @@ function premoderationsStartNew() {
 
     // пометка объявлений, что они тестовые
     abTest();
-
-    // добавление автоматическего текста в поле "Другие причины"
-    autoOtherReasons();
-}
-
-function autoOtherReasons() {
-    $('[name="reject"]').click(function () {
-        setInterval(function () {
-            $('#reason_175_716').click(function () {
-                $(this).parents('.moderateBox_subitems').append('<div></div>');
-                console.log("test");
-            });
-        }, 500);
-    });
 }
 
 function abTest() {
@@ -179,6 +165,9 @@ function addComparisonInfo() {
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
+    // добавить причины отклонения для услуг
+    addOtherReasons('[name="reject-716"]', '.moderate-block-list-label', '.js-moderation-reject-other');
+
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
         find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
@@ -217,7 +206,6 @@ function addComparisonInfo() {
         $('.compareUserOnComparison[itemid='+itemid+']').click(function () {
             let similarUserID = $(this).attr('userid');
 
-            console.log(mainUserId);
             addBlock();
             chekUserforDubles(mainUserId, similarUserID);
         });

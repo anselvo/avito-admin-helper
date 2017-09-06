@@ -1,3 +1,68 @@
+
+// Авто добавление причине в поле "Другая причина"
+
+function autoOtherReasons() {
+    $('button[name="reject"]').click(function () {
+        let findReason = setInterval(function () {
+            let reason = $('#reason_175_716');
+
+            if ($(reason).length > 0) {
+                clearInterval(findReason);
+                addOtherReasons(reason, '.moderateBox_check', '[name="reason_other"]');
+            }
+        }, 100);
+    });
+}
+
+
+function addOtherReasons(reason, parentSelector, textSelector) {
+    $(reason).click(function () {
+        let content = '<div><label><input type="checkbox"/> IT, интернет, телеком</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Бытовые услуги</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Деловые услуги</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Искусство</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Красота, здоровье</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Курьерские поручения</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Мастер на час</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Няни, сиделки</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Оборудование, производство</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Обучение, курсы</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Охрана, безопасность</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Питание, кейтеринг</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Праздники, мероприятия</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Ремонт и обслуживание техники</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Ремонт, строительство</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Сад, благоустройство</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Транспорт, перевозки</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Уборка</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Установка техники</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Уход за животными</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Фото- и видеосъёмка</label></div>' +
+            '<div><label><input type="checkbox" name="ah-other-reasons"/>Другое</label></div>';
+
+        let template = '<div class="ah-other-reasons moderateBox_subitems"><div class="popover-content"></div></div>';
+        $(this)
+            .parents(parentSelector)
+            .popover({html: true, template: template, content: content})
+            .on('shown.bs.popover', function () {
+                $('[name="ah-other-reasons"]').change(function () {
+                    let text = '';
+
+                    let checkedReasons = $('[name="ah-other-reasons"]:checked');
+
+                    if (checkedReasons.length > 0) text = 'Пожалуйста, измените его на ';
+
+                    for (let i = 0; i < checkedReasons.length; ++i) {
+                        if (i === 0) text += '"' + $(checkedReasons[i]).parent().text() + '"';
+                        else text += ' или "' + $(checkedReasons[i]).parent().text() + '"';
+                    }
+
+                    $(textSelector).val(text);
+                })
+            });
+    });
+}
+
 // ФООРМИРОВАНИЕ ССЫЛКИ ПО ПАРАМЕТРАМ
 
 function eyeLinks(list) {
