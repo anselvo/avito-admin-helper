@@ -30,7 +30,22 @@ function premoderationsStartNew() {
     // убрать лишние категории для модеров
     // hideSubcategory();
 
+    // пометка объявлений, что они тестовые
     abTest();
+
+    // добавление автоматическего текста в поле "Другие причины"
+    autoOtherReasons();
+}
+
+function autoOtherReasons() {
+    $('[name="reject"]').click(function () {
+        setInterval(function () {
+            $('#reason_175_716').click(function () {
+                $(this).parents('.moderateBox_subitems').append('<div></div>');
+                console.log("test");
+            });
+        }, 500);
+    });
 }
 
 function abTest() {
