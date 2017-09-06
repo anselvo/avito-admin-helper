@@ -338,9 +338,6 @@ function addShElementsInfo() {
     // кнопка создания тикета
     addCreateTicketBtn('/helpdesk/details');
 
-    // предлагаем простановку инфо тегов после сабмита тикета
-    suggestInfoTagsAfterTicketSubmit();
-
     addTicketControlTools(); // операции с тикетом (дежурный тим, классификация)
 
     // элементы в тайтле тикета
