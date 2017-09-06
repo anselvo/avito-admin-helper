@@ -82,6 +82,9 @@ function startModerator() {
 
             // Call center
             callCenter();
+
+            // Одобрить
+            allowItem();
 		}
 
         // User info
