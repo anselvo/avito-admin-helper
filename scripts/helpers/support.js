@@ -137,7 +137,9 @@ function startSupport() {
             showUserInfoIndicators(['inn', 'pro', 'auto', 'shop', 
                 'subscription', 'persManager']);
 
-            addPremiumUsersIndicator();
+            if (~allowedPremiumUsersSubd.indexOf(+userGlobalInfo.subdivision_id)) {
+                addPremiumUsersIndicator();
+            }
 
             if (~allowedExtensionIndSubd.indexOf(+userGlobalInfo.subdivision_id)) {
                 addExtensionIndicator();
