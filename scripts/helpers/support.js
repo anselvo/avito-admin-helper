@@ -134,8 +134,9 @@ function startSupport() {
             userChangeEmail();
 
             // индикаторы
-            showUserInfoIndicators(['inn', 'pro', 'auto', 'shop', 
-                'subscription', 'persManager']);
+            let userIndicators = ['inn', 'pro', 'auto', 'shop', 'subscription', 'persManager'];
+            if (+userGlobalInfo.subdivision_id === 13 || +userGlobalInfo.subdivision_id === 30) userIndicators.push('legalEntity');
+            showUserInfoIndicators(userIndicators);
 
             if (~allowedPremiumUsersSubd.indexOf(+userGlobalInfo.subdivision_id)) {
                 addPremiumUsersIndicator();
