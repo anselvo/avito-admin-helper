@@ -704,20 +704,30 @@ function copyDataTooltip(targets, options) {
 }
 // Копирование с тултипом +++
 
+// Поповер на ховере
 function createNotHidingPopover(target, content, options) {
     options = options || {};
     let placement = options.placement || 'right';
     let onShownFunc = options.onShownFunc || function() {};
 
-    $(target).popover({
+    $(target).wrap(`<span class="ah-not-hiding-popover"></span>`);
+    let popover = $(target).parents('.ah-not-hiding-popover');
+
+    $(popover).popover({
         animation: false,
         html: true,
         trigger: 'hover',
-        container: target,
+        container: popover,
         placement: placement,
         content: content
     }).unbind('shown.bs.popover').on('shown.bs.popover', onShownFunc
-    ).unbind('click').click(function() {
-        $(this).popover('show');
-    });
+    );
+}
+
+// Баттон лоадер
+function btnLoaderOn(btn) {
+    $(btn).prop('disabled', true).addClass('ah-btn-loader');
+}
+function btnLoaderOff(btn) {
+    $(btn).prop('disabled', false).removeClass('ah-btn-loader');
 }

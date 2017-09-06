@@ -3266,7 +3266,7 @@ function addItemIdPopoverOnLeftPanel() {
         let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
         let itemIdBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Номер объявления');
         let itemLink = $(itemIdBlock).next().find('a');
-        $(itemLink).wrap(`<span id="ahItemIdOnLeftPanelPopover" class="ah-not-hiding-popover"></span>`);
+        $(itemLink).wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
         let itemId = $(itemLink).text();
         let content = `
             <button type="button" class="btn btn-default btn-sm" id="copyItemIdOnLeftPanel" data-copy-text="${itemId}">
@@ -3296,11 +3296,16 @@ function addIpPopoverOnLeftPanel() {
         let ipLabelBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'IP');
         let ipTextBlock = $(ipLabelBlock).next()[0].firstChild;
         let ip = $(ipTextBlock).text();
-        $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-not-hiding-popover"></span>`);
+        $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
         let content = `
-            <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
-                <span class="glyphicon glyphicon-copy"></span> Скопировать
-            </button>
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
+                </button>
+                <button type="button" class="btn btn-default btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
+                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+            </div>
         `;
         createNotHidingPopover($('#ahIpOnLeftPanelPopover'), content, {
             onShownFunc: function() {
@@ -3308,11 +3313,40 @@ function addIpPopoverOnLeftPanel() {
                 $(copyBtn).unbind('click').click(function () {
                     let text = $(this).data('copyText');
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-                    outTextFrame(`Ip ${text} скопирован!`);
+                    outTextFrame(`IP ${text} скопирован!`);
+                });
+
+                let infoBtn = $('#infoIpOnLeftPanel');
+                $(infoBtn).unbind('click').click(function () {
+                    let ip = $(this).data('ip');
+                    btnLoaderOn($(this));
+                    requestInfoIP(ip, 'helpdesk-ip-info');
                 });
             }
         });
     } catch (e) {}
+}
+
+function helpdeskIpInfoHandler(xhr) {
+    let popoverTrigger = $('#infoIpOnLeftPanel');
+    btnLoaderOff($(popoverTrigger));
+
+    $(popoverTrigger).popover({
+        html: true,
+        container: 'body',
+        content: xhr.responseText,
+    }).on('shown.bs.popover', function() {
+        let self = $(this);
+        let popover = $(`#${$(this).attr('aria-describedby')}`);
+        $(popover).addClass('ah-ip-info-popover');
+        $(document).mouseup(function (e) {
+            if (!popover.is(e.target)
+                && popover.has(e.target).length === 0) {
+                $(self).popover('destroy');
+            }
+            e.preventDefault();
+        });
+    }).popover('show');
 }
 //++++++++++ поповер для айпи на левой панели ++++++++++//
 
