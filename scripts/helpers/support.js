@@ -51,10 +51,6 @@ function startSupport() {
             сommentListener();
         }
 
-        if (request.onUpdated === 'ticketTake') {
-            takeListener();
-        }
-
         if (request.onUpdated === 'ticketComments') {
             setTimeout(ticketCommentsListener, 100);
         }
@@ -430,14 +426,6 @@ function сommentListener() {
         }
     }
     // дежурный тимлид +++
-}
-
-function takeListener() {
-    // окно характиристики юзера
-    var ticketStatus = getTicketStatusText();
-    if (ticketStatus === 'новое')
-        showUserCharacteristicsPopup();
-
 }
 
 function ticketCommentsListener() {
