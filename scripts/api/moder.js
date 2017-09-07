@@ -1,3 +1,70 @@
+
+// Авто добавление причине в поле "Другая причина"
+
+function autoOtherReasons() {
+    $('button[name="reject"]').click(function () {
+        let findReason = setInterval(function () {
+            let reason = $('#reason_175_716');
+
+            if ($(reason).length > 0) {
+                clearInterval(findReason);
+                addOtherReasons(reason, '[name="reason_other"]');
+            }
+        }, 100);
+    });
+}
+
+
+function addOtherReasons(reason, textSelector) {
+    let otherReasons = ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
+        'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
+        'Праздники, мероприятия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство', 'Транспорт, перевозки',
+        'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое'];
+
+
+    $(reason).parent().css('position', 'static');
+
+    let content = '';
+    for (let i = 0; i < otherReasons.length; i+=2) content += '<div>' +
+            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i]+'</label>' +
+            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i+1]+'</label>' +
+        '</div>';
+
+    let template = '<div class=" moderateBox_subitems ah-other-reasons"><div class="popover-content"></div></div>';
+
+    $(reason)
+        .popover({html: true, template: template, content: content})
+        .on('shown.bs.popover', function () {
+
+            let otherReasonBlock = $('.ah-other-reasons');
+            let otherReasonBlockWidth = $(otherReasonBlock).width();
+            let rightPoint = $(otherReasonBlock).offset().left + otherReasonBlockWidth;
+            if (rightPoint > $(window).width()) $(otherReasonBlock).css('margin-left', '-'+(50+otherReasonBlockWidth)+'px');
+
+
+            $('[name="ah-other-reasons"]').change(function () {
+                let text = '';
+
+                let checkedReasons = $('[name="ah-other-reasons"]:checked');
+
+                if (checkedReasons.length > 0) text = 'Пожалуйста, измените его на ';
+
+                for (let i = 0; i < checkedReasons.length; ++i) {
+                    if (i === 0) text += '"' + $(checkedReasons[i]).parent().text() + '"';
+                    else text += ' или "' + $(checkedReasons[i]).parent().text() + '"';
+                }
+
+                $(textSelector).val(text);
+            });
+        });
+
+    if ($(reason).prop("checked")) $(reason).popover('show');
+
+    $(reason).click(function () {
+        if (!$(this).prop("checked")) $(textSelector).val('');
+    });
+}
+
 // ФООРМИРОВАНИЕ ССЫЛКИ ПО ПАРАМЕТРАМ
 
 function eyeLinks(list) {

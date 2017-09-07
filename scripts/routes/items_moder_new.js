@@ -30,6 +30,7 @@ function premoderationsStartNew() {
     // убрать лишние категории для модеров
     // hideSubcategory();
 
+    // пометка объявлений, что они тестовые
     abTest();
 }
 
@@ -164,6 +165,9 @@ function addComparisonInfo() {
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
+    // добавить причины отклонения для услуг
+    addOtherReasons('[name="reject-716"]', '.js-moderation-reject-other');
+
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
         find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
@@ -202,7 +206,6 @@ function addComparisonInfo() {
         $('.compareUserOnComparison[itemid='+itemid+']').click(function () {
             let similarUserID = $(this).attr('userid');
 
-            console.log(mainUserId);
             addBlock();
             chekUserforDubles(mainUserId, similarUserID);
         });

@@ -4741,3 +4741,28 @@ select.ah-form-control:focus {
 .ah-ab-test-mark {
     background: #ebd3ff;
 }
+
+.ah-other-reasons {
+    margin-left: 100px;
+    text-align: left;
+    width: 500px!important;
+}
+
+.ah-other-reasons .popover-content {
+    padding: 3px;
+}
+
+.ah-other-reasons .popover-content label {
+    width: 50%;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 2px 6px;
+}
+
+.ah-other-reasons .popover-content label:hover {
+    background-color: #def;
+}
+
+.ah-other-reasons [name="ah-other-reasons"] {
+    margin-right: 10px;
+}
