@@ -36,6 +36,8 @@ function startInfoDoc() {
             showUserInfoIndicators(['inn', 'legalEntity', 'auto', 'shop', 
                 'subscription', 'persManager', 'delivery', 'onlyBankTransfer']);
 
+            addPremiumUsersIndicator();
+
             addExtensionIndicator();
 
             // переход в HD
