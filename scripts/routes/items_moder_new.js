@@ -130,23 +130,28 @@ function comparisonInfo() {
 }
 
 function comparisonInfoApply() {
-    $('.js-btn-apply').click(function () {
+    $('.js-btn-apply').click(checking);
+    $('.js-comparison-modal').keyup(function(event) { if (event.keyCode === 32) { checking(); } } );
+
+    function checking() {
         let contentLoadApply = setInterval(function () {
             let exist = $('.js-comparison .comparison-user');
-            if (exist.length > 0) {
+            let ahIn = $('.js-comparison').attr('ah-in');
+            if (exist.length > 0 && !ahIn) {
                 clearInterval(contentLoadApply);
 
                 addComparisonInfo();
                 comparisonInfoApply();
             }
         }, 200);
-    });
+    }
 }
 
 function addComparisonInfo() {
-    let content = $('.js-comparison');
-    let basedItemID = $('.comparison_show-details').attr('data-based-item');
+    let basedItemID = $('.js-comparison').attr('ah-in', 'true').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
+
+    let content = $('[data-based-item="'+basedItemID+'"]');
 
     let comparisonItemNameList = $(content).find('.comparison-item-name');
     let comparisonItemPriceList = $(content).find('.comparison-item-price');
