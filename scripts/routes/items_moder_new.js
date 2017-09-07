@@ -30,6 +30,7 @@ function premoderationsStartNew() {
     // убрать лишние категории для модеров
     // hideSubcategory();
 
+    // пометка объявлений, что они тестовые
     abTest();
 }
 
@@ -129,23 +130,28 @@ function comparisonInfo() {
 }
 
 function comparisonInfoApply() {
-    $('.js-btn-apply').click(function () {
+    $('.js-btn-apply').click(checking);
+    $('.js-comparison-modal').keyup(function(event) { if (event.keyCode === 32) { checking(); } } );
+
+    function checking() {
         let contentLoadApply = setInterval(function () {
             let exist = $('.js-comparison .comparison-user');
-            if (exist.length > 0) {
+            let ahIn = $('.js-comparison').attr('ah-in');
+            if (exist.length > 0 && !ahIn) {
                 clearInterval(contentLoadApply);
 
                 addComparisonInfo();
                 comparisonInfoApply();
             }
         }, 200);
-    });
+    }
 }
 
 function addComparisonInfo() {
-    let content = $('.js-comparison');
-    let basedItemID = $('.comparison_show-details').attr('data-based-item');
+    let basedItemID = $('.js-comparison').attr('ah-in', 'true').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
+
+    let content = $('[data-based-item="'+basedItemID+'"]');
 
     let comparisonItemNameList = $(content).find('.comparison-item-name');
     let comparisonItemPriceList = $(content).find('.comparison-item-price');
@@ -163,6 +169,9 @@ function addComparisonInfo() {
             .addClass('ah-ab-test-mark')
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
+
+    // добавить причины отклонения для услуг
+    addOtherReasons('[name="reject-716"]', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
@@ -202,7 +211,6 @@ function addComparisonInfo() {
         $('.compareUserOnComparison[itemid='+itemid+']').click(function () {
             let similarUserID = $(this).attr('userid');
 
-            console.log(mainUserId);
             addBlock();
             chekUserforDubles(mainUserId, similarUserID);
         });

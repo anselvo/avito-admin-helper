@@ -342,10 +342,6 @@ function userInfoScrollableIndic(scrollTo, indicator) {
 }
 
 function addPremiumUsersIndicator() {
-    var agentSubdivisionId = +userGlobalInfo.subdivision_id;
-    if (allowedPremiumUsersSubd.indexOf(agentSubdivisionId) == -1)
-        return;
-
     var userId = getParamOnUserInfo('user-id');
 
     $('#statusUser').append(''+

@@ -51,10 +51,6 @@ function startSupport() {
             сommentListener();
         }
 
-        if (request.onUpdated === 'ticketTake') {
-            takeListener();
-        }
-
         if (request.onUpdated === 'ticketComments') {
             setTimeout(ticketCommentsListener, 100);
         }
@@ -134,10 +130,13 @@ function startSupport() {
             userChangeEmail();
 
             // индикаторы
-            showUserInfoIndicators(['inn', 'pro', 'auto', 'shop', 
-                'subscription', 'persManager']);
+            let userIndicators = ['inn', 'pro', 'auto', 'shop', 'subscription', 'persManager'];
+            if (+userGlobalInfo.subdivision_id === 13 || +userGlobalInfo.subdivision_id === 30) userIndicators.push('legalEntity');
+            showUserInfoIndicators(userIndicators);
 
-            addPremiumUsersIndicator();
+            if (~allowedPremiumUsersSubd.indexOf(+userGlobalInfo.subdivision_id)) {
+                addPremiumUsersIndicator();
+            }
 
             if (~allowedExtensionIndSubd.indexOf(+userGlobalInfo.subdivision_id)) {
                 addExtensionIndicator();
@@ -350,9 +349,6 @@ function addShElementsInfo() {
     // кнопка создания тикета
     addCreateTicketBtn('/helpdesk/details');
 
-    // предлагаем простановку инфо тегов после сабмита тикета
-    suggestInfoTagsAfterTicketSubmit();
-
     addTicketControlTools(); // операции с тикетом (дежурный тим, классификация)
 
     // элементы в тайтле тикета
@@ -452,14 +448,6 @@ function сommentListener() {
         }
     }
     // дежурный тимлид +++
-}
-
-function takeListener() {
-    // окно характиристики юзера
-    var ticketStatus = getTicketStatusText();
-    if (ticketStatus === 'новое')
-        showUserCharacteristicsPopup();
-
 }
 
 function ticketCommentsListener() {
