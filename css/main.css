@@ -4842,10 +4842,6 @@ select.ah-form-control:focus {
     max-width: 600px;
 }
 
-.popover.ah-ip-info-popover .arrow {
-    display: none;
-}
-
 .ah-ip-info-popover td, .ah-ip-info-popover th {
     padding: 0 6px;
 }

@@ -3299,46 +3299,55 @@ function addIpPopoverOnLeftPanel() {
         $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
         let content = `
             <div class="btn-group-vertical">
-                <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
-                    <span class="glyphicon glyphicon-copy"></span> Скопировать
-                </button>
                 <button type="button" class="btn btn-default btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
                     <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+                <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
                 </button>
             </div>
         `;
         createNotHidingPopover($('#ahIpOnLeftPanelPopover'), content, {
             onShownFunc: function() {
+                let infoBtn = $('#infoIpOnLeftPanel');
+                $(infoBtn).unbind('click').click(function () {
+                    let ip = $(this).data('ip');
+                    btnLoaderOn($(this));
+                    requestInfoIP(ip, {
+                        action: 'helpdesk-ip-info',
+                        clickedBtn: $(this),
+                        popoverTrigger: $('#ahIpOnLeftPanelPopover')
+                    });
+                });
+
                 let copyBtn = $('#copyIpOnLeftPanel');
                 $(copyBtn).unbind('click').click(function () {
                     let text = $(this).data('copyText');
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
                     outTextFrame(`IP ${text} скопирован!`);
                 });
-
-                let infoBtn = $('#infoIpOnLeftPanel');
-                $(infoBtn).unbind('click').click(function () {
-                    let ip = $(this).data('ip');
-                    btnLoaderOn($(this));
-                    requestInfoIP(ip, 'helpdesk-ip-info');
-                });
             }
         });
     } catch (e) {}
 }
 
-function helpdeskIpInfoHandler(xhr) {
-    let popoverTrigger = $('#infoIpOnLeftPanel');
-    btnLoaderOff($(popoverTrigger));
+function helpdeskIpInfoHandler(xhr, options) {
+    let popoverTrigger = $(options.popoverTrigger);
+    btnLoaderOff($(options.clickedBtn));
 
     $(popoverTrigger).popover({
         html: true,
         container: 'body',
+        placement: 'top',
         content: xhr.responseText,
+        template: `
+            <div class="popover ah-ip-info-popover">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
     }).on('shown.bs.popover', function() {
         let self = $(this);
-        let popover = $(`#${$(this).attr('aria-describedby')}`);
-        $(popover).addClass('ah-ip-info-popover');
+        let popover = $('.ah-ip-info-popover');
         $(document).mouseup(function (e) {
             if (!popover.is(e.target)
                 && popover.has(e.target).length === 0) {

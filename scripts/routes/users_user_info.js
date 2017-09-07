@@ -965,10 +965,11 @@ function showCountryIP() {
     });
 }
 
-function requestInfoIP(ip, action) {
-    action = action || '';
-    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
+function requestInfoIP(ip, options) {
+    options = options || {};
+    let action  = options.action || null;
 
+    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', href, true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -978,7 +979,7 @@ function requestInfoIP(ip, action) {
             if (xhr.status === 200) {
                 switch (action) {
                     case 'helpdesk-ip-info':
-                        helpdeskIpInfoHandler(xhr);
+                        helpdeskIpInfoHandler(xhr, options);
                         break;
                 }
 
