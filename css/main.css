@@ -4744,6 +4744,8 @@ select.ah-form-control:focus {
 
 .ah-other-reasons {
     margin-left: 100px;
+    text-align: left;
+    width: 500px!important;
 }
 
 .ah-other-reasons .popover-content {
@@ -4751,7 +4753,7 @@ select.ah-form-control:focus {
 }
 
 .ah-other-reasons .popover-content label {
-    width: 100%;
+    width: 50%;
     cursor: pointer;
     font-weight: normal;
     padding: 2px 6px;

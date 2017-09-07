@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Admin Helper",
 	"short_name": "AH", 
-    "version": "3.9.7",
+    "version": "3.9.8",
 	
 	"background": {
 		"scripts": [
@@ -92,7 +92,7 @@
     },
 
     "browser_action": { 
-        "default_title": "Avito Helper", 
+        "default_title": "Admin Helper",
         "default_icon": "image/300x300.png",
 		"default_popup": "popup.html"
     }

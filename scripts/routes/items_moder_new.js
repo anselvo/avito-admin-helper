@@ -166,7 +166,7 @@ function addComparisonInfo() {
     }
 
     // добавить причины отклонения для услуг
-    addOtherReasons('[name="reject-716"]', '.moderate-block-list-label', '.js-moderation-reject-other');
+    addOtherReasons('[name="reject-716"]', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {

@@ -8,61 +8,60 @@ function autoOtherReasons() {
 
             if ($(reason).length > 0) {
                 clearInterval(findReason);
-                addOtherReasons(reason, '.moderateBox_check', '[name="reason_other"]');
+                addOtherReasons(reason, '[name="reason_other"]');
             }
         }, 100);
     });
 }
 
 
-function addOtherReasons(reason, parentSelector, textSelector) {
+function addOtherReasons(reason, textSelector) {
+    let otherReasons = ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
+        'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
+        'Праздники, мероприятия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство', 'Транспорт, перевозки',
+        'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое'];
+
+
+    $(reason).parent().css('position', 'static');
+
+    let content = '';
+    for (let i = 0; i < otherReasons.length; i+=2) content += '<div>' +
+            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i]+'</label>' +
+            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i+1]+'</label>' +
+        '</div>';
+
+    let template = '<div class=" moderateBox_subitems ah-other-reasons"><div class="popover-content"></div></div>';
+
+    $(reason)
+        .popover({html: true, template: template, content: content})
+        .on('shown.bs.popover', function () {
+
+            let otherReasonBlock = $('.ah-other-reasons');
+            let otherReasonBlockWidth = $(otherReasonBlock).width();
+            let rightPoint = $(otherReasonBlock).offset().left + otherReasonBlockWidth;
+            if (rightPoint > $(window).width()) $(otherReasonBlock).css('margin-left', '-'+(50+otherReasonBlockWidth)+'px');
+
+
+            $('[name="ah-other-reasons"]').change(function () {
+                let text = '';
+
+                let checkedReasons = $('[name="ah-other-reasons"]:checked');
+
+                if (checkedReasons.length > 0) text = 'Пожалуйста, измените его на ';
+
+                for (let i = 0; i < checkedReasons.length; ++i) {
+                    if (i === 0) text += '"' + $(checkedReasons[i]).parent().text() + '"';
+                    else text += ' или "' + $(checkedReasons[i]).parent().text() + '"';
+                }
+
+                $(textSelector).val(text);
+            });
+        });
+
+    if ($(reason).prop("checked")) $(reason).popover('show');
+
     $(reason).click(function () {
         if (!$(this).prop("checked")) $(textSelector).val('');
-
-        let content = '<div><label><input type="checkbox"/> IT, интернет, телеком</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Бытовые услуги</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Деловые услуги</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Искусство</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Красота, здоровье</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Курьерские поручения</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Мастер на час</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Няни, сиделки</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Оборудование, производство</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Обучение, курсы</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Охрана, безопасность</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Питание, кейтеринг</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Праздники, мероприятия</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Ремонт и обслуживание техники</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Ремонт, строительство</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Сад, благоустройство</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Транспорт, перевозки</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Уборка</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Установка техники</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Уход за животными</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Фото- и видеосъёмка</label></div>' +
-            '<div><label><input type="checkbox" name="ah-other-reasons"/>Другое</label></div>';
-
-        let template = '<div class="ah-other-reasons moderateBox_subitems"><div class="popover-content"></div></div>';
-
-        $(this)
-            .parents(parentSelector)
-            .popover({html: true, template: template, content: content})
-            .on('shown.bs.popover', function () {
-                $('[name="ah-other-reasons"]').change(function () {
-                    let text = '';
-
-                    let checkedReasons = $('[name="ah-other-reasons"]:checked');
-
-                    if (checkedReasons.length > 0) text = 'Пожалуйста, измените его на ';
-
-                    for (let i = 0; i < checkedReasons.length; ++i) {
-                        if (i === 0) text += '"' + $(checkedReasons[i]).parent().text() + '"';
-                        else text += ' или "' + $(checkedReasons[i]).parent().text() + '"';
-                    }
-
-                    $(textSelector).val(text);
-                })
-            });
     });
 }
 
