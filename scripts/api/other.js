@@ -709,19 +709,30 @@ function createNotHidingPopover(target, content, options) {
     options = options || {};
     let placement = options.placement || 'right';
     let onShownFunc = options.onShownFunc || function() {};
+    let template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"><h3 class="popover-title"></h3></div><div class="popover-content"></div></div>`;
+    let container = options.container || 'body';
 
-    $(target).wrap(`<span class="ah-not-hiding-popover"></span>`);
-    let popover = $(target).parents('.ah-not-hiding-popover');
-
-    $(popover).popover({
+    $(target).popover({
         animation: false,
         html: true,
-        trigger: 'hover',
-        container: popover,
+        trigger: 'manual',
+        container: container,
         placement: placement,
-        content: content
+        content: content,
+        template: template
     }).unbind('shown.bs.popover').on('shown.bs.popover', onShownFunc
-    );
+    ).on("mouseenter", function () {
+        let _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        let _this = this;
+        if (!$(".popover:hover").length) {
+            $(_this).popover("hide");
+        }
+    });
 }
 
 // Баттон лоадер

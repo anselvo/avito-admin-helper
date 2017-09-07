@@ -3145,32 +3145,51 @@ function parseIPInDetailsPanel(block, className) {
     }
 
     $('.'+ className +'').each(function(i, item) {
-        var parentBlock = $(item).parents('.ah-matched-ip-container');
-        var ipText = $(parentBlock).find('.'+ className +'').text();
-        $(parentBlock).append('<div class="ah-popover ah-matched-ip-popover"><button type="button" class="sh-default-btn sh-sanction-ip-btn" data-ip="'+ ipText +'">Одобрить</button></div>');
-    });
+        let parentBlock = $(item).parents('.ah-matched-ip-container');
+        let ipText = $(parentBlock).find('.'+ className +'').text();
+        let content = `
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-default btn-sm info-ip-ticket-details" data-ip="${ipText}">
+                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+                <button type="button" class="btn btn-default btn-sm copy-ip-ticket-details" data-copy-text="${ipText}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
+                </button>
+                <button type="button" class="btn btn-default btn-sm sh-sanction-ip-btn" data-ip="${ipText}">Одобрить</button>
+            </div>
+        `;
+        createNotHidingPopover($(parentBlock), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let popover = $('.ah-not-hiding-popover');
+                let infoBtn = $(popover).find('.info-ip-ticket-details');
+                let popoverAria = $(this).attr('aria-describedby');
+                $(infoBtn).unbind('click').click(function () {
+                    let ip = $(this).data('ip');
+                    btnLoaderOn($(this));
+                    requestInfoIP(ip, {
+                        action: 'helpdesk-ip-info',
+                        clickedBtn: $(this),
+                        popoverTrigger: $(`[aria-describedby="${popoverAria}"]`).find('.sh-matched-ip-description')
+                    });
+                });
 
-    // Обработчики
-    $('.ah-matched-ip-container').hover(function() {
-        var hdParagraphBlock = $(this).parents('.helpdesk-ticket-paragraph');
-        $(hdParagraphBlock).css('overflow', 'visible');
+                let copyBtn = $(popover).find('.copy-ip-ticket-details');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`IP ${text} скопирован!`);
+                });
 
-        var popover = $(this).find('.ah-matched-ip-popover');
-        $(popover).show();
-    }, function() {
-        var hdParagraphBlock = $(this).parents('.helpdesk-ticket-paragraph');
-        $(hdParagraphBlock).css('overflow', 'hidden');
-
-        var popover = $(this).find('.ah-matched-ip-popover');
-        $(popover).hide();
-    });
-
-    var btns = $('.ah-matched-ip-popover').find('button[data-ip]');
-    $(btns).click(function() {
-        var ip = $(this).attr('data-ip');
-        var ticketLink = window.location.href;
-        renderSanctionIPPopup(ip, ticketLink);
-        showSanctionIPPopup();
+                let sanctionBtn = $(popover).find('.sh-sanction-ip-btn');
+                $(sanctionBtn).unbind('click').click(function() {
+                    let ip = $(this).attr('data-ip');
+                    let ticketLink = window.location.href;
+                    renderSanctionIPPopup(ip, ticketLink);
+                    showSanctionIPPopup();
+                });
+            }
+        })
     });
 }
 
@@ -3297,8 +3316,9 @@ function addIpPopoverOnLeftPanel() {
         let ipTextBlock = $(ipLabelBlock).next()[0].firstChild;
         let ip = $(ipTextBlock).text();
         $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
+        $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger" class="ah-popover-hover-link"></span>`);
         let content = `
-            <div class="btn-group-vertical">
+            <div>
                 <button type="button" class="btn btn-default btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
                     <span class="glyphicon glyphicon-info-sign"></span> Инфо
                 </button>
@@ -3307,7 +3327,9 @@ function addIpPopoverOnLeftPanel() {
                 </button>
             </div>
         `;
+
         createNotHidingPopover($('#ahIpOnLeftPanelPopover'), content, {
+            placement: 'top',
             onShownFunc: function() {
                 let infoBtn = $('#infoIpOnLeftPanel');
                 $(infoBtn).unbind('click').click(function () {
@@ -3316,7 +3338,7 @@ function addIpPopoverOnLeftPanel() {
                     requestInfoIP(ip, {
                         action: 'helpdesk-ip-info',
                         clickedBtn: $(this),
-                        popoverTrigger: $('#ahIpOnLeftPanelPopover')
+                        popoverTrigger: $('#ahIpInfoOnLeftPanelTrigger')
                     });
                 });
 
@@ -3345,17 +3367,8 @@ function helpdeskIpInfoHandler(xhr, options) {
                 <div class="arrow"></div>
                 <div class="popover-content"></div>
             </div>`
-    }).on('shown.bs.popover', function() {
-        let self = $(this);
-        let popover = $('.ah-ip-info-popover');
-        $(document).mouseup(function (e) {
-            if (!popover.is(e.target)
-                && popover.has(e.target).length === 0) {
-                $(self).popover('destroy');
-            }
-            e.preventDefault();
-        });
     }).popover('show');
+
 }
 //++++++++++ поповер для айпи на левой панели ++++++++++//
 

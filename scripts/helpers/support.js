@@ -305,6 +305,14 @@ function startSupport() {
             });
         }
     });
+
+    $(document).mouseup(function (e) {
+        let ipPopovers = $('.ah-ip-info-popover');
+        if (!ipPopovers.is(e.target)
+            && ipPopovers.has(e.target).length === 0) {
+            $(ipPopovers).remove();
+        }
+    });
 }
 
 function addShElementsInfo() {
