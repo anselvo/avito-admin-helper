@@ -665,3 +665,78 @@ function addScrollTopBtn() {
     });
 }
 // кнопка вверх +++
+
+// Копирование с тултипом ---
+function copyDataTooltip(targets, options) {
+    options = options || {};
+    let placement = options.placement || 'top';
+    let title = options.title || '<div>Клик - скопировать</div>';
+    let getText = options.getText || function (elem) { return $(elem).text().trim() };
+    let getTextAlt = options.getTextAlt || getText;
+
+    $(targets).addClass('ah-copy-tooltip');
+    $(targets).tooltip({
+        html: true,
+        delay: {show: 20},
+        trigger: 'hover',
+        placement: placement,
+        title: title
+    });
+
+    $(targets).unbind('click').click(function (e) {
+        let text;
+        if (e.altKey) {
+            text = getTextAlt( $(this) );
+        } else {
+            text = getText( $(this) );
+        }
+
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+        outTextFrame(`Скопировано: ${text}`);
+    });
+}
+// Копирование с тултипом +++
+
+// Поповер на ховере
+function createNotHidingPopover(target, content, options) {
+    options = options || {};
+    let placement = options.placement || 'right';
+    let onShownFunc = options.onShownFunc || function() {};
+    let template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"><h3 class="popover-title"></h3></div><div class="popover-content"></div></div>`;
+    let container = options.container || 'body';
+
+    $(target).popover({
+        animation: false,
+        html: true,
+        trigger: 'manual',
+        container: container,
+        placement: placement,
+        content: content,
+        template: template
+    }).unbind('shown.bs.popover').on('shown.bs.popover', onShownFunc
+    ).on("mouseenter", function () {
+        let _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        let _this = this;
+
+        if (!$(".popover:hover").length) {
+            $(_this).popover("hide");
+        }
+    });
+}
+
+// Баттон лоадер
+function btnLoaderOn(btn) {
+    $(btn).prop('disabled', true).addClass('ah-btn-loader');
+}
+function btnLoaderOff(btn) {
+    $(btn).prop('disabled', false).removeClass('ah-btn-loader');
+}
+
+function addInfoDocQueueLink(target) {
+    $(target).append(`<a class="ah-infodoc-queue-link" target="_blank" href="https://adm.avito.ru/helpdesk?fid=841&fname=%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D1%82&limit=30&p=1&sortField=reactionTxtime&sortType=asc">Очередь "Документооборот"</a>`);
+}

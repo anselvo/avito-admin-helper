@@ -2048,6 +2048,19 @@ function addCopyUserMailInTicket() {
     });
 }
 
+// копирование имени юзера
+function copyUserNameOnTicket() {
+    if ($('#ahCopyUserName').length !== 0) return;
+
+    let userNameNode = $('.helpdesk-additional-info-panel div:eq(0) div:eq(0) b');
+    $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
+    copyDataTooltip($('#ahCopyUserName'), {
+        getText: function(elem) {
+            return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+        }
+    });
+}
+
 //---------- предполагаемая УЗ ----------//
 function infoAboutUser() {
     // console.log('infoAboutUser func');
@@ -2360,7 +2373,12 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     
     if (rightPanelSettings.indexOf('rp-name')+1) {
         let name = $(response).find('.form-group:contains(Название) .form-control').val();
-        $(mainTable).append('<tr><td>Name</td><td>'+name+'</td></tr>');
+        $(mainTable).append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
+        copyDataTooltip( $('#ahCopyUserNameRp'), {
+            getText: function(elem) {
+                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            }
+        } );
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
@@ -3048,32 +3066,53 @@ function parseIPInDetailsPanel(block, className) {
     }
 
     $('.'+ className +'').each(function(i, item) {
-        var parentBlock = $(item).parents('.ah-matched-ip-container');
-        var ipText = $(parentBlock).find('.'+ className +'').text();
-        $(parentBlock).append('<div class="ah-popover ah-matched-ip-popover"><button type="button" class="sh-default-btn sh-sanction-ip-btn" data-ip="'+ ipText +'">Одобрить</button></div>');
-    });
+        let parentBlock = $(item).parents('.ah-matched-ip-container');
+        let ipText = $(parentBlock).find('.'+ className +'').text();
+        let content = `
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-info btn-sm info-ip-ticket-details" data-ip="${ipText}">
+                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+                <button type="button" class="btn btn-default btn-sm copy-ip-ticket-details" data-copy-text="${ipText}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
+                </button>
+                <button type="button" class="btn btn-default btn-sm sh-sanction-ip-btn" data-ip="${ipText}">
+                    <span class="glyphicon glyphicon-ok"></span> Одобрить
+                </button>
+            </div>
+        `;
+        createNotHidingPopover($(parentBlock), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let popover = $('.ah-not-hiding-popover');
+                let infoBtn = $(popover).find('.info-ip-ticket-details');
+                let popoverAria = $(this).attr('aria-describedby');
+                $(infoBtn).unbind('click').click(function () {
+                    let ip = $(this).data('ip');
+                    btnLoaderOn($(this));
+                    requestInfoIP(ip, {
+                        action: 'helpdesk-ip-info',
+                        clickedBtn: $(this),
+                        popoverTrigger: $(`[aria-describedby="${popoverAria}"]`).find('a')
+                    });
+                });
 
-    // Обработчики
-    $('.ah-matched-ip-container').hover(function() {
-        var hdParagraphBlock = $(this).parents('.helpdesk-ticket-paragraph');
-        $(hdParagraphBlock).css('overflow', 'visible');
+                let copyBtn = $(popover).find('.copy-ip-ticket-details');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`IP ${text} скопирован!`);
+                });
 
-        var popover = $(this).find('.ah-matched-ip-popover');
-        $(popover).show();
-    }, function() {
-        var hdParagraphBlock = $(this).parents('.helpdesk-ticket-paragraph');
-        $(hdParagraphBlock).css('overflow', 'hidden');
-
-        var popover = $(this).find('.ah-matched-ip-popover');
-        $(popover).hide();
-    });
-
-    var btns = $('.ah-matched-ip-popover').find('button[data-ip]');
-    $(btns).click(function() {
-        var ip = $(this).attr('data-ip');
-        var ticketLink = window.location.href;
-        renderSanctionIPPopup(ip, ticketLink);
-        showSanctionIPPopup();
+                let sanctionBtn = $(popover).find('.sh-sanction-ip-btn');
+                $(sanctionBtn).unbind('click').click(function() {
+                    let ip = $(this).attr('data-ip');
+                    let ticketLink = window.location.href;
+                    renderSanctionIPPopup(ip, ticketLink);
+                    showSanctionIPPopup();
+                });
+            }
+        });
     });
 }
 
@@ -3136,6 +3175,133 @@ function copyCurrentTicketLink() {
     });
 }
 //++++++++++ Копирование ссылки на тикет ++++++++++//
+
+//---------- Копирование имени реквестера ----------//
+function copyRequesterName() {
+    if ($('#ahCopyRequesterName').length !== 0) return;
+
+    try {
+        let requesterNameNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left b')[0].childNodes[1];
+        $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
+        copyDataTooltip($('#ahCopyRequesterName'), {
+            getText: function(elem) {
+                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            }
+        });
+    } catch (e) {}
+}
+//++++++++++ Копирование имени реквестера ++++++++++//
+
+//---------- Копирование айди тикета ----------//
+function copyTicketId() {
+    if ($('#ahCopyTicketId').length !== 0) return;
+
+    try {
+        let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
+        $(ticketIdNode).wrap(`<span id="ahCopyTicketId"></span>`);
+        copyDataTooltip($('#ahCopyTicketId'));
+    } catch (e) {}
+}
+//++++++++++ Копирование айди тикета ++++++++++//
+
+//---------- поповер для айди айтема на левой панели ----------//
+function addItemIdPopoverOnLeftPanel() {
+    if ($('#ahItemIdOnLeftPanelPopover').length !== 0) return;
+
+    try {
+        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
+        let itemIdBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Номер объявления');
+        let itemLink = $(itemIdBlock).next().find('a');
+        $(itemLink).wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
+        let itemId = $(itemLink).text();
+        let content = `
+            <button type="button" class="btn btn-default btn-sm" id="copyItemIdOnLeftPanel" data-copy-text="${itemId}">
+                <span class="glyphicon glyphicon-copy"></span> Скопировать
+            </button>
+        `;
+        createNotHidingPopover($('#ahItemIdOnLeftPanelPopover'), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let copyBtn = $('#copyItemIdOnLeftPanel');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`Номер объявления ${text} скопирован!`);
+                });
+            }
+        });
+    } catch (e) {}
+}
+//++++++++++ поповер для айди айтема на левой панели ++++++++++//
+
+//---------- поповер для айпи на левой панели ----------//
+function addIpPopoverOnLeftPanel() {
+    if ($('#ahIpOnLeftPanelPopover').length !== 0) return;
+
+    try {
+        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
+        let ipLabelBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'IP');
+        let ipTextBlock = $(ipLabelBlock).next()[0].firstChild;
+        let ip = $(ipTextBlock).text();
+        $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
+        $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger" class="ah-popover-hover-link"></span>`);
+        let content = `
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-info btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
+                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+                <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
+                </button>
+            </div>
+        `;
+
+        createNotHidingPopover($('#ahIpOnLeftPanelPopover'), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let infoBtn = $('#infoIpOnLeftPanel');
+                $(infoBtn).unbind('click').click(function () {
+                    let ip = $(this).data('ip');
+                    btnLoaderOn($(this));
+                    requestInfoIP(ip, {
+                        action: 'helpdesk-ip-info',
+                        clickedBtn: $(this),
+                        popoverTrigger: $('#ahIpInfoOnLeftPanelTrigger')
+                    });
+                });
+
+                let copyBtn = $('#copyIpOnLeftPanel');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`IP ${text} скопирован!`);
+                });
+            }
+        });
+    } catch (e) {}
+}
+
+function helpdeskIpInfoHandler(xhr, options) {
+    let popoverTrigger = $(options.popoverTrigger);
+    btnLoaderOff($(options.clickedBtn));
+
+    $(popoverTrigger).popover({
+        html: true,
+        container: 'body',
+        placement: 'top',
+        content: xhr.responseText,
+        template: `
+            <div class="popover ah-ip-info-popover">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
+    }).popover('show');
+
+    let notHidingPopoverId = $('.ah-not-hiding-popover').attr('id');
+    $(`[aria-describedby="${notHidingPopoverId}"]`).popover('hide');
+
+}
+//++++++++++ поповер для айпи на левой панели ++++++++++//
 
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {

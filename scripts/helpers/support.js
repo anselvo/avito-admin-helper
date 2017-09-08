@@ -203,6 +203,8 @@ function startSupport() {
                 || userGlobalInfo.subdivision === 'SD'
                 || userGlobalInfo.subdivision === 'SA')
                 allowItem();
+
+            copyItemOnItemInfo(); // копирование айди и неймов айтемов
         }
 
         // Items search
@@ -221,6 +223,8 @@ function startSupport() {
             chooseItem();
 
             searchByImageLinks();
+
+            copyItemsOnItemsSearch(); // копирование айди и неймов айтемов
         }
 
         // Account info
@@ -300,6 +304,14 @@ function startSupport() {
             });
         }
     });
+
+    $(document).mouseup(function (e) {
+        let ipPopovers = $('.ah-ip-info-popover');
+        if (!ipPopovers.is(e.target)
+            && ipPopovers.has(e.target).length === 0) {
+            $(ipPopovers).remove();
+        }
+    });
 }
 
 function addShElementsInfo() {
@@ -352,6 +364,14 @@ function addShElementsInfo() {
     addSearchUserBySocialBlock(); // поиск юзера по айди в соцсети
 
     copyCurrentTicketLink(); // копирование ссылки на тикет
+
+    copyRequesterName(); // копировать имя реквестера
+
+    copyTicketId(); // копирование айди тикета
+
+    addItemIdPopoverOnLeftPanel(); // поповер для айди айтема на левой панели
+
+    addIpPopoverOnLeftPanel(); // поповер для айпи на левой панели
 }
 
 function addShElementsUser() {
@@ -378,6 +398,8 @@ function addShElementsUser() {
     addMessengerLinkInTicket(); // линк на мессенджер
 
     addCopyUserMailInTicket(); // копирование мыла юзера в буфер
+
+    copyUserNameOnTicket(); // копирование имени юзера
 }
 
 function addShElementsQueue() {

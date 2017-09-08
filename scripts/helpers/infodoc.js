@@ -47,6 +47,12 @@ function startInfoDoc() {
             
             addFixedTools($('body'), ['scroll-top']);
         }
+
+        // users/search
+        if (currentUrl.indexOf('https://adm.avito.ru/users/search') + 1
+            || currentUrl.indexOf('https://adm.avito.ru/adm/users/search') + 1) {
+            addInfoDocQueueLink($('.header__title'));
+        }
         // Account info
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
@@ -73,6 +79,17 @@ function startInfoDoc() {
             
             getAllUsers(); // инфа обо всех пользователях
         }
+
+        // root
+        let mainPageReg = /adm\.avito\.ru\/$/i;
+        if (mainPageReg.test(currentUrl)) {
+            $('section.content').prepend(`
+                <div class="ah-infodoc-queue-link-holder"></div>
+                <div class="ah-clearfix"></div>
+            `);
+
+            addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
+        }
     });
 }
 
@@ -88,6 +105,8 @@ function infoDocTicketInfo() {
     
     // инфа об агента
     showAgentInfoTicket();
+
+    copyTicketId(); // копирование айди тикета
 }
 
 function infoDocTicketUser() {

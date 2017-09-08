@@ -491,3 +491,23 @@ function addDescriptionToItemSearch() {
 		}
 	}
 }
+
+// копирование айди и неймов айтемов
+function copyItemsOnItemsSearch() {
+	let cells = $('#items .item-row').find('td:eq(3)');
+	let itemsIdsNodes = [];
+	$(cells).each(function() {
+        let id = $(this)[0].lastChild;
+        $(id).wrap('<span></span>');
+		itemsIdsNodes.push($(this)[0].lastChild);
+	});
+    copyDataTooltip(itemsIdsNodes, {
+    	placement: 'right',
+		title: '<div>Клик - скопировать</div><div><kbd>Alt</kbd>+Клик - скопировать с заголовком</div>',
+        getTextAlt: function(elem) {
+    		let itemTitle = $(elem).parents('.item-row').find('.description-cell .item_title').text();
+			let itemId = $(elem).text().trim();
+    		return itemId + ' ' + '"'+ itemTitle +'"';
+		}
+	});
+}

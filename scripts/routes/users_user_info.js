@@ -961,23 +961,33 @@ function showCountryIP() {
     });
 }
 
-function requestInfoIP(ip) {
-    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
+function requestInfoIP(ip, options) {
+    options = options || {};
+    let action  = options.action || null;
 
+    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', href, true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.send();
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            let response = xhr.responseText;
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                switch (action) {
+                    case 'helpdesk-ip-info':
+                        helpdeskIpInfoHandler(xhr, options);
+                        break;
+                }
 
-            let country = $(response).find('tr:contains(Страна) td').text();
-            let city = $(response).find('tr:contains(Город) td').text();
+                let response = xhr.responseText;
 
-            if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
+                let country = $(response).find('tr:contains(Страна) td').text();
+                let city = $(response).find('tr:contains(Город) td').text();
 
-            $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
+                if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
+
+                $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
+            }
         }
     };
 }

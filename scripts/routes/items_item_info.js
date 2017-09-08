@@ -194,3 +194,33 @@ function allowItemRequest(id) {
 function hideBlockUserButton() {
     $('button[name="user_block"]').parents('.b-antifraud-section').hide();
 }
+
+function copyItemOnItemInfo() {
+    let subhead = ('.subhead');
+    $(subhead).append(`
+        <div class="btn-group" style="margin-left: 10px;">
+            <button title="Скопировать ID объявления" type="button" class="btn btn-sm btn-default" id="copyItemId">
+                <span class="glyphicon glyphicon-copy"></span> ID
+            </button>
+            <button title="Скопировать ID и заголовок объявления" type="button" class="btn btn-sm btn-default" id="copyItemIdWithTitle">
+                <span class="glyphicon glyphicon-copy"></span> ID и заголовок
+            </button>
+        </div>
+    `);
+
+    let itemTitle = $(subhead).find('a').text();
+    let itemId = $('form[data-item-id]').data('itemId');
+
+    $('#copyItemId').click(function () {
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: itemId } );
+        outTextFrame(`Скопировано: ${itemId}`);
+    });
+
+    $('#copyItemIdWithTitle').click(function () {
+        let text = itemId + ' ' + '"'+ itemTitle +'"';
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+        outTextFrame(`Скопировано: ${text}`);
+    });
+
+
+}
