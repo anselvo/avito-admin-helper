@@ -672,6 +672,7 @@ function copyDataTooltip(targets, options) {
     let placement = options.placement || 'top';
     let title = options.title || '<div>Клик - скопировать</div>';
     let getText = options.getText || function (elem) { return $(elem).text().trim() };
+    let getTextAlt = options.getTextAlt || getText;
 
     $(targets).addClass('ah-copy-tooltip');
     $(targets).tooltip({
@@ -682,10 +683,16 @@ function copyDataTooltip(targets, options) {
         title: title
     });
 
-    $(targets).unbind('click').click(function () {
-        let text = getText( $(this) );
+    $(targets).unbind('click').click(function (e) {
+        let text;
+        if (e.altKey) {
+            text = getTextAlt( $(this) );
+        } else {
+            text = getText( $(this) );
+        }
+
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-        outTextFrame('Скопировано!');
+        outTextFrame(`Скопировано: ${text}`);
     });
 }
 // Копирование с тултипом +++

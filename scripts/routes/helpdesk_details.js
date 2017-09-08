@@ -2054,7 +2054,11 @@ function copyUserNameOnTicket() {
 
     let userNameNode = $('.helpdesk-additional-info-panel div:eq(0) div:eq(0) b');
     $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
-    copyDataTooltip($('#ahCopyUserName'));
+    copyDataTooltip($('#ahCopyUserName'), {
+        getText: function(elem) {
+            return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+        }
+    });
 }
 
 //---------- предполагаемая УЗ ----------//
@@ -2368,7 +2372,11 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     if (rightPanelSettings.indexOf('rp-name')+1) {
         var name = $(response).find('.form-group:contains(Название) .form-control').val();
         $('#userInfoTable tbody').append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
-        copyDataTooltip( $('#ahCopyUserNameRp') );
+        copyDataTooltip( $('#ahCopyUserNameRp'), {
+            getText: function(elem) {
+                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            }
+        } );
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
@@ -3152,7 +3160,11 @@ function copyRequesterName() {
     try {
         let requesterNameNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left b')[0].childNodes[1];
         $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
-        copyDataTooltip($('#ahCopyRequesterName'));
+        copyDataTooltip($('#ahCopyRequesterName'), {
+            getText: function(elem) {
+                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            }
+        });
     } catch (e) {}
 }
 //++++++++++ Копирование имени реквестера ++++++++++//
