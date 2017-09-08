@@ -2349,139 +2349,162 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     $('#rightPanel').append('<div id="rightPanelBody"></div>');
     $('#rightPanelBody').append('<table id="userInfoTable"><tbody></tbody></table>');
 
-    var rightPanelSettings = localStorage.rightPanelSettings;
-    var rightPanelSettingsParse = JSON.parse(rightPanelSettings);
+    let rightPanelSettings = localStorage.rightPanelSettings;
+    let rightPanelSettingsParse = JSON.parse(rightPanelSettings);
 
-    if (assume) $('#userInfoTable').before('<div style="text-align:center; color: #FFC107; font-weight:bold;" title="Внимание! Данная учетная запись является предполагаемой и была найдена с помощию созданного алгоритма поиска.">Предполагаемая УЗ</div>');
-    
-    var id = $(response).find('.form-group:contains(ID) .js-user-id').attr('data-user-id');
+    let mainTable = $('#userInfoTable');
+
+    if (assume) $(mainTable).before('<div style="text-align:center; color: #FFC107; font-weight:bold;" title="Внимание! Данная учетная запись является предполагаемой и была найдена с помощию созданного алгоритма поиска.">Предполагаемая УЗ</div>');
+
+    let id = $(response).find('.form-group:contains(ID) .js-user-id').attr('data-user-id');
     
     if (rightPanelSettings.indexOf('rp-name')+1) {
-        var name = $(response).find('.form-group:contains(Название) .form-control').val();
-        $('#userInfoTable tbody').append('<tr><td>Name</td><td>'+name+'</td></tr>');
+        let name = $(response).find('.form-group:contains(Название) .form-control').val();
+        $(mainTable).append('<tr><td>Name</td><td>'+name+'</td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
-        $('#userInfoTable tbody').append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank">'+id+'</a><span style="" class="sh-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="sh-messenger-link"></a></span></td></tr>');
+        $(mainTable).append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank">'+id+'</a><span style="" class="sh-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="sh-messenger-link"></a></span></td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-login')+1) {
-        var login = $(response).find('.form-group:contains(Логин) .form-control-static').text();
-        $('#userInfoTable tbody').append('<tr><td>Login</td><td><a href="https://adm.avito.ru/items/search?user='+login+'" target="_blank">'+login+'</a></td></tr>');
+        let login = $(response).find('.form-group:contains(Логин) .form-control-static').text();
+        $(mainTable).append('<tr><td>Login</td><td><a href="https://adm.avito.ru/items/search?user='+login+'" target="_blank">'+login+'</a></td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-email')+1) {
-        var email = $(response).find('.js-fakeemail-field').text();
-        $('#userInfoTable tbody').append('<tr><td>E-mail</td><td><a href="https://adm.avito.ru/users/search?email='+email+'" target="_blank">'+email+'</a> <span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span><button id="sh-copy-mail-right-panel" class="sh-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;"><span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button><button id="sh-automail-right-panel" class="sh-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="sh-button-label sh-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span></button></td></tr>');
+        let email = $(response).find('.js-fakeemail-field').text();
+        $(mainTable).append('<tr>' +
+                '<td>E-mail</td>' +
+                '<td><div id="ah-rp-email">' +
+                    '<a href="https://adm.avito.ru/users/search?email='+email+'" target="_blank">'+email+'</a> ' +
+                    '<span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span>' +
+                    '<button id="sh-copy-mail-right-panel" class="sh-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">' +
+                        '<span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>' +
+                    '</button>' +
+                    '<button id="sh-automail-right-panel" class="sh-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;">' +
+                        '<span class="sh-button-label sh-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span>' +
+                    '</button>' +
+                '</div></td>' +
+            '</tr>');
+
+        emailHistory('#ah-rp-email', id);
 
         $('#sh-automail-right-panel').click(function () {
-            var text = getMailForAnswer(email);
+            let text = getMailForAnswer(email);
             localStorage.autoEmail = text;
             chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
             outTextFrame('Email '+ text +' скопирован!');
         });
 
         $('#sh-copy-mail-right-panel').click(function () {
-            var text = email;
+            let text = email;
             chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
             outTextFrame('Email '+ text +' скопирован!');
         });
     }
 
     if (rightPanelSettings.indexOf('rp-reg')+1) {
-        var registered = $(response).find('.form-group:contains(Зарегистрирован) .form-control-static').text();
-        $('#userInfoTable tbody').append('<tr><td>Registered</td><td>'+registered+'</td></tr>');
+        let registered = $(response).find('.form-group:contains(Зарегистрирован) .form-control-static').text();
+        $(mainTable).append('<tr><td>Registered</td><td>'+registered+'</td></tr>');
     }
 
     // СТАТУС УЧЕТНОЙ ЗАПИСИ
     if (rightPanelSettings.indexOf('rp-stat')+1) {
-        var statusTmp = $(response).find('.form-group:contains(Статус) .form-control-static b').text();
-        var status = statusTmp ? statusTmp : $(response).find('.form-group:contains(Статус) .form-control-static').text();
-        var chanceTmp = $(response).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
-        var chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
+        let statusTmp = $(response).find('.form-group:contains(Статус) .form-control-static b').text();
+        let status = statusTmp ? statusTmp : $(response).find('.form-group:contains(Статус) .form-control-static').text();
+        let chanceTmp = $(response).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
+        let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
 
-        var colorStatus = '#a4a4a4';
+        let colorStatus = '#a4a4a4';
         if (status === 'Active') colorStatus = '#3c763d';
         if (status === 'Remove' || status === 'Unconfirmed') colorStatus = '#a4a4a4';
         if (status === 'Blocked') colorStatus = 'rgb(220, 20, 60)';
 
-        var colorChance = '#65a947';
+        let colorChance = '#65a947';
         if (chance === '10') colorChance = '#b3263c';
 
-        $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser" style="float:right;"></div></td></tr>');
+        $(mainTable).append('<tr class="grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser" style="float:right;"></div></td></tr>');
 
 
         if (status === 'Blocked') {
             rightPanelUnblockUser();
 
-            var reason = $(response).find('.form-group:contains(Причины) .form-control-static').text();
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Reasons</td><td class="reasonStyle">'+reason+'</td></tr>');
+            let reason = $(response).find('.form-group:contains(Причины) .form-control-static').text();
+            $(mainTable).append('<tr class="grayBlock"><td>Reasons</td><td class="reasonStyle">'+reason+'</td></tr>');
 
-            var blockTime = $(response).find('h4:contains(История админки)').next().find('tr:contains(User is blocked):eq(0) td:eq(0)').text();
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Blocked at</td><td>'+blockTime+'</td></tr>');
+            let blockTime = $(response).find('h4:contains(История админки)').next().find('tr:contains(User is blocked):eq(0) td:eq(0)').text();
+            $(mainTable).append('<tr class="grayBlock"><td>Blocked at</td><td>'+blockTime+'</td></tr>');
 
             if (reason.indexOf("Нарушение условий пользовательского соглашения")+1) {
-                var calls = $(response).find('.form-group:contains(Звонки) .form-control-static').html();
-                $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Calls</td><td>'+calls+'</td></tr>');
+                let calls = $(response).find('.form-group:contains(Звонки) .form-control-static').html();
+                $(mainTable).append('<tr class="grayBlock"><td>Calls</td><td>'+calls+'</td></tr>');
             }
         }
     }
 
     // ИНФОРМАЦИЯ О ОБЪЯВЛЕНИЯХ И БАБЛУ
     if (rightPanelSettings.indexOf('rp-item')+1) {
-        var items = $(response).find('.form-group:contains(Объявления) .form-control-static').html().split(',');
-        $('#userInfoTable tbody').append('<tr><td>Items</td><td><a href="https://adm.avito.ru/items/search?user_id='+id+'" target="_blank">'+items[0]+'</a></td></tr>');
+        let items = $(response).find('.form-group:contains(Объявления) .form-control-static').html().split(',');
+        $(mainTable).append('<tr><td>Items</td><td><a href="https://adm.avito.ru/items/search?user_id='+id+'" target="_blank">'+items[0]+'</a></td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-subscription')+1) {
         let subscriptionNode = $(response).find('.form-group:contains(Подписка) .form-control-static');
         let subscriptionLinkNode = $(subscriptionNode).find('a');
         $(subscriptionLinkNode).attr('target', '_blank');
-        $('#userInfoTable tbody').append('<tr><td>Subscription</td><td data-rp-filed-name="subscription"></td></tr>');
+        $(mainTable).append('<tr><td>Subscription</td><td data-rp-filed-name="subscription"></td></tr>');
         $('[data-rp-filed-name="subscription"]').append(subscriptionLinkNode);
     }
 
     if (rightPanelSettings.indexOf('rp-acc')+1) {
-        var wallet = $(response).find('.form-group:contains(Счёт) .help-block a:eq(0)').text();
-        $('#userInfoTable tbody').append('<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/'+id+'" target="_blank">'+wallet+'</a></td></tr>');
+        let wallet = $(response).find('.form-group:contains(Счёт) .help-block a:eq(0)').text();
+        $(mainTable).append('<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/'+id+'" target="_blank">'+wallet+'</a></td></tr>');
     }
 
 
     // ИНФОРМАЦИЯ О КОМПЬЮТЕРЕ И ЛОКАЦИИ
     if (rightPanelSettings.indexOf('rp-loc')+1) {
-        var location =  $(response).find('#region option:selected').text();
+        let location =  $(response).find('#region option:selected').text();
         if (location != "-- Select location --") {
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Location</td><td>'+location+'</td></tr>');
+            $(mainTable).append('<tr class="grayBlock"><td>Location</td><td>'+location+'</td></tr>');
         }
     }
 
     if (rightPanelSettings.indexOf('rp-ip')+1) {
-        var lastIP = $(response).find('.ip-info-list li:eq(0)').html();
+        let lastIP = $(response).find('.ip-info-list li:eq(0)').html();
         if (lastIP !== undefined) {
             lastIP = lastIP.split('(');
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Last IP</td><td>'+lastIP[0]+'</td></tr>');
-            $('#userInfoTable tbody tr:contains(Last IP) a').attr('target', '_blank');
+            $(mainTable).append('<tr class="grayBlock">' +
+                    '<td>Last IP</td>' +
+                    '<td><div id="ah-rp-ip">'+lastIP[0]+'</div></td>' +
+                '</tr>');
+            $(mainTable).find('tr:contains(Last IP) a').attr('target', '_blank');
+
+            ipHistory('#ah-rp-ip', id, response);
         }
     }
 
     if (rightPanelSettings.indexOf('rp-ti')+1) {
-        var lastTInfo =  $(response).find('.form-group:contains(User-Agent последнего посещения) .help-block').html();
+        let lastTInfo =  $(response).find('.form-group:contains(User-Agent последнего посещения) .help-block').html();
         if (lastTInfo !== undefined) {
-            $('#userInfoTable tbody').append('<tr class="grayBlock"><td>Tex Info</td><td>'+lastTInfo+'</td></tr>');
+            $(mainTable).append('<tr class="grayBlock"><td>Tex Info</td><td>'+lastTInfo+'</td></tr>');
         }
     }
 
     // ИНФОРМАЦИЯ О ВИДЕ УЧЕТНОЙ ЗАПИСИ
     if (rightPanelSettings.indexOf('rp-type') + 1) {
-        var type = $(response).find('.form-group:contains(Тип) .form-control-static').children().remove().end().text();
-        $('#userInfoTable tbody').append('<tr><td>Type</td><td id="ah-rightPanelType" style="font-weight:bold; color:#CE93D8;">' + type + '</td></tr>');
+        let type = $(response).find('.form-group:contains(Тип) .form-control-static').children().remove().end().text();
+        let changeType = $(response).find('.form-group:contains(Тип) a[href^="/users/user/"]').length;
+        $(mainTable).append('<tr><td>Type</td><td id="ah-rightPanelType" style="font-weight:bold; color:#CE93D8;">' + type + '</td></tr>');
 
         if (type.indexOf('компания') + 1) {
-            $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="personal">установить как частное лицо</a>');
+            if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="personal">установить как частное лицо</a>');
+
             $('#rightPanelBody').append('<div id="companyInfo"><table><tr><td id="statusINN">ИНН</td><td id="statusPro">ЛК Про</td><td id="statusSubscription">Подписка</td></tr><tr><td id="statusShop">Магазин</td><td id="statusAuto">Автозагрузка</td></tr></table></div>');
 
-            var shop = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
-            var subscration = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
+            let shop = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
+            let subscration = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
 
             if ($(response).find('[name="inn"]').val() && $(response).find('[name="inn"]').val() != "")
                 $('#statusINN').css({'color': '#5cb85c'});
@@ -2495,16 +2518,16 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             }
             if ($(response).find('.form-group:contains(Подписка) a').text().indexOf("Подписка") + 1
                     && $(response).find('.form-group:contains(Магазин) a').text().indexOf("Оплачен") + 1) {
-                var sub = $(response).find('.form-group:contains(Подписка) a').text().split('"');
+                let sub = $(response).find('.form-group:contains(Подписка) a').text().split('"');
                 $('#statusSubscription').text(sub[1]);
                 $('#statusSubscription').css({'color': '#5cb85c'});
                 $('#statusShop').css({'color': 'rgb(189, 189, 189)'});
             }
 
-            var agentSubdivisionId = +userGlobalInfo.subdivision_id;
+            let agentSubdivisionId = +userGlobalInfo.subdivision_id;
             if (~allowedPremiumUsersSubd.indexOf(agentSubdivisionId)) {
                 $('#companyInfo table tr:eq(1)').append('<td id="REpremium"><span class="loading-indicator-text">Загрузка...</span></td>');
-                var shopLink = $(response).find('[href^="/shops/info/view/"]');
+                let shopLink = $(response).find('[href^="/shops/info/view/"]');
                 if ($(shopLink).length === 0) {
                     checkPremiumUsersList(id);
                 } else {
@@ -2517,7 +2540,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                             'margin-left: 9px; font-weight: 400;">'+
                             'Загрузка...</span>');
                         }
-                        var shopId = $(shopLink).attr('href').replace(/\D/g, '');
+                        let shopId = $(shopLink).attr('href').replace(/\D/g, '');
                         sendShopInfoRequest(shopId);
                     } catch(e) {
                         console.log(e);
@@ -2530,7 +2553,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 checkExtensionIndUser(+id);
             }
         } else {
-            $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="company">установить как компанию</a>');
+            if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="company">установить как компанию</a>');
         }
 
         $('.ah-rightPanelTypeChange').click(function () {
@@ -2542,15 +2565,15 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     }
 
     if (rightPanelSettings.indexOf('rp-manager')+1) {
-        var name = $(response).find('select[name="managerId"] option:selected').text();
-        var colorStyle = (name == 'None') ? '' : 'color: red; font-weight: bold;';
+        let name = $(response).find('select[name="managerId"] option:selected').text();
+        let colorStyle = (name == 'None') ? '' : 'color: red; font-weight: bold;';
 
-        $('#userInfoTable tbody').append('<tr><td title="Персональный менеджер">Manager</td><td style="'+ colorStyle +'">'+name+'</td></tr>');
+        $(mainTable).append('<tr><td title="Персональный менеджер">Manager</td><td style="'+ colorStyle +'">'+name+'</td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-phone')+1) {
         let phoneList = $(response).find('.controls-phone');
-        $('#userInfoTable tbody').append('<tr class="grayBlock"><td style="vertical-align: top;">Phone</td><td><div><span class="ah-show-unverify-phone">show unverify phone</span></div><div id="phoneHistory"></div></td></tr>');
+        $(mainTable).append('<tr class="grayBlock"><td style="vertical-align: top;">Phone</td><td><div><span class="ah-show-unverify-phone">show unverify phone</span></div><div id="phoneHistory"></div></td></tr>');
 
         for (let i = 0; i < phoneList.length; i++) {
             let phoneInfo = phoneList[i];

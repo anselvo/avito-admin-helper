@@ -85,11 +85,11 @@ function usersInfo(id, itemid, offset, query) {
         .append('<div id="ah-info-break-in" show-status="false" class="ah-info-break-in ah-info-link" title="Информация о взломе"><i class="glyphicon glyphicon-resize-full"></i></div>')
         .append('<div class="ah-info-break-in-title userInfoDiv">Проверка пользователя на взлом</div>');
 
-    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div><div class="ah-info-history-email ah-info-history"></div>');
+    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="userInfoDiv"><b>Items:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div><div class="ah-info-history-ip ah-info-history"></div>');
+    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('4')+1) $('.userInfoMain').append('<div id="ipItem" class="userInfoDiv"><b>Item IP:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('13')+1) $('.userInfoMain').append('<div id="startTime" class="userInfoDiv"><b>Start Time:</b> </div>');
     // Право собственности
@@ -164,67 +164,17 @@ function usersInfo(id, itemid, offset, query) {
             if (status.indexOf('Block')+1) color = 'red';
             if (status.indexOf('Unconfirmed')+1) color = 'orange';
 
-            $('#ah-info-email').append('<span>'+ email + '</span> ' +
-                '<span class="ah-info-history-email-link ah-info-link" user-id="' + id + '" title="История изменения электронного адреса">' +
-                '<i class="glyphicon glyphicon-list-alt"></i>' +
-                '</span>');
+            $('#ah-info-email').append('<span>'+ email + '</span> ');
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
-            $('#lastIP').append(visitIpTime + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a> ' +
-                '<span class="ah-info-history-ip-link ah-info-link" user-id="' + id + '" title="История ip адресов и информация о них">' +
-                '<i class="glyphicon glyphicon-list-alt"></i>' +
-                '</span>');
-
-            $('.ah-info-history-email-link').click(function () {
-                $('.ah-info-history-email').toggle("slow");
-            });
-
-            $('.ah-info-history-ip-link').click(function () {
-                $('.ah-info-history-ip').toggle("slow");
-            });
-
-            // ИСТОРИЯ IP АДРЕСА
-
-            $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
-                '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
-                '<tbody></tbody>' +
-                '</table>');
-
-            let ipInfoList = $(ruser).find('.ip-info-list li');
-            for (let i = 0; i < ipInfoList.length; ++i) {
-                let ipInfo = $(ipInfoList[i]).find('.ip-info').attr('data-ip');
-                let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
-
-                $('.ah-info-history-ip-table').append('<tr>' +
-                        '<td><a href="https://adm.avito.ru/users/search?ip='+ipInfo+'" target="_blank">'+ipInfo+'</a></td>' +
-                        '<td><span ipinfo="' + ipInfo + '"></span></td>' +
-                        '<td>'+ipVisitTime+'</td>' +
-                    '</tr>');
-
-                requestInfoIP(ipInfo);
-            }
+            $('#lastIP').append(visitIpTime + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a> ');
 
             // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
-            let historyUrl = 'https://adm.avito.ru/users/user/'+id+'/emails/history';
-            $.ajax({
-                type: 'GET',
-                url: historyUrl,
-                success: function(data) {
-                    let content = data.content;
-                    if (content === '') $('.ah-info-history-email').append('<span style="color: #ff7e72;">Истории изменения не найдена</span>');
-                    else {
-                        let trList = $(content).find('tbody tr');
+            emailHistory('#ah-info-email', id);
 
-                        $('.ah-info-history-email').append('<table class="ah-info-history-email-table ah-info-table">' +
-                                '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
-                                '<tbody></tbody>' +
-                            '</table>');
-
-                        $('.ah-info-history-email-table').append(trList);
-                    }
-                }
-            });
+            // ИСТОРИЯ IP АДРЕСА
+            ipHistory('#lastIP', id, ruser);
 
             // ЗАПРОС НА ОБЪЯВЛЕНИЕ
             let requestitem = new XMLHttpRequest();
@@ -296,6 +246,73 @@ function usersInfo(id, itemid, offset, query) {
         }
     };
 
+}
+
+
+function ipHistory(selector, id, response) {
+    $(selector)
+        .append('<span class="ah-info-history-ip-link ah-info-link" user-id="' + id + '" title="История ip адресов и информация о них">' +
+                '<i class="glyphicon glyphicon-list-alt"></i>' +
+            '</span>')
+        .after('<div class="ah-info-history-ip ah-info-history"></div>');
+
+    $('.ah-info-history-ip-link').click(function () {
+        $('.ah-info-history-ip').toggle("slow");
+    });
+
+    $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
+        '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
+        '<tbody></tbody>' +
+        '</table>');
+
+    let ipInfoList = $(response).find('.ip-info-list li');
+    for (let i = 0; i < ipInfoList.length; ++i) {
+        let ipInfo = $(ipInfoList[i]).find('.ip-info').attr('data-ip');
+        let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
+
+        $('.ah-info-history-ip-table').append('<tr>' +
+                '<td><a href="https://adm.avito.ru/users/search?ip='+ipInfo+'" target="_blank">'+ipInfo+'</a></td>' +
+                '<td><span ipinfo="' + ipInfo + '"></span></td>' +
+                '<td>'+ipVisitTime+'</td>' +
+            '</tr>');
+
+        requestInfoIP(ipInfo);
+    }
+}
+
+// ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
+
+function emailHistory(selector, id) {
+    $(selector)
+        .append('<span class="ah-info-history-email-link ah-info-link" user-id="' + id + '" title="История изменения электронного адреса">' +
+                '<i class="glyphicon glyphicon-list-alt"></i>' +
+            '</span>')
+        .after('<div class="ah-info-history-email ah-info-history"></div>');
+
+
+    $('.ah-info-history-email-link').click(function () {
+        $('.ah-info-history-email').toggle("slow");
+    });
+
+    let historyUrl = 'https://adm.avito.ru/users/user/'+id+'/emails/history';
+    $.ajax({
+        type: 'GET',
+        url: historyUrl,
+        success: function(data) {
+            let content = data.content;
+            if (content === '') $('.ah-info-history-email').append('<span style="color: #ff7e72;">Истории изменения не найдена</span>');
+            else {
+                let trList = $(content).find('tbody tr');
+
+                $('.ah-info-history-email').append('<table class="ah-info-history-email-table ah-info-table">' +
+                        '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
+                        '<tbody></tbody>' +
+                    '</table>');
+
+                $('.ah-info-history-email-table').append(trList);
+            }
+        }
+    });
 }
 
 function ymapapi(address) {

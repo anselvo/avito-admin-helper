@@ -1537,12 +1537,12 @@ div.illumination-btn-box input.btn-default:hover {
 	padding-top: 4px;
 }
 
-#userInfoTable td {
-	padding: 3px;
+#userInfoTable > tbody > tr > td:nth-child(2) {
+	padding: 2px;
 	width: 100%;
 }
 
-#userInfoTable tr td:nth-child(1) {
+#userInfoTable > tbody > tr > td:nth-child(1) {
 	font-weight: bold;
 	width: 30px;
 }
@@ -3026,6 +3026,7 @@ body:hover #shop-side-panel {
 }
 
 .ah-info-link {
+    margin-left: 4px;
     cursor: pointer;
     color: #1a6fb3;
 }

@@ -18,17 +18,19 @@ function autoOtherReasons() {
 function addOtherReasons(reason, textSelector) {
     let otherReasons = ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
         'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
-        'Праздники, мероприятия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство', 'Транспорт, перевозки',
+        'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство', 'Транспорт, перевозки',
         'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое'];
 
 
     $(reason).parent().css('position', 'static');
 
     let content = '';
-    for (let i = 0; i < otherReasons.length; i+=2) content += '<div>' +
-            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i]+'</label>' +
-            '<label><input type="checkbox" name="ah-other-reasons"/>'+otherReasons[i+1]+'</label>' +
-        '</div>';
+    for (let i = 0; i < otherReasons.length; i+=2) {
+        content += '<div>';
+        content += '<label><input type="checkbox" name="ah-other-reasons"/>' + otherReasons[i] + '</label>';
+        if (otherReasons[i + 1]) content += '<label><input type="checkbox" name="ah-other-reasons"/>' + otherReasons[i + 1] + '</label>';
+        content += '</div>';
+    }
 
     let template = '<div class=" moderateBox_subitems ah-other-reasons"><div class="popover-content"></div></div>';
 
