@@ -461,24 +461,24 @@ function checkExtensionIndUser(userId) {
 // альтернативный поиск по телефону (с ???)
 function alternatePhoneSearch() {
 
-    if ($('a.phone-search-link').length == 0)
+    if ($('a.phone-search-link').length === 0)
         return;
 
-    var nuser = $('.controls-phone').length;
-    var region = $('#region').val();
+    let nuser = $('.controls-phone');
+    let region = $('#region').val();
     if (!region) {
         region = '';
     } else {
         region = '&location_id%5B%5D=' + region;
     }
-    for (var i = 0; i < nuser; i++) {
-        var number = $('.input-group').slice(i, i + 1).find('input').attr("value");
-        var newNumber = '';
-        for (var j = 1; j < 8; j++) {
+    for (let i = 0; i < nuser.length; i++) {
+        let number = $(nuser[i]).find('input').attr("value");
+        let newNumber = '';
+        for (let j = 1; j < 8; j++) {
             newNumber = newNumber + number[j];
         }
 
-        $('.controls-phone').slice(i, i + 1).find('td:eq(6)').append('<br><a class="anatherNumber" href="https://adm.avito.ru/items/search?phone=' + newNumber + '%3F%3F%3F' + region + '" target="_blank">item???</a>');
+        $(nuser[i]).find('td:eq(6)').append('<br><a class="anatherNumber" href="https://adm.avito.ru/items/search?phone=' + newNumber + '%3F%3F%3F' + region + '" target="_blank">item???</a>');
     }
 }
 
