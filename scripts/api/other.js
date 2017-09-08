@@ -729,3 +729,7 @@ function btnLoaderOn(btn) {
 function btnLoaderOff(btn) {
     $(btn).prop('disabled', false).removeClass('ah-btn-loader');
 }
+
+function addInfoDocQueueLink(target) {
+    $(target).append(`<a class="ah-infodoc-queue-link" target="_blank" href="https://adm.avito.ru/helpdesk?fid=841&fname=%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D1%82&limit=30&p=1&sortField=reactionTxtime&sortType=asc">Очередь "Документооборот"</a>`);
+}

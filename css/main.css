@@ -4866,3 +4866,12 @@ select.ah-form-control:focus {
     background-size: 16px 16px;
     background-repeat: no-repeat;
 }
+
+.ah-infodoc-queue-link {
+    float: right;
+    font-size: 16px;
+}
+.ah-infodoc-queue-link:visited {
+    color: #337ab7 !important;
+}
+
