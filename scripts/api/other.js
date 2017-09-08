@@ -673,33 +673,19 @@ function copyDataTooltip(targets, options) {
     let title = options.title || '<div>Клик - скопировать</div>';
     let getText = options.getText || function (elem) { return $(elem).text().trim() };
 
-    $(targets).wrap(`<span class="ah-copy-tooltip"></span>`);
-
-    let tooltips = $(targets).parents('.ah-copy-tooltip');
-    $(tooltips).tooltip({
+    $(targets).addClass('ah-copy-tooltip');
+    $(targets).tooltip({
         html: true,
         delay: {show: 20},
+        trigger: 'hover',
         placement: placement,
         title: title
     });
 
-    $(tooltips).unbind('click').click(function () {
+    $(targets).unbind('click').click(function () {
         let text = getText( $(this) );
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-        let tooltipNode = $(this).next();
-
-        try {
-            let tooltipWidth = $(tooltipNode)[0].getBoundingClientRect().width;
-            $(tooltipNode)[0].style.width = tooltipWidth + 'px';
-        } catch (e) { console.log(e) }
-
-        $(this).addClass('ah-tooltip-copied');
-        let tooltipInnerNode = $(tooltipNode).find('.tooltip-inner');
-        $(tooltipInnerNode).html(`<div>Скопировано!</div>`);
-    });
-
-    $(tooltips).unbind('hidden.bs.tooltip').on('hidden.bs.tooltip', function() {
-        $(this).removeClass('ah-tooltip-copied');
+        outTextFrame('Скопировано!');
     });
 }
 // Копирование с тултипом +++
@@ -729,6 +715,7 @@ function createNotHidingPopover(target, content, options) {
         });
     }).on("mouseleave", function () {
         let _this = this;
+
         if (!$(".popover:hover").length) {
             $(_this).popover("hide");
         }

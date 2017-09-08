@@ -2054,7 +2054,7 @@ function copyUserNameOnTicket() {
 
     let userNameNode = $('.helpdesk-additional-info-panel div:eq(0) div:eq(0) b');
     $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
-    copyDataTooltip(userNameNode);
+    copyDataTooltip($('#ahCopyUserName'));
 }
 
 //---------- предполагаемая УЗ ----------//
@@ -3039,13 +3039,15 @@ function parseIPInDetailsPanel(block, className) {
         let ipText = $(parentBlock).find('.'+ className +'').text();
         let content = `
             <div class="btn-group-vertical">
-                <button type="button" class="btn btn-default btn-sm info-ip-ticket-details" data-ip="${ipText}">
+                <button type="button" class="btn btn-info btn-sm info-ip-ticket-details" data-ip="${ipText}">
                     <span class="glyphicon glyphicon-info-sign"></span> Инфо
                 </button>
                 <button type="button" class="btn btn-default btn-sm copy-ip-ticket-details" data-copy-text="${ipText}">
                     <span class="glyphicon glyphicon-copy"></span> Скопировать
                 </button>
-                <button type="button" class="btn btn-default btn-sm sh-sanction-ip-btn" data-ip="${ipText}">Одобрить</button>
+                <button type="button" class="btn btn-default btn-sm sh-sanction-ip-btn" data-ip="${ipText}">
+                    <span class="glyphicon glyphicon-ok"></span> Одобрить
+                </button>
             </div>
         `;
         createNotHidingPopover($(parentBlock), content, {
@@ -3060,7 +3062,7 @@ function parseIPInDetailsPanel(block, className) {
                     requestInfoIP(ip, {
                         action: 'helpdesk-ip-info',
                         clickedBtn: $(this),
-                        popoverTrigger: $(`[aria-describedby="${popoverAria}"]`).find('.sh-matched-ip-description')
+                        popoverTrigger: $(`[aria-describedby="${popoverAria}"]`).find('a')
                     });
                 });
 
@@ -3079,7 +3081,7 @@ function parseIPInDetailsPanel(block, className) {
                     showSanctionIPPopup();
                 });
             }
-        })
+        });
     });
 }
 
@@ -3150,7 +3152,7 @@ function copyRequesterName() {
     try {
         let requesterNameNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left b')[0].childNodes[1];
         $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
-        copyDataTooltip(requesterNameNode);
+        copyDataTooltip($('#ahCopyRequesterName'));
     } catch (e) {}
 }
 //++++++++++ Копирование имени реквестера ++++++++++//
@@ -3162,7 +3164,7 @@ function copyTicketId() {
     try {
         let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
         $(ticketIdNode).wrap(`<span id="ahCopyTicketId"></span>`);
-        copyDataTooltip(ticketIdNode);
+        copyDataTooltip($('#ahCopyTicketId'));
     } catch (e) {}
 }
 //++++++++++ Копирование айди тикета ++++++++++//
@@ -3183,6 +3185,7 @@ function addItemIdPopoverOnLeftPanel() {
             </button>
         `;
         createNotHidingPopover($('#ahItemIdOnLeftPanelPopover'), content, {
+            placement: 'top',
             onShownFunc: function() {
                 let copyBtn = $('#copyItemIdOnLeftPanel');
                 $(copyBtn).unbind('click').click(function () {
@@ -3208,8 +3211,8 @@ function addIpPopoverOnLeftPanel() {
         $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
         $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger" class="ah-popover-hover-link"></span>`);
         let content = `
-            <div>
-                <button type="button" class="btn btn-default btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-info btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">
                     <span class="glyphicon glyphicon-info-sign"></span> Инфо
                 </button>
                 <button type="button" class="btn btn-default btn-sm" id="copyIpOnLeftPanel" data-copy-text="${ip}">
@@ -3258,6 +3261,9 @@ function helpdeskIpInfoHandler(xhr, options) {
                 <div class="popover-content"></div>
             </div>`
     }).popover('show');
+
+    let notHidingPopoverId = $('.ah-not-hiding-popover').attr('id');
+    $(`[aria-describedby="${notHidingPopoverId}"]`).popover('hide');
 
 }
 //++++++++++ поповер для айпи на левой панели ++++++++++//
