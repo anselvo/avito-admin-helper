@@ -217,7 +217,7 @@ function copyItemOnItemInfo() {
     });
 
     $('#copyItemIdWithTitle').click(function () {
-        let text = itemId + ' ' + '"'+ itemTitle +'"';
+        let text = `№${itemId} («${itemTitle}»)`;
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
         outTextFrame(`Скопировано: ${text}`);
     });

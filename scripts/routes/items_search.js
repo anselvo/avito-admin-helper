@@ -507,7 +507,7 @@ function copyItemsOnItemsSearch() {
         getTextAlt: function(elem) {
     		let itemTitle = $(elem).parents('.item-row').find('.description-cell .item_title').text();
 			let itemId = $(elem).text().trim();
-    		return itemId + ' ' + '"'+ itemTitle +'"';
+    		return `№${itemId} («${itemTitle}»)`;
 		}
 	});
 }
