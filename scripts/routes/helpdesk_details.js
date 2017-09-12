@@ -3262,9 +3262,9 @@ function addItemIdPopoverOnLeftPanel() {
             onShownFunc: function() {
                 let copyBtn = $('#copyItemIdOnLeftPanel');
                 $(copyBtn).unbind('click').click(function () {
-                    let text = $(this).data('copyText');
+                    let text = `№${$(this).data('copyText')}`;
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-                    outTextFrame(`Номер объявления ${text} скопирован!`);
+                    outTextFrame(`Скопировано: ${text}`);
                 });
             }
         });
