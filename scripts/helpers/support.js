@@ -372,6 +372,8 @@ function addShElementsInfo() {
     addItemIdPopoverOnLeftPanel(); // поповер для айди айтема на левой панели
 
     addIpPopoverOnLeftPanel(); // поповер для айпи на левой панели
+
+    addPhoneNumberPopoverOnLeftPanel(); // поповер для номера телефона на левой панели
 }
 
 function addShElementsUser() {

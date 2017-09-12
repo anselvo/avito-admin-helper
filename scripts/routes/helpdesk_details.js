@@ -3341,6 +3341,36 @@ function helpdeskIpInfoHandler(xhr, options) {
 }
 //++++++++++ поповер для айпи на левой панели ++++++++++//
 
+//---------- поповер для номера телефона на левой панели ----------//
+function addPhoneNumberPopoverOnLeftPanel() {
+    if ($('#ahPhoneNumberOnLeftPanelPopover').length !== 0) return;
+
+    try {
+        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
+        let phoneBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Телефон');
+        let phoneLink = $(phoneBlock).next().find('a');
+        $(phoneLink).wrap(`<span id="ahPhoneNumberOnLeftPanelPopover"></span>`);
+        let phoneNumber = $(phoneLink).text();
+        let content = `
+            <button type="button" class="btn btn-default btn-sm" id="copyPhoneNumberOnLeftPanel" data-copy-text="${phoneNumber}">
+                <span class="glyphicon glyphicon-copy"></span> Скопировать
+            </button>
+        `;
+        createNotHidingPopover($('#ahPhoneNumberOnLeftPanelPopover'), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let copyBtn = $('#copyPhoneNumberOnLeftPanel');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`Скопировано: ${text}`);
+                });
+            }
+        });
+    } catch (e) {}
+}
+//++++++++++ поповер для номера телефона на левой панели ++++++++++//
+
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {
     var size = $('blockquote').length;
