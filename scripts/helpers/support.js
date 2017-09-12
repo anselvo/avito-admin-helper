@@ -117,6 +117,11 @@ function startSupport() {
                 || shortUserLinkReg.test(currentUrl)
                 || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'userAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
             // попап с затемнением
             $('body').append('<div id="sh-popup-layer-blackout-btn"></div>');
 
@@ -180,6 +185,12 @@ function startSupport() {
         if (~currentUrl.indexOf('https://adm.avito.ru/items/item/info/')
             || shortItemLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/items/item/info/')) {
+
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'itemAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
             if (!localStorage.allowList) localStorage.allowList = '';
 
             // Кликабельные ссылки
