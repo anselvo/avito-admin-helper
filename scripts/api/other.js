@@ -740,3 +740,23 @@ function btnLoaderOff(btn) {
 function addInfoDocQueueLink(target) {
     $(target).append(`<a class="ah-infodoc-queue-link" target="_blank" href="https://adm.avito.ru/helpdesk?fid=841&fname=%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D1%82&limit=30&p=1&sortField=reactionTxtime&sortType=asc">Очередь "Документооборот"</a>`);
 }
+
+// линк на ВЛ для юзера (фильтры: последние полгода, айди юзера, все статусы)
+function getWlLinkForUser(userId) {
+    let maxDate = currentTime().split(' ')[0];
+    maxDate = maxDate.replace(/\./g, '/');
+    let today = new Date();
+    let sixMonthAgoMs = today.setMonth(today.getMonth() - 6);
+    let sixMonthAgo = new Date(sixMonthAgoMs);
+    let minDate = sixMonthAgo.toLocaleString("ru", {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+    });
+    minDate = minDate.replace(/\./g, '/');
+
+    let dateRange = `${minDate}+00:00+-+${maxDate}+23:59`;
+
+    return `/billing/walletlog?date=${dateRange}&userIds=${userId}&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4`;
+
+}

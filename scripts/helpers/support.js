@@ -117,6 +117,11 @@ function startSupport() {
                 || shortUserLinkReg.test(currentUrl)
                 || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'userAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
             // попап с затемнением
             $('body').append('<div id="sh-popup-layer-blackout-btn"></div>');
 
@@ -173,6 +178,8 @@ function startSupport() {
             // logUnferifiedPhone(); // логирование отвязанных номеров
 
             addIPSystemAccessLink(); // ссылки на system/access рядом с IP
+
+            addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
         }
 
         // Item info
@@ -180,6 +187,12 @@ function startSupport() {
         if (~currentUrl.indexOf('https://adm.avito.ru/items/item/info/')
             || shortItemLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/items/item/info/')) {
+
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'itemAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
             if (!localStorage.allowList) localStorage.allowList = '';
 
             // Кликабельные ссылки
@@ -243,6 +256,8 @@ function startSupport() {
 
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
+
+            addWlLinkOnAccountInfo(); // переход в ВЛ со страницы счета (все статусы, последние пол года)
         }
 
         // walletlog
@@ -372,6 +387,8 @@ function addShElementsInfo() {
     addItemIdPopoverOnLeftPanel(); // поповер для айди айтема на левой панели
 
     addIpPopoverOnLeftPanel(); // поповер для айпи на левой панели
+
+    addPhoneNumberPopoverOnLeftPanel(); // поповер для номера телефона на левой панели
 }
 
 function addShElementsUser() {

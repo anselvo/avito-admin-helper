@@ -504,10 +504,14 @@ function copyItemsOnItemsSearch() {
     copyDataTooltip(itemsIdsNodes, {
     	placement: 'right',
 		title: '<div>Клик - скопировать</div><div><kbd>Alt</kbd>+Клик - скопировать с заголовком</div>',
+        getText: function(elem) {
+            let itemId = $(elem).text().trim();
+            return `№${itemId}`;
+		},
         getTextAlt: function(elem) {
     		let itemTitle = $(elem).parents('.item-row').find('.description-cell .item_title').text();
 			let itemId = $(elem).text().trim();
-    		return itemId + ' ' + '"'+ itemTitle +'"';
+    		return `№${itemId} («${itemTitle}»)`;
 		}
 	});
 }

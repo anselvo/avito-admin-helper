@@ -212,12 +212,13 @@ function copyItemOnItemInfo() {
     let itemId = $('form[data-item-id]').data('itemId');
 
     $('#copyItemId').click(function () {
-        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: itemId } );
-        outTextFrame(`Скопировано: ${itemId}`);
+        let text = `№${itemId}`;
+        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+        outTextFrame(`Скопировано: ${text}`);
     });
 
     $('#copyItemIdWithTitle').click(function () {
-        let text = itemId + ' ' + '"'+ itemTitle +'"';
+        let text = `№${itemId} («${itemTitle}»)`;
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
         outTextFrame(`Скопировано: ${text}`);
     });

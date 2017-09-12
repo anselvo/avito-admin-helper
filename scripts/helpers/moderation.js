@@ -74,6 +74,12 @@ function startModerator() {
 		if (~currentUrl.indexOf('https://adm.avito.ru/items/item/info/')
 			|| shortItemLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/items/item/info/')) {
+
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'itemAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
 			// Кликабельные ссылки
 			linksOnComments('td.is-break', currentUrl);
 			
@@ -95,6 +101,12 @@ function startModerator() {
 		if (~currentUrl.indexOf('https://adm.avito.ru/users/user/info/')
 			|| shortUserLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
+
+            chrome.runtime.onMessage.addListener(function (request) {
+                if (request.onUpdated === 'userAdmHistory')
+                    setTimeout(adminTableCategory, 100);
+            });
+
 			linksOnComments('td.is-break', currentUrl);
 			// проверка учетных записей
 			userChekDoubles();

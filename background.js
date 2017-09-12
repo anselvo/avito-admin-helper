@@ -76,9 +76,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 // ЛОВИТ КАКИЕ ОТВЕТЫ ПОЛУЧЕНЫ ОТ СЕРВЕРА
 chrome.webRequest.onCompleted.addListener(function (detailsURL) {
-		helpdeskListener(detailsURL.tabId, detailsURL.url);
+        requestListener(detailsURL.tabId, detailsURL.url);
 	}, 
-	{ urls: ["https://adm.avito.ru/helpdesk/*"] }
+	{ urls: ["https://adm.avito.ru/*"] }
 );
 
 // ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
@@ -494,7 +494,9 @@ function newday(currentDay) {
 	}
 }
 
-function helpdeskListener(tabId, url) {
+function requestListener(tabId, url) {
+
+	// helpdesk
 	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/edit/') ) {
 		sendMessage(tabId, 'ticketEdit');
 	}
@@ -539,6 +541,18 @@ function helpdeskListener(tabId, url) {
 	if (~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/comments\b/)) {
 		sendMessage(tabId, 'ticketComments');
 	}
+
+	// item/info
+	let itemAdmHistoryPattern = /items\/item\/info\/\d+\/history/;
+    if (itemAdmHistoryPattern.test(url)) {
+        sendMessage(tabId, 'itemAdmHistory');
+    }
+
+    // user/info
+    let userAdmHistoryPattern = /users\/user\/info\/\d+\/usr_adm_history/;
+    if (userAdmHistoryPattern.test(url)) {
+        sendMessage(tabId, 'userAdmHistory');
+    }
 }
 
 function sendMessage(tabId, msg) {	

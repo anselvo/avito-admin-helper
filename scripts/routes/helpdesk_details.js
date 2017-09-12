@@ -1809,13 +1809,43 @@ function showReasonBlockedUser() {
                 if (ticketId !== startTicketId) return;
 
                 $('span.sh-reason-blocked-user').detach();
+
+                if (!time) {
+                    time = '<span class="ah-pseudo-link" id="get-user-block-time-from-history" title="Показать дату">> 1,5 месяца назад</span>';
+                }
                 $('div.helpdesk-usersidebar-status:first').append('<span class="sh-reason-blocked-user" style="color:black;"> | </span><span class="sh-reason-blocked-user" title="' + blockedUserId + '" style="color:#A52A2A;">' + reason + '</span><span class="sh-reason-blocked-user" style="color:black;">| '+time+'</span>');
+                $('#get-user-block-time-from-history').click(function () {
+                    btnLoaderOn($(this));
+                    getUserBlockTimeFromHistory(blockedUserId, $(this));
+                });
             }
         }
     }
 }
 
 //++++++++++ Причина блокировки юзера ++++++++++//
+
+//---------- Причина блокировки юзера из админ хистори (> 1,5 месяца назад) ----------//
+function getUserBlockTimeFromHistory(userId, timeDisplayNode) {
+    $(timeDisplayNode).unbind('click');
+    let url = `https://adm.avito.ru/users/user/info/${userId}/usr_adm_history`;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let json = JSON.parse(xhr.responseText);
+            for (let i = 0; i < json.length; i++) {
+                if (~json[i].operation.indexOf('User is blocked')) {
+                    $(timeDisplayNode).replaceWith(`<span>${json[i].formatedDate}</span>`);
+                    break;
+                }
+            }
+        }
+    }
+}
+//++++++++++ Причина блокировки юзера из админ хистори (> 1,5 месяца назад) ++++++++++//
 
 // Открываем все ссылки в новой вкладке
 function changeAllHDLinks() {
@@ -2452,7 +2482,15 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             $(mainTable).append('<tr class="grayBlock"><td>Reasons</td><td class="reasonStyle">'+reason+'</td></tr>');
 
             let blockTime = $(response).find('h4:contains(История админки)').next().find('tr:contains(User is blocked):eq(0) td:eq(0)').text();
+            if (!blockTime) {
+                blockTime = '<span class="ah-pseudo-link" id="get-user-block-time-from-history-rp" title="Показать дату">> 1,5 месяца назад</span>';
+            }
             $(mainTable).append('<tr class="grayBlock"><td>Blocked at</td><td>'+blockTime+'</td></tr>');
+
+            $('#get-user-block-time-from-history-rp').click(function () {
+                btnLoaderOn($(this));
+                getUserBlockTimeFromHistory(id, $(this));
+            });
 
             if (reason.indexOf("Нарушение условий пользовательского соглашения")+1) {
                 let calls = $(response).find('.form-group:contains(Звонки) .form-control-static').html();
@@ -3224,9 +3262,9 @@ function addItemIdPopoverOnLeftPanel() {
             onShownFunc: function() {
                 let copyBtn = $('#copyItemIdOnLeftPanel');
                 $(copyBtn).unbind('click').click(function () {
-                    let text = $(this).data('copyText');
+                    let text = `№${$(this).data('copyText')}`;
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-                    outTextFrame(`Номер объявления ${text} скопирован!`);
+                    outTextFrame(`Скопировано: ${text}`);
                 });
             }
         });
@@ -3302,6 +3340,36 @@ function helpdeskIpInfoHandler(xhr, options) {
 
 }
 //++++++++++ поповер для айпи на левой панели ++++++++++//
+
+//---------- поповер для номера телефона на левой панели ----------//
+function addPhoneNumberPopoverOnLeftPanel() {
+    if ($('#ahPhoneNumberOnLeftPanelPopover').length !== 0) return;
+
+    try {
+        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
+        let phoneBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Телефон');
+        let phoneLink = $(phoneBlock).next().find('a');
+        $(phoneLink).wrap(`<span id="ahPhoneNumberOnLeftPanelPopover"></span>`);
+        let phoneNumber = $(phoneLink).text();
+        let content = `
+            <button type="button" class="btn btn-default btn-sm" id="copyPhoneNumberOnLeftPanel" data-copy-text="${phoneNumber}">
+                <span class="glyphicon glyphicon-copy"></span> Скопировать
+            </button>
+        `;
+        createNotHidingPopover($('#ahPhoneNumberOnLeftPanelPopover'), content, {
+            placement: 'top',
+            onShownFunc: function() {
+                let copyBtn = $('#copyPhoneNumberOnLeftPanel');
+                $(copyBtn).unbind('click').click(function () {
+                    let text = $(this).data('copyText');
+                    chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+                    outTextFrame(`Скопировано: ${text}`);
+                });
+            }
+        });
+    } catch (e) {}
+}
+//++++++++++ поповер для номера телефона на левой панели ++++++++++//
 
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {
