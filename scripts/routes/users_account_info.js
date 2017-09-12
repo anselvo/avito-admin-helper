@@ -426,3 +426,10 @@ function toggleUserViewOperations() {
         localStorage.setItem(lsItem, JSON.stringify(lsObj));
     });
 }
+
+// переход в ВЛ со страницы счета (все статусы, последние пол года)
+function addWlLinkOnAccountInfo() {
+    let userId = $('a[href^="/users/user/info/"]').text();
+    let link = getWlLinkForUser(userId);
+    $('#history').find('a[href^="/users/account/info"]').after(` <a title="Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода" target="_blank" style="font-size: 14px;" href="${link}">Wallet Log</a>`);
+}

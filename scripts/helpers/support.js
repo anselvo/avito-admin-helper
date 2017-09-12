@@ -178,6 +178,8 @@ function startSupport() {
             // logUnferifiedPhone(); // логирование отвязанных номеров
 
             addIPSystemAccessLink(); // ссылки на system/access рядом с IP
+
+            addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
         }
 
         // Item info
@@ -254,6 +256,8 @@ function startSupport() {
 
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
+
+            addWlLinkOnAccountInfo(); // переход в ВЛ со страницы счета (все статусы, последние пол года)
         }
 
         // walletlog
