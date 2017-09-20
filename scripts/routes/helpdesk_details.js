@@ -2580,8 +2580,8 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 $('#statusShop').css({'color': 'rgb(189, 189, 189)'});
             }
 
-            let agentSubdivisionId = +userGlobalInfo.subdivision_id;
-            if (~allowedPremiumUsersSubd.indexOf(agentSubdivisionId)) {
+            let agentSubdivision = userGlobalInfo.subdivision;
+            if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
                 $('#companyInfo table tr:eq(1)').append('<td id="REpremium"><span class="loading-indicator-text">Загрузка...</span></td>');
                 let shopLink = $(response).find('[href^="/shops/info/view/"]');
                 if ($(shopLink).length === 0) {
@@ -2604,7 +2604,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 }
             }
 
-            if (~allowedExtensionIndSubd.indexOf(agentSubdivisionId)) {
+            if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
                 $('#companyInfo table').append('<tr><td></td><td id="ExtensionInd"><span>Расширение</span><span id="ExtensionIndGroup"></span></td><td></td></tr>');
                 checkExtensionIndUser(+id);
             }
