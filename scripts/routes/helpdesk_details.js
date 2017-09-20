@@ -2086,7 +2086,7 @@ function copyUserNameOnTicket() {
     $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
     copyDataTooltip($('#ahCopyUserName'), {
         getText: function(elem) {
-            return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            return getUserNameTamplate($(elem).text());
         }
     });
 }
@@ -2406,7 +2406,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         $(mainTable).append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
         copyDataTooltip( $('#ahCopyUserNameRp'), {
             getText: function(elem) {
-                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+                return getUserNameTamplate($(elem).text());
             }
         } );
     }
@@ -3223,7 +3223,7 @@ function copyRequesterName() {
         $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
         copyDataTooltip($('#ahCopyRequesterName'), {
             getText: function(elem) {
-                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+                return getUserNameTamplate($(elem).text());
             }
         });
     } catch (e) {}

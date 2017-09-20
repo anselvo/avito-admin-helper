@@ -760,3 +760,13 @@ function getWlLinkForUser(userId) {
     return `/billing/walletlog?date=${dateRange}&userIds=${userId}&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4`;
 
 }
+
+function getUserNameTamplate(text) {
+    let splitted = text.split(' ');
+    let res = [];
+    splitted.forEach((item) => {
+        res.push( item[0].toUpperCase() + item.slice(1).toLowerCase() );
+    });
+
+    return res.join(' ');
+}
