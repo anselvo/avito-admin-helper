@@ -302,7 +302,7 @@ function addRefundInfoBtns(table) {
                 };
 
                 btnLoaderOn($(this));
-                getWlInfoWithSuperAcc(data.getUrl())
+                getAdmWithSuperAcc(data.getUrl())
                     .then(
                         response => renderRefundInfo(response, data),
                         error => alert(error)
@@ -406,7 +406,7 @@ function renderRefundInfo(responseBody, data) {
             };
 
             btnLoaderOn($(this));
-            getWlInfoWithSuperAcc(totalData.getUrl())
+            getAdmWithSuperAcc(totalData.getUrl())
                 .then(
                     response => renderTotalRefundInfo(response, totalData),
                     error => alert(error)
