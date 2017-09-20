@@ -349,7 +349,7 @@ function renderRefundInfo(responseBody, data) {
                 replacedContent = amountPopoverContent.replace('billing-amount-real', 'text-info')
                     .replace('billing-amount-promo', 'text-success');
 
-            totalAmount += parseFloat(amountText.trim().slice(1).replace(/,/, '.'));
+            totalAmount += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
             $(amountPopover).attr('data-content', replacedContent);
             resultRows += `
                 <tr><td>${$(this).find('td:eq(4)').html()}</td><td class="text-nowrap">${$(amountCell).html()}</td></tr>
