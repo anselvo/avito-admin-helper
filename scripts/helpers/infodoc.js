@@ -2,13 +2,13 @@ function startInfoDoc() {
     console.log('infoDoc script start');
 
     chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-        if (request.onUpdated == 'ticketUser')
-            setTimeout(infoDocTicketUser, 100);
+        if (request.onUpdated === 'ticketUser')
+            setTimeout(infoDocTicketUser, 200);
 
-        if (request.onUpdated == 'ticketInfo')
+        if (request.onUpdated === 'ticketInfo')
             setTimeout(infoDocTicketInfo, 100);
 
-        if (request.onUpdated == 'ticketQueue')
+        if (request.onUpdated === 'ticketQueue')
             setTimeout(infoDocTicketQueue, 100);
     });
 
@@ -29,11 +29,6 @@ function startInfoDoc() {
                 || shortUserLinkReg.test(currentUrl)
                 || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
-            chrome.runtime.onMessage.addListener(function (request) {
-                if (request.onUpdated === 'userAdmHistory')
-                    setTimeout(adminTableCategory, 100);
-            });
-            
             // сопоставления логинов с категорией
             adminTableCategory();
             

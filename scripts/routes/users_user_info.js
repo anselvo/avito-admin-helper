@@ -7,6 +7,11 @@ function messengerLinkOnUser() {
 
 // информацио о том какой мадератор относиться к какой категории
 function adminTableCategory() {
+    chrome.runtime.onMessage.addListener(function (request) {
+        if (request.onUpdated === 'itemAdmHistory' || request.onUpdated === 'userAdmHistory')
+            setTimeout(adminTableCategory, 100);
+    });
+
     var len = $('.table tr').length;
 
     chrome.runtime.sendMessage({

@@ -2086,7 +2086,7 @@ function copyUserNameOnTicket() {
     $(userNameNode).wrap(`<span id="ahCopyUserName"></span>`);
     copyDataTooltip($('#ahCopyUserName'), {
         getText: function(elem) {
-            return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+            return getUserNameTamplate($(elem).text());
         }
     });
 }
@@ -2406,7 +2406,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         $(mainTable).append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
         copyDataTooltip( $('#ahCopyUserNameRp'), {
             getText: function(elem) {
-                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+                return getUserNameTamplate($(elem).text());
             }
         } );
     }
@@ -2580,8 +2580,8 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 $('#statusShop').css({'color': 'rgb(189, 189, 189)'});
             }
 
-            let agentSubdivisionId = +userGlobalInfo.subdivision_id;
-            if (~allowedPremiumUsersSubd.indexOf(agentSubdivisionId)) {
+            let agentSubdivision = userGlobalInfo.subdivision;
+            if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
                 $('#companyInfo table tr:eq(1)').append('<td id="REpremium"><span class="loading-indicator-text">Загрузка...</span></td>');
                 let shopLink = $(response).find('[href^="/shops/info/view/"]');
                 if ($(shopLink).length === 0) {
@@ -2604,7 +2604,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 }
             }
 
-            if (~allowedExtensionIndSubd.indexOf(agentSubdivisionId)) {
+            if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
                 $('#companyInfo table').append('<tr><td></td><td id="ExtensionInd"><span>Расширение</span><span id="ExtensionIndGroup"></span></td><td></td></tr>');
                 checkExtensionIndUser(+id);
             }
@@ -3223,7 +3223,7 @@ function copyRequesterName() {
         $(requesterNameNode).wrap(`<span id="ahCopyRequesterName"></span>`);
         copyDataTooltip($('#ahCopyRequesterName'), {
             getText: function(elem) {
-                return $(elem).text()[0].toUpperCase() + $(elem).text().slice(1);
+                return getUserNameTamplate($(elem).text());
             }
         });
     } catch (e) {}
@@ -3329,7 +3329,7 @@ function helpdeskIpInfoHandler(xhr, options) {
         placement: 'top',
         content: xhr.responseText,
         template: `
-            <div class="popover ah-ip-info-popover">
+            <div class="popover ah-ip-info-popover ah-popover-destroy-outclicking">
                 <div class="arrow"></div>
                 <div class="popover-content"></div>
             </div>`

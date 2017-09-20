@@ -106,7 +106,7 @@ function callCenter() {
 }
 
 function rejectByCall() {
-    var id = location.href.split('/')[6];
+    var id = location.href.replace(/\D/g, '');
 
     let allRbcCount = 0;
     let allRbcUsers = new Map();
@@ -224,4 +224,226 @@ function copyItemOnItemInfo() {
     });
 
 
+}
+
+// инфо о Refund
+function addRefundInfo() {
+    let historyTable = $('.loadable-history:eq(0) .table'),
+        admHistoryTable = $('.loadable-history:eq(1) .table');
+
+    addRefundInfoBtns(historyTable);
+    addRefundInfoBtns(admHistoryTable);
+
+    chrome.runtime.onMessage.addListener(function (request) {
+        if (request.onUpdated === 'itemHistory') {
+            setTimeout(() => {
+                addRefundInfoBtns(historyTable);
+            }, 100);
+        }
+
+        if (request.onUpdated === 'itemAdmHistory') {
+            setTimeout(() => {
+                addRefundInfoBtns(admHistoryTable);
+            }, 100);
+        }
+    });
+
+}
+
+function addRefundInfoBtns(table) {
+    if ($(table).find('thead tr .ah-additional-refund-cell').length === 0 && ~$(table).text().indexOf('Refund')) {
+        $(table).find('thead tr').append('<th class="ah-additional-refund-cell"></th>');
+    } else {
+        return;
+    }
+
+    if ($(table).parents('.overlay-container').length === 0) {
+        $(table).parents('.table-scroll').wrap('<div class="overlay-container"></div>');
+    }
+
+    $(table).find('tbody tr').each(function () {
+        let searchCell = $(this).find('td:eq(1)'),
+            dateCell = $(this).find('td:eq(0)'),
+            dateTextFormatted = $(dateCell).text().replace(/\./g, '/').slice(0, -3);
+
+        if ($(this).find('.ah-additional-refund-cell').length === 0) {
+            $(this).append(`<td class="ah-additional-refund-cell" rowspan="1"></td>`);
+        }
+
+        if (~$(searchCell).text().indexOf('Refund') && $(this).find('.ah-get-refund-info').length === 0) {
+            let additionalCell = $(this).find('.ah-additional-refund-cell'),
+                sameBtns = $(table).find(`.ah-get-refund-info[data-date="${dateTextFormatted}"]`);
+
+            if ($(sameBtns).length > 0) {
+                let firstBtn = $(sameBtns)[0],
+                    firstCell = $(firstBtn).parents('.ah-additional-refund-cell'),
+                    firstCellRowspan = $(firstCell).attr('rowspan');
+
+                $(firstCell).attr('rowspan', ++firstCellRowspan);
+                $(additionalCell).remove();
+                return;
+            }
+
+            $(additionalCell).append(`
+                <button title="Посмотреть информацию об операциях" data-date="${dateTextFormatted}" 
+                class="btn btn-info btn-xs ah-get-refund-info">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </button>
+            `);
+
+            $(additionalCell).find('.ah-get-refund-info').click(function () {
+                let data = {
+                    dateRange: `${$(this).data('date')} - ${$(this).data('date')}`,
+                    itemId: $('form[data-item-id]').data('itemId'),
+                    getUrl: function() {
+                        return `https://adm.avito.ru/billing/walletlog?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
+                    },
+                    clickedElem: $(this)
+                };
+
+                btnLoaderOn($(this));
+                getAdmWithSuperAcc(data.getUrl())
+                    .then(
+                        response => renderRefundInfo(response, data),
+                        error => alert(error)
+                    )
+                    .then(() => btnLoaderOff($(this)));
+            });
+        }
+    });
+}
+
+function renderRefundInfo(responseBody, data) {
+    let responseRows = $(responseBody).find('.billing .table tbody tr'),
+        resultRows = ``,
+        resultContent = `<h6>Дата: <span class="text-muted">${data.dateRange.split('-')[0]}</span></h6>`,
+        totalAmount = 0,
+        userId = +$('[href^="/users/user/info/"]').attr('href').replace(/\D/g, ''),
+        overlayContainer = $(data.clickedElem).parents('.overlay-container'),
+        hasMorePages = !!($(responseBody).find('ul.pagination').length);
+
+    if ($(responseRows).length === 0) {
+        resultContent += `
+            <div class="alert alert-warning text-center">
+                По данному объявлению за указанную дату операции в Wallet Log не найдены
+            </div>
+        `;
+    } else if (hasMorePages) {
+        resultContent += `
+            <div class="alert alert-warning text-center">
+                По данному объявлению за указанную дату в Wallet Log найдено более одной страницы операций.
+                Доступна только общая информация.
+            </div>
+            <div class="text-center">
+                <button class="btn btn-link ah-pseudo-link ah-get-total-refund-info">
+                    Посмотреть общую информацию
+                </button>
+            </div>
+        `;
+    } else {
+        $(responseRows).each(function () {
+            let amountCell = $(this).find('td:eq(8)'),
+                amountText = $(amountCell).text(),
+                amountPopover = $(amountCell).find('.js-popover'),
+                amountPopoverContent = $(amountPopover).data('content'),
+                replacedContent = amountPopoverContent.replace('billing-amount-real', 'text-info')
+                    .replace('billing-amount-promo', 'text-success');
+
+            totalAmount += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
+            $(amountPopover).attr('data-content', replacedContent);
+            resultRows += `
+                <tr><td>${$(this).find('td:eq(4)').html()}</td><td class="text-nowrap">${$(amountCell).html()}</td></tr>
+            `;
+        });
+
+        resultContent += `
+            <div class="table-scroll">
+                <table class="table table-bordered table-condensed">
+                    <thead><tr><th>Операция</th><th>Сумма</th></tr></thead>
+                    <tbody>${resultRows}</tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    $(overlayContainer).append('<div class="ah-overlay show"></div>');
+    $(data.clickedElem).parents('.ah-additional-refund-cell').popover({
+        container: 'body',
+        html: true,
+        title: `
+                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2)} руб.</span>
+                <span class="ah-refund-info-title-links">
+                    <a target="_blank" href="/users/account/info/${userId}">Счёт</a> | 
+                    <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
+                </span>
+                `,
+        content: resultContent,
+        trigger: 'manual',
+        placement: 'top',
+        template: `
+                <div class="popover ah-refund-info-popover ah-popover-destroy-outclicking">
+                    <div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div>
+                </div>
+                `
+    }).on('hide.bs.popover', function() {
+        $(overlayContainer).find('.ah-overlay').remove();
+    }).popover('show');
+
+    let popover = $('.ah-refund-info-popover');
+    copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {placement: 'right'} );
+    $(popover).find('.js-popover').addClass('ah-pseudo-link').popover();
+
+    let totalRefundBtn = $('.ah-get-total-refund-info');
+    if ($(totalRefundBtn).length !== 0) {
+        $(totalRefundBtn).click(function () {
+            let totalData = {
+                dateRange: data.dateRange,
+                itemId: data.itemId,
+                getUrl: function() {
+                    return `https://adm.avito.ru/billing/walletlog/total?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
+                },
+                clickedElem: $(this)
+            };
+
+            btnLoaderOn($(this));
+            getAdmWithSuperAcc(totalData.getUrl())
+                .then(
+                    response => renderTotalRefundInfo(response, totalData),
+                    error => alert(error)
+                )
+                .then(() => btnLoaderOff($(this)));
+        });
+    }
+}
+
+function renderTotalRefundInfo(responseBody, data) {
+    let json = JSON.parse(responseBody),
+        clickedElem = data.clickedElem;
+
+    $(clickedElem).popover({
+        html: true,
+        placement: 'left',
+        content: `
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <b>Всего операций: </b>${json.count}
+                    </li>
+                    <li class="list-group-item">
+                        <b>Сумма входящих операций: </b> 
+                        <span class="ah-total-refund-total-amount">${json.amount.acquired.total.toFixed(2)} руб.</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Сумма исходящих операций: </b> ${json.amount.spent.total.toFixed(2)} руб.
+                    </li>
+                </ul>
+                `,
+        template: `
+                <div class="popover ah-total-refund-info-popover ah-popover-destroy-outclicking">
+                    <div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div>
+                </div>
+                `
+    }).popover('show');
+
+    let popover = $('.ah-total-refund-info-popover');
+    copyDataTooltip( $(popover).find('.ah-total-refund-total-amount'));
 }
