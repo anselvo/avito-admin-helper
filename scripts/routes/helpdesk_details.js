@@ -3329,7 +3329,7 @@ function helpdeskIpInfoHandler(xhr, options) {
         placement: 'top',
         content: xhr.responseText,
         template: `
-            <div class="popover ah-ip-info-popover">
+            <div class="popover ah-ip-info-popover ah-popover-destroy-outclicking">
                 <div class="arrow"></div>
                 <div class="popover-content"></div>
             </div>`

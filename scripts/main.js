@@ -36,3 +36,11 @@ chrome.storage.local.get(function (result) {
     }
 
 });
+
+$(document).mouseup(function (e) {
+    let destroyOutclickingPopovers = $('.ah-popover-destroy-outclicking');
+    if (!destroyOutclickingPopovers.is(e.target)
+        && destroyOutclickingPopovers.has(e.target).length === 0) {
+        $(destroyOutclickingPopovers).popover('destroy');
+    }
+});

@@ -116,12 +116,6 @@ function startSupport() {
         if (~currentUrl.indexOf('https://adm.avito.ru/users/user/info/') 
                 || shortUserLinkReg.test(currentUrl)
                 || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
-
-            chrome.runtime.onMessage.addListener(function (request) {
-                if (request.onUpdated === 'userAdmHistory')
-                    setTimeout(adminTableCategory, 100);
-            });
-
             // попап с затемнением
             $('body').append('<div id="sh-popup-layer-blackout-btn"></div>');
 
@@ -187,12 +181,6 @@ function startSupport() {
         if (~currentUrl.indexOf('https://adm.avito.ru/items/item/info/')
             || shortItemLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/items/item/info/')) {
-
-            chrome.runtime.onMessage.addListener(function (request) {
-                if (request.onUpdated === 'itemAdmHistory')
-                    setTimeout(adminTableCategory, 100);
-            });
-
             if (!localStorage.allowList) localStorage.allowList = '';
 
             // Кликабельные ссылки
@@ -218,6 +206,8 @@ function startSupport() {
                 allowItem();
 
             copyItemOnItemInfo(); // копирование айди и неймов айтемов
+
+            addRefundInfo(); // инфо о Refund
         }
 
         // Items search
@@ -317,14 +307,6 @@ function startSupport() {
             $(searchBtn).unbind('click').click(function () {
                 searchBySocialBtnHandler($(this));
             });
-        }
-    });
-
-    $(document).mouseup(function (e) {
-        let ipPopovers = $('.ah-ip-info-popover');
-        if (!ipPopovers.is(e.target)
-            && ipPopovers.has(e.target).length === 0) {
-            $(ipPopovers).remove();
         }
     });
 }

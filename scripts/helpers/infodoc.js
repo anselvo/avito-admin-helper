@@ -29,11 +29,6 @@ function startInfoDoc() {
                 || shortUserLinkReg.test(currentUrl)
                 || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
-            chrome.runtime.onMessage.addListener(function (request) {
-                if (request.onUpdated === 'userAdmHistory')
-                    setTimeout(adminTableCategory, 100);
-            });
-            
             // сопоставления логинов с категорией
             adminTableCategory();
             

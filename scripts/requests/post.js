@@ -123,3 +123,30 @@ function commentUserCharacteristics(id, comment) {
         }
     }
 }
+
+// Запрос на WL через одну УЗ с правами
+function getWlInfoWithSuperAcc(url) {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "POST",
+                url: "http://avitoadm.ru/journal/include/php/load/get_avito_adm.php",
+                data: 'url=' + encodeURIComponent(url)
+            },
+            function (response) {
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                if (json.http_code !== 200) {
+                    reject(`Произошла ошибка: http code - ${json.http_code}`);
+                }
+
+                resolve(json.response_body);
+            }
+        );
+    });
+}
