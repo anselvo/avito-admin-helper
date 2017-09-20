@@ -106,7 +106,7 @@ function callCenter() {
 }
 
 function rejectByCall() {
-    var id = location.href.split('/')[6];
+    var id = location.href.replace(/\D/g, '');
 
     let allRbcCount = 0;
     let allRbcUsers = new Map();
