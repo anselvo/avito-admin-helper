@@ -2,13 +2,13 @@ function startInfoDoc() {
     console.log('infoDoc script start');
 
     chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-        if (request.onUpdated == 'ticketUser')
-            setTimeout(infoDocTicketUser, 100);
+        if (request.onUpdated === 'ticketUser')
+            setTimeout(infoDocTicketUser, 200);
 
-        if (request.onUpdated == 'ticketInfo')
+        if (request.onUpdated === 'ticketInfo')
             setTimeout(infoDocTicketInfo, 100);
 
-        if (request.onUpdated == 'ticketQueue')
+        if (request.onUpdated === 'ticketQueue')
             setTimeout(infoDocTicketQueue, 100);
     });
 

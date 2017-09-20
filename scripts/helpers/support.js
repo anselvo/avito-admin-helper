@@ -28,7 +28,7 @@ function startSupport() {
     chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         //console.log(request.onUpdated);
         if (request.onUpdated === 'ticketUser')
-            setTimeout(addShElementsUser, 100);
+            setTimeout(addShElementsUser, 200);
 
         if (request.onUpdated === 'ticketInfo')
             setTimeout(addShElementsInfo, 100);
@@ -44,11 +44,11 @@ function startSupport() {
             onHoldListener();
         }
         if (request.onUpdated === 'ticketComment') {
-            сommentListener();
+            commentListener();
         }
 
         if (request.onUpdated === 'ticketComments') {
-            setTimeout(ticketCommentsListener, 100);
+            setTimeout(ticketCommentsListener, 200);
         }
     });
 
@@ -427,7 +427,7 @@ function onHoldListener() {
 }
 
 // коммент
-function сommentListener() {
+function commentListener() {
     // дежурный тимлид ---
     var btn = $('#sh-attendant-tl-btn');
 
