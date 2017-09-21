@@ -543,9 +543,15 @@ function requestListener(tabId, url) {
 	}
 
 	// item/info
-	let itemAdmHistoryPattern = /items\/item\/info\/\d+\/history/;
+	let itemAdmHistoryPattern = /items\/item\/info\/\d+\/history/,
+		itemHistoryPattern = /items\/item\/info\/\d+\/frst_history/;
+
     if (itemAdmHistoryPattern.test(url)) {
         sendMessage(tabId, 'itemAdmHistory');
+    }
+
+    if (itemHistoryPattern.test(url)) {
+        sendMessage(tabId, 'itemHistory');
     }
 
     // user/info

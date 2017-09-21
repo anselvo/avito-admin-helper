@@ -3553,14 +3553,17 @@ select.ah-form-control:focus {
 	margin-left: -2px;
 }
 
-.ah-pseudo-link {
+.ah-pseudo-link, .btn-link.ah-pseudo-link {
 	color: #337ab7;
     border-bottom: 1px dotted #337ab7;
     text-decoration: none;
     cursor: pointer;
 	padding-bottom: 2px;
 }
-.ah-pseudo-link:hover {
+.btn-link.ah-pseudo-link {
+    padding: 0;
+}
+.ah-pseudo-link:hover, .btn-link.ah-pseudo-link:hover {
 	border-color: transparent;
     color: rgba(0,140,195,.7);
     text-decoration: none;
@@ -4891,3 +4894,51 @@ select.ah-form-control:focus {
     color: #337ab7 !important;
 }
 
+.ah-refund-info-popover {
+    min-width: 420px;
+}
+
+.ah-refund-info-popover .table-scroll, .ah-refund-info-popover .alert {
+    margin-bottom: 0;
+}
+
+.ah-refund-info-title-links {
+    float: right;
+    font-size: 12px;
+}
+
+.ah-additional-refund-cell {
+    width: 0;
+    position: relative;
+    padding: 0 !important;
+    overflow: hidden;
+    min-width: 16px;
+}
+
+.ah-additional-refund-cell .ah-get-refund-info {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding: 0;
+    width: 100%;
+    border-radius: 0;
+}
+
+.ah-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: none;
+}
+
+.ah-total-refund-info-popover {
+    min-width: 350px;
+}
+
+.ah-total-refund-info-popover .list-group {
+    margin-bottom: 0;
+    font-size: 13px;
+}
