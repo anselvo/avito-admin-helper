@@ -4753,20 +4753,28 @@ select.ah-form-control:focus {
 }
 
 .ah-other-reasons {
-    margin-left: 100px;
+    display: none;
+    position: absolute;
     text-align: left;
-    width: 500px!important;
+    width: 250px;
+    background: white;
+    transform: translate(60%,-60%);
+    z-index: 510;
+    box-shadow: 0 1px 3px rgba(0,63,106,.5);
+    padding: 5px;
 }
 
 .ah-other-reasons .popover-content {
-    padding: 3px;
+    padding: 0;
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 .ah-other-reasons .popover-content label {
-    width: 50%;
+    width: 100%;
     cursor: pointer;
     font-weight: normal;
-    padding: 2px 6px;
+    padding: 0 2px;
 }
 
 .ah-other-reasons .popover-content label:hover {
@@ -4774,7 +4782,7 @@ select.ah-form-control:focus {
 }
 
 .ah-other-reasons [name="ah-other-reasons"] {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .ah-copy-tooltip:hover {
