@@ -669,10 +669,12 @@ function addScrollTopBtn() {
 // Копирование с тултипом ---
 function copyDataTooltip(targets, options) {
     options = options || {};
-    let placement = options.placement || 'top';
-    let title = options.title || '<div>Клик - скопировать</div>';
-    let getText = options.getText || function (elem) { return $(elem).text().trim() };
-    let getTextAlt = options.getTextAlt || getText;
+    let placement = options.placement || 'top',
+        title = options.title || '<div>Клик - скопировать</div>',
+        getText = options.getText || function(target) {return $(target).text().trim()},
+        getTextAlt = options.getTextAlt || getText,
+        getNotification = options.getNotification || function(text) {return `Скопировано: ${text}`},
+        getNotificationAlt = options.getNotificationAlt || getNotification;
 
     $(targets).addClass('ah-copy-tooltip');
     $(targets).tooltip({
@@ -683,16 +685,20 @@ function copyDataTooltip(targets, options) {
         title: title
     });
 
-    $(targets).unbind('click').click(function (e) {
-        let text;
+    $(targets).unbind('click').click(function(e) {
+        let text,
+            notification;
+
         if (e.altKey) {
-            text = getTextAlt( $(this) );
+            text = getTextAlt($(this));
+            notification = getNotificationAlt(text);
         } else {
-            text = getText( $(this) );
+            text = getText($(this));
+            notification = getNotification(text);
         }
 
-        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-        outTextFrame(`Скопировано: ${text}`);
+        chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+        outTextFrame(notification);
     });
 }
 // Копирование с тултипом +++

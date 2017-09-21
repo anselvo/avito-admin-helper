@@ -371,7 +371,7 @@ function renderRefundInfo(responseBody, data) {
         container: 'body',
         html: true,
         title: `
-                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2)} руб.</span>
+                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2)}</span> руб.
                 <span class="ah-refund-info-title-links">
                     <a target="_blank" href="/users/account/info/${userId}">Счёт</a> | 
                     <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
@@ -390,7 +390,16 @@ function renderRefundInfo(responseBody, data) {
     }).popover('show');
 
     let popover = $('.ah-refund-info-popover');
-    copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {placement: 'right'} );
+    copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {
+        placement: 'right',
+        title: `<div>Клик - скопировать</div><div><kbd>Alt</kbd>+Клик - скопировать с шаблоном</div>`,
+        getTextAlt: function(elem) {
+            return 'Мы компенсировали затраченные средства в размере ' + $(elem).text() + ' рублей, они были зачислены на Ваш Кошелек Avito.\n\n' +
+            'Вы можете воспользоваться этими средствами для оплаты дополнительных услуг и сервисов на Avito. ' +
+            'История операций доступна по ссылке: https://www.avito.ru/account/history';
+        },
+        getNotificationAlt: () => 'Скопировано с шаблоном'
+    });
     $(popover).find('.js-popover').addClass('ah-pseudo-link').popover();
 
     let totalRefundBtn = $('.ah-get-total-refund-info');
@@ -430,7 +439,7 @@ function renderTotalRefundInfo(responseBody, data) {
                     </li>
                     <li class="list-group-item">
                         <b>Сумма входящих операций: </b> 
-                        <span class="ah-total-refund-total-amount">${json.amount.acquired.total.toFixed(2)} руб.</span>
+                        <span class="ah-total-refund-total-amount">${json.amount.acquired.total.toFixed(2)}</span> руб.
                     </li>
                     <li class="list-group-item">
                         <b>Сумма исходящих операций: </b> ${json.amount.spent.total.toFixed(2)} руб.

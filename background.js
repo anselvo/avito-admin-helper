@@ -119,14 +119,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     }
 
 	if (request.action === "copyToClipboard") {
-		const input = document.createElement('input');
-		input.style.position = 'fixed';
-		input.style.opacity = 0;
-		input.value = request.text;
-		document.body.appendChild(input);
-		input.select();
+		const textarea = document.createElement('textarea');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = 0;
+        textarea.value = request.text;
+		document.body.appendChild(textarea);
+        textarea.select();
 		document.execCommand('Copy');
-		document.body.removeChild(input);
+		document.body.removeChild(textarea);
 	}
 
 	if (request.action === "sendNotification") {
