@@ -112,7 +112,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
                 // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
                 let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
-                if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените его на ';
+                if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
                 for (let i = 0; i < checkedReasons.length; ++i) {
                     let texReason = $(checkedReasons[i]).parent().text();
@@ -307,7 +307,7 @@ function usersListCheck() {
     $('#postBlockTable').find('tbody').html(postBlockTable);
 
     if (usersListActive.length-1 !== 0 || usersListBlock.length-1 !== 0) {
-        outTextFrame(`Выделенно:\n‧ Активных пользователей - ${usersListActive.length - 1}\n‧ Заблокированных пользователей - ${usersListBlock.length - 1}`);
+        outTextFrame(`Выделено:\n‧ Активных пользователей - ${usersListActive.length - 1}\n‧ Заблокированных пользователей - ${usersListBlock.length - 1}`);
     }
 }
 
