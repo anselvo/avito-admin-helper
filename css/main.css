@@ -4197,7 +4197,7 @@ select.ah-form-control:focus {
 .postBlockButton {
     display: inline-block;
     float: right;
-    padding: 0 8px;
+    padding: 0 2px;
     font-size: 14px;
     width: 30px;
     font-weight: bolder;
@@ -4207,19 +4207,21 @@ select.ah-form-control:focus {
     touch-action: manipulation;
     cursor: pointer;
     user-select: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.postBlockButton:hover {
+    box-shadow: inset 0 0 3px 0 rgba(0,0,0,0.5);
 }
 
 .postPlus {
-    background: #74db72;
-    color: white;
+    background: #63c363;
 }
 
 .postStar {
     background: #3da6b4;
-    color: white;
 }
 
 .postStarBlock {
@@ -4229,18 +4231,12 @@ select.ah-form-control:focus {
 
 .postMinus {
     background: #e57474;
-    color: white;
 }
 
 .postMinusBlock {
     background: #ffe4e8;
     border-radius: 5px;
 }
-
-/*.postPlus:hover, .postStar:hover, .postMinus:hover {*/
-    /*background-color: rgba(240, 240, 240, 0.11);*/
-    /*border-color: #adadad;*/
-/*}*/
 
 .showUsers {
     margin: 10px 10px 10px 0;

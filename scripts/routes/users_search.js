@@ -157,7 +157,7 @@ function usersSearchBlockUser() {
 function addChooseButtonUsersSearch() {
     const loginList = $('tr td:first-child a');
 
-    $('tr td:first-child').css({width: '110px'});
+    $('tr td:first-child').css({width: '140px'});
 
     for (let i = 0; i < loginList.length; ++i) {
         let id = $(loginList[i]).text();
