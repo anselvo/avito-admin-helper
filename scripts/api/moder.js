@@ -94,7 +94,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
                 let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
                 if ($(this).prop('checked')) {
-                    $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
+                    // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
 
                     $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
                 } else {
@@ -109,13 +109,14 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
 
                 let text = '';
 
-                let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
+                // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
+                let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
                 if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените его на ';
 
                 for (let i = 0; i < checkedReasons.length; ++i) {
                     let texReason = $(checkedReasons[i]).parent().text();
-                    let textChildrenSelector = $(checkedReasons[i]).parents('.ah-has-children').find('>label');
+                    let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
                     let textChildren = '';
 
                     for (let j = 0; j < textChildrenSelector.length; ++j) {
@@ -242,9 +243,11 @@ function clickActionButton() {
 
     $('.ah-postClearList').click(function () {
         sessionStorage.postBlockID = '';
+        sessionStorage.postBlockActiveUserID = '';
 
         $('.ah-post-block-user').hide();
         usersListCheck();
+        outTextFrame('Список пользователей очищен!')
     });
 
     $('.ah-postShowDescription').click(function () {
@@ -274,59 +277,108 @@ function clickChooseButton() {
     $('.postBlockButton').click(function () {
         let val = $(this).val();
 
-        if (val === '+') add(this);
-        else remove(this);
+        if (val === '+') addPlusBlockUser(this);
+        if (val === '-') addStarBlockUser(this);
+        if (val === '★') removeMinusBlockUser(this);
 
         usersListCheck();
     });
 }
 
 function usersListCheck() {
-    var usersList = sessionStorage.postBlockID.split(', ');
-    var length = usersList.length;
+    let usersListBlock = sessionStorage.postBlockID.split(', ');
+    let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
 
-    $('.digit').text(length-1);
+    $('.digit').text(usersListBlock.length-1);
 
-    $('.postBlockButton').removeClass('postMinus').addClass('postPlus').val('+').parent().removeClass('postMinusBlock');
+    $('.postBlockButton').removeClass('postStar').removeClass('postMinus').addClass('postPlus').val('+').parent().removeClass('postStarBlock').removeClass('postMinusBlock');
 
-    var postBlockTable = '';
-    for (let i = 0; i < length-1; i++) {
-        $('input[userid="'+usersList[i]+'"]').removeClass('postPlus').addClass('postMinus').val('-').parent().addClass('postMinusBlock');
+    let postBlockTable = '';
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        $('input[userid="'+usersListBlock[i]+'"]').removeClass('postPlus').addClass('postMinus').val('-').parent().addClass('postMinusBlock');
 
-        postBlockTable += '<tr name="'+usersList[i]+'"><td><a href="/users/user/info/'+usersList[i]+'" target="_blank">'+usersList[i]+'</a></td><td>-</td><td>-</td></tr>';
+        postBlockTable += '<tr name="'+usersListBlock[i]+'"><td><a href="/users/user/info/'+usersListBlock[i]+'" target="_blank">'+usersListBlock[i]+'</a></td><td>-</td><td>-</td></tr>';
     }
 
-    $('#postBlockTable tbody').html(postBlockTable);
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        $('input[userid="' + usersListActive[i] + '"]').removeClass('postMinus').addClass('postStar').val('★').parent().removeClass('postMinusBlock').addClass('postStarBlock');
+    }
+
+    $('#postBlockTable').find('tbody').html(postBlockTable);
+
+    if (usersListActive.length-1 !== 0 || usersListBlock.length-1 !== 0) {
+        outTextFrame(`Выделенно:\n‧ Активных пользователей - ${usersListActive.length - 1}\n‧ Заблокированных пользователей - ${usersListBlock.length - 1}`);
+    }
 }
 
-
-function add(button) {
+function addPlusBlockUser(button) {
     let id = $(button).attr('userid');
 
     sessionStorage.postBlockID += id + ', ';
-    $(button).removeClass('postPlus').addClass('postMinus').val('-');
-    $(button).parent().addClass('postMinusBlock');
 }
 
-function remove(button) {
+function addStarBlockUser(button) {
     let id = $(button).attr('userid');
 
     sessionStorage.postBlockID = sessionStorage.postBlockID.replace(id + ', ', '');
-    $(button).removeClass('postMinus').addClass('postPlus').val('+');
-    $(button).parent().removeClass('postMinusBlock');
+    sessionStorage.postBlockActiveUserID = sessionStorage.postBlockActiveUserID += id + ', ';
+}
+
+function removeMinusBlockUser(button) {
+    let id = $(button).attr('userid');
+
+    sessionStorage.postBlockActiveUserID = sessionStorage.postBlockActiveUserID.replace(id + ', ', '');
 }
 
 
 function postBlockReasonList(reasonId) {
-    var usersList = sessionStorage.postBlockID.split(', ');
-    var url = window.location.href;
+    let usersListBlock = sessionStorage.postBlockID.split(', ');
+    let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
+    let url = window.location.href;
 
-    for (let i = 0; i < usersList.length-1; i++) {
-        postBlockRequest(usersList[i], reasonId);
-        commentOnUserModer(usersList[i], url);
+    let commentSearchLink = 'https://adm.avito.ru/items/search?user=';
+    let commentUsersLink = '';
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        commentSearchLink += usersListBlock[i];
+        commentUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListBlock[i];
+        if (i < usersListBlock.length-2) {
+            commentUsersLink += '\n';
+            commentSearchLink += '|';
+        }
+    }
+
+    let commentActiveUsersLink = '';
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        commentActiveUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListActive[i];
+        if (i < usersListActive.length-2) commentActiveUsersLink += '\n';
+    }
+
+
+    let comment = `СПАМ
+    Ссылка открытая модером при блокировке:
+    ${url}
+    
+    Ссылка на активного пользователя:
+    ${commentActiveUsersLink}
+    
+    Ссылка на заблокированных пользователей в items/search:
+    ${commentSearchLink}
+    
+    Ссылки на заблокированные учетные записи:
+    ${commentUsersLink}
+    `;
+
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        postBlockRequest(usersListBlock[i], reasonId);
+        commentOnUserModer(usersListBlock[i], comment);
+    }
+
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        commentOnUserModer(usersListActive[i], comment);
     }
 
     sessionStorage.postBlockID = '';
+    sessionStorage.postBlockActiveUserID = '';
 }
 
 function postBlockRequest(id, reason){

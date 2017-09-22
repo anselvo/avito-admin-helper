@@ -68,6 +68,7 @@ function userInfoForPost() {
 
 function postBlockUsers() {
     if (!sessionStorage.postBlockID) sessionStorage.postBlockID = '';
+    if (!sessionStorage.postBlockActiveUserID) sessionStorage.postBlockActiveUserID = '';
 
     addActionButton();
     addChooseButton();

@@ -144,6 +144,7 @@ function parseQueryURL(strQuery) {
 
 function usersSearchBlockUser() {
     if (!sessionStorage.postBlockID) sessionStorage.postBlockID = '';
+    if (!sessionStorage.postBlockActiveUserID) sessionStorage.postBlockActiveUserID = '';
 
     $('body').append('<div id="apply_all" class="fixed-bottom-toolbar" style="padding-left: 60px;"></div>');
 
