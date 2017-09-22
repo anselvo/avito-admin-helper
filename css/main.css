@@ -851,21 +851,18 @@ input[id ^= "sh-quick-theme-btn"]:active {
 	position: fixed;
 	padding: 10px;
 	bottom: 2%;
-	/* bottom: -5%; */
 	right: 2%;
     z-index: 99999;
 	color: #fff;
 	width: 280px;
-	padding: 10px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 1.2rem;
 	text-align: center;
 	display: block;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	/* background: rgba(0, 0, 0, 1); color: rgba(255, 255, 255, 1); */
+    white-space: pre-wrap;
+    border-radius: 5px;
 }
 
 #outputTextFrame {
@@ -4202,7 +4199,7 @@ select.ah-form-control:focus {
     float: right;
     padding: 0 8px;
     font-size: 14px;
-    width: 25px;
+    width: 30px;
     font-weight: bolder;
     text-align: center;
     white-space: nowrap;
@@ -4215,23 +4212,35 @@ select.ah-form-control:focus {
     background-color: #fff;
 }
 
-.postBlockButton:hover {
-    background-color: #e6e6e6;
-    border-color: #adadad;
+.postPlus {
+    background: #74db72;
+    color: white;
 }
 
-.postPlus {
-    color: #00cd00;
+.postStar {
+    background: #3da6b4;
+    color: white;
+}
+
+.postStarBlock {
+    background: #d7f8fb;
+    border-radius: 5px;
 }
 
 .postMinus {
-    color: #ff0000;
+    background: #e57474;
+    color: white;
 }
 
 .postMinusBlock {
     background: #ffe4e8;
     border-radius: 5px;
 }
+
+/*.postPlus:hover, .postStar:hover, .postMinus:hover {*/
+    /*background-color: rgba(240, 240, 240, 0.11);*/
+    /*border-color: #adadad;*/
+/*}*/
 
 .showUsers {
     margin: 10px 10px 10px 0;
@@ -4756,20 +4765,28 @@ select.ah-form-control:focus {
 }
 
 .ah-other-reasons {
-    margin-left: 100px;
+    display: none;
+    position: absolute;
     text-align: left;
-    width: 500px!important;
+    width: 250px;
+    background: white;
+    transform: translate(60%,-60%);
+    z-index: 510;
+    box-shadow: 0 1px 3px rgba(0,63,106,.5);
+    padding: 5px;
 }
 
 .ah-other-reasons .popover-content {
-    padding: 3px;
+    padding: 0;
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 .ah-other-reasons .popover-content label {
-    width: 50%;
+    width: 100%;
     cursor: pointer;
     font-weight: normal;
-    padding: 2px 6px;
+    padding: 0 2px;
 }
 
 .ah-other-reasons .popover-content label:hover {
@@ -4777,7 +4794,7 @@ select.ah-form-control:focus {
 }
 
 .ah-other-reasons [name="ah-other-reasons"] {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .ah-copy-tooltip:hover {
