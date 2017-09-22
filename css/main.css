@@ -4780,45 +4780,102 @@ select.ah-form-control:focus {
     margin-right: 10px;
 }
 
-.ah-copy-tooltip:hover {
-    border-bottom: 1px dotted #9E9E9E;
+.ah-copy-tooltip-pseudo-link {
+    border-bottom: 1px dotted rgba(158, 158, 158, 0.75);
 }
 
-.ah-copy-tooltip + .tooltip {
+.ah-copy-tooltip-pseudo-link:hover {
+    border-bottom: 1px dotted transparent;
+}
+
+.ah-copy-tooltip.tooltip {
     opacity: 1 !important;
 }
-.ah-copy-tooltip + .tooltip > .tooltip-inner {
+.ah-copy-tooltip.tooltip > .tooltip-inner {
     color: black;
     background-color: white;
-    border: 1px solid #b8b8b8;
-    box-shadow: 0 0 6px -2px;
+    border: 1px solid rgba(0,0,0,.35);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 5px;
+    background-clip: padding-box;
     max-width: none;
     padding: 3px 5px;
-    border-radius: 2px;
+    border-radius: 4px;
+    text-align: left;
 }
 
-.ah-copy-tooltip + .tooltip kbd {
+.ah-copy-tooltip.tooltip kbd {
     color: #000;
-    border: 1px solid #e8e6e5;
-    padding: 1px 2px;
-    background-color: #fff;
+    padding: 0 2px;
+    border: 1px solid rgba(0,0,0,.25);
+    background-color: rgba(158, 158, 158, 0.17);
+    box-shadow: none;
+    font-size: 12px;
+}
+
+.ah-copy-tooltip .tooltip-inner ul {
+    padding-left: 15px;
+    margin-bottom: 0;
+}
+
+.ah-copy-tooltip .tooltip-inner ul li {
+    padding: 2px 0;
 }
 
 /*Tooltip on top*/
-.ah-copy-tooltip + .tooltip.top > .tooltip-arrow {
-    border-top-color: #afafaf;
+.ah-copy-tooltip.tooltip.top > .tooltip-arrow {
+    border-top-color: rgba(0,0,0,.45);
 }
 /* Tooltip on bottom */
-.ah-copy-tooltip + .tooltip.bottom > .tooltip-arrow {
-    border-bottom-color: #afafaf;
+.ah-copy-tooltip.tooltip.bottom > .tooltip-arrow {
+    border-bottom-color: rgba(0,0,0,.45);
 }
 /* Tooltip on left */
-.ah-copy-tooltip + .tooltip.left > .tooltip-arrow {
-    border-left-color: #afafaf;
+.ah-copy-tooltip.tooltip.left > .tooltip-arrow {
+    border-left-color: rgba(0,0,0,.45);
 }
 /* Tooltip on right */
-.ah-copy-tooltip + .tooltip.right > .tooltip-arrow {
-    border-right-color: #afafaf;
+.ah-copy-tooltip.tooltip.right > .tooltip-arrow {
+    border-right-color: rgba(0,0,0,.45);
+}
+
+.ah-copy-tooltip.right .ah-tooltip-arrow-inner {
+    border-right-color: #ffffff;
+}
+.ah-copy-tooltip.left .ah-tooltip-arrow-inner {
+    border-left-color: #ffffff;
+}
+.ah-copy-tooltip.top .ah-tooltip-arrow-inner {
+    border-top-color: #ffffff;
+}
+.ah-copy-tooltip.bottom .ah-tooltip-arrow-inner {
+    border-bottom-color: #ffffff;
+}
+
+.ah-tooltip-arrow-inner {
+    border: 5px solid transparent;
+    position: absolute;
+}
+.tooltip.right .ah-tooltip-arrow-inner, .tooltip.left .ah-tooltip-arrow-inner {
+    top: -5px;
+}
+.tooltip.top .ah-tooltip-arrow-inner, .tooltip.bottom .ah-tooltip-arrow-inner {
+    left: -5px;
+}
+.tooltip.right .ah-tooltip-arrow-inner {
+    left: 1px;
+    border-left-width: 0;
+}
+.tooltip.left .ah-tooltip-arrow-inner {
+    right: 1px;
+    border-right-width: 0;
+}
+.tooltip.top .ah-tooltip-arrow-inner {
+    bottom: 1px;
+    border-bottom-width: 0;
+}
+.tooltip.bottom .ah-tooltip-arrow-inner {
+    top: 1px;
+    border-top-width: 0;
 }
 
 .ah-not-hiding-popover.popover {
@@ -4855,11 +4912,11 @@ select.ah-form-control:focus {
     right: 100%;
 }
 
-.ah-popover-hover-link {
+.ah-not-hiding-popover-pseudo-link {
     border-bottom: 1px dotted #777777;
 }
 
-.ah-popover-hover-link:hover {
+.ah-not-hiding-popover-pseudo-link:hover {
     border-bottom: 1px dotted transparent;
 }
 

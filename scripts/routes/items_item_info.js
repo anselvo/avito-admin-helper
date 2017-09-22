@@ -392,7 +392,7 @@ function renderRefundInfo(responseBody, data) {
     let popover = $('.ah-refund-info-popover');
     copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {
         placement: 'right',
-        title: `<div>Клик - скопировать</div><div><kbd>Alt</kbd>+Клик - скопировать с шаблоном</div>`,
+        title: getCopyTooltipContentAlt('скопировать с шаблоном'),
         getTextAlt: function(elem) {
             return 'Мы компенсировали затраченные средства в размере ' + $(elem).text() + ' рублей, они были зачислены на Ваш Кошелек Avito.\n\n' +
             'Вы можете воспользоваться этими средствами для оплаты дополнительных услуг и сервисов на Avito. ' +

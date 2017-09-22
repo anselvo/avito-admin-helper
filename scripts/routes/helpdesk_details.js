@@ -3281,8 +3281,8 @@ function addIpPopoverOnLeftPanel() {
         let ipLabelBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'IP');
         let ipTextBlock = $(ipLabelBlock).next()[0].firstChild;
         let ip = $(ipTextBlock).text();
-        $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover" class="ah-popover-hover-link"></span>`);
-        $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger" class="ah-popover-hover-link"></span>`);
+        $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover"></span>`);
+        $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger"></span>`);
         let content = `
             <div class="btn-group-vertical">
                 <button type="button" class="btn btn-info btn-sm" id="infoIpOnLeftPanel" data-ip="${ip}">

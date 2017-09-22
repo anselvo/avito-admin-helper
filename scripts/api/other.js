@@ -669,23 +669,28 @@ function addScrollTopBtn() {
 // Копирование с тултипом ---
 function copyDataTooltip(targets, options) {
     options = options || {};
-    let placement = options.placement || 'top',
+    let targetClass = options.targetClass || 'ah-copy-tooltip-pseudo-link',
+        placement = options.placement || 'top',
         title = options.title || '<div>Клик - скопировать</div>',
+        template = options.template || '<div class="tooltip ah-copy-tooltip"><div class="tooltip-arrow"><div class="ah-tooltip-arrow-inner"></div></div><div class="tooltip-inner"></div></div>',
+        container = options.container || 'body',
         getText = options.getText || function(target) {return $(target).text().trim()},
         getTextAlt = options.getTextAlt || getText,
         getNotification = options.getNotification || function(text) {return `Скопировано: ${text}`},
         getNotificationAlt = options.getNotificationAlt || getNotification;
 
-    $(targets).addClass('ah-copy-tooltip');
+    $(targets).addClass(targetClass);
     $(targets).tooltip({
         html: true,
         delay: {show: 20},
         trigger: 'hover',
+        container: container,
+        template: template,
         placement: placement,
         title: title
     });
 
-    $(targets).unbind('click').click(function(e) {
+    $(targets).click(function(e) {
         let text,
             notification;
 
@@ -699,6 +704,7 @@ function copyDataTooltip(targets, options) {
 
         chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
         outTextFrame(notification);
+        e.stopPropagation();
     });
 }
 // Копирование с тултипом +++
@@ -706,11 +712,13 @@ function copyDataTooltip(targets, options) {
 // Поповер на ховере
 function createNotHidingPopover(target, content, options) {
     options = options || {};
-    let placement = options.placement || 'right';
-    let onShownFunc = options.onShownFunc || function() {};
-    let template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"><h3 class="popover-title"></h3></div><div class="popover-content"></div></div>`;
-    let container = options.container || 'body';
+    let targetClass = options.targetClass || 'ah-not-hiding-popover-pseudo-link',
+        placement = options.placement || 'right',
+        onShownFunc = options.onShownFunc || function() {},
+        template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>`,
+        container = options.container || 'body';
 
+    $(target).addClass(targetClass);
     $(target).popover({
         animation: false,
         html: true,
@@ -775,4 +783,8 @@ function getUserNameTamplate(text) {
     });
 
     return res.join(' ');
+}
+
+function getCopyTooltipContentAlt(altText) {
+    return `<ul><li>Клик - скопировать</li><li><kbd>Alt</kbd> + Клик - ${altText}</li></ul>`;
 }
