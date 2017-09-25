@@ -849,17 +849,16 @@ input[id ^= "sh-quick-theme-btn"]:active {
 
 #outputTextFrame {
 	position: fixed;
-	padding: 10px;
+	padding: 10px 20px;
 	bottom: 2%;
 	right: 2%;
     z-index: 99999;
 	color: #fff;
-	width: 280px;
+	max-width: 300px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 1.2rem;
-	text-align: center;
 	display: block;
     white-space: pre-wrap;
     border-radius: 5px;
