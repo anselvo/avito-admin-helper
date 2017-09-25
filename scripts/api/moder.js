@@ -29,7 +29,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
             {name: "Работа", reason: ['Резюме', 'Вакансии']},
             {name: "Услуги", reason: ['Предложение услуг']},
             {name: "Животные", reason: ['Кошки', 'Собаки', 'Товары для животных', 'Другие животные', 'Аквариум', 'Птицы']},
-            {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес'] }
+            {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес']}
         ]
     };
 
@@ -88,7 +88,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
             });
 
         $(reasonSelectorContain)
-            .find('[type="checkbox"]')
+            .find('[name="ah-other-reasons"]')
             .change(function () {
                 // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
                 let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
@@ -115,16 +115,18 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
                 if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
                 for (let i = 0; i < checkedReasons.length; ++i) {
-                    let texReason = $(checkedReasons[i]).parent().text();
-                    let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
-                    let textChildren = '';
+                    if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
+                        let texReason = $(checkedReasons[i]).parent().text();
+                        let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
+                        let textChildren = '';
 
-                    for (let j = 0; j < textChildrenSelector.length; ++j) {
-                        textChildren += $(textChildrenSelector[j]).text() + ' -> ';
+                        for (let j = 0; j < textChildrenSelector.length; ++j) {
+                            textChildren += $(textChildrenSelector[j]).text() + ' -> ';
+                        }
+
+                        if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
+                        else text += ' или "' + textChildren + texReason + '"';
                     }
-
-                    if (i === 0) text += '"' + textChildren + texReason + '"';
-                    else text += ' или "' + textChildren + texReason + '"';
                 }
 
                 $(block).find(textSelector).val(text);
