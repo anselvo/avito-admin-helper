@@ -2,13 +2,11 @@
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
-    $('button[name="reject"]').click(function () {
-        let count = 0;
+    $('button[name="reject"], button[name="activate"]').click(function () {
         let findReason = setInterval(function () {
-            ++count;
-            let reason = $('.moderate-modal');
+            let box = $('.moderate-modal');
 
-            if ($(reason).length > 0) {
+            if ($(box).length > 0) {
                 clearInterval(findReason);
                 optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]');
             }
@@ -57,6 +55,8 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
 function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
     let name = otherReasons.name;
     let reasons = otherReasons.reason;
+
+    console.log(name);
 
     let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
