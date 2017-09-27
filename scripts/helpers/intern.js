@@ -340,9 +340,8 @@ function premoderationInternNew(adm_username, page) {
         let blockName = $('tr [name="block"]').slice(i,i+1).text();
 
         let rejectButton = $('<input/>',{
-            id: 'internReject',
             type: 'button',
-            class: 'btn btn-default mb_reject green',
+            class: 'internReject btn btn-default mb_reject green',
             item_id: itemid,
             user_id: id,
             data_params: data_params,
@@ -386,9 +385,8 @@ function premoderationInternNew(adm_username, page) {
         });
 
         let blockButton = $('<input/>',{
-            id: 'internBlock',
             type: 'button',
-            class: 'btn btn-default mb_block green',
+            class: 'internBlock btn btn-default mb_block green',
             item_id: itemid,
             user_id: id,
             data_category: data_category,
@@ -445,12 +443,15 @@ function premoderationInternNew(adm_username, page) {
     $('#rejectSubmit').click(function() {
         let selectedReason = [];
         let selectedReasonID = [];
-        $('.moderateBox_mini input:checked').each(function() {
+        $('.moderateBox_mini input:not([name="ah-other-reasons"]):checked').each(function() {
             let tmp = $(this).parents('.moderateBox_item').find('.name').text();
             if ($(this).parents('.has-children').length > 0) tmp = $(this).parents('.moderateBox_item_container').children('.moderateBox_item').find('.name').text() + ' | ' + tmp;
             selectedReason.push(tmp);
             selectedReasonID.push($(this).attr('id'));
         });
+
+        if ($('.reason_other').val() !== '') selectedReason.push('Reason: ' + $('.reason_other').val());
+        if ($('.reason_comment').val() !== '') selectedReason.push('Comment: ' + $('.reason_comment').val());
 
         $('#item_'+itemIDbutton).remove();
 
@@ -466,6 +467,9 @@ function premoderationInternNew(adm_username, page) {
             selectedReason.push(tmp);
             selectedReasonID.push($(this).attr('id'));
         });
+
+        if ($('.reason_other').val() !== '') selectedReason.push('Reason: ' + $('.reason_other').val());
+        if ($('.reason_comment').val() !== '') selectedReason.push('Comment: ' + $('.reason_comment').val());
 
         $('#item_'+itemIDbutton).remove();
 

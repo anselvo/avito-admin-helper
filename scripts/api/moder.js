@@ -2,7 +2,7 @@
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
-    $('button[name="reject"], button[name="activate"]').click(function () {
+    $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
         let findReason = setInterval(function () {
             let box = $('.moderate-modal');
 
