@@ -82,9 +82,12 @@ function addChooseButton() {
     for (let i = 0; i < loginList.length; ++i) {
         let id = $(loginList[i]).attr('href').split('/')[4];
 
-        $(loginList[i]).parent().css('padding', '5px');
-        $(loginList[i]).parent().after('<hr style="margin-bottom: 10px; margin-top: 0">');
-        $(loginList[i]).parent().append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">');
+        $(loginList[i]).parent()
+			.css('padding', '5px')
+			.after('<hr style="margin-bottom: 10px; margin-top: 0">')
+			.append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">')
+            .append('<br><span  class="userAgent" title="User chance"><b>Chance:</b> <span ah-post-block-chance="'+id+'" style="color:#65a947"></span>/<span style="color:red;">10</span> - <span ah-post-block-chance-time="'+id+'"></span></span>');
+
         $(loginList[i]).parents('tr').find('.description-cell').append('<div class="userAgent"><b>User agent:</b> <span userAgent="'+id+'"></span></div>');
     }
 
@@ -98,7 +101,7 @@ function addChooseButton() {
 function smartSNP(id) {
     $('.pull-right').append('<span id="isEmailChange" class="wheelSNP" title="Информирует о смене email:\n- СЕРЫЙ - email не был изменен\n- ЗЕЛЕНЫЙ - на учетной записи уже менялся email адрес">EML</span>' +
         '<span id="isUseSNP" class="wheelSNP" title="Информирует о смене пароля:\n- СЕРЫЙ - пароль (snp) был отправлен менее 3 раз\n- КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз">SNP</span>' +
-        '<input id="snp" type="button" class="btn btn-primary" value="SNP" title="Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана" style="margin-left: 5px;" disabled/>')
+        '<input id="snp" type="button" class="btn btn-primary" value="SNP" title="Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана" style="margin-left: 5px;" disabled/>');
 
     var href = 'https://adm.avito.ru/users/user/info/'+id;
     var cancelLoadSNP = 0;

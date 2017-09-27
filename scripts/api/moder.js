@@ -206,7 +206,7 @@ function addActionButton() {
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent</span></div>' +
+            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div>' +
             '<div class="ah-post-block-users ah-postShowDescription"><i class="glyphicon glyphicon-sort-by-attributes"></i> <span>Показать описание</span></div>' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
@@ -266,7 +266,7 @@ function clickActionButton() {
     $('.ah-postUserAgent').click(function () {
         if ($(this).find('span').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $('.ah-postUserAgent span').text('Показать User agent').removeClass('showUserAgent');
+            $('.ah-postUserAgent span').text('Показать User agent и Chance').removeClass('showUserAgent');
         } else {
             userAgentShow();
         }
@@ -420,10 +420,11 @@ function userAgentShow() {
 
             usersInfoForManyItems(id);
         }
+    } else {
+        $('.userAgent').show();
     }
 
-    $('.userAgent').show();
-    $('.ah-postUserAgent span').text('Скрыть User agent').addClass('showUserAgent').attr('show', 'true');
+    $('.ah-postUserAgent span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
 }
 
 function usersInfoForManyItems(id) {
@@ -436,7 +437,13 @@ function usersInfoForManyItems(id) {
             let r = request.responseText;
 
             let userAgent = $(r).find('.help-block:eq(7)').text();
-            $('[userAgent="'+id+'"]').text(userAgent);
+            let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
+            let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
+            let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
+
+            $('[ah-post-block-chance="'+id+'"]').text(chance);
+            $('[ah-post-block-chance-time="'+id+'"]').text(chanceTime).parents('.userAgent').show();
+            $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
         }
     };
 }
