@@ -93,7 +93,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
             });
 
         $(reasonSelectorContain)
-            .find('[name="ah-other-reasons"]')
+            .find('[type="checkbox"]')
             .change(function () {
                 // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
                 let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
