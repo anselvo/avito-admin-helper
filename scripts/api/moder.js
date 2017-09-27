@@ -75,16 +75,21 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
 
         $(reasonSelectorContain)
             .append(template)
-            .hover(function () {
+            .mouseenter(function () {
                 let blockItem = $(this).find('>.ah-other-reasons');
 
-                $(blockItem).toggle();
+                $(blockItem).show();
 
                 let width = $(blockItem).width();
                 let offset = $(blockItem).offset();
 
                 let rightPoint = offset.left + width;
                 if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
+            })
+            .mouseleave(function () {
+                let blockItem = $(this).find('>.ah-other-reasons');
+
+                $(blockItem).hide();
             });
 
         $(reasonSelectorContain)
