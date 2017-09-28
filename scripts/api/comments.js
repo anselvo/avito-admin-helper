@@ -116,6 +116,18 @@ function linksOnComments(tableClass, currentUserID) {
             text = text.replace(tickets[0], '<a href="https://adm.avito.ru/helpdesk/details/' + tickets[0] + '" target="_blank">' + tickets[0] + '</a>');
             $(commentBlock).html(text);
         }
+
+        // Выделение текста
+        if (~commentText.indexOf('СПАМ')) {
+            let text = $(commentBlock).html();
+
+            text = text.replace('СПАМ', '<b style="color: #ff4545">СПАМ</b>');
+            text = text.replace('Ссылка открытая модератором при блокировке:', '<b>Ссылка открытая модером при блокировке:</b>');
+            text = text.replace('Ссылка на активного пользователя:', '<b>Ссылка на активного пользователя:</b>');
+            text = text.replace('Ссылка на заблокированных пользователей в items/search:', '<b>Ссылка на заблокированных пользователей в items/search:</b>');
+            text = text.replace('Ссылки на заблокированные учетные записи:', '<b>Ссылки на заблокированные учетные записи:</b>');
+            $(commentBlock).html(text);
+        }
     }
 
     $('.compareUser').unbind('click').click(function () {

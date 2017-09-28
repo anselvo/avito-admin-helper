@@ -2,7 +2,12 @@
 function addTags() {
     $('#sh-tags-btn').detach();
 
-    $('tr.helpdesk-attr-table-row td.helpdesk-attr-table-td:contains(Теги)').append('<button id="sh-tags-btn" type="button" class="sh-default-btn" style="" title="Выбрать теги">Выбор</button>');
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let allLabels = $(classifHeader).next().find('tr td:first-child');
+    let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
+
+    $(tagLabel).append('<button id="sh-tags-btn" type="button" class="sh-default-btn" style="" title="Выбрать теги">Выбор</button>');
 
     $('#sh-tags-btn').click(function() {
         if (!settingsGlobal.helpdeskTags) {
@@ -194,11 +199,16 @@ function addQuickButtons() {
 
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let classifTable = $(classifHeader).next().find('table');
+    let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
+
     // позиция
     if (LSobj.position == 'top') {
-        $('h4:contains(Участники)').before( $('div.sh-quick-btns-wrapper') );
+        $(membersHeader).before( $('div.sh-quick-btns-wrapper') );
     } else {
-        $('table.helpdesk-attr-table:contains(Теги)').after( $('div.sh-quick-btns-wrapper') );
+        $(classifTable).after( $('div.sh-quick-btns-wrapper') );
     }
 
     // отрисовка кнопок
@@ -275,29 +285,27 @@ function changeThemeInTicket(btn, currentYOffset) {
     } else {
         offset = currentYOffset;
     }
-    // console.log(offset, currentYOffset);
-    var allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Тема / Проблема');
-    var tagParent = tagBlock.parentNode;
-    tagParent.querySelector('.pseudo-link').click();
+
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let allLabels = $(classifHeader).next().find('tr td:first-child');
+    let problemLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Тема / Проблема');
+    var problemParent = problemLabel.parentNode;
+
+    let clickFog = $('.helpdesk-click-fog');
+    if ($(clickFog).length === 0) {
+        problemParent.querySelector('.pseudo-link').click();
+    }
 
     setTimeout(() => {
-        let theme = btn.theme;
-        let problem = btn.problem;
-        let clickItem = $(".helpdesk-select-typeahead-dropdown-list li:contains('"+ theme +"') ~ li:contains('"+ problem +"')");
-
-        if (!clickItem.length) {
-            alert('Ошибка: не удалось проставить следующие Тему / Проблему:\n'+ theme +' / '+ problem);
-        } else {
-            $(clickItem).click();
-        }
+        let problemInput = problemParent.querySelector('[name="problemId"]');
+        problemInput.value = btn.problemId;
 
         let clickFog = $('.helpdesk-click-fog');
-        if ($(clickFog).length > 0) {
-            $(clickFog).click();
-        }
+        $(clickFog).click();
+
         window.scrollTo(0, offset);
-		$('#sh-loading-layer').hide();
+        $('#sh-loading-layer').hide();
     }, 10);
 }
 
@@ -1688,9 +1696,12 @@ function addTagToTicket(tags, btnQB) {
     });
 
     var currentYOffset = window.pageYOffset;
-    var allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Теги');
-    var tagParent = tagBlock.parentNode;
+
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let allLabels = $(classifHeader).next().find('tr td:first-child');
+    let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
+    var tagParent = tagLabel.parentNode;
     tagParent.querySelector('.pseudo-link').click();
 
     // console.log(tags);
@@ -1709,7 +1720,7 @@ function addTagToTicket(tags, btnQB) {
             newInput.name = `tags[${existingTags.length}]`;
             newInput.type = 'text';
             newInput.value = tags[i];
-            tagParent.appendChild(newInput);
+            existingTags[0].parentNode.appendChild(newInput);
         }
 
         if (btnQB) { // если передали быструю кнопку, она с тегами и темой, после тегов меняется тема
@@ -1753,10 +1764,12 @@ function createHyperLinksIpInTechInfo() {
 
     var regForIp = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/g;
 
-    var allFeilds = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allFeilds, singleItem => singleItem.firstChild.data === 'IP');
-    // console.log($(tagBlock).next().text());
-    var ipBlock = $(tagBlock).next();
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
+    let allLabels = $(techInfoHeader).next().find('tr td:first-child');
+    let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
+
+    var ipBlock = $(ipLabel).next();
 
     if ( $(ipBlock).text().search(regForIp) + 1 ) {
         var text = $(ipBlock).text();
@@ -2797,10 +2810,12 @@ function changeAssignee() {
         43, // Руководитель отдела
     ];
 
-    var allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allEditables, singleItem => singleItem.innerText === 'Исполнитель');
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
+    let allLabels = $(membersHeader).next().find('tr td:first-child');
+    let assigneeBlock = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Исполнитель');
     
-    $(tagBlock).append(`
+    $(assigneeBlock).append(`
         <div id="change-assignee-wrapper">
             <button type="button" id="sh-chenge-assignee-to-me-btn" 
                 class="sh-default-btn change-assignee-btn" 
@@ -3053,9 +3068,11 @@ function checkAdmUserIdAttendantTL() {
 
 function addTagAttendantTL() {
 	var currentYOffset = window.pageYOffset;
-    var allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Теги');
-    var tagParent = tagBlock.parentNode;
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let allLabels = $(classifHeader).next().find('tr td:first-child');
+    let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
+    let tagParent = tagLabel.parentNode;
     tagParent.querySelector('.pseudo-link').click();
 	
 	setTimeout(() => {
@@ -3065,7 +3082,7 @@ function addTagAttendantTL() {
 		newInput.name = `tags[${existingTags.length}]`;
 		newInput.type = 'text';
 		newInput.value = 1251; // agent_help
-		tagParent.appendChild(newInput);
+        existingTags[0].parentNode.appendChild(newInput);
 
 		var admUserId = attendantTLGlobalInfo.adm_user_id;
 		addExtraAssigneeId(admUserId);
@@ -3160,14 +3177,16 @@ function sanctionIPTechInfo() {
 
     var regForIp = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/g;
 
-    var allFeilds = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var ipBlock = [].find.call(allFeilds, singleItem => singleItem.firstChild.data === 'IP');
-    var ipInfoBlock = $(ipBlock).next();
-    var ipInfoText = $(ipInfoBlock).text();
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
+    let allLabels = $(techInfoHeader).next().find('tr td:first-child');
+    let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
+    let ipBlock = $(ipLabel).next();
+    let ipInfoText = $(ipBlock).text();
 
     if ( ~ipInfoText.search(regForIp)) {
         var ip = ipInfoText.match(regForIp);
-        $(ipBlock).append('<button id="tech-info-sanction-ip-btn" type="button" class="sh-default-btn sh-sanction-ip-btn" style="" title="" data-ip="'+ ip +'">Одобрить</button>');
+        $(ipLabel).append('<button id="tech-info-sanction-ip-btn" type="button" class="sh-default-btn sh-sanction-ip-btn" style="" title="" data-ip="'+ ip +'">Одобрить</button>');
 
         $('#tech-info-sanction-ip-btn').click(function() {
             var ip = $(this).attr('data-ip');
@@ -3247,9 +3266,12 @@ function addItemIdPopoverOnLeftPanel() {
     if ($('#ahItemIdOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-        let itemIdBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Номер объявления');
-        let itemLink = $(itemIdBlock).next().find('a');
+        let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+        let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+        let allLabels = $(classifHeader).next().find('tr td:first-child');
+        let itemIdLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Номер объявления');
+        let itemLink = $(itemIdLabel).next().find('a');
+
         $(itemLink).wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
         let itemId = $(itemLink).text();
         let content = `
@@ -3277,10 +3299,13 @@ function addIpPopoverOnLeftPanel() {
     if ($('#ahIpOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-        let ipLabelBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'IP');
-        let ipTextBlock = $(ipLabelBlock).next()[0].firstChild;
+        let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+        let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
+        let allLabels = $(techInfoHeader).next().find('tr td:first-child');
+        let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
+        let ipTextBlock = $(ipLabel).next()[0].firstChild;
         let ip = $(ipTextBlock).text();
+
         $(ipTextBlock).wrap(`<span id="ahIpOnLeftPanelPopover"></span>`);
         $(ipTextBlock).wrap(`<span id="ahIpInfoOnLeftPanelTrigger"></span>`);
         let content = `
@@ -3346,9 +3371,12 @@ function addPhoneNumberPopoverOnLeftPanel() {
     if ($('#ahPhoneNumberOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-        let phoneBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Телефон');
-        let phoneLink = $(phoneBlock).next().find('a');
+        let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+        let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+        let allLabels = $(classifHeader).next().find('tr td:first-child');
+        let phoneLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Телефон');
+        let phoneLink = $(phoneLabel).next().find('a');
+
         $(phoneLink).wrap(`<span id="ahPhoneNumberOnLeftPanelPopover"></span>`);
         let phoneNumber = $(phoneLink).text();
         let content = `
@@ -3422,17 +3450,24 @@ function showAgentInfoTicket() {
     $('#sh-line-sup').remove();
     $('#customer-claim-notification').remove();
 
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
+    let allLabels = $(membersHeader).next().find('tr td:first-child');
+    let assigneeLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Исполнитель');
+    let assigneeBlock = $(assigneeLabel).next();
+    let assigneeBlockSpan = $(assigneeBlock).find('span:last');
+
     // если никого нет, все падало:)
-    if ($('.helpdesk-attr-table-row:contains(Исполнитель) span:last').text() === "Назначить") {
+    if ($(assigneeBlockSpan).text() === "Назначить") {
         claimReevaluation();
         return;
     }
     if (allUsersGlobalInfo === 'FatalError') {
-        $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
+        $(assigneeBlockSpan).before('<span id="sh-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
     }
 
-    var name = $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').text();
+    var name = $(assigneeBlockSpan).text();
     var tmp = name.split('(');
     if (tmp[1] != undefined) {
         var currentLogin = tmp[1].split('@');
@@ -3446,7 +3481,7 @@ function showAgentInfoTicket() {
             // console.log(user);
             let teamleadLogin = user.teamlead_login;
             claimReevaluation(teamleadLogin); // переоценка претензионщиками
-            $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
+            $(assigneeBlockSpan).before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
         }
         let userSubdId = +user.subdivision_id;
         if (userSubdId === 76 && user.username == currentLogin[0]) {
@@ -3470,7 +3505,7 @@ function showAgentInfoTicket() {
             if (assigneeNameText === userFullName) {
                 let teamleadLogin = user.teamlead_login;
                 claimReevaluation(teamleadLogin); // переоценка претензионщиками
-                $('.helpdesk-attr-table-row:contains(Исполнитель) span:last').before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
+                $(assigneeBlockSpan).before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
             }
         }
     }

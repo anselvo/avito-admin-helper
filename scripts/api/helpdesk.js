@@ -13,9 +13,11 @@ function getCurrentTicketLink() {
 function helpDeskClickImitation() {
     var currentYOffset = window.pageYOffset;
 
-    var allEditables = document.querySelectorAll('.helpdesk-attr-table-td-label');
-    var tagBlock = [].find.call(allEditables, singleItem => singleItem.firstChild.data === 'Теги');
-    var tagParent = tagBlock.parentNode;
+    let allPanelHeaders = document.querySelectorAll('.helpdesk-ticket-left-panel-header');
+    let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+    let allLabels = $(classifHeader).next().find('tr td:first-child');
+    let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
+    let tagParent = tagLabel.parentNode;
     tagParent.querySelector('.pseudo-link').click();
 
     var newInput;
@@ -24,7 +26,7 @@ function helpDeskClickImitation() {
         newInput = document.createElement('input');
         newInput.name = `tags[${existingTags.length}]`;
         newInput.type = 'text';
-        tagParent.appendChild(newInput);
+        existingTags[0].parentNode.appendChild(newInput);
         document.querySelector('.helpdesk-click-fog').click();
         window.scrollTo(0, currentYOffset);
         $('#sh-loading-layer').hide();
@@ -464,6 +466,9 @@ function renderCreateNewTicketWindow(route) {
             }, {
                 name: 'description',
                 value: description
+            }, {
+                name: 'typeId',
+                value: 1
             }];
 
         // теги

@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "Admin Helper",
+    "name": "Admin.Helper",
 	"short_name": "AH", 
-    "version": "4.0.1",
+    "version": "4.0.6",
 	
 	"background": {
 		"scripts": [
@@ -38,7 +38,6 @@
 				"scripts/api/moder.js",
 				"scripts/api/helpdesk.js",
 				"scripts/api/comments.js",
-				"scripts/api/assistant.js",
 				"scripts/api/count_money.js",
 
 				"scripts/routes/items_item_info.js",
@@ -60,8 +59,7 @@
 				"scripts/helpers/moderation.js",
 				"scripts/helpers/intern.js",
 				"scripts/helpers/traffic.js",
-				"scripts/helpers/infodoc.js",
-				"scripts/helpers/assistant.js"
+				"scripts/helpers/infodoc.js"
 			],
 			"run_at": "document_start"
 		}

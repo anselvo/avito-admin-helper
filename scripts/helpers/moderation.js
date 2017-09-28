@@ -119,7 +119,7 @@ function startModerator() {
         }
 
 		// phoneSearch (неактульно из-за появления блокировки через плюсы)
-		if (currentUrl.indexOf("?phone=") > -1) {
+		if (~currentUrl.indexOf("?phone=") || ~currentUrl.indexOf("?ip=")) {
             userAgentShow();
 		}
 

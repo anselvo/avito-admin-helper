@@ -144,6 +144,7 @@ function parseQueryURL(strQuery) {
 
 function usersSearchBlockUser() {
     if (!sessionStorage.postBlockID) sessionStorage.postBlockID = '';
+    if (!sessionStorage.postBlockActiveUserID) sessionStorage.postBlockActiveUserID = '';
 
     $('body').append('<div id="apply_all" class="fixed-bottom-toolbar" style="padding-left: 60px;"></div>');
 
@@ -156,7 +157,7 @@ function usersSearchBlockUser() {
 function addChooseButtonUsersSearch() {
     const loginList = $('tr td:first-child a');
 
-    $('tr td:first-child').css({width: '110px'});
+    $('tr td:first-child').css({width: '140px'});
 
     for (let i = 0; i < loginList.length; ++i) {
         let id = $(loginList[i]).text();
@@ -164,7 +165,7 @@ function addChooseButtonUsersSearch() {
         if (!$(loginList[i]).parents('tr').hasClass('success'))
             $(loginList[i]).parent().append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">');
 
-        $(loginList[i]).parents('tr').after('<tr class="userAgent" style="background: #f9f9f9"><td colspan="8"  style="border-top: none"><b>User agent:</b> <span userAgent="'+id+'"></span></td></tr>');
+        $(loginList[i]).parents('tr').after('<tr class="userAgent" style="background: #f9f9f9"><td colspan="9"  style="border-top: none"><b>User agent:</b> <span userAgent="'+id+'"></span></td></tr>');
     }
 
     clickChooseButton();

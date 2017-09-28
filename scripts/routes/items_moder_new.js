@@ -153,15 +153,13 @@ function addComparisonInfo() {
 
     let content = $('[data-based-item="'+basedItemID+'"]');
 
-    let comparisonItemNameList = $(content).find('.comparison-item-name');
-    let comparisonItemPriceList = $(content).find('.comparison-item-price');
-    let comparisonItemImageBlockList = $(content).find('.gallery');
     let comparisonItemParamList = $(content).find('.user-main-info');
 
     let comparisonUserList = $(content).find('.comparison-user-wrap');
     let comparisonImageList = $(content).find('.gallery-prev');
     let comparisonDescriptionList = $(content).find('.comparison-description-text');
-    let comparisonRejectList = $(content).find('.btn-group-reject .moderate-block_right');
+    let comparisonRejectOtherList = $(content).find('.js-moderation-reject-other');
+    let comparisonBlockListItem = $(content).find('.btn-group-reject');
 
     // AB test в комперисоне
     if ($(basedItemInfo).find('.ah-ab-test-mark').length !== 0) {
@@ -171,7 +169,7 @@ function addComparisonInfo() {
     }
 
     // добавить причины отклонения для услуг
-    addOtherReasons('[name="reject-716"]', '.js-moderation-reject-other');
+    optionOtherReasons('.moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {

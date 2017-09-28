@@ -2,69 +2,144 @@
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
-    $('button[name="reject"]').click(function () {
+    $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
         let findReason = setInterval(function () {
-            let reason = $('#reason_175_716');
+            let box = $('.moderate-modal');
 
-            if ($(reason).length > 0) {
+            if ($(box).length > 0) {
                 clearInterval(findReason);
-                addOtherReasons(reason, '[name="reason_other"]');
+                optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]');
             }
         }, 100);
     });
 }
 
+function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
+    let otherReasonsCategory = {
+        name: "Неправильная категория",
+        reason: [
+            {name: "Личные вещи", reason: ['Одежда, обувь, аксессуары', 'Детская одежда и обувь', 'Товары для детей и игрушки', 'Красота и здоровье', 'Часы и украшения']},
+            {name: "Транспорт", reason: ['Запчасти и аксессуары', 'Автомобили', 'Грузовики и спецтехника', 'Мотоциклы и мототехника', 'Водный транспорт']},
+            {name: "Для дома и дачи", reason: ['Ремонт и строительство', 'Мебель и интерьер', 'Бытовая техника', 'Посуда и товары для кухни', 'Растения', 'Продукты питания']},
+            {name: "Бытовая электроника", reason: ['Телефоны', 'Аудио и видео', 'Товары для компьютера', 'Фототехника', 'Оргтехника и расходники', 'Игры, приставки и программы', 'Ноутбуки', 'Планшеты и электронные книги', 'Настольные компьютеры']},
+            {name: "Хобби и отдых", reason: ['Коллекционирование', 'Спорт и отдых', 'Книги и журналы', 'Велосипеды', 'Музыкальные инструменты', 'Охота и рыбалка', 'Билеты и путешествия']},
+            {name: "Недвижимость", reason: ['Квартиры', 'Дома, дачи, коттеджи', 'Земельные участки', 'Коммерческая недвижимость', 'Гаражи и машиноместа', 'Комнаты', 'Недвижимость за рубежом']},
+            {name: "Работа", reason: ['Резюме', 'Вакансии']},
+            {name: "Услуги", reason: ['Предложение услуг']},
+            {name: "Животные", reason: ['Кошки', 'Собаки', 'Товары для животных', 'Другие животные', 'Аквариум', 'Птицы']},
+            {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес']}
+        ]
+    };
 
-function addOtherReasons(reason, textSelector) {
-    let otherReasons = ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
-        'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
-        'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство', 'Транспорт, перевозки',
-        'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое'];
+    let otherReasonsService = {
+        name: "Вид услуги",
+        reason: ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
+            'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
+            'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство',
+            'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
+    };
 
+    let block = $(blockSelector);
 
-    $(reason).parent().css('position', 'static');
-
-    let content = '';
-    for (let i = 0; i < otherReasons.length; i+=2) {
-        content += '<div>';
-        content += '<label><input type="checkbox" name="ah-other-reasons"/>' + otherReasons[i] + '</label>';
-        if (otherReasons[i + 1]) content += '<label><input type="checkbox" name="ah-other-reasons"/>' + otherReasons[i + 1] + '</label>';
-        content += '</div>';
+    for (let i = 0; i < block.length; ++i) {
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory);
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService);
     }
 
-    let template = '<div class=" moderateBox_subitems ah-other-reasons"><div class="popover-content"></div></div>';
+    $('.ah-other-reasons').click(function (event) {
+        event.stopPropagation();
+    });
 
-    $(reason)
-        .popover({html: true, template: template, content: content})
-        .on('shown.bs.popover', function () {
+}
 
-            let otherReasonBlock = $('.ah-other-reasons');
-            let otherReasonBlockWidth = $(otherReasonBlock).width();
-            let rightPoint = $(otherReasonBlock).offset().left + otherReasonBlockWidth;
-            if (rightPoint > $(window).width()) $(otherReasonBlock).css('margin-left', '-'+(50+otherReasonBlockWidth)+'px');
+function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
+    let name = otherReasons.name;
+    let reasons = otherReasons.reason;
 
+    console.log(name);
 
-            $('[name="ah-other-reasons"]').change(function () {
-                let text = '';
+    let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
-                let checkedReasons = $('[name="ah-other-reasons"]:checked');
+    let content = '';
+    let inReasons = [];
+    for (let i = 0; i < reasons.length; ++i) {
+        if (typeof reasons[i] === "object") {
+            content += '<div class="ah-other-reason-block ah-has-children"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i].name + '</label></div>';
+            inReasons.push(reasons[i]);
+        } else content += '<div class="ah-other-reason-block"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i] + '</label></div>';
+    }
 
-                if (checkedReasons.length > 0) text = 'Пожалуйста, измените его на ';
+    let template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
 
-                for (let i = 0; i < checkedReasons.length; ++i) {
-                    if (i === 0) text += '"' + $(checkedReasons[i]).parent().text() + '"';
-                    else text += ' или "' + $(checkedReasons[i]).parent().text() + '"';
+    if ($(reasonSelectorContain).find('.ah-other-reasons').length === 0) {
+
+        $(reasonSelectorContain)
+            .append(template)
+            .mouseenter(function () {
+                let blockItem = $(this).find('>.ah-other-reasons');
+
+                $(blockItem).show();
+
+                let width = $(blockItem).width();
+                let offset = $(blockItem).offset();
+
+                let rightPoint = offset.left + width;
+                if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
+            })
+            .mouseleave(function () {
+                let blockItem = $(this).find('>.ah-other-reasons');
+
+                $(blockItem).hide();
+            });
+
+        $(reasonSelectorContain)
+            .find('[type="checkbox"]')
+            .change(function () {
+                // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
+                let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
+
+                if ($(this).prop('checked')) {
+                    // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
+
+                    $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
+                } else {
+                    $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
+
+                    let notCheckedReasons = $(this).parents(difParent);
+
+                    for (let i = 0; i < notCheckedReasons.length; ++i) {
+                        if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
+                    }
                 }
 
-                $(textSelector).val(text);
+                let text = '';
+
+                // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
+                let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
+
+                if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
+
+                for (let i = 0; i < checkedReasons.length; ++i) {
+                    if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
+                        let texReason = $(checkedReasons[i]).parent().text();
+                        let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
+                        let textChildren = '';
+
+                        for (let j = 0; j < textChildrenSelector.length; ++j) {
+                            textChildren += $(textChildrenSelector[j]).text() + ' -> ';
+                        }
+
+                        if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
+                        else text += ' или "' + textChildren + texReason + '"';
+                    }
+                }
+
+                $(block).find(textSelector).val(text);
             });
-        });
 
-    if ($(reason).prop("checked")) $(reason).popover('show');
-
-    $(reason).click(function () {
-        if (!$(this).prop("checked")) $(textSelector).val('');
-    });
+        for (let i = 0; i < inReasons.length; ++i)
+            addOtherReasons(block, '.ah-other-reason-block', textSelector, inReasons[i]);
+    }
 }
 
 // ФООРМИРОВАНИЕ ССЫЛКИ ПО ПАРАМЕТРАМ
@@ -136,13 +211,13 @@ function addActionButton() {
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent</span></div>' +
+            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div>' +
             '<div class="ah-post-block-users ah-postShowDescription"><i class="glyphicon glyphicon-sort-by-attributes"></i> <span>Показать описание</span></div>' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
             '<table id="postBlockTable">' +
-                '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
-                '<tbody></tbody>' +
+            '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
+            '<tbody></tbody>' +
             '</table>' +
             '</div>');
 
@@ -175,11 +250,13 @@ function clickActionButton() {
 
     $('.ah-postClearList').click(function () {
         sessionStorage.postBlockID = '';
+        sessionStorage.postBlockActiveUserID = '';
 
         $('.ah-post-block-user').hide();
         usersListCheck();
+        outTextFrame('Список пользователей очищен!')
     });
-    
+
     $('.ah-postShowDescription').click(function () {
         $('.ah-description-post').toggle();
         if($(this).find('span').text() === 'Показать описание'){
@@ -194,7 +271,7 @@ function clickActionButton() {
     $('.ah-postUserAgent').click(function () {
         if ($(this).find('span').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $('.ah-postUserAgent span').text('Показать User agent').removeClass('showUserAgent');
+            $('.ah-postUserAgent span').text('Показать User agent и Chance').removeClass('showUserAgent');
         } else {
             userAgentShow();
         }
@@ -207,59 +284,108 @@ function clickChooseButton() {
     $('.postBlockButton').click(function () {
         let val = $(this).val();
 
-        if (val === '+') add(this);
-        else remove(this);
+        if (val === '+') addPlusBlockUser(this);
+        if (val === '-') addStarBlockUser(this);
+        if (val === '★') removeMinusBlockUser(this);
 
         usersListCheck();
     });
 }
 
 function usersListCheck() {
-    var usersList = sessionStorage.postBlockID.split(', ');
-    var length = usersList.length;
+    let usersListBlock = sessionStorage.postBlockID.split(', ');
+    let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
 
-    $('.digit').text(length-1);
+    $('.digit').text(usersListBlock.length-1);
 
-    $('.postBlockButton').removeClass('postMinus').addClass('postPlus').val('+').parent().removeClass('postMinusBlock');
+    $('.postBlockButton').removeClass('postStar').removeClass('postMinus').addClass('postPlus').val('+').parent().removeClass('postStarBlock').removeClass('postMinusBlock');
 
-    var postBlockTable = '';
-    for (let i = 0; i < length-1; i++) {
-        $('input[userid="'+usersList[i]+'"]').removeClass('postPlus').addClass('postMinus').val('-').parent().addClass('postMinusBlock');
+    let postBlockTable = '';
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        $('input[userid="'+usersListBlock[i]+'"]').removeClass('postPlus').addClass('postMinus').val('-').parent().addClass('postMinusBlock');
 
-        postBlockTable += '<tr name="'+usersList[i]+'"><td><a href="/users/user/info/'+usersList[i]+'" target="_blank">'+usersList[i]+'</a></td><td>-</td><td>-</td></tr>';
+        postBlockTable += '<tr name="'+usersListBlock[i]+'"><td><a href="/users/user/info/'+usersListBlock[i]+'" target="_blank">'+usersListBlock[i]+'</a></td><td>-</td><td>-</td></tr>';
     }
 
-    $('#postBlockTable tbody').html(postBlockTable);
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        $('input[userid="' + usersListActive[i] + '"]').removeClass('postMinus').addClass('postStar').val('★').parent().removeClass('postMinusBlock').addClass('postStarBlock');
+    }
+
+    $('#postBlockTable').find('tbody').html(postBlockTable);
+
+    if (usersListActive.length-1 !== 0 || usersListBlock.length-1 !== 0) {
+        outTextFrame(`Выделено:\n‧ Активных пользователей - ${usersListActive.length - 1}\n‧ Заблокированных пользователей - ${usersListBlock.length - 1}`);
+    }
 }
 
-
-function add(button) {
+function addPlusBlockUser(button) {
     let id = $(button).attr('userid');
 
     sessionStorage.postBlockID += id + ', ';
-    $(button).removeClass('postPlus').addClass('postMinus').val('-');
-    $(button).parent().addClass('postMinusBlock');
 }
 
-function remove(button) {
+function addStarBlockUser(button) {
     let id = $(button).attr('userid');
 
     sessionStorage.postBlockID = sessionStorage.postBlockID.replace(id + ', ', '');
-    $(button).removeClass('postMinus').addClass('postPlus').val('+');
-    $(button).parent().removeClass('postMinusBlock');
+    sessionStorage.postBlockActiveUserID = sessionStorage.postBlockActiveUserID += id + ', ';
+}
+
+function removeMinusBlockUser(button) {
+    let id = $(button).attr('userid');
+
+    sessionStorage.postBlockActiveUserID = sessionStorage.postBlockActiveUserID.replace(id + ', ', '');
 }
 
 
 function postBlockReasonList(reasonId) {
-    var usersList = sessionStorage.postBlockID.split(', ');
-    var url = window.location.href;
+    let usersListBlock = sessionStorage.postBlockID.split(', ');
+    let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
+    let url = window.location.href;
 
-    for (let i = 0; i < usersList.length-1; i++) {
-        postBlockRequest(usersList[i], reasonId);
-        commentOnUserModer(usersList[i], url);
+    let commentSearchLink = 'https://adm.avito.ru/items/search?user=';
+    let commentUsersLink = '';
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        commentSearchLink += usersListBlock[i];
+        commentUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListBlock[i];
+        if (i < usersListBlock.length-2) {
+            commentUsersLink += '\n';
+            commentSearchLink += '|';
+        }
+    }
+
+    let commentActiveUsersLink = '';
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        commentActiveUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListActive[i];
+        if (i < usersListActive.length-2) commentActiveUsersLink += '\n';
+    }
+
+
+    let comment = `СПАМ
+    Ссылка открытая модератором при блокировке:
+    ${url}
+    
+    Ссылка на активного пользователя:
+    ${commentActiveUsersLink}
+    
+    Ссылка на заблокированных пользователей в items/search:
+    ${commentSearchLink}
+    
+    Ссылки на заблокированные учетные записи:
+    ${commentUsersLink}
+    `;
+
+    for (let i = 0; i < usersListBlock.length-1; i++) {
+        postBlockRequest(usersListBlock[i], reasonId);
+        commentOnUserModer(usersListBlock[i], comment);
+    }
+
+    for (let i = 0; i < usersListActive.length-1; i++) {
+        commentOnUserModer(usersListActive[i], comment);
     }
 
     sessionStorage.postBlockID = '';
+    sessionStorage.postBlockActiveUserID = '';
 }
 
 function postBlockRequest(id, reason){
@@ -299,10 +425,11 @@ function userAgentShow() {
 
             usersInfoForManyItems(id);
         }
+    } else {
+        $('.userAgent').show();
     }
 
-    $('.userAgent').show();
-    $('.ah-postUserAgent span').text('Скрыть User agent').addClass('showUserAgent').attr('show', 'true');
+    $('.ah-postUserAgent span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
 }
 
 function usersInfoForManyItems(id) {
@@ -315,7 +442,13 @@ function usersInfoForManyItems(id) {
             let r = request.responseText;
 
             let userAgent = $(r).find('.help-block:eq(7)').text();
-            $('[userAgent="'+id+'"]').text(userAgent);
+            let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
+            let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
+            let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
+
+            $('[ah-post-block-chance="'+id+'"]').text(chance);
+            $('[ah-post-block-chance-time="'+id+'"]').text(chanceTime).parents('.userAgent').show();
+            $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
         }
     };
 }
@@ -352,7 +485,7 @@ function settings() {
 
     // подсветка слов
     addWordsIllumination();
-    
+
     // включение настроек
     $('.dropdown .dropdown-toggle:contains(Moderation)').parent().find('.dropdown-menu').append('<li id="ah-settings"><a href="#">AH Settings</a></li>');
 
