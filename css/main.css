@@ -4983,6 +4983,19 @@ select.ah-form-control:focus {
     display: none;
 }
 
+.ah-overlay.dark {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.ah-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 14px;
+    color: white;
+    transform: translate(-50%, -50%);
+}
+
 .ah-total-refund-info-popover {
     min-width: 350px;
 }
@@ -4990,4 +5003,122 @@ select.ah-form-control:focus {
 .ah-total-refund-info-popover .list-group {
     margin-bottom: 0;
     font-size: 13px;
+}
+
+.ah-dynamic-bs-modal .modal-dialog {
+    position: relative;
+    display: table;
+    overflow-y: auto;
+    overflow-x: auto;
+    width: auto;
+    min-width: 300px;
+}
+
+.ah-compare-items-modal .modal-header {
+    padding: 10px 10px 0 10px;
+    border-bottom: none;
+}
+
+.ah-compare-items-modal .modal-dialog {
+    margin-top: 15px;
+}
+
+.ah-compare-items-modal .modal-body {
+    padding: 10px;
+}
+
+.ah-compare-items-container {
+    max-width: 1250px;
+    overflow-x: auto;
+}
+
+.ah-compare-items-row {
+    white-space: nowrap;
+    display: flex;
+}
+
+.ah-compare-items-show-more {
+    justify-content: center;
+    position: relative;
+    color: #959595;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.ah-compare-items-show-more:after {
+    content: '';
+    border-bottom: 1px dashed #e5e5e5;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    color: #e5e5e5;
+}
+
+.ah-compare-items-more-text {
+    background: #fff;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.ah-compare-items-cell {
+    width: 300px;
+    display: inline-block;
+    white-space: normal;
+    padding: 2px 6px;
+    vertical-align: top;
+    border-right: 1px solid #e5e5e5;
+}
+.ah-compare-items-cell:last-child {
+    border-right: none;
+}
+
+.ah-compare-items-label {
+    font-weight: 700;
+}
+
+.ah-photo-link {
+    height: 120px;
+    display: block;
+    border: 1px solid #e5e5e5;
+    overflow: hidden;
+    background: #fff 50% 50% no-repeat;
+    background-size: contain;
+}
+
+.ah-photo-prev-wrap {
+    display: inline-block;
+    margin: 4px 4px 0 0;
+    width: 20%;
+    overflow: hidden;
+}
+
+.ah-photo-prev-img {
+    margin: 0 auto;
+    display: block;
+    height: 37px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.ah-compare-items-photo-prev {
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.ah-compare-items-row-description .ah-compare-items-cell {
+    background-color: rgba(204, 204, 204, 0.25);
+}
+.ah-compare-items-cell-description {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.ah-compare-items-status {
+    font-weight: 700;
+}
+
+.ah-text-vas {
+    color: #f88158;
 }

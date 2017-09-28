@@ -4,3 +4,15 @@ function changeUserType(id, type) {
     request.send('reasons%5B%5D=128&id='+id);
 }
 
+function getItemInfo(id) {
+    return new Promise(function(resolve, reject) {
+        fetch(`/items/item/info/${id}`, {credentials: 'include'})
+            .then(function(response) {
+                if (response.status !== 200) {
+                    reject(response);
+                }
+                resolve(response.text());
+            })
+    });
+
+}

@@ -775,6 +775,7 @@ function getWlLinkForUser(userId) {
 
 }
 
+// имя пользователя
 function getUserNameTamplate(text) {
     let splitted = text.split(' ');
     let res = [];
@@ -785,6 +786,261 @@ function getUserNameTamplate(text) {
     return res.join(' ');
 }
 
+// контент для тултипа с сльтернативным копированием
 function getCopyTooltipContentAlt(altText) {
     return `<ul><li>Клик - скопировать</li><li><kbd>Alt</kbd> + Клик - ${altText}</li></ul>`;
+}
+
+// параметры на странице айтема
+function getParamsItemInfo(html) {
+    let searchNode = html || $('html'),
+        res = {},
+        itemForm = $(searchNode).find('#form_item'),
+        allLabels = $(itemForm).find('.control-label'),
+        userLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Пользователь'),
+        userBlock = $(userLabel).next(),
+        userLink = $(userBlock).find('[href^="/users/user/info/"]'),
+        statusLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Статус'),
+        statusBlock = $(statusLabel).next(),
+        reasons = [],
+        timeLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Время'),
+        timeBlock = $(timeLabel).next(),
+        microCategoryLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Микрокатегория'),
+        microCategoryBlock = $(microCategoryLabel).next(),
+        microCategories = [];
+
+    $(searchNode).find('.reasons span[data-id]').each(function () {
+        reasons.push($(this).text());
+    });
+    $(microCategoryBlock).find('[data-toggle="tooltip"]:not(.icon-category-suggest)').each(function () {
+        microCategories.push($(this).text().replace(/\n/g, '').trim());
+    });
+
+    res.id = $(itemForm).attr('data-item-id');
+    res.userId = $(userLink).attr('href').replace(/\D/g, '');
+    res.userLogin = $(userLink).text();
+    res.userMail = $(userBlock).find('.js-autoselect ').text();
+    res.userItems = $(userBlock).find('[href^="/items/search"]').text().split(' ')[0];
+    res.ip = $(searchNode).find('.ip-info').text();
+    res.status = $(statusBlock).find('span:eq(0)').text().trim();
+    res.reasons = reasons;
+    res.sortTime = $(timeBlock).find('span:eq(0)').text().trim();
+    res.sellerName = $(searchNode).find('#fld_seller_name').val();
+    res.manager = $(searchNode).find('#fld_manager').val();
+    res.phone = $(searchNode).find('#fld_phone').val();
+    res.region = $(searchNode).find('#region').find('option:selected').text();
+    res.microCategoryes = microCategories;
+    res.title = $(searchNode).find('#fld_title').val();
+    res.description = $(searchNode).find('#fld_description').text();
+    res.price = $(searchNode).find('#fld_price').val();
+    res.photos = $(searchNode).find('.js-photo-component').data('json');
+
+    return res;
+}
+
+// сравнение айтемов
+function ahCompareItems(items) {
+    items = unique(items);
+    if (items.length === 1) {
+        alert('В сравнении должно участвовать более одного объявления');
+        return;
+    }
+
+    addCompareItemsModal();
+    let modal = $('#ahCompareItemsModal'),
+        itemsContainer = $(modal).find('.ah-compare-items-container'),
+        itemsRows = $(itemsContainer).find('.ah-compare-items-row[data-row-name]');
+
+    $(itemsRows).find('.ah-compare-items-cell').remove();
+    items.forEach((id) => {
+        $(itemsRows).append(`
+            <div class="ah-compare-items-cell" data-item-id="${id}"></div>
+        `);
+
+        getItemInfo(id).then(
+            response => renderCompareItemsItem(response),
+            error => console.log(error)
+        );
+    });
+
+    $(modal).modal('show').on('hidden.bs.modal', function() {
+        $(modal).modal('hide');
+    });
+    $(modal).find('.ah-overlay').show();
+}
+
+function addCompareItemsModal() {
+    if ($('#ahCompareItemsModal').length !== 0) return;
+
+    $('body').append(`
+        <div class="modal fade ah-dynamic-bs-modal ah-compare-items-modal" id="ahCompareItemsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Сравнение объявлений</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="ah-compare-items-container">
+                            <div class="ah-compare-items-row" data-row-name="id_title"></div>
+                            <div class="ah-compare-items-row" data-row-name="status_reasons"></div>
+                            <div class="ah-compare-items-row" data-row-name="sortTime"></div>
+                            <div class="ah-compare-items-row" data-row-name="photos"></div>
+                            <div class="ah-compare-items-row ah-compare-items-show-more">
+                                <span class="ah-compare-items-more-text">
+                                    Фото <span class="glyphicon glyphicon-collapse-down"></span>
+                                </span>
+                            </div>
+                            <div class="ah-compare-items-row" data-row-name="microCategory"></div>
+                            <div class="ah-compare-items-row ah-compare-items-row-description" data-row-name="description"></div>
+                            <div class="ah-compare-items-row ah-compare-items-show-more">
+                                <span class="ah-compare-items-more-text">
+                                    Описания <span class="glyphicon glyphicon-collapse-down"></span>
+                                </span>
+                            </div>
+                            <div class="ah-compare-items-row" data-row-name="region"></div>
+                            <div class="ah-compare-items-row" data-row-name="price_phone"></div>
+                            <div class="ah-compare-items-row" data-row-name="sellerName"></div>
+                            <div class="ah-compare-items-row" data-row-name="ip"></div>
+                            <div class="ah-compare-items-row" data-row-name="user"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function renderCompareItemsItem(response) {
+    let item = getParamsItemInfo(response),
+        modal = $('#ahCompareItemsModal'),
+        cell = `[data-item-id="${item.id}"]`,
+        mainPhoto = '',
+        prevPhotos = '',
+        reasons = '',
+        statusPatterns = {
+            blocked: /\bblocked\b/i,
+            rejected: /\brejected\b/i,
+            paid: /\bpaid\b/i,
+            active: /\b(added|activated|unblocked)\b/i,
+            closed_removed: /\b(removed|closed)\b/i,
+            vas: /\b(premium|vip|pushed up|highlighted)\b/i
+        };
+
+    console.log(item);
+
+    item.photos.forEach(function(photo) {
+        prevPhotos += `
+            <div class="ah-photo-prev-wrap">
+                <img class="ah-photo-prev-img" src="${photo.thumbUrl}" data-original-image="${photo.url}">
+            </div>
+        `;
+    });
+
+    if (item.photos.length !== 0) {
+        mainPhoto = `
+            <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
+                class="ah-photo-link">
+            </a>
+        `;
+    } else {
+        mainPhoto = `<div class="text-muted">Нет Фото</div>`;
+    }
+
+    if (item.reasons.length !== 0) {
+        reasons = `(${item.reasons.join(', ')})`
+    }
+
+    if (statusPatterns.blocked.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.blocked, `
+            <span class="text-danger" title="${reasons}">
+                $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
+            </span>`);
+    }
+    if (statusPatterns.rejected.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.rejected, `
+            <span class="text-warning">
+                $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
+            </span>`);
+    }
+    if (statusPatterns.paid.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.paid, '<span class="text-primary">$&</span>');
+    }
+    if (statusPatterns.active.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.active, '<span class="text-success">$&</span>');
+    }
+    if (statusPatterns.closed_removed.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.closed_removed, '<span class="text-muted">$&</span>');
+    }
+    if (statusPatterns.vas.test(item.status)) {
+        item.status = item.status.replace(statusPatterns.vas, '<span class="ah-text-vas">$&</span>');
+    }
+
+    // id & title
+    $(modal).find(`[data-row-name="id_title"] ${cell}`).append(`
+        ${item.id}, <a target="_blank" href="/items/item/info/${item.id}">${item.title}</a>
+    `);
+
+    // status & reasons
+    $(modal).find(`[data-row-name="status_reasons"] ${cell}`).append(`
+        <span class="ah-compare-items-status">${item.status}</span>
+    `);
+
+    // description
+    $(modal).find(`[data-row-name="description"] ${cell}`).append(`
+        <div class="ah-compare-items-cell-description">${item.description}</div>
+    `);
+
+    // photos
+    $(modal).find(`[data-row-name="photos"] ${cell}`).append(`
+        <div class="ah-compare-items-photo-main">
+            ${mainPhoto}
+        </div>
+        <div class="ah-compare-items-photo-prev">
+            ${prevPhotos}
+        </div>
+    `);
+
+    // microCategory
+    $(modal).find(`[data-row-name="microCategory"] ${cell}`).append(`
+        <i>${item.microCategoryes.join(' / ')}</i>
+    `);
+
+    // region
+    $(modal).find(`[data-row-name="region"] ${cell}`).append(`
+        <span class="ah-compare-items-label">Город:</span> ${item.region}
+    `);
+
+    // price & phone
+    $(modal).find(`[data-row-name="price_phone"] ${cell}`).append(`
+        <span class="ah-compare-items-label">Цена:</span> ${item.price},
+        <span class="ah-compare-items-label">Тел.:</span> ${item.phone}
+    `);
+
+    // sellerName
+    $(modal).find(`[data-row-name="sellerName"] ${cell}`).append(`
+        <span class="ah-compare-items-label">Название:</span> ${item.sellerName}
+    `);
+
+    // sortTime
+    $(modal).find(`[data-row-name="sortTime"] ${cell}`).append(`
+        <span title="Sort Time">${item.sortTime}</span> 
+    `);
+
+    // ip
+    $(modal).find(`[data-row-name="ip"] ${cell}`).append(`
+        <span class="ah-compare-items-label">IP:</span> ${item.ip}
+    `);
+
+    // user
+    $(modal).find(`[data-row-name="user"] ${cell}`).append(`
+        <span class="ah-compare-items-label">Пользователь:</span> 
+        <a target="_blank" href="/users/user/info/${item.userId}">${item.userLogin}</a> 
+        (${item.userMail}) 
+        <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a> 
+    `);
+
+    $(modal).find(`${cell} .ah-compare-items-reason-tooltip`).tooltip({placement: 'bottom'});
 }

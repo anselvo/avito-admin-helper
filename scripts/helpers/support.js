@@ -204,6 +204,8 @@ function startSupport() {
             copyItemOnItemInfo(); // копирование айди и неймов айтемов
 
             addRefundInfo(); // инфо о Refund
+
+            addCompareItemsItemInfo();
         }
 
         // Items search

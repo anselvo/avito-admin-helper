@@ -209,7 +209,7 @@ function copyItemOnItemInfo() {
     `);
 
     let itemTitle = $(subhead).find('a').text();
-    let itemId = $('form[data-item-id]').data('itemId');
+    let itemId = getParamsItemInfo().id;
 
     $('#copyItemId').click(function () {
         let text = `№${itemId}`;
@@ -455,4 +455,34 @@ function renderTotalRefundInfo(responseBody, data) {
 
     let popover = $('.ah-total-refund-info-popover');
     copyDataTooltip( $(popover).find('.ah-total-refund-total-amount'));
+}
+
+// Сравнение айтемов
+function addCompareItemsItemInfo() {
+    $('.col-xs-5').prepend(`
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-primary btn-sm" type="button" id="compare-items-btn">Сравнить с</button>
+            </span>
+            <input type="text" class="form-control input-sm" placeholder="Объявления" name="compareItems">
+            <span class="input-group-addon" id="compare-items-info" data-toggle="tooltip" data-placement="left" 
+                title="Вставьте ID объявлений, разделенные нечислом, или ссылки на объявления">
+                <span class="glyphicon glyphicon-info-sign"></span>
+            </span>
+        </div>
+    `);
+
+
+
+    $('#compare-items-info').tooltip();
+    $('#compare-items-btn').click(function() {
+        // let value = $('[name="compareItems"]').val(),
+        //     items = value.match(/\d+/g);
+        //
+        // if (!items) return;
+        // items.push(getParamsItemInfo().id.toString());
+
+        let items = ['1221849423', '945668371', '1097353750', '1091069260']; // for test
+        ahCompareItems(items);
+    });
 }
