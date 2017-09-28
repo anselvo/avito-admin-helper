@@ -2,7 +2,7 @@
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
-    $('button[name="reject"], button[name="activate"]').click(function () {
+    $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
         let findReason = setInterval(function () {
             let box = $('.moderate-modal');
 
@@ -93,7 +93,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
             });
 
         $(reasonSelectorContain)
-            .find('[name="ah-other-reasons"]')
+            .find('[type="checkbox"]')
             .change(function () {
                 // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
                 let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
