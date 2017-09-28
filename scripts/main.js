@@ -29,12 +29,6 @@ chrome.storage.local.get(function (result) {
     if (result.script === 'traffic') {
         startTraffic();
     }
-
-    if (result.script === 'assistant') {
-        startSupport();
-        startAssistant();
-    }
-
 });
 
 $(document).mouseup(function (e) {

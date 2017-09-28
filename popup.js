@@ -105,7 +105,7 @@ function createScriptList() {
         scriptList = ['infoDoc'];
     } else {
 		
-		scriptList = ['support','moderator','intern','traffic','smm', 'infoDoc', 'assistant'];
+		scriptList = ['support','moderator','intern','traffic','smm', 'infoDoc'];
 	}
 
     if (!localStorage.script || scriptList.indexOf(localStorage.script) === -1) {
