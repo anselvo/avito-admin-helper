@@ -464,6 +464,9 @@ function renderCreateNewTicketWindow(route) {
             }, {
                 name: 'description',
                 value: description
+            }, {
+                name: 'typeId',
+                value: 1
             }];
 
         // теги
