@@ -195,10 +195,7 @@ function startSupport() {
                 allowListMSG(currentUrl, userGlobalInfo.username);
 
             // Одобрить объявление
-            if (userGlobalInfo.subdivision === 'S1'
-                || userGlobalInfo.subdivision === 'TL'
-                || userGlobalInfo.subdivision === 'SD'
-                || userGlobalInfo.subdivision === 'SA')
+            if (userGlobalInfo.subdivision !== 'S2')
                 allowItem();
 
             copyItemOnItemInfo(); // копирование айди и неймов айтемов

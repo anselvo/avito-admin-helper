@@ -10,8 +10,8 @@ chrome.storage.local.get(function (result) {
     }
 
     if (result.script === 'intern') {
-        startModerator();
         startIntern();
+        startModerator();
     }
 
     if (result.script === 'moderator') {

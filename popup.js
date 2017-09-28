@@ -125,7 +125,7 @@ function choosePage() {
 
 function mainPage() {
     pageGenerator(
-		'Admin Helper',
+		'Admin.Helper',
 		mainButtonGenerator(),
 		'',
 		'Удачного рабочего дня, '+userGlobalInfo.name+'!'
@@ -164,42 +164,42 @@ function errorPage(error, xhrStatus) {
 
     if (error == 'logout') {
         pageGenerator(
-            'Admin Helper',
-            'Для продолжения работы с Admin Helper, вам необходимо зайти в adm.avito.ru',
+            'Admin.Helper',
+            'Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru',
             logo,
             ''
         );
     } else if (error == 'user does not exist') {
         pageGenerator(
-            'Admin Helper',
-            'К сожалению, вы отсутсутствуете в списке пользователей Admin Helper. Обратитесь к вашему тимлидеру для решения данной проблемы.',
+            'Admin.Helper',
+            'К сожалению, вы отсутсутствуете в списке пользователей Admin.Helper. Обратитесь к вашему тимлидеру для решения данной проблемы.',
             logo,
             ''
         );
     } else if (error == '403') {
         pageGenerator(
-            'Admin Helper',
+            'Admin.Helper',
             'К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса.',
             logo,
             ''
         );
     } else if (error == '500') {
         pageGenerator(
-            'Admin Helper',
+            'Admin.Helper',
             'К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново.',
             logo,
             ''
         );
     } else if (error == '>=400') {
         pageGenerator(
-            'Admin Helper',
+            'Admin.Helper',
             'К сожалению, произошла техническая ошибка. Код ошибки: '+ xhrStatus +'.',
             logo,
             ''
         );
     } else {
         pageGenerator(
-            'Admin Helper',
+            'Admin.Helper',
             'К сожалению, возникла ошибка. Обратитесь к тимлидеру.',
             logo,
             ''
@@ -283,7 +283,7 @@ function login(username, password) {
 function chooseScriptPage() {
     $('#choose-scripts').click(function() {
         pageGenerator(
-            'Admin Helper',
+            'Admin.Helper',
             '',
             chooseButtonGenerator(scriptList),
             ''
