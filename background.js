@@ -341,7 +341,6 @@ function moderationListener(details, user) {
 
 	//comparison 3.0
     if (details.url.indexOf('https://adm.avito.ru/items/comparison/moderate')+1) {
-        console.log(formData);
         let comment = formData['comment'];
         let items = comment[0].split(', ');
         let tmp = items[0].split(':');
@@ -407,7 +406,6 @@ function sendLogToDB(type, reason, count, user, items_id) {
 	xhr.send("param="+jsonRow);
 	xhr.onreadystatechange = function () {
 		if(xhr.readyState === 4 && xhr.status === 200) {
-			console.log(xhr.responseText);
 			sendLogToStorage(type, count);
 		}
 	};
