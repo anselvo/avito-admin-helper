@@ -3256,7 +3256,13 @@ function copyTicketId() {
     try {
         let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
         $(ticketIdNode).wrap(`<span id="ahCopyTicketId"></span>`);
-        copyDataTooltip($('#ahCopyTicketId'));
+
+        copyDataTooltip($('#ahCopyTicketId'), {
+            getText: function(elem) {
+                let ticketid = $(elem).text().trim();
+                return `№${ticketid}`;
+            }
+        });
     } catch (e) {}
 }
 //++++++++++ Копирование айди тикета ++++++++++//
