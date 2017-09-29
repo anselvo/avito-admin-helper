@@ -56,8 +56,7 @@ function startSupport() {
     $(document).ready(function () {
         var adm_username = $('.dropdown:contains(Выход) a').text().split(' ');
         localStorage.agentLogin = adm_username[1];
-        
-//        console.log(userGlobalInfo);
+
         // Особый интерфейс и поздравления с праздниками
         holidays();
 

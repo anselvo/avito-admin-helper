@@ -56,8 +56,6 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
     let name = otherReasons.name;
     let reasons = otherReasons.reason;
 
-    console.log(name);
-
     let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
     let content = '';
@@ -154,9 +152,7 @@ function eyeLinks(list) {
         let cid = $(list[i]).parents('tr').find('[data-category]').attr('data-category');
         let city = $(list[i]).parents('tr').attr('data-location');
 
-
         let link = 'https://adm.avito.ru/items/search?status[]=active&cid[]='+cid;
-
 
         if (eyeCity === 'true') {
             link += '&location_id[]='+city;
