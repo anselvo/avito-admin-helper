@@ -395,6 +395,9 @@ function premoderationInternNew(adm_username, page) {
             data_category: data_category,
             value: blockName,
             click:  function () {
+                $('.reason_other').val('');
+                $('.reason_comment').val('');
+
                 $('.moderate-modal__override').removeClass('is-hidden');
 
                 let offset = $(this).offset();
