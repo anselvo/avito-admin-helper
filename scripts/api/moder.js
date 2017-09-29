@@ -463,9 +463,15 @@ function searchByImageLinks() {
 
                 for (let i = 0; i < list.length; ++i) {
                     let url = $(list[i]).find('a').attr('href').substr(2);
-                    $(list[i]).append('<div class="searchByImageLinks">' +
-                        '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></a> ' +
-                        '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank"><span>Y</span><span>andex</span></a> ' +
+                    let existLinks = $(list[i]).find('.searchByImageLinks');
+
+                    if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
+                            '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
+                                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
+                            '</a> ' +
+                            '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
+                                '<span>Y</span><span>andex</span>' +
+                            '</a> ' +
                         '</div>');
                 }
             }
