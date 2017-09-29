@@ -948,7 +948,8 @@ function unverify(obj, reloadPage) {
 
 //----- инфа о всех IP на users/info  -----//
 function showCountryIP() {
-    $('.control-label:contains(Last auth IPs)').append('<span id="showCountryIP" class="pseudo-link" style="margin-left: 5px;" title="Показать у всех IP страну нахождения">ℹ</span>')
+    $('.control-label:contains(Last auth IPs)')
+        .append('<div id="showCountryIP" class="pseudo-link label label-info" style="margin-left: 10px" title="Показать у всех IP - страну нахождения">Info IP</div>');
 
     $('#showCountryIP').click(function () {
         $('span[ipinfo]').remove();
@@ -961,7 +962,7 @@ function showCountryIP() {
 
             requestInfoIP(ip);
 
-            $(tmp).after(' - <span ipinfo="' + ip + '"></span>');
+            $(tmp).after('<span ipinfo="' + ip + '"></span>');
         }
     });
 }
@@ -991,7 +992,7 @@ function requestInfoIP(ip, options) {
 
                 if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
 
-                $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
+                $('span[ipinfo="' + ip + '"]').text(' - '+ country + ', ' + city);
             }
         }
     };
