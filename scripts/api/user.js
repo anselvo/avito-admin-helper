@@ -102,6 +102,7 @@ function usersInfo(id, itemid, offset, query) {
         let breakInDisplay = $(this).attr('show-status');
 
         if (breakInDisplay === 'false') {
+            $('.ah-info-history-ip-link').click();
             $('#status').hide('slow');
             $('#registeredTime').hide('slow');
             $('#activeItems').hide('slow');
@@ -256,28 +257,33 @@ function ipHistory(selector, id, response) {
             '</span>')
         .after('<div class="ah-info-history-ip ah-info-history"></div>');
 
+    let count = 0;
+
     $('.ah-info-history-ip-link').click(function () {
         $('.ah-info-history-ip').toggle("slow");
+
+        if (count === 0) {
+            $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
+                '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
+                '<tbody></tbody>' +
+                '</table>');
+
+            let ipInfoList = $(response).find('.ip-info-list li');
+            for (let i = 0; i < ipInfoList.length; ++i) {
+                let ipInfo = $(ipInfoList[i]).find('.ip-info').attr('data-ip');
+                let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
+
+                $('.ah-info-history-ip-table').append('<tr>' +
+                    '<td><a href="https://adm.avito.ru/users/search?ip=' + ipInfo + '" target="_blank">' + ipInfo + '</a></td>' +
+                    '<td><span ipinfo="' + ipInfo + '"></span></td>' +
+                    '<td>' + ipVisitTime + '</td>' +
+                    '</tr>');
+
+                requestInfoIP(ipInfo);
+                ++count;
+            }
+        }
     });
-
-    $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
-        '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
-        '<tbody></tbody>' +
-        '</table>');
-
-    let ipInfoList = $(response).find('.ip-info-list li');
-    for (let i = 0; i < ipInfoList.length; ++i) {
-        let ipInfo = $(ipInfoList[i]).find('.ip-info').attr('data-ip');
-        let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
-
-        $('.ah-info-history-ip-table').append('<tr>' +
-                '<td><a href="https://adm.avito.ru/users/search?ip='+ipInfo+'" target="_blank">'+ipInfo+'</a></td>' +
-                '<td><span ipinfo="' + ipInfo + '"></span></td>' +
-                '<td>'+ipVisitTime+'</td>' +
-            '</tr>');
-
-        requestInfoIP(ipInfo);
-    }
 }
 
 // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА

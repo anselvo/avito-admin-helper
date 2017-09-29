@@ -1,4 +1,4 @@
-var SCRIPT, USER;
+let SCRIPT, USER;
 
 chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
@@ -17,13 +17,13 @@ chrome.runtime.onUpdateAvailable.addListener(function(details) {
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
 chrome.runtime.onInstalled.addListener(function(details) {
 	//нотификация об апдейте расширения
-    var message;
-    var version = chrome.runtime.getManifest().version;
+    let message;
+    let version = chrome.runtime.getManifest().version;
 
     if (details.reason === 'update') message = "Avito Helper is updated\nPrevious version is "+details.previousVersion+"\nNew version is "+version;
     if (details.reason === 'install')  message = "Thanks you for installing Avito Helper\nCurrent version is "+version;
 
-    var options = {
+    let options = {
         type: "basic",
         title: "Avito Helper",
         message: message,
@@ -96,8 +96,8 @@ chrome.storage.onChanged.addListener(function (result) {
 // ЛОВИТ СООБЩЕНИЯ
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if (request.action === "XMLHttpRequest") {
-        var xhttp = new XMLHttpRequest();
-        var method = request.method ? request.method.toUpperCase() : 'GET';	
+        let xhttp = new XMLHttpRequest();
+        let method = request.method ? request.method.toUpperCase() : 'GET';	
 		
 		xhttp.open(method, request.url, true);
 		
@@ -130,7 +130,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 	}
 
 	if (request.action === "sendNotification") {
-        var row = {
+        let row = {
             username: request.username,
             head: request.head,
             body: request.body,
@@ -138,9 +138,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             to_name: request.to_name
         };
 
-        var jsonRow = JSON.stringify(row);
+        let jsonRow = JSON.stringify(row);
 
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://avitoadm.ru/journal/include/php/notification/add.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send("param="+jsonRow);
@@ -185,19 +185,19 @@ function cookieInfo() {
 }
 
 function userInfo(username) {
-	var table = { 
+	let table = { 
 		username: username,
 	};
 	
-	var jsonTable = JSON.stringify(table);
+	let jsonTable = JSON.stringify(table);
 	
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/user/getByName.php', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.send("param="+jsonTable);
 	xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var json = JSON.parse(xhr.responseText);
+            let json = JSON.parse(xhr.responseText);
 			if (json.table.length === 0) {
 				chrome.storage.local.set({'user': 'user does not exist'});
 
@@ -214,13 +214,13 @@ function userInfo(username) {
 
 function smmListener(details) {
     if (details.url === 'https://br-analytics.ru/elastic/ajax/12381016/update/') {
-        var requestBody = decodeURIComponent(String.fromCharCode.apply(null,
+        let requestBody = decodeURIComponent(String.fromCharCode.apply(null,
             new Uint8Array(details.requestBody.raw[0].bytes)));
 
-        var json = JSON.parse(requestBody)
+        let json = JSON.parse(requestBody)
 
-        var messageId = json.filter.fmessage[0];
-        var tagString = json.changes.tags.tag_string;
+        let messageId = json.filter.fmessage[0];
+        let tagString = json.changes.tags.tag_string;
 
 
         smmLogToDB(messageId, tagString);
@@ -230,14 +230,14 @@ function smmListener(details) {
 }
 
 function smmLogToDB(messageId, tagString) {
-    var log = {
+    let log = {
         messageId: messageId,
         tagString: tagString,
         usernameId: USER.id
     };
 
-    var json = JSON.stringify(log);
-    var url = 'http://spring.avitoadm.ru/smmstat/update';
+    let json = JSON.stringify(log);
+    let url = 'http://spring.avitoadm.ru/smmstat/update';
 
     $.ajax({
         url: url,
@@ -251,22 +251,23 @@ function smmLogToDB(messageId, tagString) {
 }
 
 function moderationListener(details, user) {
-	var count = 0, ids, reason = '', items_id = '';
+	let count = 0, ids, reason = '', items_id = '';
 
-	var formData = details.requestBody.formData;
+	let formData = details.requestBody.formData;
 
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
 	
 	//pre
 	if (details.url === 'https://adm.avito.ru/items/moder/submit/all') {
 		chrome.storage.local.get(function (result) {
-			if (!result.blockedItemsID) var blockedItemsID = [];
-			else var blockedItemsID = result.blockedItemsID;
+            let blockedItemsID;
+			if (!result.blockedItemsID) blockedItemsID = [];
+			else blockedItemsID = result.blockedItemsID;
 			
-			for (var key in formData) {
+			for (let key in formData) {
 				if (key.indexOf('[id]')+1) ++count;
 
-				for (var i = 0; i < blockedItemsID.length; ++i) {
+				for (let i = 0; i < blockedItemsID.length; ++i) {
 					if (formData[key] === blockedItemsID[i]) --count;
 				}
 			}
@@ -280,8 +281,8 @@ function moderationListener(details, user) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 		
-		if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, user, items_id);
-		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, user, items_id);
+		if (formData['action'] === 'reject') sendLogToDB('reject item', reason, count, user, items_id);
+		if (formData['action'] === 'block') sendLogToDB('block item', reason, count, user, items_id);
 	}
 	
 	//post
@@ -316,12 +317,12 @@ function moderationListener(details, user) {
 	
 	//comparison
 	if (details.url.indexOf('https://adm.avito.ru/items/comparison/')+1 && details.url.indexOf('alive')+1) {
-		var alive = details.url.split('/');
+		let alive = details.url.split('/');
 		count = formData['ids[]'].length-1;
 		ids = formData['ids[]'];
         items_id = ids.join();
 		
-		var del = ids.indexOf(alive[7]);
+		let del = ids.indexOf(alive[7]);
 		
 		ids.splice(del, 1);
 		
@@ -331,7 +332,7 @@ function moderationListener(details, user) {
 	if (details.url.indexOf('https://adm.avito.ru/items/comparison/')+1 && details.url.indexOf('block')+1) {
 		count = formData['ids[]'].length;
         items_id = formData['ids[]'].join();
-		var blockItem = details.url.split('/');
+		let blockItem = details.url.split('/');
 		ids = [blockItem[7]];
 		
 		sendLogToDB('block item', '20', 1, user, items_id);
@@ -340,15 +341,25 @@ function moderationListener(details, user) {
 
 	//comparison 3.0
     if (details.url.indexOf('https://adm.avito.ru/items/comparison/moderate')+1) {
-        var comment = formData['comment'];
-        var items = comment[0].split(', ');
-        var tmp = items[0].split(':');
-        var tmp1 = tmp[0].split('_');
-        var baseItemID = [tmp1[2]];
+        let comment = formData['comment'];
+        let items = comment[0].split(', ');
+        let tmp = items[0].split(':');
+        let tmp1 = tmp[0].split('_');
+        let baseItemID = [tmp1[2]];
 
-        count = comment[0].match(/\[blocked\]/g).length;
+        let countBlock = comment[0].match(/\[blocked]/g) !== null ? comment[0].match(/\[blocked]/g).length : 0;
+        let countReject = 0;
 
-        sendLogToDB('block item', '20', count, user, items_id);
+        for (let key in formData) {
+            if( formData.hasOwnProperty( key ) ) {
+                if (~key.indexOf('others') && ~key.indexOf('[reject]')) ++countReject;
+                if (~key.indexOf('others') && ~key.indexOf('[block]')) ++countReject;
+            }
+        }
+
+        sendLogToDB('allow all', reason, 1, user, items_id);
+        if (countBlock > 0) sendLogToDB('block item', '20', countBlock, user, items_id);
+        if (countReject > 0) sendLogToDB('reject item', reason, countReject, user, items_id);
         addBlockedItemsIDtoStorage(baseItemID);
     }
 	
@@ -364,32 +375,13 @@ function moderationListener(details, user) {
         items_id = formData['itemId'].join();
         sendLogToDB('detectives', reason, 1, user, items_id);
     }
-
-    //Service App
-    if (details.url === 'https://adm.avito.ru/adm/service_app/user_profile/allow') {
-        sendLogToDB('allow all', reason, 1, user, items_id);
-    }
-    if (details.url === 'https://adm.avito.ru/adm/service_app/user_profile/block') {
-        sendLogToDB('block item', reason, 1, user, items_id);
-    }
-    if (details.url === 'https://adm.avito.ru/adm/service_app/user_profile/reject') {
-        sendLogToDB('reject item', reason, 1, user, items_id);
-    }
-    if (details.url === 'https://adm.avito.ru/adm/service_app/reviews/allow') {
-        sendLogToDB('allow all', reason, 1, user, items_id);
-    }
-    if (details.url === 'https://adm.avito.ru/adm/service_app/reviews/comment_block') {
-        if (reason !== '') sendLogToDB('block item', reason, 1, user, items_id);
-    }
-    if (details.url === 'https://adm.avito.ru/adm/service_app/reviews/block') {
-        if (reason !== '') sendLogToDB('block item', reason, 1, user, items_id);
-    }
 }
 
 function addBlockedItemsIDtoStorage(ids) {
 	chrome.storage.local.get(function (result) {
-		if (!result.blockedItemsID) var blockedItemsID = [];
-		else var blockedItemsID = result.blockedItemsID;
+        let blockedItemsID;
+		if (!result.blockedItemsID) blockedItemsID = [];
+		else blockedItemsID = result.blockedItemsID;
 		
 		blockedItemsID = blockedItemsID.concat(ids);
 		
@@ -398,7 +390,7 @@ function addBlockedItemsIDtoStorage(ids) {
 }
 
 function sendLogToDB(type, reason, count, user, items_id) {
-	var row = {
+	let row = {
         username_id: user.id,
         type: type,
         items_id: items_id,
@@ -406,15 +398,14 @@ function sendLogToDB(type, reason, count, user, items_id) {
         count: count
 	};
 	
-	var jsonRow = JSON.stringify(row);
+	let jsonRow = JSON.stringify(row);
 	
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/mod_stat/add.php', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.send("param="+jsonRow);
 	xhr.onreadystatechange = function () {
 		if(xhr.readyState === 4 && xhr.status === 200) {
-			console.log(xhr.responseText);
 			sendLogToStorage(type, count);
 		}
 	};
@@ -423,7 +414,7 @@ function sendLogToDB(type, reason, count, user, items_id) {
 function sendLogToStorage(type, count) {
 	chrome.storage.local.get('mod_stat', function (result) {
 		if (!result.mod_stat) {
-			var mod_stat = {
+			let mod_stat = {
 				'mod_stat': {
 					'blockUserCount': type === 'block user' ? count : 0,
 					'blockItemCount': type === 'block item' ? count : 0,
@@ -455,7 +446,7 @@ function sendLogToStorage(type, count) {
 
 function clearDayInfo() {
 	if (newday(localStorage.currentDay)) {
-		var mod_stat = {
+		let mod_stat = {
 			'mod_stat': {
 				'blockUserCount': 0,
 				'blockItemCount': 0,
@@ -469,10 +460,10 @@ function clearDayInfo() {
 }
 
 function newday(currentDay) {
-	var date = new Date();
-    var day = date.getDate();
-    var month = date.getMonth()+1;
-    var year = date.getFullYear();
+	let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth()+1;
+    let year = date.getFullYear();
 
 	if (!currentDay) {
 		localStorage.currentDay = year+'-'+month+'-'+day;
@@ -585,7 +576,7 @@ function iconEnable(tabId) {
 
 function setBadgetIcon(script) {
     if (script !== 'none' && script) {
-		var logo = script.charAt(0).toUpperCase();
+		let logo = script.charAt(0).toUpperCase();
 		chrome.browserAction.setBadgeText({text: logo});
 		chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
 
@@ -600,37 +591,38 @@ function setBadgetIcon(script) {
 function notificationCheck() {
 	chrome.storage.local.get(function (result) {
 		if (result.user.username) {
+            let notification;
 			if (!result.lastNotificationTime) {
-                var notification = {
+                notification = {
                     subdivision: result.user.subdivision,
                     username: result.user.username,
                 }
 			} else {
-                var lastNotificationTime = result.lastNotificationTime;
+                let lastNotificationTime = result.lastNotificationTime;
 
-                var notification = {
+                notification = {
                     lastNotificationTime: lastNotificationTime,
                     subdivision: result.user.subdivision,
                     username: result.user.username
                 }
             }
 
-			var jsonNotification = JSON.stringify(notification);
+			let jsonNotification = JSON.stringify(notification);
 			
-			var xhr = new XMLHttpRequest();
+			let xhr = new XMLHttpRequest();
 			xhr.open('POST', 'http://avitoadm.ru/journal/include/php/notification/list.php', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.send("param="+jsonNotification);
 			xhr.onreadystatechange = function () {
 				if(xhr.readyState === 4 && xhr.status === 200) {
                     chrome.tabs.query({url: 'https://adm.avito.ru/*'}, function(tabs) {
-						var json = JSON.parse(xhr.responseText);
-						var len = json.table.length;
+						let json = JSON.parse(xhr.responseText);
+						let len = json.table.length;
 
 						if (len !== 0) {
-							for (var i = 0; i < len; ++i) {
-								for (var j = 0; j < tabs.length; ++j) {
-									var notificationMessage = {
+							for (let i = 0; i < len; ++i) {
+								for (let j = 0; j < tabs.length; ++j) {
+									let notificationMessage = {
 										notification: {
 											id: json.table[i].id,
 											username: json.table[i].username,
