@@ -280,9 +280,12 @@ function moderationListener(details, user) {
 	if (details.url === 'https://adm.avito.ru/items/moder/submit') {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
-		
-		if (formData['action'] === 'reject') sendLogToDB('reject item', reason, count, user, items_id);
-		if (formData['action'] === 'block') sendLogToDB('block item', reason, count, user, items_id);
+
+
+        console.log(formData['action']);
+
+        if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, user, items_id);
+		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, user, items_id);
 	}
 	
 	//post
@@ -347,17 +350,36 @@ function moderationListener(details, user) {
         let tmp1 = tmp[0].split('_');
         let baseItemID = [tmp1[2]];
 
-        let countBlock = comment[0].match(/\[blocked]/g) !== null ? comment[0].match(/\[blocked]/g).length : 0;
+        // let countBlock = comment[0].match(/\[blocked]/g) !== null ? comment[0].match(/\[blocked]/g).length : 0;
         let countReject = 0;
+        let countBlock = 0;
+        let countAllow = true;
 
         for (let key in formData) {
             if( formData.hasOwnProperty( key ) ) {
-                if (~key.indexOf('others') && ~key.indexOf('[reject]')) ++countReject;
-                if (~key.indexOf('others') && ~key.indexOf('[block]')) ++countReject;
+                if (~key.indexOf('others') && ~key.indexOf('[reject]')) {
+                    if (~key.indexOf(baseItemID.toString())) countAllow = false;
+                    ++countReject;
+                }
+                if (~key.indexOf('others') && ~key.indexOf('[block]')) {
+                    if (~key.indexOf(baseItemID.toString())) countAllow = false;
+                    ++countBlock;
+                }
+                if (~key.indexOf('doubles')) {
+                    if (~key.indexOf(baseItemID.toString())) countAllow = false;
+                    ++countBlock;
+                }
             }
         }
 
-        sendLogToDB('allow all', reason, 1, user, items_id);
+        console.log(`
+        baseItemID: ${baseItemID}
+        allow: ${countAllow}
+        reject: ${countReject}
+        block: ${countBlock}
+        `);
+
+        if (countAllow) sendLogToDB('allow all', reason, 1, user, items_id);
         if (countBlock > 0) sendLogToDB('block item', '20', countBlock, user, items_id);
         if (countReject > 0) sendLogToDB('reject item', reason, countReject, user, items_id);
         addBlockedItemsIDtoStorage(baseItemID);
