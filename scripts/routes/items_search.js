@@ -7,31 +7,81 @@ function chooseItem() {
     });
 }
 
+function showItemsInfoForItems() {
+    let showItemInfo = false;
+    $('#ah-user-info-show')
+        .find('ul')
+        .append('<li>' +
+            '<div class="ah-show-info ah-postShowItemInfo">' +
+            '<i class="glyphicon glyphicon-book"></i> ' +
+            '<span>Показать Item IP и Пред. статус</span></div>' +
+            '</li>');
 
+    $('.ah-postShowItemInfo').click(function () {
+        if (!showItemInfo) {
+            showItemInfo = true;
+            itemsInfoForItems();
+        }
 
-function postIP() {
-    var n = $('#items tr').length;
+        if ($(this).find('span').text() === 'Показать Item IP и Пред. статус') {
+            $('.ah-item-info').show();
+            $(this).find('span').text('Скрыть Item IP и Пред. статус');
+        } else {
+            $('.ah-item-info').hide();
+            $(this).find('span').text('Показать Item IP и Пред. статус');
 
-    for (var i=1; i<n; i++) {
-        var id = $('#items tr').slice(i,i+1).attr("data-id");
+        }
+    });
+}
 
-        loadItemInfo(id, i);
+function itemsInfoForItems() {
+    let itemList = $('#items').find('tr');
+
+    for (let i = 1; i < itemList.length; i++) {
+        let id = $(itemList[i]).attr("data-id");
+
+        $(itemList[i]).find('td:eq(4)').append('<div class="ah-item-info" itemid="'+id+'"></div>')
+
+        loadItemInfo(id);
     }
 }
 
-function loadItemInfo(id, i) {
-    var url = 'https://adm.avito.ru/items/item/info/'+id;
+function loadItemInfo(id) {
+    let url = 'https://adm.avito.ru/items/item/info/'+id;
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
     xhr.onreadystatechange=function() {
         if (xhr.readyState === 4 && xhr.status === 200)  {
-            var response = xhr.responseText;
-            var ip = $(response).find('[data-ip]').attr('data-ip');
-            // console.log(ip);
+            let response = xhr.responseText;
+            let ip = $(response).find('[data-ip]').attr('data-ip');
 
-            $('#items tr').slice(i,i+1).find('td:eq(3) a:last').after('<br><b>IP</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip='+ip+'" target="_blank">'+ip+'</a>');
+            let historyTable = $(response).find('[data-url$="frst_history"] tbody tr');
+            let lastStatus = null;
+            let lastTime = null;
+            for (let i = 0, j = 0; i < historyTable.length; ++i) {
+                let tmp = $(historyTable[i]).find('td:eq(2)').text();
+                if (tmp !== '') {
+                    ++j;
+                    if (j === 2) {
+                        lastStatus = tmp;
+                        lastTime = $(historyTable[i]).find('td:eq(0)').text();
+                        break;
+                    }
+                }
+            }
+
+            if (lastStatus) $('.ah-item-info[itemid="'+id+'"]').append(
+                '<div><b>Пред.:</b> ' + lastStatus + '</div>' +
+                '<div><b>Дата:</b> ' + lastTime + '</div>'
+            );
+
+            if (ip) $('.ah-item-info[itemid="'+id+'"]').append(
+                '<div>' +
+                '<b>IP:</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip='+ip+'" target="_blank">'+ip+'</a>' +
+                '</div>'
+            );
         }
     }
 }
@@ -86,7 +136,11 @@ function addChooseButton() {
 			.css('padding', '5px')
 			.after('<hr style="margin-bottom: 10px; margin-top: 0">')
 			.append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">')
-            .append('<br><span  class="userAgent" title="User chance"><b>Chance:</b> <span ah-post-block-chance="'+id+'" style="color:#65a947"></span>/<span style="color:red;">10</span> - <span ah-post-block-chance-time="'+id+'"></span></span>');
+            .append('<br><span  class="userAgent" title="User chance">' +
+                '<b>Chance:</b> ' +
+                '<span ah-post-block-chance="'+id+'" style="color:#65a947">?</span>/<span style="color:red;">10</span>' +
+                '<span ah-post-block-chance-time="'+id+'"></span>' +
+                '</span>');
 
         $(loginList[i]).parents('tr').find('.description-cell').append('<div class="userAgent"><b>User agent:</b> <span userAgent="'+id+'"></span></div>');
     }
@@ -338,7 +392,7 @@ function getLocationMinPrice(locationText, itemTitleText) {
 	
 	// проверка города
 	var curLocationArr = minPricesArr.filter(function(item) {
-		return item.location == locationText;
+		return item.location === locationText;
 	});
 	if (!curLocationArr.length) return false;
 	
@@ -366,7 +420,7 @@ function getSearchInformHref(queryStringParams) {
 function addSearchInformTogglers() {
 	var url = window.location.href;
 	
-	if (url.indexOf('search_inform_link') == -1) return;
+	if (url.indexOf('search_inform_link') === -1) return;
 	
 	var formBlock = $('#itemsearchform');
 	var rowBlock = $(formBlock).find('.form-row:eq(1)');
@@ -469,6 +523,34 @@ function addSearchInformTogglers() {
 	});
 }
 // поиск информ агентств ---
+
+function showDescriptionForItems() {
+    let showDescription = false;
+    $('#ah-user-info-show')
+        .find('ul')
+        .append('<li>' +
+            '<div class="ah-show-info ah-postShowDescription">' +
+            '<i class="glyphicon glyphicon-sort-by-attributes"></i> ' +
+            '<span>Показать описание</span>' +
+            '</div>' +
+            '</li>');
+
+    $('.ah-postShowDescription').click(function () {
+        if (!showDescription) {
+            showDescription = true;
+            addDescriptionToItemSearch();
+        }
+
+        if($(this).find('span').text() === 'Показать описание'){
+            $('.ah-description-post').show();
+            $(this).find('span').text('Скрыть описание');
+        } else {
+            $('.ah-description-post').hide();
+            $(this).find('span').text('Показать описание');
+        }
+
+    });
+}
 
 function addDescriptionToItemSearch() {
 	let itemList = $('[data-id]');

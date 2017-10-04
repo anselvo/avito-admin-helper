@@ -34,8 +34,8 @@ function getItemInfoRequest(itemId, options) {
     xhr.open("GET", url, true);
     xhr.send();
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
                 var doc = xhr.responseText;
                 var status = $(doc).find('.form-group:contains(Статус) div span:first').text().replace(' Paid', '');
                 var reason = [];
@@ -48,24 +48,18 @@ function getItemInfoRequest(itemId, options) {
                 var reasonDivider = '';
 
                 var color = 'black';
-                if (~status.indexOf('Activated')
-                        || ~status.indexOf('Added')) {
+                if (~status.indexOf('Activated') || ~status.indexOf('Added')) {
                     color = '#2E8B58';
-
                 } else if (~status.indexOf('Blocked')) {
                     color = '#e00';
-
                 } else if (~status.indexOf('Expired')) {
                     color = '#000';
-
-                } else if (~status.indexOf('Removed')
-                        || ~status.indexOf('Closed')) {
-
+                } else if (~status.indexOf('Removed') || ~status.indexOf('Closed') || ~status.indexOf('Archived')) {
                     color = '#666';
                     secondStatus = $(doc).find('.table-striped:contains(Статус) tbody tr:eq(1) td:eq(2)').text();
                     if (!secondStatus) {
                         secondStatus = $(doc).find('.table-striped:contains(Статус) tbody tr:eq(2) td:eq(2)').text();
-                        if (secondStatus == 'Blocked') {
+                        if (secondStatus === 'Blocked') {
                             var time = $(doc).find('.table-striped:contains(Статус) tbody tr:eq(2) td:eq(0)').text();
                             var tmp0 = $(doc).find('#adminTable tbody tr:contains(' + time + ') td:eq(1)').text().split('(');
                             reason = tmp0[1].replace(')', '');

@@ -192,6 +192,18 @@ function eyeLinks(list) {
     }
 }
 
+
+// Дополнительная информация о пользователе и объявлениях
+
+function addInfoToItems() {
+    $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
+        '  <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Показать' +
+        '  <span class="caret"></span></button>' +
+        '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
+        '</div>');
+
+}
+
 // МАССОВАЯ БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ
 
 function addActionButton() {
@@ -207,8 +219,6 @@ function addActionButton() {
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div>' +
-            '<div class="ah-post-block-users ah-postShowDescription"><i class="glyphicon glyphicon-sort-by-attributes"></i> <span>Показать описание</span></div>' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
             '<table id="postBlockTable">' +
@@ -216,6 +226,10 @@ function addActionButton() {
             '<tbody></tbody>' +
             '</table>' +
             '</div>');
+
+    $('#ah-user-info-show')
+        .find('ul')
+        .append('<li><div class="ah-show-info ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div></li>');
 
     clickActionButton();
 }
@@ -253,26 +267,22 @@ function clickActionButton() {
         outTextFrame('Список пользователей очищен!')
     });
 
-    $('.ah-postShowDescription').click(function () {
-        $('.ah-description-post').toggle();
-        if($(this).find('span').text() === 'Показать описание'){
-            $(this).find('span').text('Скрыть описание');
-        } else {
-            $(this).find('span').text('Показать описание');
-        }
-
-        $('.ah-post-block-user').hide();
-    });
+    let showUserInfo = false;
 
     $('.ah-postUserAgent').click(function () {
-        if ($(this).find('span').hasClass('showUserAgent')) {
-            $('.userAgent').hide();
-            $('.ah-postUserAgent span').text('Показать User agent и Chance').removeClass('showUserAgent');
-        } else {
-            userAgentShow();
+        if (!showUserInfo) {
+            showUserInfo = true;
+            usersInfoForItems();
         }
 
-        $('.ah-post-block-user').hide();
+        if ($(this).find('span').hasClass('showUserAgent')) {
+            $('.userAgent').hide();
+            $(this).find('span').text('Показать User agent и Chance').removeClass('showUserAgent');
+        } else {
+            $('.userAgent').show();
+            $(this).find('span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
+        }
+
     });
 }
 
@@ -412,20 +422,14 @@ function postBlockRequest(id, reason){
 
 // запрос на отображения информации о юзере для большого кол-ва
 
-function userAgentShow() {
-    if (!$('.ah-postUserAgent span').attr('show')) {
-        let list = $('[userAgent]');
+function usersInfoForItems() {
+    let list = $('[userAgent]');
 
-        for (let i = 0; i < list.length; i++) {
-            let id = $(list[i]).attr('useragent');
+    for (let i = 0; i < list.length; i++) {
+        let id = $(list[i]).attr('useragent');
 
-            usersInfoForManyItems(id);
-        }
-    } else {
-        $('.userAgent').show();
+        usersInfoForManyItems(id);
     }
-
-    $('.ah-postUserAgent span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
 }
 
 function usersInfoForManyItems(id) {
@@ -443,7 +447,7 @@ function usersInfoForManyItems(id) {
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
 
             $('[ah-post-block-chance="'+id+'"]').text(chance);
-            $('[ah-post-block-chance-time="'+id+'"]').text(chanceTime).parents('.userAgent').show();
+            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.userAgent').show();
             $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
         }
     };

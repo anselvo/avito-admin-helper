@@ -31,13 +31,23 @@ function linksOnComments(tableClass, currentUserID) {
 
         if (~commentText.indexOf('item_')) { // cron-dublicate on Item
             var text = commentText;
+            let ids = text.match(/\d+(?![\].])\b/g);
+
             text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+
+            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
             $(commentBlock).html(text);
         }
 
         if (~commentText.indexOf('revived')) { //comparison on Item
             var text = commentText;
+            let ids = text.match(/\d{2,}/g);
+
             text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+
+            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
             $(commentBlock).html(text);
         }
 
