@@ -220,6 +220,9 @@ function startSupport() {
             searchByImageLinks();
 
             copyItemsOnItemsSearch(); // копирование айди и неймов айтемов
+
+            // Block users on post
+            postBlockUsers();
         }
 
         // Account info
@@ -260,6 +263,8 @@ function startSupport() {
             findWherePhoneVerified();
             // копирование телефона в буфер в формате, как на странице юзера
             copyPhoneToClipboard();
+
+            usersSearchBlockUser();
         }
 
         // /system/access
