@@ -3558,6 +3558,7 @@ select.ah-form-control:focus {
 }
 .btn-link.ah-pseudo-link {
     padding: 0;
+    font-size: 13px;
 }
 .ah-pseudo-link:hover, .btn-link.ah-pseudo-link:hover {
 	border-color: transparent;
@@ -4934,6 +4935,7 @@ select.ah-form-control:focus {
 
 .popover.ah-ip-info-popover {
     max-width: 600px;
+    min-width: 350px;
 }
 
 .ah-ip-info-popover td, .ah-ip-info-popover th {
@@ -4993,6 +4995,7 @@ select.ah-form-control:focus {
     right: 0;
     background-color: rgba(255, 255, 255, 0.6);
     display: none;
+    z-index: 1;
 }
 
 .ah-overlay.dark {
@@ -5039,17 +5042,17 @@ select.ah-form-control:focus {
     padding: 10px;
 }
 
-.ah-compare-items-container {
-    max-width: 1250px;
+.ah-compare-container {
+    max-width: 1200px;
     overflow-x: auto;
 }
 
-.ah-compare-items-row {
+.ah-compare-row {
     white-space: nowrap;
     display: flex;
 }
 
-.ah-compare-items-show-more {
+.ah-compare-show-more {
     justify-content: center;
     position: relative;
     color: #959595;
@@ -5057,7 +5060,7 @@ select.ah-form-control:focus {
     margin: 5px 0;
 }
 
-.ah-compare-items-show-more:after {
+.ah-compare-show-more:after {
     content: '';
     border-bottom: 1px dashed #e5e5e5;
     width: 100%;
@@ -5072,9 +5075,14 @@ select.ah-form-control:focus {
     padding: 0 10px;
     position: relative;
     z-index: 1;
+    transition: color 0.2s;
+}
+.ah-compare-items-more-text:hover {
+    color: #000;
 }
 
-.ah-compare-items-cell {
+.ah-compare-cell {
+    min-width: 300px;
     width: 300px;
     display: inline-block;
     white-space: normal;
@@ -5082,8 +5090,12 @@ select.ah-form-control:focus {
     vertical-align: top;
     border-right: 1px solid #e5e5e5;
 }
-.ah-compare-items-cell:last-child {
+.ah-compare-cell:last-child {
     border-right: none;
+}
+
+.ah-compare-matched {
+    background-color: #f2dede !important;
 }
 
 .ah-compare-items-label {
@@ -5104,6 +5116,8 @@ select.ah-form-control:focus {
     margin: 4px 4px 0 0;
     width: 20%;
     overflow: hidden;
+    padding: 2px;
+    border: 1px solid #ccc;
 }
 
 .ah-photo-prev-img {
@@ -5114,16 +5128,20 @@ select.ah-form-control:focus {
     border: 1px solid transparent;
 }
 
+.ah-photo-prev-img-active {
+    opacity: 0.45;
+}
+
 .ah-compare-items-photo-prev {
-    max-height: 100px;
+    max-height: 105px;
     overflow-y: auto;
 }
 
-.ah-compare-items-row-description .ah-compare-items-cell {
+.ah-compare-items-row-description .ah-compare-cell {
     background-color: rgba(204, 204, 204, 0.25);
 }
 .ah-compare-items-cell-description {
-    max-height: 120px;
+    max-height: 250px;
     overflow-y: auto;
 }
 
@@ -5133,4 +5151,9 @@ select.ah-form-control:focus {
 
 .ah-text-vas {
     color: #f88158;
+}
+
+.ah-none-overflow-y {
+    max-height: none;
+    overflow-y: visible;
 }

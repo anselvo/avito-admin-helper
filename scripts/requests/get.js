@@ -14,5 +14,18 @@ function getItemInfo(id) {
                 resolve(response.text());
             })
     });
+}
 
+function getIpInfo(ip) {
+    return new Promise(function(resolve, reject) {
+        fetch(`/ip/info?ip=${ip}`, {
+            credentials: 'include',
+            headers: {"X-Requested-With": "XMLHttpRequest"}
+        }).then(function(response) {
+            if (response.status !== 200) {
+                reject(response);
+            }
+            resolve(response.text());
+        })
+    });
 }

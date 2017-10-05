@@ -466,7 +466,7 @@ function addCompareItemsItemInfo() {
             </span>
             <input type="text" class="form-control input-sm" placeholder="Объявления" name="compareItems">
             <span class="input-group-addon" id="compare-items-info" data-toggle="tooltip" data-placement="left" 
-                title="Вставьте ID объявлений, разделенные нечислом, или ссылки на объявления">
+                title="Вставьте ID объявлений, разделенные нечислом">
                 <span class="glyphicon glyphicon-info-sign"></span>
             </span>
         </div>
@@ -476,13 +476,16 @@ function addCompareItemsItemInfo() {
 
     $('#compare-items-info').tooltip();
     $('#compare-items-btn').click(function() {
-        // let value = $('[name="compareItems"]').val(),
-        //     items = value.match(/\d+/g);
-        //
-        // if (!items) return;
-        // items.push(getParamsItemInfo().id.toString());
+        let value = $('[name="compareItems"]').val();
+        let items = value.match(/\d+/g);
 
-        let items = ['1221849423', '945668371', '1097353750', '1091069260']; // for test
-        ahCompareItems(items);
+        if (!items) return;
+
+        items.unshift(getParamsItemInfo().id.toString());
+        let btn = $(this);
+        btnLoaderOn($(btn));
+        ahCompareItems(items, function() {
+            return btnLoaderOff($(btn));
+        });
     });
 }
