@@ -476,11 +476,13 @@ function addCompareItemsItemInfo() {
 
     $('#compare-items-info').tooltip();
     $('#compare-items-btn').click(function() {
-        let value = $('[name="compareItems"]').val();
-        let items = value.match(/\d+/g);
+        // let value = $('[name="compareItems"]').val();
+        // let items = value.match(/\d+/g);
+        //
+        // if (!items) return;
 
-        if (!items) return;
-
+        let items = ['1216808540', '1161032058', '1197725249', '967847815', '1011796217', '1103540495', '747120253'];
+        // let items = ['1161032058', '1197725249'];
         items.unshift(getParamsItemInfo().id.toString());
         let btn = $(this);
         btnLoaderOn($(btn));

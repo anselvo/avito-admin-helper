@@ -5030,7 +5030,7 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-items-modal .modal-header {
-    padding: 10px 10px 0 10px;
+    padding: 10px 15px 0 15px;
     border-bottom: none;
 }
 
@@ -5039,12 +5039,47 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-items-modal .modal-body {
-    padding: 10px;
+    padding: 10px 20px;
 }
 
 .ah-compare-container {
     max-width: 1200px;
-    overflow-x: auto;
+    overflow-x: hidden;
+}
+
+.ah-compare-scroll {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background-color: transparent;
+    cursor: pointer;
+    z-index: 1;
+    outline: none;
+    border: 1px solid transparent;
+    padding: 0;
+    transition: width 0.2s;
+}
+.ah-compare-scroll:hover {
+    background-color: rgba(204, 204, 204, 0.63);
+    width: 40px;
+}
+.ah-compare-scroll:hover:active {
+    background-color: rgba(153, 153, 153, 0.72);
+}
+
+.ah-compare-scroll .ah-compare-scroll-arrow {
+    top: 50%;
+    transform: translateY(-50%);
+}
+.ah-compare-scroll-left {
+    left: 0;
+}
+.ah-compare-scroll-right {
+    right: 0;
+}
+.ah-compare-scroll-disabled {
+    color: rgba(119, 119, 119, 0.29);
 }
 
 .ah-compare-row {
@@ -5089,9 +5124,22 @@ select.ah-form-control:focus {
     padding: 2px 6px;
     vertical-align: top;
     border-right: 1px solid #e5e5e5;
+    transition: width, min-width 0.25s;
+}
+.ah-compare-cell:first-child {
+    border-right: 2px solid rgba(51, 122, 183, 0.45);
 }
 .ah-compare-cell:last-child {
     border-right: none;
+}
+
+.ah-compare-cell-hidden-by-scroll {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    white-space: nowrap;
+    opacity: 0;
 }
 
 .ah-compare-matched {
@@ -5100,6 +5148,20 @@ select.ah-form-control:focus {
 
 .ah-compare-items-label {
     font-weight: 700;
+}
+
+.ah-compare-items-photo-main {
+    position: relative;
+}
+
+.ah-compare-items-photo-count {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(230, 230, 230, 0.7);
+    padding: 2px 4px;
+    min-width: 22px;
+    text-align: center;
 }
 
 .ah-photo-link {
@@ -5143,6 +5205,7 @@ select.ah-form-control:focus {
 .ah-compare-items-cell-description {
     max-height: 250px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .ah-compare-items-status {

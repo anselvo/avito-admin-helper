@@ -856,6 +856,11 @@ function getParamsItemInfo(html) {
     return res;
 }
 
+// получить оставшийся скролл справа
+function getScrollSizeRight(elem) {
+    return elem.scrollWidth - elem.scrollLeft - elem.clientWidth;
+}
+
 // сравнение айтемов (0й элемент в items - опорное объявление)
 function ahCompareItems(items, callback) {
     callback = callback || function() {};
@@ -873,12 +878,19 @@ function ahCompareItems(items, callback) {
         return;
     }
 
+    const MAX_COUNT = 10;
+    if (unique.length > MAX_COUNT) {
+        alert(`Нельзя сравнивать более ${MAX_COUNT} объявлений`);
+        callback();
+        return;
+    }
+
     renderCompareItemsModal();
 
     let modal = $('#ahCompareItemsModal');
     let itemsContainer = $(modal).find('.ah-compare-container');
 
-    $(itemsContainer).remove();
+    $(itemsContainer).find('*').remove();
 
     let doneRequestsCount = 0;
     let parsedItems = {};
@@ -897,20 +909,7 @@ function ahCompareItems(items, callback) {
                     doneRequestsCount++;
                     if (unique.length === doneRequestsCount) { // все запросы завершены
                         renderCompareItems(parsedItems);
-
-                        $(modal).on('shown.bs.modal', function() {
-                            // если есть скролл, добавить коллапс
-                            let allCollapsible = modal[0].querySelectorAll('.ah-compare-items-collapsible');
-                            for (let i = 0; i < allCollapsible.length; i++) {
-                                let elem = allCollapsible[i];
-                                if (elem.scrollHeight > elem.clientHeight) { // есть скоролл
-                                    let row = elem.closest('.ah-compare-row'),
-                                        showMore = row.nextElementSibling;
-
-                                    showMore.classList.remove('hidden');
-                                }
-                            }
-                        }).modal('show');
+                        $(modal).modal('show');
                         callback();
                     }
                 }
@@ -931,17 +930,49 @@ function renderCompareItemsModal() {
                         </button>
                         <h4 class="modal-title">Сравнение объявлений</h4>
                     </div>
-                    <div class="modal-body"></div>
+                    <div class="modal-body">
+                        <button class="ah-compare-scroll ah-compare-scroll-left" data-direction="left">
+                            <span class="glyphicon glyphicon-chevron-left ah-compare-scroll-arrow"></span>
+                        </button>
+                        <button class="ah-compare-scroll ah-compare-scroll-right" data-direction="right">
+                            <span class="glyphicon glyphicon-chevron-right ah-compare-scroll-arrow"></span>
+                        </button>
+                        
+                        <div class="ah-compare-container"></div>
+                    </div>
                 </div>
             </div>
         </div>
     `);
 
     let modal = document.getElementById('ahCompareItemsModal');
+    let scrollBtns = modal.querySelectorAll('.ah-compare-scroll');
+    let container = modal.querySelector('.ah-compare-container');
+
+    $(modal).on('shown.bs.modal', modalShownHandler);
     modal.addEventListener('click', modalClickHandler);
+    modal.addEventListener('transitionend', modalTransitionendHandler);
+
+    function modalShownHandler() {
+        // если есть скролл у ограниченных по высоте ячеек, добавить коллапс
+        let allCollapsible = modal.querySelectorAll('.ah-compare-items-collapsible');
+        for (let i = 0; i < allCollapsible.length; i++) {
+            let elem = allCollapsible[i];
+            if (elem.scrollHeight > elem.clientHeight) { // есть скоролл
+                let row = elem.closest('.ah-compare-row'),
+                    showMore = row.nextElementSibling;
+
+                showMore.classList.remove('hidden');
+            }
+        }
+
+        // проверка скролл баттонов
+        checkScrollBtns();
+    }
 
     function modalClickHandler(e) {
         let target = e.target;
+        let container = modal.querySelector('.ah-compare-container');
 
         while (target !== this) {
             // collapse
@@ -965,14 +996,86 @@ function renderCompareItemsModal() {
                 mainPhoto.href = originalImg;
             }
 
+            // scroll
+            if (target.classList.contains('ah-compare-scroll') && !target.disabled) {
+                let direction = target.dataset.direction;
+                let abutmentCells = container.querySelectorAll('.ah-compare-cell:first-child');
+
+                if (direction === 'right' && getScrollSizeRight(container) !== 0) {
+                    for (let i = 0; i < scrollBtns.length; i++) {
+                        scrollBtns[i].disabled = true;
+                    }
+                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
+                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+                        let lastHidden = allHidden[allHidden.length - 1];
+                        let nextVisible = (lastHidden) ? lastHidden.nextElementSibling : abutmentCells[i].nextElementSibling;
+                        nextVisible.addEventListener('transitionend', transitionEndVisible);
+                        nextVisible.classList.add('ah-compare-cell-hidden-by-scroll');
+
+                        function transitionEndVisible() {
+                            nextVisible.removeEventListener('transitionend', transitionEndVisible);
+                        }
+                    }
+                }
+
+                if (direction === 'left') {
+                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
+                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+                        let lastHidden = allHidden[allHidden.length - 1];
+                        if (lastHidden) {
+                            lastHidden.addEventListener('transitionend', transitionEndHidden);
+                            lastHidden.style.whiteSpace = 'nowrap';
+                            lastHidden.style.opacity = '0';
+                            lastHidden.classList.remove('ah-compare-cell-hidden-by-scroll');
+                        }
+
+                        function transitionEndHidden() {
+                            lastHidden.style.whiteSpace = '';
+                            lastHidden.style.opacity = '';
+                            lastHidden.removeEventListener('transitionend', transitionEndHidden);
+                        }
+                    }
+                }
+            }
+
             target = target.parentNode;
+        }
+    }
+
+    function modalTransitionendHandler(e) {
+        let target = e.target;
+
+        // убрать disabled у баттонов для скролла
+        if (target.classList.contains('ah-compare-cell')) {
+            for (let i = 0; i < scrollBtns.length; i++) {
+                scrollBtns[i].disabled = false;
+            }
+            checkScrollBtns();
+        }
+    }
+
+    function checkScrollBtns() {
+        let rightScroll = modal.querySelector('.ah-compare-scroll[data-direction="right"]');
+        let leftScroll = modal.querySelector('.ah-compare-scroll[data-direction="left"]');
+        let allHiddens = modal.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+
+        if (getScrollSizeRight(container) === 0) {
+            rightScroll.classList.add('ah-compare-scroll-disabled');
+        } else {
+            rightScroll.classList.remove('ah-compare-scroll-disabled');
+        }
+
+        if (allHiddens.length === 0) {
+            leftScroll.classList.add('ah-compare-scroll-disabled');
+        } else {
+            leftScroll.classList.remove('ah-compare-scroll-disabled');
         }
     }
 }
 
 function renderCompareItems(items) {
     let modal = $('#ahCompareItemsModal');
-    let modalBody = $(modal).find('.modal-body');
+    let modalContainer = $(modal).find('.ah-compare-container');
     let statusPatterns = {
         blocked: /\bblocked\b/i,
         rejected: /\brejected\b/i,
@@ -1018,6 +1121,7 @@ function renderCompareItems(items) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
+                <span class="ah-compare-items-photo-count">${item.photos.length}</span>
                 <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
                     class="ah-photo-link">
                 </a>
@@ -1146,50 +1250,48 @@ function renderCompareItems(items) {
         `;
     }
 
-    $(modalBody).append(`
-        <div class="ah-compare-container">
-            <div class="ah-compare-row">
-                ${rows.id_title_price}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.status_reasons}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.sortTime}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.photos}
-            </div>
-            <div class="ah-compare-row ah-compare-show-more hidden">
-                <span class="ah-compare-items-more-text">
-                    Фото <span class="glyphicon glyphicon-collapse-down"></span>
-                </span>
-            </div>
-    
-            <div class="ah-compare-row">
-                ${rows.microCategory}
-            </div>
-            <div class="ah-compare-row ah-compare-items-row-description">
-                ${rows.description}
-            </div>
-            <div class="ah-compare-row ah-compare-show-more hidden">
-                <span class="ah-compare-items-more-text">
-                    Описания <span class="glyphicon glyphicon-collapse-down"></span>
-                </span>
-            </div>
-    
-            <div class="ah-compare-row">
-                ${rows.region}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.phone_ip}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.sellerName}
-            </div>
-            <div class="ah-compare-row">
-                ${rows.user}
-            </div>
+    $(modalContainer).append(`
+        <div class="ah-compare-row">
+            ${rows.id_title_price}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.status_reasons}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.sortTime}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.photos}
+        </div>
+        <div class="ah-compare-row ah-compare-show-more hidden">
+            <span class="ah-compare-items-more-text">
+                Фото <span class="glyphicon glyphicon-collapse-down"></span>
+            </span>
+        </div>
+
+        <div class="ah-compare-row">
+            ${rows.microCategory}
+        </div>
+        <div class="ah-compare-row ah-compare-items-row-description">
+            ${rows.description}
+        </div>
+        <div class="ah-compare-row ah-compare-show-more hidden">
+            <span class="ah-compare-items-more-text">
+                Описания <span class="glyphicon glyphicon-collapse-down"></span>
+            </span>
+        </div>
+
+        <div class="ah-compare-row">
+            ${rows.region}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.phone_ip}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.sellerName}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.user}
         </div>
     `);
 
