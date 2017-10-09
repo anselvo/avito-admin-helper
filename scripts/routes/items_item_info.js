@@ -487,7 +487,7 @@ function addCompareItemsItemInfo() {
         let btn = $(this);
         btnLoaderOn($(btn));
         ahCompareItems(items, function() {
-            return btnLoaderOff($(btn));
+            btnLoaderOff($(btn));
         });
     });
 }

@@ -5029,16 +5029,16 @@ select.ah-form-control:focus {
     min-width: 300px;
 }
 
-.ah-compare-items-modal .modal-header {
-    padding: 10px 15px 0 15px;
-    border-bottom: none;
+/*compare*/
+.ah-compare-modal .modal-header {
+    padding: 10px 15px;
 }
 
-.ah-compare-items-modal .modal-dialog {
+.ah-compare-modal .modal-dialog {
     margin-top: 15px;
 }
 
-.ah-compare-items-modal .modal-body {
+.ah-compare-modal .modal-body {
     padding: 10px 20px;
 }
 
@@ -5054,17 +5054,17 @@ select.ah-form-control:focus {
     width: 20px;
     background-color: transparent;
     cursor: pointer;
-    z-index: 1;
+    z-index: 2;
     outline: none;
     border: 1px solid transparent;
     padding: 0;
     transition: width 0.2s;
 }
-.ah-compare-scroll:hover {
+.ah-compare-scroll:not(.ah-compare-scroll-disabled):hover {
     background-color: rgba(204, 204, 204, 0.63);
-    width: 40px;
+    width: 80px;
 }
-.ah-compare-scroll:hover:active {
+.ah-compare-scroll:not(.ah-compare-scroll-disabled):hover:active {
     background-color: rgba(153, 153, 153, 0.72);
 }
 
@@ -5080,6 +5080,7 @@ select.ah-form-control:focus {
 }
 .ah-compare-scroll-disabled {
     color: rgba(119, 119, 119, 0.29);
+    cursor: not-allowed;
 }
 
 .ah-compare-row {
@@ -5124,21 +5125,19 @@ select.ah-form-control:focus {
     padding: 2px 6px;
     vertical-align: top;
     border-right: 1px solid #e5e5e5;
-    transition: width, min-width 0.25s;
+    transition: opacity 0.2s, right 0.2s;
+    position: relative;
+    right: 0;
 }
 .ah-compare-cell:first-child {
     border-right: 2px solid rgba(51, 122, 183, 0.45);
+    z-index: 1;
 }
 .ah-compare-cell:last-child {
     border-right: none;
 }
 
 .ah-compare-cell-hidden-by-scroll {
-    width: 0;
-    min-width: 0;
-    padding: 0;
-    border: 0;
-    white-space: nowrap;
     opacity: 0;
 }
 
@@ -5180,13 +5179,13 @@ select.ah-form-control:focus {
     overflow: hidden;
     padding: 2px;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .ah-photo-prev-img {
     margin: 0 auto;
     display: block;
     height: 37px;
-    cursor: pointer;
     border: 1px solid transparent;
 }
 

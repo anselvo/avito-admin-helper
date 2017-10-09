@@ -795,11 +795,12 @@ function getCopyTooltipContentAlt(altText) {
 function showIpInfoPopover(target, response, options) {
     options = options || {};
     let container = options.container || 'body';
+    let placement = options.placement || 'top';
 
     $(target).popover({
         html: true,
         container: container,
-        placement: 'top',
+        placement: placement,
         content: response,
         template: `
             <div class="popover ah-ip-info-popover ah-popover-destroy-outclicking">
@@ -921,7 +922,7 @@ function renderCompareItemsModal() {
     if ($(`#ahCompareItemsModal`).length !== 0) return;
 
     $('body').append(`
-        <div class="modal ah-dynamic-bs-modal ah-compare-items-modal" id="ahCompareItemsModal" tabindex="-1" role="dialog">
+        <div class="modal ah-dynamic-bs-modal ah-compare-modal" id="ahCompareItemsModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -977,21 +978,22 @@ function renderCompareItemsModal() {
         while (target !== this) {
             // collapse
             if (target.classList.contains('ah-compare-show-more')) {
-                let prev = target.previousElementSibling,
-                    collapsible = prev.querySelectorAll('.ah-compare-items-collapsible');
+                let prev = target.previousElementSibling;
+                let collapsible = prev.querySelectorAll('.ah-compare-items-collapsible');
 
                 $(collapsible).toggleClass('ah-none-overflow-y');
                 target.querySelector('.glyphicon-collapse-down').classList.toggle('glyphicon-collapse-up');
             }
 
             // photo
-            if (target.classList.contains('ah-photo-prev-img')) {
-                let allPreviews = target.closest('.ah-compare-items-photo-prev').querySelectorAll('.ah-photo-prev-img'),
-                    mainPhoto = target.closest('.ah-compare-cell').querySelector('.ah-compare-items-photo-main .ah-photo-link'),
-                    originalImg = target.dataset.originalImage;
+            if (target.classList.contains('ah-photo-prev-wrap')) {
+                let allPreviews = target.closest('.ah-compare-items-photo-prev').querySelectorAll('.ah-photo-prev-img');
+                let mainPhoto = target.closest('.ah-compare-cell').querySelector('.ah-compare-items-photo-main .ah-photo-link');
+                let currPreview = target.querySelector('.ah-photo-prev-img');
+                let originalImg = currPreview.dataset.originalImage;
 
                 $(allPreviews).removeClass('ah-photo-prev-img-active');
-                target.classList.add('ah-photo-prev-img-active');
+                currPreview.classList.add('ah-photo-prev-img-active');
                 mainPhoto.style.backgroundImage = `url(${originalImg})`;
                 mainPhoto.href = originalImg;
             }
@@ -1000,39 +1002,46 @@ function renderCompareItemsModal() {
             if (target.classList.contains('ah-compare-scroll') && !target.disabled) {
                 let direction = target.dataset.direction;
                 let abutmentCells = container.querySelectorAll('.ah-compare-cell:first-child');
+                let exceptAbutmentCells = container.querySelectorAll('.ah-compare-cell:not(:first-child)');
+                let cellWidth = container.querySelector('.ah-compare-cell').offsetWidth;
+                let allHidden = modal.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+
 
                 if (direction === 'right' && getScrollSizeRight(container) !== 0) {
+                    for (let i = 0; i < scrollBtns.length; i++) {
+                        scrollBtns[i].disabled = true;
+                    }
+
+                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
+                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+                        let lastHidden = allHidden[allHidden.length - 1];
+                        let nextVisible = (lastHidden) ? lastHidden.nextElementSibling : abutmentCells[i].nextElementSibling;
+
+                        nextVisible.classList.add('ah-compare-cell-hidden-by-scroll');
+                    }
+
+                    for (let i = 0; i < exceptAbutmentCells.length; i++) {
+                        let cell = exceptAbutmentCells[i];
+                        let cellRight = parseFloat(getComputedStyle(cell).right);
+                        cell.style.right = +(cellRight + cellWidth) + 'px';
+                    }
+                }
+
+                if (direction === 'left' && allHidden.length !== 0) {
                     for (let i = 0; i < scrollBtns.length; i++) {
                         scrollBtns[i].disabled = true;
                     }
                     for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
                         let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
                         let lastHidden = allHidden[allHidden.length - 1];
-                        let nextVisible = (lastHidden) ? lastHidden.nextElementSibling : abutmentCells[i].nextElementSibling;
-                        nextVisible.addEventListener('transitionend', transitionEndVisible);
-                        nextVisible.classList.add('ah-compare-cell-hidden-by-scroll');
-
-                        function transitionEndVisible() {
-                            nextVisible.removeEventListener('transitionend', transitionEndVisible);
-                        }
-                    }
-                }
-
-                if (direction === 'left') {
-                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
-                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
-                        let lastHidden = allHidden[allHidden.length - 1];
                         if (lastHidden) {
-                            lastHidden.addEventListener('transitionend', transitionEndHidden);
-                            lastHidden.style.whiteSpace = 'nowrap';
-                            lastHidden.style.opacity = '0';
                             lastHidden.classList.remove('ah-compare-cell-hidden-by-scroll');
                         }
 
-                        function transitionEndHidden() {
-                            lastHidden.style.whiteSpace = '';
-                            lastHidden.style.opacity = '';
-                            lastHidden.removeEventListener('transitionend', transitionEndHidden);
+                        for (let i = 0; i < exceptAbutmentCells.length; i++) {
+                            let cell = exceptAbutmentCells[i];
+                            let cellRight = parseFloat(getComputedStyle(cell).right);
+                            cell.style.right = +(cellRight - cellWidth) + 'px';
                         }
                     }
                 }
@@ -1300,7 +1309,10 @@ function renderCompareItems(items) {
     $(abutmentItemIdNode).before(`<span class="label label-primary">Опорное</span> `);
 
     // тултип причина
-    $(modal).find(`.ah-compare-items-reason-tooltip`).tooltip({placement: 'bottom'});
+    $(modal).find(`.ah-compare-items-reason-tooltip`).tooltip({
+        placement: 'bottom',
+        container: 'body'
+    });
 
     // поповер инфо об ip
     let ipPopovers = $(modal).find('.ah-compare-items-ip-info-btn');
@@ -1311,7 +1323,7 @@ function renderCompareItems(items) {
 
         getIpInfo(ip)
             .then(
-                response => showIpInfoPopover($(btn), response, {container: $(btn).parent()}),
+                response => showIpInfoPopover($(btn), response),
                 error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
             ).then(
                 () => btnLoaderOff($(btn))
