@@ -369,6 +369,7 @@ function moderationListener(details, user) {
                     if (~key.indexOf(baseItemID.toString())) countAllow = false;
                     ++countBlock;
                 }
+                if (~key.indexOf('revive')) countBlock--;
             }
         }
 
