@@ -153,9 +153,9 @@ function timeInCity() {
         method: "GET",
         url: url
     }, function(response) {
-        let time = $(response).find('.z-time__line').html();
+        let time = $(response).find('.t-construct-adapter__time').html();
 
-        $('#f_location_id').append('<span class="col-xs-3 control-label currentTimeInCity">Текущее время в ' + time + '</span>');
+        $('body').append('<div class="ah-currentTimeInCity">' + time + '</div>');
     });
 }
 

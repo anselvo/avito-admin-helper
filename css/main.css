@@ -4431,12 +4431,15 @@ select.ah-form-control:focus {
     font-size: 75%;
 }
 
-.currentTimeInCity {
-    padding: 5px;
+.ah-currentTimeInCity {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    padding: 5px 10px;
     border: 1px solid #b0d2fd;
-    text-align: center !important;
     background: #ecf6ff;
-    width: auto !important;
+    box-shadow: rgba(0, 0, 0, 0.18) 0 1px 11px 0, rgba(0, 0, 0, 0.15) 0 1px 1px 0;
+    z-index: 10;
 }
 
 .z-time__city {
