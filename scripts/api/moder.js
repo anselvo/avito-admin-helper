@@ -197,7 +197,7 @@ function eyeLinks(list) {
 
 function addInfoToItems() {
     $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
-        '  <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Показать' +
+        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Показать' +
         '  <span class="caret"></span></button>' +
         '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
         '</div>');
@@ -229,7 +229,12 @@ function addActionButton() {
 
     $('#ah-user-info-show')
         .find('ul')
-        .append('<li><div class="ah-show-info ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div></li>');
+        .append('<li>' +
+            '<div class="ah-show-info ah-postUserAgent">' +
+            '<i class="glyphicon glyphicon-phone"></i> ' +
+            '<span class="ah-menu-name">Показать User Info</span><span class="ah-hot-keys">Alt+U</span>' +
+            '</div>' +
+            '</li>');
 
     clickActionButton();
 }
@@ -269,21 +274,31 @@ function clickActionButton() {
 
     let showUserInfo = false;
 
-    $('.ah-postUserAgent').click(function () {
+    function clickPostUserAgent() {
+        let selector = $('.ah-postUserAgent');
+
         if (!showUserInfo) {
             showUserInfo = true;
             usersInfoForItems();
         }
 
-        if ($(this).find('span').hasClass('showUserAgent')) {
+        if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $(this).find('span').text('Показать User agent и Chance').removeClass('showUserAgent');
+            $(selector).find('span.ah-menu-name').text('Показать User Info').removeClass('showUserAgent');
         } else {
             $('.userAgent').show();
-            $(this).find('span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
+            $(selector).find('span.ah-menu-name').text('Скрыть User Info').addClass('showUserAgent').attr('show', 'true');
         }
 
+    }
+
+    $('.ah-postUserAgent').click(clickPostUserAgent);
+
+    $(document).keydown(function (e) {
+        if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
+            clickPostUserAgent();
     });
+
 }
 
 function clickChooseButton() {

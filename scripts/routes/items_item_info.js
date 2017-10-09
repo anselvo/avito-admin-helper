@@ -144,7 +144,7 @@ function rejectByCall() {
 }
 
 function timeInCity() {
-    let city = $('#region option:selected').text();
+    let city = $('#region').find('option:selected').text();
 
     let url = 'https://yandex.ru/search/?text=Время в ' + city;
 

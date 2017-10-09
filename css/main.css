@@ -4264,8 +4264,8 @@ select.ah-form-control:focus {
 }
 
 .ah-show-info {
+    width: 250px;
     cursor: pointer;
-    display: block;
     padding: 3px 20px;
     line-height: 1.42857143;
     white-space: nowrap;
@@ -4961,4 +4961,10 @@ select.ah-form-control:focus {
 .ah-total-refund-info-popover .list-group {
     margin-bottom: 0;
     font-size: 13px;
+}
+
+.ah-hot-keys {
+    float: right;
+    color: #c5bec2;
+    margin-left: 10px;
 }
