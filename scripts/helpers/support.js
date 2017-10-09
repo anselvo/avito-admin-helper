@@ -9,6 +9,7 @@ var allowedPremiumUsersSubd = [
     'TL', // "Руководители"
     'SD', // "Script Developer"
     'ME', // Руководитель отдела
+    'IN', // Интерн
 ];
 
 // индиктор расширение
