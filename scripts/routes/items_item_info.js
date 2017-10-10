@@ -363,7 +363,7 @@ function renderRefundInfo(responseBody, data) {
         container: 'body',
         html: true,
         title: `
-                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2)}</span> руб.
+                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2).replace('.', ',')}</span> руб.
                 <span class="ah-refund-info-title-links">
                     <a target="_blank" href="/users/account/info/${userId}">Счёт</a> | 
                     <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
@@ -384,13 +384,13 @@ function renderRefundInfo(responseBody, data) {
     let popover = $('.ah-refund-info-popover');
     copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {
         placement: 'right',
-        title: getCopyTooltipContentAlt('скопировать с шаблоном'),
-        getTextAlt: function(elem) {
-            return 'Мы компенсировали затраченные средства в размере ' + $(elem).text() + ' рублей, они были зачислены на Ваш Кошелек Avito.\n\n' +
-            'Вы можете воспользоваться этими средствами для оплаты дополнительных услуг и сервисов на Avito. ' +
-            'История операций доступна по ссылке: https://www.avito.ru/account/history';
-        },
-        getNotificationAlt: () => 'Скопировано с шаблоном'
+        // title: getCopyTooltipContentAlt('скопировать с шаблоном'),
+        // getTextAlt: function(elem) {
+        //     return 'Мы компенсировали затраченные средства в размере ' + $(elem).text() + ' рублей, они были зачислены на Ваш Кошелек Avito.\n\n' +
+        //     'Вы можете воспользоваться этими средствами для оплаты дополнительных услуг и сервисов на Avito. ' +
+        //     'История операций доступна по ссылке: https://www.avito.ru/account/history';
+        // },
+        // getNotificationAlt: () => 'Скопировано с шаблоном'
     });
     $(popover).find('.js-popover').addClass('ah-pseudo-link').popover();
 
