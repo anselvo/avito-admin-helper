@@ -101,7 +101,6 @@ function callCenter() {
 
         rejectByCall();
         timeInCity();
-
     }
 }
 
