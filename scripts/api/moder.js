@@ -1,4 +1,63 @@
+function antifraudLinks() {
+    let trList = $('#items').find('tr');
+    let flagDispersion = 5;
+    let priceDispersion = 20;
 
+    let dateStart = new Date(new Date() - 7.776e+9);
+    let dateEnd = new Date();
+    let formatDateStart = parseDateToSearchFormat(dateStart);
+    let formatDateEnd = parseDateToSearchFormat(dateEnd);
+
+    for (let i = 0; i < trList.length; ++i) {
+        let categoryItemID = $(trList[i]).attr('data-category');
+        let locationItemID = $(trList[i]).attr('data-location');
+
+        let firstParam = '', firstParamMap = '';
+        if ($(trList[i]).attr('data-params')) {
+            firstParam = JSON.parse($(trList[i]).attr('data-params'))[0];
+            firstParamMap = JSON.parse($(trList[i]).attr('data-params-map'))[firstParam[0]];
+        }
+
+        let itemPrice = parseInt($(trList[i]).find('.item-info-row:eq(0)')[0].firstChild.data.replace(/\D/g, ''));
+        let itemPriceMin = '';
+        let itemPriceMax = '';
+        if (itemPrice) {
+            itemPriceMin = Math.ceil(itemPrice * (100 - priceDispersion) / 100);
+            itemPriceMax = Math.floor(itemPrice * (100 + priceDispersion) / 100);
+        }
+
+        let flagList = $(trList[i]).find('.b-antifraud');
+        for (let j = 0; j < flagList.length; ++j) {
+            let percent = parseInt($(flagList[j]).attr('title'));
+            let percentMin = percent - flagDispersion;
+            let percentMax = percent + flagDispersion;
+
+            let flagName = $(flagList[j]).find('.name').text();
+            let flagInfo = $('div.js-multiselect-reasons ul.multiselect-container li:contains(' + flagName + ')').find('input[type="checkbox"]')[0];
+            let flagId = $(flagInfo).val();
+
+            if (flagId) {
+                let flagAction = $(flagInfo).parents('[data-title]').attr('data-title');
+                let flagStatus = 'block_id[]';
+                if (~flagAction.indexOf('reject')) flagStatus = 'reject_id[]';
+
+                let flagLink = 'https://adm.avito.ru/items/search?' +
+                    'date=' + formatDateStart + '+-+' + formatDateEnd + '&' +
+                    'location_id[]=' + locationItemID + '&' +
+                    'cid[]=' + categoryItemID + '&' +
+                    'price_min=' + itemPriceMin + '&' +
+                    'price_max=' + itemPriceMax + '&' +
+                    flagStatus + '=' + flagId + '&' +
+                    'percent_min=' + percentMin + '&' +
+                    'percent_max=' + percentMax + '&' +
+                    'params[' + firstParam[0] + ']=' + firstParamMap + '&' +
+                    's_type=2';
+
+                $(flagList[j]).find('.name').html('<a href="' + flagLink + '" target="_blank">' + flagName + '</a>');
+            }
+        }
+    }
+}
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
@@ -171,8 +230,6 @@ function eyeLinks(list) {
             let jsomParamMap = JSON.parse(paramMap);
             let isParams = false;
 
-
-
             for (let j = 0; j < searchParamID.length; ++j) {
                 let tmp = jsomParamMap[searchParamID[j]];
                 if (tmp) {
@@ -197,7 +254,7 @@ function eyeLinks(list) {
 
 function addInfoToItems() {
     $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
-        '  <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Показать' +
+        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Показать' +
         '  <span class="caret"></span></button>' +
         '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
         '</div>');
@@ -229,7 +286,12 @@ function addActionButton() {
 
     $('#ah-user-info-show')
         .find('ul')
-        .append('<li><div class="ah-show-info ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div></li>');
+        .append('<li>' +
+            '<div class="ah-show-info ah-postUserAgent">' +
+            '<i class="glyphicon glyphicon-phone"></i> ' +
+            '<span class="ah-menu-name">Показать User Info</span><span class="ah-hot-keys">Alt+U</span>' +
+            '</div>' +
+            '</li>');
 
     clickActionButton();
 }
@@ -269,21 +331,31 @@ function clickActionButton() {
 
     let showUserInfo = false;
 
-    $('.ah-postUserAgent').click(function () {
+    function clickPostUserAgent() {
+        let selector = $('.ah-postUserAgent');
+
         if (!showUserInfo) {
             showUserInfo = true;
             usersInfoForItems();
         }
 
-        if ($(this).find('span').hasClass('showUserAgent')) {
+        if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $(this).find('span').text('Показать User agent и Chance').removeClass('showUserAgent');
+            $(selector).find('span.ah-menu-name').text('Показать User Info').removeClass('showUserAgent');
         } else {
             $('.userAgent').show();
-            $(this).find('span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
+            $(selector).find('span.ah-menu-name').text('Скрыть User Info').addClass('showUserAgent').attr('show', 'true');
         }
 
+    }
+
+    $('.ah-postUserAgent').click(clickPostUserAgent);
+
+    $(document).keydown(function (e) {
+        if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
+            clickPostUserAgent();
     });
+
 }
 
 function clickChooseButton() {

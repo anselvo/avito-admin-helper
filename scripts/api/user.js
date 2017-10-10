@@ -157,8 +157,12 @@ function usersInfo(id, itemid, offset, query) {
             let ip = $(ruser).find('[data-ip]:eq(0)').text();
             let status = $(ruser).find('.form-group:contains(Статус) div b').text();
             let nameuser =  $(ruser).find('.form-group:contains(Название) input').attr('value');
-            let date = new Date(new Date() - 7.776e+9);
-            let formatDate = (date.getDate()<10?'0':'')+date.getDate() + "/" + ((date.getMonth()+1)<10?'0':'')+(date.getMonth()+1) + "/" + date.getFullYear() + '+00:00';
+
+            let dateStart = new Date(new Date() - 7.776e+9);
+            let dateEnd = new Date();
+            let formatDateStart = parseDateToSearchFormat(dateStart);
+            let formatDateEnd = parseDateToSearchFormat(dateEnd);
+            let formatDate = formatDateStart + '+-+' + formatDateEnd;
 
             let color;
             if (status.indexOf('Active')+1) color = 'green';
@@ -217,17 +221,17 @@ function usersInfo(id, itemid, offset, query) {
                         } else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
                         $('#phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
-                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append('<span class="phoneInItem"></span>' + verify + ' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">'+number+'</a>');
-                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">city</a>');
-                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&is_company=2&query='+query+'&date='+formatDate+'+-+Now" target="_blank">+private</a>');
-                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&params['+firstParam+']='+firstParamVal+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">parameter</a>');
-                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&ip='+ipItem+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">item_ip</a>');
+                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append('<span class="phoneInItem"></span>' + verify + ' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'" target="_blank">'+number+'</a>');
+                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&query='+query+'&date='+formatDate+'" target="_blank">city</a>');
+                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&is_company=2&query='+query+'&date='+formatDate+'" target="_blank">+private</a>');
+                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&params['+firstParam+']='+firstParamVal+'&query='+query+'&date='+formatDate+'" target="_blank">parameter</a>');
+                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&ip='+ipItem+'&query='+query+'&date='+formatDate+'" target="_blank">item_ip</a>');
                         if (localStorage.checkboxInfo.indexOf('15')+1) $('#'+number).append('<div class="ah-phone-verify-date" title="Дата верификации телефона">'+verifyDate+'</div>');
                     }
 
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
-                    $('#ipItem').append('<a href="https://adm.avito.ru/items/search?ip='+ipItem+'&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'+-+Now" target="_blank">'+ipItem+'</a>');
+                    $('#ipItem').append('<a href="https://adm.avito.ru/items/search?ip='+ipItem+'&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'" target="_blank">'+ipItem+'</a>');
                     $(phoneInItem+" .phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);

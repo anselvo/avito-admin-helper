@@ -14,23 +14,32 @@ function showItemsInfoForItems() {
         .append('<li>' +
             '<div class="ah-show-info ah-postShowItemInfo">' +
             '<i class="glyphicon glyphicon-book"></i> ' +
-            '<span>Показать Item IP и Пред. статус</span></div>' +
+            '<span class="ah-menu-name">Показать Item Info</span><span class="ah-hot-keys">Alt+I</span></div>' +
             '</li>');
 
-    $('.ah-postShowItemInfo').click(function () {
+    function clickPostShowItemInfo() {
+        let selector = $('.ah-postShowItemInfo');
+
         if (!showItemInfo) {
             showItemInfo = true;
             itemsInfoForItems();
         }
 
-        if ($(this).find('span').text() === 'Показать Item IP и Пред. статус') {
+        if ($(selector).find('span.ah-menu-name').text() === 'Показать Item Info') {
             $('.ah-item-info').show();
-            $(this).find('span').text('Скрыть Item IP и Пред. статус');
+            $(selector).find('span.ah-menu-name').text('Скрыть Item Info');
         } else {
             $('.ah-item-info').hide();
-            $(this).find('span').text('Показать Item IP и Пред. статус');
+            $(selector).find('span.ah-menu-name').text('Показать Item Info');
 
         }
+    }
+
+    $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
+
+    $(document).keydown(function (e) {
+        if (e.altKey && e.keyCode === 'I'.charCodeAt(0))
+            clickPostShowItemInfo();
     });
 }
 
@@ -57,7 +66,7 @@ function loadItemInfo(id) {
             let response = xhr.responseText;
             let ip = $(response).find('[data-ip]').attr('data-ip');
 
-            let historyTable = $(response).find('[data-url$="frst_history"] tbody tr');
+            let historyTable = $(response).find('[data-url*="frst_history"] tbody tr');
             let lastStatus = null;
             let lastTime = null;
             for (let i = 0, j = 0; i < historyTable.length; ++i) {
@@ -531,24 +540,33 @@ function showDescriptionForItems() {
         .append('<li>' +
             '<div class="ah-show-info ah-postShowDescription">' +
             '<i class="glyphicon glyphicon-sort-by-attributes"></i> ' +
-            '<span>Показать описание</span>' +
+            '<span class="ah-menu-name">Показать описание</span><span class="ah-hot-keys">Alt+O</span>' +
             '</div>' +
             '</li>');
 
-    $('.ah-postShowDescription').click(function () {
+    function clickPostShowDescription() {
+    	let selector = $('.ah-postShowDescription');
+
         if (!showDescription) {
             showDescription = true;
             addDescriptionToItemSearch();
         }
 
-        if($(this).find('span').text() === 'Показать описание'){
+        if($(selector).find('span.ah-menu-name').text() === 'Показать описание'){
             $('.ah-description-post').show();
-            $(this).find('span').text('Скрыть описание');
+            $(selector).find('span.ah-menu-name').text('Скрыть описание');
         } else {
             $('.ah-description-post').hide();
-            $(this).find('span').text('Показать описание');
+            $(selector).find('span.ah-menu-name').text('Показать описание');
         }
 
+    }
+
+    $('.ah-postShowDescription').click(clickPostShowDescription);
+
+    $(document).keydown(function (e) {
+        if (e.altKey && e.keyCode === 'O'.charCodeAt(0))
+            clickPostShowDescription();
     });
 }
 
