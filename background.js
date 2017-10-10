@@ -350,7 +350,6 @@ function moderationListener(details, user) {
         let tmp1 = tmp[0].split('_');
         let baseItemID = [tmp1[2]];
 
-        // let countBlock = comment[0].match(/\[blocked]/g) !== null ? comment[0].match(/\[blocked]/g).length : 0;
         let countReject = 0;
         let countBlock = 0;
         let countAllow = true;
@@ -372,13 +371,6 @@ function moderationListener(details, user) {
                 if (~key.indexOf('revive')) countBlock--;
             }
         }
-
-        console.log(`
-        baseItemID: ${baseItemID}
-        allow: ${countAllow}
-        reject: ${countReject}
-        block: ${countBlock}
-        `);
 
         if (countAllow) sendLogToDB('allow all', reason, 1, user, items_id);
         if (countBlock > 0) sendLogToDB('block item', '20', countBlock, user, items_id);

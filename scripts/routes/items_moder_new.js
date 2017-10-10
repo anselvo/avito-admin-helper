@@ -32,6 +32,8 @@ function premoderationsStartNew() {
 
     // пометка объявлений, что они тестовые
     abTest();
+
+    antifraudLinks();
 }
 
 function abTest() {

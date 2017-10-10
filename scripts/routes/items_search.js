@@ -66,7 +66,7 @@ function loadItemInfo(id) {
             let response = xhr.responseText;
             let ip = $(response).find('[data-ip]').attr('data-ip');
 
-            let historyTable = $(response).find('[data-url$="frst_history"] tbody tr');
+            let historyTable = $(response).find('[data-url*="frst_history"] tbody tr');
             let lastStatus = null;
             let lastTime = null;
             for (let i = 0, j = 0; i < historyTable.length; ++i) {

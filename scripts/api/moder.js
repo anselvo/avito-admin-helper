@@ -1,4 +1,63 @@
+function antifraudLinks() {
+    let trList = $('#items').find('tr');
+    let flagDispersion = 5;
+    let priceDispersion = 20;
 
+    let dateStart = new Date(new Date() - 7.776e+9);
+    let dateEnd = new Date();
+    let formatDateStart = parseDateToSearchFormat(dateStart);
+    let formatDateEnd = parseDateToSearchFormat(dateEnd);
+
+    for (let i = 0; i < trList.length; ++i) {
+        let categoryItemID = $(trList[i]).attr('data-category');
+        let locationItemID = $(trList[i]).attr('data-location');
+
+        let firstParam = '', firstParamMap = '';
+        if ($(trList[i]).attr('data-params')) {
+            firstParam = JSON.parse($(trList[i]).attr('data-params'))[0];
+            firstParamMap = JSON.parse($(trList[i]).attr('data-params-map'))[firstParam[0]];
+        }
+
+        let itemPrice = parseInt($(trList[i]).find('.item-info-row:eq(0)')[0].firstChild.data.replace(/\D/g, ''));
+        let itemPriceMin = '';
+        let itemPriceMax = '';
+        if (itemPrice) {
+            itemPriceMin = Math.ceil(itemPrice * (100 - priceDispersion) / 100);
+            itemPriceMax = Math.floor(itemPrice * (100 + priceDispersion) / 100);
+        }
+
+        let flagList = $(trList[i]).find('.b-antifraud');
+        for (let j = 0; j < flagList.length; ++j) {
+            let percent = parseInt($(flagList[j]).attr('title'));
+            let percentMin = percent - flagDispersion;
+            let percentMax = percent + flagDispersion;
+
+            let flagName = $(flagList[j]).find('.name').text();
+            let flagInfo = $('div.js-multiselect-reasons ul.multiselect-container li:contains(' + flagName + ')').find('input[type="checkbox"]')[0];
+            let flagId = $(flagInfo).val();
+
+            if (flagId) {
+                let flagAction = $(flagInfo).parents('[data-title]').attr('data-title');
+                let flagStatus = 'block_id[]';
+                if (~flagAction.indexOf('reject')) flagStatus = 'reject_id[]';
+
+                let flagLink = 'https://adm.avito.ru/items/search?' +
+                    'date=' + formatDateStart + '+-+' + formatDateEnd + '&' +
+                    'location_id[]=' + locationItemID + '&' +
+                    'cid[]=' + categoryItemID + '&' +
+                    'price_min=' + itemPriceMin + '&' +
+                    'price_max=' + itemPriceMax + '&' +
+                    flagStatus + '=' + flagId + '&' +
+                    'percent_min=' + percentMin + '&' +
+                    'percent_max=' + percentMax + '&' +
+                    'params[' + firstParam[0] + ']=' + firstParamMap + '&' +
+                    's_type=2';
+
+                $(flagList[j]).find('.name').html('<a href="' + flagLink + '" target="_blank">' + flagName + '</a>');
+            }
+        }
+    }
+}
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
@@ -170,8 +229,6 @@ function eyeLinks(list) {
 
             let jsomParamMap = JSON.parse(paramMap);
             let isParams = false;
-
-
 
             for (let j = 0; j < searchParamID.length; ++j) {
                 let tmp = jsomParamMap[searchParamID[j]];
