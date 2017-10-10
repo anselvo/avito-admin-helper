@@ -228,11 +228,9 @@ function copyItemOnItemInfo() {
 
 // инфо о Refund
 function addRefundInfo() {
-    let historyTable = $('.loadable-history:eq(0) .table'),
-        admHistoryTable = $('.loadable-history:eq(1) .table');
+    let historyTable = $('.loadable-history:eq(0) .table');
 
     addRefundInfoBtns(historyTable);
-    addRefundInfoBtns(admHistoryTable);
 
     chrome.runtime.onMessage.addListener(function (request) {
         if (request.onUpdated === 'itemHistory') {
@@ -240,18 +238,12 @@ function addRefundInfo() {
                 addRefundInfoBtns(historyTable);
             }, 100);
         }
-
-        if (request.onUpdated === 'itemAdmHistory') {
-            setTimeout(() => {
-                addRefundInfoBtns(admHistoryTable);
-            }, 100);
-        }
     });
 
 }
 
 function addRefundInfoBtns(table) {
-    if ($(table).find('thead tr .ah-additional-refund-cell').length === 0 && ~$(table).text().indexOf('Refund')) {
+    if ($(table).find('thead tr .ah-additional-refund-cell').length === 0 && ~$(table).text().indexOf('Refund to')) {
         $(table).find('thead tr').append('<th class="ah-additional-refund-cell"></th>');
     } else {
         return;
@@ -262,7 +254,7 @@ function addRefundInfoBtns(table) {
     }
 
     $(table).find('tbody tr').each(function () {
-        let searchCell = $(this).find('td:eq(1)'),
+        let searchCell = $(this).find('td:eq(3)'),
             dateCell = $(this).find('td:eq(0)'),
             dateTextFormatted = $(dateCell).text().replace(/\./g, '/').slice(0, -3);
 
@@ -270,7 +262,7 @@ function addRefundInfoBtns(table) {
             $(this).append(`<td class="ah-additional-refund-cell" rowspan="1"></td>`);
         }
 
-        if (~$(searchCell).text().indexOf('Refund') && $(this).find('.ah-get-refund-info').length === 0) {
+        if (~$(searchCell).text().indexOf('Refund to') && $(this).find('.ah-get-refund-info').length === 0) {
             let additionalCell = $(this).find('.ah-additional-refund-cell'),
                 sameBtns = $(table).find(`.ah-get-refund-info[data-date="${dateTextFormatted}"]`);
 
