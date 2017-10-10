@@ -5030,6 +5030,10 @@ select.ah-form-control:focus {
 }
 
 /*compare*/
+.ah-compare-items-input-group {
+    margin-top: 10px !important;
+}
+
 .ah-compare-modal .modal-header {
     padding: 10px 15px;
 }
@@ -5084,7 +5088,6 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-row {
-    white-space: nowrap;
     display: flex;
 }
 
@@ -5121,7 +5124,6 @@ select.ah-form-control:focus {
     min-width: 300px;
     width: 300px;
     display: inline-block;
-    white-space: normal;
     padding: 2px 6px;
     vertical-align: top;
     border-right: 1px solid #e5e5e5;
@@ -5130,7 +5132,7 @@ select.ah-form-control:focus {
     right: 0;
 }
 .ah-compare-cell:first-child {
-    border-right: 2px solid rgba(51, 122, 183, 0.45);
+    border-right: 2px solid rgba(51, 122, 183, 0.75);
     z-index: 1;
 }
 .ah-compare-cell:last-child {
@@ -5149,11 +5151,11 @@ select.ah-form-control:focus {
     font-weight: 700;
 }
 
-.ah-compare-items-photo-main {
+.ah-compare-photo-main {
     position: relative;
 }
 
-.ah-compare-items-photo-count {
+.ah-compare-photo-count {
     position: absolute;
     left: 0;
     top: 0;
@@ -5193,7 +5195,7 @@ select.ah-form-control:focus {
     opacity: 0.45;
 }
 
-.ah-compare-items-photo-prev {
+.ah-compare-photo-prev {
     max-height: 105px;
     overflow-y: auto;
 }
@@ -5204,7 +5206,9 @@ select.ah-form-control:focus {
 .ah-compare-items-cell-description {
     max-height: 250px;
     overflow-y: auto;
-    overflow-x: hidden;
+    white-space: pre-wrap;
+    text-overflow: clip;
+    word-wrap: break-word;
 }
 
 .ah-compare-items-status {
@@ -5217,5 +5221,5 @@ select.ah-form-control:focus {
 
 .ah-none-overflow-y {
     max-height: none;
-    overflow-y: visible;
+    overflow: visible;
 }

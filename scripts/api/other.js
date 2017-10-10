@@ -862,74 +862,89 @@ function getScrollSizeRight(elem) {
     return elem.scrollWidth - elem.scrollLeft - elem.clientWidth;
 }
 
-// сравнение айтемов (0й элемент в items - опорное объявление)
-function ahCompareItems(items, callback) {
-    callback = callback || function() {};
-    // чтобы сохранить опорное первым, используем медленный способ отброса дубликатов
+/*
+* Сравнение объявлений.
+* @param ids - массив id сущностей (0й элемент - опорная сущность)
+* @param {functions} - объект функций:
+    - getEntityRequest: запрсо на инфо о сущности,
+    - getEntityParams: получение параметров сущности по результатам запроса getEntityRequest,
+    - renderEntities: отрисовка всех сущностей, когда все запросы завершены,
+    - [callback]
+* @param {modalOpts} - объект параметров модального окна:
+    - title: тайтл модального окна
+ */
+function ahComparison(ids, functions, modalOpts) {
+    let callback = functions.callback || function() {};
+    // чтобы сохранить опорную сущность первой, используется медленный способ отброса дубликатов
     let unique = [], k = 0;
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < ids.length; i++) {
         let j = 0;
-        while (j < k && unique[j] !== items[i]) j++;
-        if (j === k) unique[k++] = items[i];
+        while (j < k && unique[j] !== ids[i]) j++;
+        if (j === k) unique[k++] = ids[i];
     }
 
     if (unique.length === 1) {
-        alert('В сравнении должно участвовать более одного объявления');
+        alertMoreThanOne();
         callback();
         return;
     }
 
     const MAX_COUNT = 10;
     if (unique.length > MAX_COUNT) {
-        alert(`Нельзя сравнивать более ${MAX_COUNT} объявлений`);
+        alert(`Нельзя сравнивать более ${MAX_COUNT}`);
         callback();
         return;
     }
 
-    renderCompareItemsModal();
-
-    let modal = $('#ahCompareItemsModal');
-    let itemsContainer = $(modal).find('.ah-compare-container');
-
-    $(itemsContainer).find('*').remove();
+    renderComparisonModal(modalOpts);
+    let modal = $(`.ah-compare-modal`);
 
     let doneRequestsCount = 0;
-    let parsedItems = {};
+    let parsedEntities = {};
     unique.forEach((id) => {
-        parsedItems[`id${id}`] = null; // хак с нечисловой строкой, чтобы сохранить порядок
+        parsedEntities[`id${id}`] = null; // хак с нечисловой строкой, чтобы сохранить порядок
 
-        getItemInfo(id)
+        functions.getEntityRequest(id)
             .then(
-                response => parsedItems[`id${id}`] = getParamsItemInfo(response),
+                response => parsedEntities[`id${id}`] = functions.getEntityParams(response),
                 error => {
-                    alert(`Ошибка для объявления №${id}: \n${error.status}\n${error.statusText}`);
-                    delete parsedItems[`id${id}`];
+                    alert(`Ошибка для №${id}: \n${error.status}\n${error.statusText}`);
+                    delete parsedEntities[`id${id}`];
                 }
             ).then(
                 () => {
                     doneRequestsCount++;
                     if (unique.length === doneRequestsCount) { // все запросы завершены
-                        renderCompareItems(parsedItems);
+                        if (Object.keys(parsedEntities).length === 1) {
+                            alertMoreThanOne();
+                            callback();
+                            return;
+                        }
+                        functions.renderEntities(parsedEntities);
                         $(modal).modal('show');
                         callback();
                     }
                 }
         );
     });
+
+    function alertMoreThanOne() {
+        alert('В сравнении должно участвовать более одной сущности');
+    }
 }
 
-function renderCompareItemsModal() {
-    if ($(`#ahCompareItemsModal`).length !== 0) return;
+function renderComparisonModal(modalOpts) {
+    $(`.ah-compare-modal`).remove();
 
     $('body').append(`
-        <div class="modal ah-dynamic-bs-modal ah-compare-modal" id="ahCompareItemsModal" tabindex="-1" role="dialog">
+        <div class="modal ah-dynamic-bs-modal ah-compare-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title">Сравнение объявлений</h4>
+                        <h4 class="modal-title">${modalOpts.title}</h4>
                     </div>
                     <div class="modal-body">
                         <button class="ah-compare-scroll ah-compare-scroll-left" data-direction="left">
@@ -946,7 +961,7 @@ function renderCompareItemsModal() {
         </div>
     `);
 
-    let modal = document.getElementById('ahCompareItemsModal');
+    let modal = document.querySelector(`.ah-compare-modal`);
     let scrollBtns = modal.querySelectorAll('.ah-compare-scroll');
     let container = modal.querySelector('.ah-compare-container');
 
@@ -956,7 +971,7 @@ function renderCompareItemsModal() {
 
     function modalShownHandler() {
         // если есть скролл у ограниченных по высоте ячеек, добавить коллапс
-        let allCollapsible = modal.querySelectorAll('.ah-compare-items-collapsible');
+        let allCollapsible = modal.querySelectorAll('.ah-compare-collapsible');
         for (let i = 0; i < allCollapsible.length; i++) {
             let elem = allCollapsible[i];
             if (elem.scrollHeight > elem.clientHeight) { // есть скоролл
@@ -979,23 +994,10 @@ function renderCompareItemsModal() {
             // collapse
             if (target.classList.contains('ah-compare-show-more')) {
                 let prev = target.previousElementSibling;
-                let collapsible = prev.querySelectorAll('.ah-compare-items-collapsible');
+                let collapsible = prev.querySelectorAll('.ah-compare-collapsible');
 
                 $(collapsible).toggleClass('ah-none-overflow-y');
                 target.querySelector('.glyphicon-collapse-down').classList.toggle('glyphicon-collapse-up');
-            }
-
-            // photo
-            if (target.classList.contains('ah-photo-prev-wrap')) {
-                let allPreviews = target.closest('.ah-compare-items-photo-prev').querySelectorAll('.ah-photo-prev-img');
-                let mainPhoto = target.closest('.ah-compare-cell').querySelector('.ah-compare-items-photo-main .ah-photo-link');
-                let currPreview = target.querySelector('.ah-photo-prev-img');
-                let originalImg = currPreview.dataset.originalImage;
-
-                $(allPreviews).removeClass('ah-photo-prev-img-active');
-                currPreview.classList.add('ah-photo-prev-img-active');
-                mainPhoto.style.backgroundImage = `url(${originalImg})`;
-                mainPhoto.href = originalImg;
             }
 
             // scroll
@@ -1005,7 +1007,6 @@ function renderCompareItemsModal() {
                 let exceptAbutmentCells = container.querySelectorAll('.ah-compare-cell:not(:first-child)');
                 let cellWidth = container.querySelector('.ah-compare-cell').offsetWidth;
                 let allHidden = modal.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
-
 
                 if (direction === 'right' && getScrollSizeRight(container) !== 0) {
                     for (let i = 0; i < scrollBtns.length; i++) {
@@ -1083,7 +1084,7 @@ function renderCompareItemsModal() {
 }
 
 function renderCompareItems(items) {
-    let modal = $('#ahCompareItemsModal');
+    let modal = $('.ah-compare-modal');
     let modalContainer = $(modal).find('.ah-compare-container');
     let statusPatterns = {
         blocked: /\bblocked\b/i,
@@ -1130,7 +1131,7 @@ function renderCompareItems(items) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
-                <span class="ah-compare-items-photo-count">${item.photos.length}</span>
+                <span class="ah-compare-photo-count">${item.photos.length}</span>
                 <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
                     class="ah-photo-link">
                 </a>
@@ -1199,10 +1200,10 @@ function renderCompareItems(items) {
 
         rows.photos += `
             <div class="ah-compare-cell" data-item-id="${item.id}">
-                <div class="ah-compare-items-photo-main">
+                <div class="ah-compare-photo-main">
                     ${mainPhoto}
                 </div>
-                <div class="ah-compare-items-photo-prev ah-compare-items-collapsible">
+                <div class="ah-compare-photo-prev ah-compare-collapsible">
                     ${prevPhotos}
                 </div>
             </div>
@@ -1216,7 +1217,7 @@ function renderCompareItems(items) {
 
         rows.description += `
             <div class="ah-compare-cell" data-item-id="${item.id}">
-                <div class="ah-compare-items-cell-description ah-compare-items-collapsible"
+                <div class="ah-compare-items-cell-description ah-compare-collapsible"
                     data-compare="description" data-item-id="${item.id}">${item.description}</div>
             </div>
         `;
@@ -1343,6 +1344,19 @@ function renderCompareItems(items) {
             let itemId = $(elem).text().trim();
             return `№${itemId} («${itemTitle}»)`;
         }
+    });
+
+    // фото
+    $(modal).find('.ah-photo-prev-wrap').click(function () {
+        let allPreviews = this.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
+        let mainPhoto = this.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main .ah-photo-link');
+        let currPreview = this.querySelector('.ah-photo-prev-img');
+        let originalImg = currPreview.dataset.originalImage;
+
+        $(allPreviews).removeClass('ah-photo-prev-img-active');
+        currPreview.classList.add('ah-photo-prev-img-active');
+        mainPhoto.style.backgroundImage = `url(${originalImg})`;
+        mainPhoto.href = originalImg;
     });
 
     // сравнение

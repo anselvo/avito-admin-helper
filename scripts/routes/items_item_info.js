@@ -460,7 +460,7 @@ function renderTotalRefundInfo(responseBody, data) {
 // Сравнение айтемов
 function addCompareItemsItemInfo() {
     $('.col-xs-5').prepend(`
-        <div class="input-group">
+        <div class="input-group form-group ah-compare-items-input-group">
             <span class="input-group-btn">
                 <button class="btn btn-primary btn-sm" type="button" id="compare-items-btn">Сравнить с</button>
             </span>
@@ -472,22 +472,26 @@ function addCompareItemsItemInfo() {
         </div>
     `);
 
-
-
     $('#compare-items-info').tooltip();
     $('#compare-items-btn').click(function() {
-        // let value = $('[name="compareItems"]').val();
-        // let items = value.match(/\d+/g);
-        //
-        // if (!items) return;
+        let value = $('[name="compareItems"]').val();
+        let items = value.match(/\d{5,}/g);
 
-        let items = ['1216808540', '1161032058', '1197725249', '967847815', '1011796217', '1103540495', '747120253'];
-        // let items = ['1161032058', '1197725249'];
+        if (!items) return;
+
         items.unshift(getParamsItemInfo().id.toString());
         let btn = $(this);
         btnLoaderOn($(btn));
-        ahCompareItems(items, function() {
-            btnLoaderOff($(btn));
+
+        ahComparison(items, {
+            callback: function() {
+                btnLoaderOff($(btn));
+            },
+            getEntityRequest: getItemInfo,
+            getEntityParams: getParamsItemInfo,
+            renderEntities: renderCompareItems
+        },{
+            title: 'Сравнение объявлений'
         });
     });
 }

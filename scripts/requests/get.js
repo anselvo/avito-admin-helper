@@ -5,27 +5,23 @@ function changeUserType(id, type) {
 }
 
 function getItemInfo(id) {
-    return new Promise(function(resolve, reject) {
-        fetch(`/items/item/info/${id}`, {credentials: 'include'})
-            .then(function(response) {
+     return fetch(`/items/item/info/${id}`, {credentials: 'include'})
+            .then(response => {
                 if (response.status !== 200) {
-                    reject(response);
+                    return Promise.reject(response);
                 }
-                resolve(response.text());
-            })
-    });
+                return response.text();
+            });
 }
 
 function getIpInfo(ip) {
-    return new Promise(function(resolve, reject) {
-        fetch(`/ip/info?ip=${ip}`, {
+    return fetch(`/ip/info?ip=${ip}`, {
             credentials: 'include',
             headers: {"X-Requested-With": "XMLHttpRequest"}
-        }).then(function(response) {
+        }).then(response =>  {
             if (response.status !== 200) {
-                reject(response);
+                return Promise.reject(response);
             }
-            resolve(response.text());
-        })
-    });
+            return response.text();
+        });
 }
