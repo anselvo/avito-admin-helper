@@ -1253,8 +1253,8 @@ function renderCompareItems(items) {
         rows.user += `
             <div class="ah-compare-cell" data-item-id="${item.id}">
                 <span class="ah-compare-items-label">Пользователь:</span>
-                <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userLogin" data-item-id="${item.id}">
-                    ${item.userLogin}</a>, 
+                <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userMail" data-item-id="${item.id}">
+                    ${item.userMail}</a>, 
                 <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a>
             </div>
         `;
