@@ -69,7 +69,7 @@ function showModal() {
 }
 function closeModal() {
     $('body').removeClass('ah-modal-open');
-    $('body').css('padding-right', 'none');
+    $('body').css('padding-right', 'unset');
 }
 
 // dorpdown-menu ---
