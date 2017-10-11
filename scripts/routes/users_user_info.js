@@ -948,20 +948,19 @@ function unverify(obj, reloadPage) {
 
 //----- инфа о всех IP на users/info  -----//
 function showCountryIP() {
-    $('.control-label:contains(Last auth IPs)').append('<span id="showCountryIP" class="pseudo-link" style="margin-left: 5px;" title="Показать у всех IP страну нахождения">ℹ</span>')
+    $('.control-label:contains(Last auth IPs)')
+        .append('<div id="showCountryIP" class="pseudo-link label label-info" style="margin-left: 10px" title="Показать у всех IP - страну нахождения">Info IP</div>');
 
     $('#showCountryIP').click(function () {
-        $('span[ipinfo]').remove();
+        let ipList = $('.ip-info-list li');
 
-        let n = $('.ip-info-list li').length;
-
-        for (var i = 0; i < n; ++i) {
-            let tmp = $('.ip-info-list li span[data-ip]').slice(i, i + 1);
+        for (var i = 0; i < ipList.length; ++i) {
+            let tmp = $(ipList[i]).find('span[data-ip]');
             let ip = $(tmp).attr('data-ip');
 
-            requestInfoIP(ip);
+            if ($(ipList[i]).find('[ipinfo]').length === 0) $(tmp).after(' - <span ipinfo="' + ip + '"></span>');
 
-            $(tmp).after(' - <span ipinfo="' + ip + '"></span>');
+            requestInfoIP(ip);
         }
     });
 }
@@ -976,25 +975,25 @@ function requestInfoIP(ip, options) {
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.send();
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                switch (action) {
-                    case 'helpdesk-ip-info':
-                        helpdeskIpInfoHandler(xhr, options);
-                        break;
-                }
-
-                let response = xhr.responseText;
-
-                let country = $(response).find('tr:contains(Страна) td').text();
-                let city = $(response).find('tr:contains(Город) td').text();
-
-                if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
-
-                $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            switch (action) {
+                case 'helpdesk-ip-info':
+                    helpdeskIpInfoHandler(xhr, options);
+                    break;
             }
+
+            let response = xhr.responseText;
+
+            let country = $(response).find('tr:contains(Страна) td').text();
+            let city = $(response).find('tr:contains(Город) td').text();
+
+            if (country !== 'Russia') $('span[ipinfo="' + ip + '"]').css('color', 'red');
+
+            $('span[ipinfo="' + ip + '"]').text(country + ', ' + city);
+        } else {
+            $('span[ipinfo="' + ip + '"]').text('response error');
         }
-    };
+    }
 }
 
 //+++++ инфа о всех IP на users/info +++++//

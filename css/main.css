@@ -4264,6 +4264,19 @@ select.ah-form-control:focus {
     font-weight: bold;
 }
 
+.ah-show-info {
+    width: 250px;
+    cursor: pointer;
+    padding: 3px 20px;
+    line-height: 1.42857143;
+    white-space: nowrap;
+    color: #1a6ec7;
+}
+
+.ah-show-info:hover {
+    background: rgba(112, 112, 112, 0.11);
+}
+
 .ah-post-block-user {
     position: fixed;
     background: white;
@@ -4419,12 +4432,15 @@ select.ah-form-control:focus {
     font-size: 75%;
 }
 
-.currentTimeInCity {
-    padding: 5px;
+.ah-currentTimeInCity {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    padding: 5px 10px;
     border: 1px solid #b0d2fd;
-    text-align: center !important;
     background: #ecf6ff;
-    width: auto !important;
+    box-shadow: rgba(0, 0, 0, 0.18) 0 1px 11px 0, rgba(0, 0, 0, 0.15) 0 1px 1px 0;
+    z-index: 10;
 }
 
 .z-time__city {
@@ -5032,6 +5048,12 @@ select.ah-form-control:focus {
 .ah-total-refund-info-popover .list-group {
     margin-bottom: 0;
     font-size: 13px;
+}
+
+.ah-hot-keys {
+    float: right;
+    color: #c5bec2;
+    margin-left: 10px;
 }
 
 .ah-dynamic-bs-modal .modal-dialog {

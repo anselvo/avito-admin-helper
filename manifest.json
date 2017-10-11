@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Admin.Helper",
 	"short_name": "AH", 
-    "version": "4.0.6",
+    "version": "4.0.9",
 	
 	"background": {
 		"scripts": [
@@ -39,6 +39,7 @@
 				"scripts/api/helpdesk.js",
 				"scripts/api/comments.js",
 				"scripts/api/count_money.js",
+				"scripts/api/assistant.js",
 
 				"scripts/routes/items_item_info.js",
 				"scripts/routes/items_search.js",
@@ -90,7 +91,7 @@
     },
 
     "browser_action": { 
-        "default_title": "Admin Helper",
+        "default_title": "Admin.Helper",
         "default_icon": "image/300x300.png",
 		"default_popup": "popup.html"
     }

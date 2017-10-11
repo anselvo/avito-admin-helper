@@ -31,13 +31,23 @@ function linksOnComments(tableClass, currentUserID) {
 
         if (~commentText.indexOf('item_')) { // cron-dublicate on Item
             var text = commentText;
+            let ids = text.match(/\d+(?![\].])\b/g);
+
             text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+
+            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
             $(commentBlock).html(text);
         }
 
         if (~commentText.indexOf('revived')) { //comparison on Item
             var text = commentText;
+            let ids = text.match(/\d{2,}/g);
+
             text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+
+            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
             $(commentBlock).html(text);
         }
 
@@ -122,7 +132,7 @@ function linksOnComments(tableClass, currentUserID) {
             let text = $(commentBlock).html();
 
             text = text.replace('СПАМ', '<b style="color: #ff4545">СПАМ</b>');
-            text = text.replace('Ссылка открытая модератором при блокировке:', '<b>Ссылка открытая модером при блокировке:</b>');
+            text = text.replace('Ссылка открытая модератором при блокировке:', '<b>Ссылка открытая модератором при блокировке:</b>');
             text = text.replace('Ссылка на активного пользователя:', '<b>Ссылка на активного пользователя:</b>');
             text = text.replace('Ссылка на заблокированных пользователей в items/search:', '<b>Ссылка на заблокированных пользователей в items/search:</b>');
             text = text.replace('Ссылки на заблокированные учетные записи:', '<b>Ссылки на заблокированные учетные записи:</b>');

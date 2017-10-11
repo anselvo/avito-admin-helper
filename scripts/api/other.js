@@ -786,6 +786,17 @@ function getUserNameTamplate(text) {
     return res.join(' ');
 }
 
+function parseDateToSearchFormat(date) {
+    return encodeURIComponent(
+            (date.getDate() < 10 ? '0' : '') + date.getDate() + "/" +
+            ((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1) + "/" +
+            date.getFullYear()
+        ) + '+' + encodeURIComponent(
+            (date.getHours() < 10 ? '0' : '') + date.getHours() + ":" +
+            (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
+        );
+}
+
 // контент для тултипа с сльтернативным копированием
 function getCopyTooltipContentAlt(altText) {
     return `<ul><li>Клик - скопировать</li><li><kbd>Alt</kbd> + Клик - ${altText}</li></ul>`;

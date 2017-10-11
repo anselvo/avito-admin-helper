@@ -9,6 +9,7 @@ var allowedPremiumUsersSubd = [
     'TL', // "Руководители"
     'SD', // "Script Developer"
     'ME', // Руководитель отдела
+    'IN', // Интерн
 ];
 
 // индиктор расширение
@@ -56,8 +57,7 @@ function startSupport() {
     $(document).ready(function () {
         var adm_username = $('.dropdown:contains(Выход) a').text().split(' ');
         localStorage.agentLogin = adm_username[1];
-        
-//        console.log(userGlobalInfo);
+
         // Особый интерфейс и поздравления с праздниками
         holidays();
 
@@ -202,15 +202,21 @@ function startSupport() {
 
             addRefundInfo(); // инфо о Refund
 
+            timeInCity();
+
             addCompareItemsItemInfo();
         }
 
         // Items search
         if (currentUrl.indexOf('https://adm.avito.ru/items/search') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/adm/items/search') + 1) {
-            // ip для каждого объявления
-            postIP();
-            
+            // добавить кнопку показа инфы
+            addInfoToItems();
+            // показ информации об итеме
+            showItemsInfoForItems();
+            // показ описания
+            showDescriptionForItems();
+
             // User and Abuses for post
             userInfoForPost();
 

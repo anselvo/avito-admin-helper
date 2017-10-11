@@ -1,4 +1,63 @@
+function antifraudLinks() {
+    let trList = $('#items').find('tr');
+    let flagDispersion = 5;
+    let priceDispersion = 20;
 
+    let dateStart = new Date(new Date() - 7.776e+9);
+    let dateEnd = new Date();
+    let formatDateStart = parseDateToSearchFormat(dateStart);
+    let formatDateEnd = parseDateToSearchFormat(dateEnd);
+
+    for (let i = 0; i < trList.length; ++i) {
+        let categoryItemID = $(trList[i]).attr('data-category');
+        let locationItemID = $(trList[i]).attr('data-location');
+
+        let firstParam = '', firstParamMap = '';
+        if ($(trList[i]).attr('data-params')) {
+            firstParam = JSON.parse($(trList[i]).attr('data-params'))[0];
+            firstParamMap = JSON.parse($(trList[i]).attr('data-params-map'))[firstParam[0]];
+        }
+
+        let itemPrice = parseInt($(trList[i]).find('.item-info-row:eq(0)')[0].firstChild.data.replace(/\D/g, ''));
+        let itemPriceMin = '';
+        let itemPriceMax = '';
+        if (itemPrice) {
+            itemPriceMin = Math.ceil(itemPrice * (100 - priceDispersion) / 100);
+            itemPriceMax = Math.floor(itemPrice * (100 + priceDispersion) / 100);
+        }
+
+        let flagList = $(trList[i]).find('.b-antifraud');
+        for (let j = 0; j < flagList.length; ++j) {
+            let percent = parseInt($(flagList[j]).attr('title'));
+            let percentMin = percent - flagDispersion;
+            let percentMax = percent + flagDispersion;
+
+            let flagName = $(flagList[j]).find('.name').text();
+            let flagInfo = $('div.js-multiselect-reasons ul.multiselect-container li:contains(' + flagName + ')').find('input[type="checkbox"]')[0];
+            let flagId = $(flagInfo).val();
+
+            if (flagId) {
+                let flagAction = $(flagInfo).parents('[data-title]').attr('data-title');
+                let flagStatus = 'block_id[]';
+                if (~flagAction.indexOf('reject')) flagStatus = 'reject_id[]';
+
+                let flagLink = 'https://adm.avito.ru/items/search?' +
+                    'date=' + formatDateStart + '+-+' + formatDateEnd + '&' +
+                    'location_id[]=' + locationItemID + '&' +
+                    'cid[]=' + categoryItemID + '&' +
+                    'price_min=' + itemPriceMin + '&' +
+                    'price_max=' + itemPriceMax + '&' +
+                    flagStatus + '=' + flagId + '&' +
+                    'percent_min=' + percentMin + '&' +
+                    'percent_max=' + percentMax + '&' +
+                    'params[' + firstParam[0] + ']=' + firstParamMap + '&' +
+                    's_type=2';
+
+                $(flagList[j]).find('.name').html('<a href="' + flagLink + '" target="_blank">' + flagName + '</a>');
+            }
+        }
+    }
+}
 // Авто добавление причине в поле "Другая причина"
 
 function autoOtherReasons() {
@@ -55,8 +114,6 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
 function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
     let name = otherReasons.name;
     let reasons = otherReasons.reason;
-
-    console.log(name);
 
     let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
@@ -154,9 +211,7 @@ function eyeLinks(list) {
         let cid = $(list[i]).parents('tr').find('[data-category]').attr('data-category');
         let city = $(list[i]).parents('tr').attr('data-location');
 
-
         let link = 'https://adm.avito.ru/items/search?status[]=active&cid[]='+cid;
-
 
         if (eyeCity === 'true') {
             link += '&location_id[]='+city;
@@ -174,8 +229,6 @@ function eyeLinks(list) {
 
             let jsomParamMap = JSON.parse(paramMap);
             let isParams = false;
-
-
 
             for (let j = 0; j < searchParamID.length; ++j) {
                 let tmp = jsomParamMap[searchParamID[j]];
@@ -196,6 +249,18 @@ function eyeLinks(list) {
     }
 }
 
+
+// Дополнительная информация о пользователе и объявлениях
+
+function addInfoToItems() {
+    $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
+        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Показать' +
+        '  <span class="caret"></span></button>' +
+        '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
+        '</div>');
+
+}
+
 // МАССОВАЯ БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ
 
 function addActionButton() {
@@ -211,8 +276,6 @@ function addActionButton() {
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postUserAgent"><i class="glyphicon glyphicon-phone"></i> <span>Показать User agent и Chance</span></div>' +
-            '<div class="ah-post-block-users ah-postShowDescription"><i class="glyphicon glyphicon-sort-by-attributes"></i> <span>Показать описание</span></div>' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
             '<table id="postBlockTable">' +
@@ -220,6 +283,15 @@ function addActionButton() {
             '<tbody></tbody>' +
             '</table>' +
             '</div>');
+
+    $('#ah-user-info-show')
+        .find('ul')
+        .append('<li>' +
+            '<div class="ah-show-info ah-postUserAgent">' +
+            '<i class="glyphicon glyphicon-phone"></i> ' +
+            '<span class="ah-menu-name">Показать User Info</span><span class="ah-hot-keys">Alt+U</span>' +
+            '</div>' +
+            '</li>');
 
     clickActionButton();
 }
@@ -257,27 +329,33 @@ function clickActionButton() {
         outTextFrame('Список пользователей очищен!')
     });
 
-    $('.ah-postShowDescription').click(function () {
-        $('.ah-description-post').toggle();
-        if($(this).find('span').text() === 'Показать описание'){
-            $(this).find('span').text('Скрыть описание');
-        } else {
-            $(this).find('span').text('Показать описание');
+    let showUserInfo = false;
+
+    function clickPostUserAgent() {
+        let selector = $('.ah-postUserAgent');
+
+        if (!showUserInfo) {
+            showUserInfo = true;
+            usersInfoForItems();
         }
 
-        $('.ah-post-block-user').hide();
-    });
-
-    $('.ah-postUserAgent').click(function () {
-        if ($(this).find('span').hasClass('showUserAgent')) {
+        if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
             $('.userAgent').hide();
-            $('.ah-postUserAgent span').text('Показать User agent и Chance').removeClass('showUserAgent');
+            $(selector).find('span.ah-menu-name').text('Показать User Info').removeClass('showUserAgent');
         } else {
-            userAgentShow();
+            $('.userAgent').show();
+            $(selector).find('span.ah-menu-name').text('Скрыть User Info').addClass('showUserAgent').attr('show', 'true');
         }
 
-        $('.ah-post-block-user').hide();
+    }
+
+    $('.ah-postUserAgent').click(clickPostUserAgent);
+
+    $(document).keydown(function (e) {
+        if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
+            clickPostUserAgent();
     });
+
 }
 
 function clickChooseButton() {
@@ -416,20 +494,14 @@ function postBlockRequest(id, reason){
 
 // запрос на отображения информации о юзере для большого кол-ва
 
-function userAgentShow() {
-    if (!$('.ah-postUserAgent span').attr('show')) {
-        let list = $('[userAgent]');
+function usersInfoForItems() {
+    let list = $('[userAgent]');
 
-        for (let i = 0; i < list.length; i++) {
-            let id = $(list[i]).attr('useragent');
+    for (let i = 0; i < list.length; i++) {
+        let id = $(list[i]).attr('useragent');
 
-            usersInfoForManyItems(id);
-        }
-    } else {
-        $('.userAgent').show();
+        usersInfoForManyItems(id);
     }
-
-    $('.ah-postUserAgent span').text('Скрыть User agent и Chance').addClass('showUserAgent').attr('show', 'true');
 }
 
 function usersInfoForManyItems(id) {
@@ -447,7 +519,7 @@ function usersInfoForManyItems(id) {
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
 
             $('[ah-post-block-chance="'+id+'"]').text(chance);
-            $('[ah-post-block-chance-time="'+id+'"]').text(chanceTime).parents('.userAgent').show();
+            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.userAgent').show();
             $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
         }
     };
@@ -467,9 +539,15 @@ function searchByImageLinks() {
 
                 for (let i = 0; i < list.length; ++i) {
                     let url = $(list[i]).find('a').attr('href').substr(2);
-                    $(list[i]).append('<div class="searchByImageLinks">' +
-                        '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></a> ' +
-                        '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank"><span>Y</span><span>andex</span></a> ' +
+                    let existLinks = $(list[i]).find('.searchByImageLinks');
+
+                    if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
+                            '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
+                                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
+                            '</a> ' +
+                            '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
+                                '<span>Y</span><span>andex</span>' +
+                            '</a> ' +
                         '</div>');
                 }
             }

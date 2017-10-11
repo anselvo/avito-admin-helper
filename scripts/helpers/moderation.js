@@ -41,10 +41,13 @@ function startModerator() {
 		
 		// POST
 		if (currentUrl.indexOf('https://adm.avito.ru/items/search') + 1 || currentUrl.indexOf('https://adm.avito.ru/adm/items/search') + 1) {
-			// описание в посте относительно настроек в прежке
-            addDescriptionToItemSearch();
-			// ip для каждого объявления
-			postIP();
+            // добавить кнопку показа инфы
+            addInfoToItems();
+            // показ информации об итеме
+            showItemsInfoForItems();
+            // показ описания
+            showDescriptionForItems();
+
 			// Block users on post
 			postBlockUsers();
 			// сравниние фото на объявлениях
@@ -120,7 +123,7 @@ function startModerator() {
 
 		// phoneSearch (неактульно из-за появления блокировки через плюсы)
 		if (~currentUrl.indexOf("?phone=") || ~currentUrl.indexOf("?ip=")) {
-            userAgentShow();
+            usersInfoForItems();
 		}
 
 		// P2P USER
@@ -130,6 +133,9 @@ function startModerator() {
 
         // user search
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/search') + 1 || currentUrl.indexOf('https://adm.avito.ru/users/search') + 1) {
+            // добавить кнопку показа инфы
+            addInfoToItems();
+
             usersSearchBlockUser();
         }
 	});

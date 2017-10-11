@@ -347,7 +347,10 @@ function premoderationInternNew(adm_username, page) {
             data_params: data_params,
             value: rejectName,
             click:  function () {
-            	if ($(this).attr("data_params")) {
+                $('.reason_other').val('');
+                $('.reason_comment').val('');
+
+                if ($(this).attr("data_params")) {
                     let params = $(this).attr("data_params").replace(/\[\[/, "").replace(/\]\]/, "").replace(/"/g, "").split('],[');
 
                     for (let i = 0; i < params.length; i++) {
@@ -392,6 +395,9 @@ function premoderationInternNew(adm_username, page) {
             data_category: data_category,
             value: blockName,
             click:  function () {
+                $('.reason_other').val('');
+                $('.reason_comment').val('');
+
                 $('.moderate-modal__override').removeClass('is-hidden');
 
                 let offset = $(this).offset();

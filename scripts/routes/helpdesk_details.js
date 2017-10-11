@@ -2535,7 +2535,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     // ИНФОРМАЦИЯ О КОМПЬЮТЕРЕ И ЛОКАЦИИ
     if (rightPanelSettings.indexOf('rp-loc')+1) {
         let location =  $(response).find('#region option:selected').text();
-        if (location != "-- Select location --") {
+        if (location !== "-- Select location --") {
             $(mainTable).append('<tr class="grayBlock"><td>Location</td><td>'+location+'</td></tr>');
         }
     }
@@ -2575,7 +2575,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             let shop = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
             let subscration = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
 
-            if ($(response).find('[name="inn"]').val() && $(response).find('[name="inn"]').val() != "")
+            if ($(response).find('[name="inn"]').val() && $(response).find('[name="inn"]').val() !== "")
                 $('#statusINN').css({'color': '#5cb85c'});
             if ($(response).find('#isPro').is(":checked"))
                 $('#statusPro').css({'color': '#5cb85c'});
@@ -3265,7 +3265,13 @@ function copyTicketId() {
     try {
         let ticketIdNode = $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left')[0].childNodes[5];
         $(ticketIdNode).wrap(`<span id="ahCopyTicketId"></span>`);
-        copyDataTooltip($('#ahCopyTicketId'));
+
+        copyDataTooltip($('#ahCopyTicketId'), {
+            getText: function(elem) {
+                let ticketid = $(elem).text().trim();
+                return `№${ticketid}`;
+            }
+        });
     } catch (e) {}
 }
 //++++++++++ Копирование айди тикета ++++++++++//
