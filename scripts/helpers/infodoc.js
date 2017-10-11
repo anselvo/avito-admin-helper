@@ -46,6 +46,8 @@ function startInfoDoc() {
             copyDataToClipboard(['e-mail', 'phones', 'companyE-mail', 'inn']);
             
             addFixedTools($('body'), ['scroll-top']);
+
+            addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
         }
 
         // users/search
@@ -107,6 +109,8 @@ function infoDocTicketInfo() {
     showAgentInfoTicket();
 
     copyTicketId(); // копирование айди тикета
+
+    copyCurrentTicketLink(); // копирование ссылки на тикет
 }
 
 function infoDocTicketUser() {
