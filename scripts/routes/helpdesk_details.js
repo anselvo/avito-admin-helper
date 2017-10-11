@@ -3141,15 +3141,24 @@ function parseIPInDetailsPanel(block, className) {
             onShownFunc: function() {
                 let popover = $('.ah-not-hiding-popover');
                 let infoBtn = $(popover).find('.info-ip-ticket-details');
-                let popoverAria = $(this).attr('aria-describedby');
+                let self = $(this);
+
                 $(infoBtn).unbind('click').click(function () {
                     let ip = $(this).data('ip');
-                    btnLoaderOn($(this));
-                    requestInfoIP(ip, {
-                        action: 'helpdesk-ip-info',
-                        clickedBtn: $(this),
-                        popoverTrigger: $(`[aria-describedby="${popoverAria}"]`).find('a')
-                    });
+                    let btn = $(this);
+                    btnLoaderOn($(btn));
+
+                    getIpInfo(ip)
+                        .then(
+                            response => showIpInfoPopover($(self).find('a'), response),
+                            error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
+                        ).then(
+                            () => {
+                                btnLoaderOff($(btn));
+                                let notHidingPopoverId = $('.ah-not-hiding-popover').attr('id');
+                                $(`[aria-describedby="${notHidingPopoverId}"]`).popover('hide');
+                            }
+                        );
                 });
 
                 let copyBtn = $(popover).find('.copy-ip-ticket-details');
@@ -3325,12 +3334,20 @@ function addIpPopoverOnLeftPanel() {
                 let infoBtn = $('#infoIpOnLeftPanel');
                 $(infoBtn).unbind('click').click(function () {
                     let ip = $(this).data('ip');
-                    btnLoaderOn($(this));
-                    requestInfoIP(ip, {
-                        action: 'helpdesk-ip-info',
-                        clickedBtn: $(this),
-                        popoverTrigger: $('#ahIpInfoOnLeftPanelTrigger')
-                    });
+                    let btn = $(this);
+                    btnLoaderOn($(btn));
+
+                    getIpInfo(ip)
+                        .then(
+                            response => showIpInfoPopover($('#ahIpInfoOnLeftPanelTrigger'), response),
+                            error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
+                        ).then(
+                            () => {
+                                btnLoaderOff($(btn));
+                                let notHidingPopoverId = $('.ah-not-hiding-popover').attr('id');
+                                $(`[aria-describedby="${notHidingPopoverId}"]`).popover('hide');
+                            }
+                        );
                 });
 
                 let copyBtn = $('#copyIpOnLeftPanel');
