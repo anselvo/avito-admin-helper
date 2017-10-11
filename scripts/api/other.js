@@ -896,9 +896,6 @@ function ahComparison(ids, functions, modalOpts) {
         return;
     }
 
-    renderComparisonModal(modalOpts);
-    let modal = $(`.ah-compare-modal`);
-
     let doneRequestsCount = 0;
     let parsedEntities = {};
     unique.forEach((id) => {
@@ -920,7 +917,9 @@ function ahComparison(ids, functions, modalOpts) {
                             callback();
                             return;
                         }
+                        renderComparisonModal(modalOpts);
                         functions.renderEntities(parsedEntities);
+                        let modal = $('.ah-compare-modal');
                         $(modal).modal('show');
                         callback();
                     }
