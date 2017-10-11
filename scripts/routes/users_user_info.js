@@ -198,8 +198,8 @@ function showUserInfoIndicators(indicators) {
         $(block).append('<div class="unactive" id="legalEntity">• Юр. лицо</div>');
         let legalIndicator = $('#legalEntity');
         let companyInfoForm = $('#company-info');
-        let convertBtn = $(companyInfoForm).find('[name="convertToLegal"]');
-        if ($(companyInfoForm).length !== 0 && $(convertBtn).length === 0) {
+        let convertHelpBlock = $(companyInfoForm).find('.help-block');
+        if ($(companyInfoForm).length !== 0 && ~$(convertHelpBlock).text().indexOf('converted on')) {
             $(legalIndicator).css({'color': '' + colorFired + ''});
         }
 

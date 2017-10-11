@@ -208,7 +208,7 @@ function copyItemOnItemInfo() {
     `);
 
     let itemTitle = $(subhead).find('a').text();
-    let itemId = $('form[data-item-id]').data('itemId');
+    let itemId = getParamsItemInfo().id;
 
     $('#copyItemId').click(function () {
         let text = `№${itemId}`;
@@ -227,11 +227,9 @@ function copyItemOnItemInfo() {
 
 // инфо о Refund
 function addRefundInfo() {
-    let historyTable = $('.loadable-history:eq(0) .table'),
-        admHistoryTable = $('.loadable-history:eq(1) .table');
+    let historyTable = $('.loadable-history:eq(0) .table');
 
     addRefundInfoBtns(historyTable);
-    addRefundInfoBtns(admHistoryTable);
 
     chrome.runtime.onMessage.addListener(function (request) {
         if (request.onUpdated === 'itemHistory') {
@@ -239,18 +237,12 @@ function addRefundInfo() {
                 addRefundInfoBtns(historyTable);
             }, 100);
         }
-
-        if (request.onUpdated === 'itemAdmHistory') {
-            setTimeout(() => {
-                addRefundInfoBtns(admHistoryTable);
-            }, 100);
-        }
     });
 
 }
 
 function addRefundInfoBtns(table) {
-    if ($(table).find('thead tr .ah-additional-refund-cell').length === 0 && ~$(table).text().indexOf('Refund')) {
+    if ($(table).find('thead tr .ah-additional-refund-cell').length === 0 && ~$(table).text().indexOf('Refund to')) {
         $(table).find('thead tr').append('<th class="ah-additional-refund-cell"></th>');
     } else {
         return;
@@ -261,7 +253,7 @@ function addRefundInfoBtns(table) {
     }
 
     $(table).find('tbody tr').each(function () {
-        let searchCell = $(this).find('td:eq(1)'),
+        let searchCell = $(this).find('td:eq(3)'),
             dateCell = $(this).find('td:eq(0)'),
             dateTextFormatted = $(dateCell).text().replace(/\./g, '/').slice(0, -3);
 
@@ -269,7 +261,7 @@ function addRefundInfoBtns(table) {
             $(this).append(`<td class="ah-additional-refund-cell" rowspan="1"></td>`);
         }
 
-        if (~$(searchCell).text().indexOf('Refund') && $(this).find('.ah-get-refund-info').length === 0) {
+        if (~$(searchCell).text().indexOf('Refund to') && $(this).find('.ah-get-refund-info').length === 0) {
             let additionalCell = $(this).find('.ah-additional-refund-cell'),
                 sameBtns = $(table).find(`.ah-get-refund-info[data-date="${dateTextFormatted}"]`);
 
@@ -316,10 +308,17 @@ function renderRefundInfo(responseBody, data) {
     let responseRows = $(responseBody).find('.billing .table tbody tr'),
         resultRows = ``,
         resultContent = `<h6>Дата: <span class="text-muted">${data.dateRange.split('-')[0]}</span></h6>`,
-        totalAmount = 0,
         userId = +$('[href^="/users/user/info/"]').attr('href').replace(/\D/g, ''),
         overlayContainer = $(data.clickedElem).parents('.overlay-container'),
         hasMorePages = !!($(responseBody).find('ul.pagination').length);
+
+    let total = {
+        all: 0,
+        real: 0,
+        bonus: 0,
+        promoBonus: 0
+    };
+    let totalFormatted = {};
 
     if ($(responseRows).length === 0) {
         resultContent += `
@@ -348,7 +347,17 @@ function renderRefundInfo(responseBody, data) {
                 replacedContent = amountPopoverContent.replace('billing-amount-real', 'text-info')
                     .replace('billing-amount-promo', 'text-success');
 
-            totalAmount += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
+            let div = document.createElement('div');
+            $(div).append(amountPopoverContent);
+            let real = $(div).find('.billing-amount-real').text().replace(/,/, '.').replace(/\s+/g, '');
+            let bonus = $(div).find('.billing-amount-bonus').text().replace(/,/, '.').replace(/\s+/g, '');
+            let promoBonus = $(div).find('.billing-amount-promo').text().replace(/,/, '.').replace(/\s+/g, '');
+
+            total.real += parseFloat(real);
+            total.bonus += parseFloat(bonus);
+            total.promoBonus += parseFloat(promoBonus);
+
+            total.all += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
             $(amountPopover).attr('data-content', replacedContent);
             resultRows += `
                 <tr><td>${$(this).find('td:eq(4)').html()}</td><td class="text-nowrap">${$(amountCell).html()}</td></tr>
@@ -363,6 +372,11 @@ function renderRefundInfo(responseBody, data) {
                 </table>
             </div>
         `;
+
+        for (let key in total) {
+            if (!total.hasOwnProperty(key)) continue;
+            totalFormatted[key] = total[key].toFixed(2).replace('.', ',');
+        }
     }
 
     $(overlayContainer).append('<div class="ah-overlay show"></div>');
@@ -370,11 +384,20 @@ function renderRefundInfo(responseBody, data) {
         container: 'body',
         html: true,
         title: `
-                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2)} руб.</span>
-                <span class="ah-refund-info-title-links">
-                    <a target="_blank" href="/users/account/info/${userId}">Счёт</a> | 
-                    <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
-                </span>
+                <div class="ah-refund__title-row">
+                    <b>Всего: </b>
+                    <span class="ah-refund-total-amount">${totalFormatted.all}</span>
+                    <span class="ah-refund-info-title-links">
+                        <a target="_blank" href="/users/account/info/${userId}">Счёт</a>,
+                        <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
+                    </span>
+                </div>
+                <div class="ah-refund__title-row">
+                    <span>Из них: </span>
+                    <span class="text-info"><span class="ah-refund-total-amount">${totalFormatted.real}</span>  руб.</span> |
+                    <span class="text-muted"><span class="ah-refund-total-amount">${totalFormatted.bonus}</span>  бонусов</span> |
+                    <span class="text-success"><span class="ah-refund-total-amount">${totalFormatted.promoBonus}</span>  промо бонусов</span>
+                </div>
                 `,
         content: resultContent,
         trigger: 'manual',
@@ -389,7 +412,8 @@ function renderRefundInfo(responseBody, data) {
     }).popover('show');
 
     let popover = $('.ah-refund-info-popover');
-    copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {placement: 'right'} );
+    let allTotals = $(popover).find('.ah-refund-total-amount');
+    copyDataTooltip(allTotals);
     $(popover).find('.js-popover').addClass('ah-pseudo-link').popover();
 
     let totalRefundBtn = $('.ah-get-total-refund-info');
@@ -429,7 +453,7 @@ function renderTotalRefundInfo(responseBody, data) {
                     </li>
                     <li class="list-group-item">
                         <b>Сумма входящих операций: </b> 
-                        <span class="ah-total-refund-total-amount">${json.amount.acquired.total.toFixed(2)} руб.</span>
+                        <span class="ah-total-refund-total-amount">${json.amount.acquired.total.toFixed(2)}</span> руб.
                     </li>
                     <li class="list-group-item">
                         <b>Сумма исходящих операций: </b> ${json.amount.spent.total.toFixed(2)} руб.
@@ -445,4 +469,43 @@ function renderTotalRefundInfo(responseBody, data) {
 
     let popover = $('.ah-total-refund-info-popover');
     copyDataTooltip( $(popover).find('.ah-total-refund-total-amount'));
+}
+
+// Сравнение айтемов
+function addCompareItemsItemInfo() {
+    $('.col-xs-5').prepend(`
+        <div class="input-group form-group ah-compare-items-input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-primary btn-sm" type="button" id="compare-items-btn">Сравнить с</button>
+            </span>
+            <input type="text" class="form-control input-sm" placeholder="Объявления" name="compareItems">
+            <span class="input-group-addon" id="compare-items-info" data-toggle="tooltip" data-placement="left" 
+                title="Вставьте ID объявлений, разделенные нечислом">
+                <span class="glyphicon glyphicon-info-sign"></span>
+            </span>
+        </div>
+    `);
+
+    $('#compare-items-info').tooltip();
+    $('#compare-items-btn').click(function() {
+        let value = $('[name="compareItems"]').val();
+        let items = value.match(/\d{5,}/g);
+
+        if (!items) return;
+
+        items.unshift(getParamsItemInfo().id.toString());
+        let btn = $(this);
+        btnLoaderOn($(btn));
+
+        ahComparison(items, {
+            callback: function() {
+                btnLoaderOff($(btn));
+            },
+            getEntityRequest: getItemInfo,
+            getEntityParams: getParamsItemInfo,
+            renderEntities: renderCompareItems
+        },{
+            title: 'Сравнение объявлений'
+        });
+    });
 }

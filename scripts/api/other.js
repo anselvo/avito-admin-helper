@@ -69,7 +69,7 @@ function showModal() {
 }
 function closeModal() {
     $('body').removeClass('ah-modal-open');
-    $('body').css('padding-right', 'none');
+    $('body').css('padding-right', 'unset');
 }
 
 // dorpdown-menu ---
@@ -669,30 +669,42 @@ function addScrollTopBtn() {
 // Копирование с тултипом ---
 function copyDataTooltip(targets, options) {
     options = options || {};
-    let placement = options.placement || 'top';
-    let title = options.title || '<div>Клик - скопировать</div>';
-    let getText = options.getText || function (elem) { return $(elem).text().trim() };
-    let getTextAlt = options.getTextAlt || getText;
+    let targetClass = options.targetClass || 'ah-copy-tooltip-pseudo-link',
+        placement = options.placement || 'top',
+        title = options.title || '<div>Клик - скопировать</div>',
+        template = options.template || '<div class="tooltip ah-copy-tooltip"><div class="tooltip-arrow"><div class="ah-tooltip-arrow-inner"></div></div><div class="tooltip-inner"></div></div>',
+        container = options.container || 'body',
+        getText = options.getText || function(target) {return $(target).text().trim()},
+        getTextAlt = options.getTextAlt || getText,
+        getNotification = options.getNotification || function(text) {return `Скопировано: ${text}`},
+        getNotificationAlt = options.getNotificationAlt || getNotification;
 
-    $(targets).addClass('ah-copy-tooltip');
+    $(targets).addClass(targetClass);
     $(targets).tooltip({
         html: true,
         delay: {show: 20},
         trigger: 'hover',
+        container: container,
+        template: template,
         placement: placement,
         title: title
     });
 
-    $(targets).unbind('click').click(function (e) {
-        let text;
+    $(targets).click(function(e) {
+        let text,
+            notification;
+
         if (e.altKey) {
-            text = getTextAlt( $(this) );
+            text = getTextAlt($(this));
+            notification = getNotificationAlt(text);
         } else {
-            text = getText( $(this) );
+            text = getText($(this));
+            notification = getNotification(text);
         }
 
-        chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
-        outTextFrame(`Скопировано: ${text}`);
+        chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+        outTextFrame(notification);
+        e.stopPropagation();
     });
 }
 // Копирование с тултипом +++
@@ -700,11 +712,13 @@ function copyDataTooltip(targets, options) {
 // Поповер на ховере
 function createNotHidingPopover(target, content, options) {
     options = options || {};
-    let placement = options.placement || 'right';
-    let onShownFunc = options.onShownFunc || function() {};
-    let template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"><h3 class="popover-title"></h3></div><div class="popover-content"></div></div>`;
-    let container = options.container || 'body';
+    let targetClass = options.targetClass || 'ah-not-hiding-popover-pseudo-link',
+        placement = options.placement || 'right',
+        onShownFunc = options.onShownFunc || function() {},
+        template = options.template || `<div class="popover ah-not-hiding-popover"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>`,
+        container = options.container || 'body';
 
+    $(target).addClass(targetClass);
     $(target).popover({
         animation: false,
         html: true,
@@ -717,13 +731,12 @@ function createNotHidingPopover(target, content, options) {
     ).on("mouseenter", function () {
         let _this = this;
         $(this).popover("show");
-        $(".popover").on("mouseleave", function () {
+        $(".ah-not-hiding-popover").unbind('mouseleave').on("mouseleave", function () {
             $(_this).popover('hide');
         });
     }).on("mouseleave", function () {
         let _this = this;
-
-        if (!$(".popover:hover").length) {
+        if (!$(".ah-not-hiding-popover:hover").length) {
             $(_this).popover("hide");
         }
     });
@@ -761,10 +774,12 @@ function getWlLinkForUser(userId) {
 
 }
 
+// имя пользователя
 function getUserNameTamplate(text) {
-    let splitted = text.split(' ');
+    let splitted = text.trim().split(' ');
     let res = [];
     splitted.forEach((item) => {
+        if (!item[0]) return;
         res.push( item[0].toUpperCase() + item.slice(1).toLowerCase() );
     });
 
@@ -780,4 +795,597 @@ function parseDateToSearchFormat(date) {
             (date.getHours() < 10 ? '0' : '') + date.getHours() + ":" +
             (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
         );
+}
+
+// контент для тултипа с сльтернативным копированием
+function getCopyTooltipContentAlt(altText) {
+    return `<ul><li>Клик - скопировать</li><li><kbd>Alt</kbd> + Клик - ${altText}</li></ul>`;
+}
+
+// поповер для ip
+function showIpInfoPopover(target, response, options) {
+    options = options || {};
+    let container = options.container || 'body';
+    let placement = options.placement || 'top';
+
+    $(target).popover({
+        html: true,
+        container: container,
+        placement: placement,
+        content: response,
+        template: `
+            <div class="popover ah-ip-info-popover ah-popover-destroy-outclicking">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
+    }).popover('show');
+}
+
+// параметры на странице айтема
+function getParamsItemInfo(html) {
+    let searchNode = html || $('html'),
+        res = {},
+        itemForm = $(searchNode).find('#form_item'),
+        allLabels = $(itemForm).find('.control-label'),
+        userLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Пользователь'),
+        userBlock = $(userLabel).next(),
+        userLink = $(userBlock).find('[href^="/users/user/info/"]'),
+        statusLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Статус'),
+        statusBlock = $(statusLabel).next(),
+        reasons = [],
+        timeLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Время'),
+        timeBlock = $(timeLabel).next(),
+        microCategoryLabel = [].find.call(allLabels, singleLabel => singleLabel.firstChild.data === 'Микрокатегория'),
+        microCategoryBlock = $(microCategoryLabel).next(),
+        microCategories = [];
+
+    $(searchNode).find('.reasons span[data-id]').each(function () {
+        reasons.push($(this).text());
+    });
+    $(microCategoryBlock).find('[data-toggle="tooltip"]:not(.icon-category-suggest)').each(function () {
+        microCategories.push($(this).text().replace(/\n/g, '').trim());
+    });
+
+    res.id = $(itemForm).attr('data-item-id');
+    res.userId = $(userLink).attr('href').replace(/\D/g, '');
+    res.userLogin = $(userLink).text();
+    res.userMail = $(userBlock).find('.js-autoselect ').text();
+    res.userItems = $(userBlock).find('[href^="/items/search"]').text().split(' ')[0];
+    res.ip = $(searchNode).find('.ip-info').text();
+    res.status = $(statusBlock).find('span:eq(0)').text().trim();
+    res.reasons = reasons;
+    res.sortTime = $(timeBlock).find('span:eq(0)').text().trim();
+    res.sellerName = $(searchNode).find('#fld_seller_name').val();
+    res.manager = $(searchNode).find('#fld_manager').val();
+    res.phone = $(searchNode).find('#fld_phone').val();
+    res.region = $(searchNode).find('#region').find('option:selected').text();
+    res.microCategoryes = microCategories;
+    res.title = $(searchNode).find('#fld_title').val();
+    res.description = $(searchNode).find('#fld_description').text();
+    res.price = $(searchNode).find('#fld_price').val();
+    res.photos = $(searchNode).find('.js-photo-component').data('json');
+
+    return res;
+}
+
+// получить оставшийся скролл справа
+function getScrollSizeRight(elem) {
+    return elem.scrollWidth - elem.scrollLeft - elem.clientWidth;
+}
+
+/*
+* Сравнение объявлений.
+* @param ids - массив id сущностей (0й элемент - опорная сущность)
+* @param {functions} - объект функций:
+    - getEntityRequest: запрсо на инфо о сущности,
+    - getEntityParams: получение параметров сущности по результатам запроса getEntityRequest,
+    - renderEntities: отрисовка всех сущностей, когда все запросы завершены,
+    - [callback]
+* @param {modalOpts} - объект параметров модального окна:
+    - title: тайтл модального окна
+ */
+function ahComparison(ids, functions, modalOpts) {
+    let callback = functions.callback || function() {};
+    // чтобы сохранить опорную сущность первой, используется медленный способ отброса дубликатов
+    let unique = [], k = 0;
+    for (let i = 0; i < ids.length; i++) {
+        let j = 0;
+        while (j < k && unique[j] !== ids[i]) j++;
+        if (j === k) unique[k++] = ids[i];
+    }
+
+    if (unique.length === 1) {
+        alertMoreThanOne();
+        callback();
+        return;
+    }
+
+    const MAX_COUNT = 10;
+    if (unique.length > MAX_COUNT) {
+        alert(`Нельзя сравнивать более ${MAX_COUNT}`);
+        callback();
+        return;
+    }
+
+    let doneRequestsCount = 0;
+    let parsedEntities = {};
+    unique.forEach((id) => {
+        parsedEntities[`id${id}`] = null; // хак с нечисловой строкой, чтобы сохранить порядок
+
+        functions.getEntityRequest(id)
+            .then(
+                response => parsedEntities[`id${id}`] = functions.getEntityParams(response),
+                error => {
+                    alert(`Ошибка для №${id}: \n${error.status}\n${error.statusText}`);
+                    delete parsedEntities[`id${id}`];
+                }
+            ).then(
+                () => {
+                    doneRequestsCount++;
+                    if (unique.length === doneRequestsCount) { // все запросы завершены
+                        if (Object.keys(parsedEntities).length === 1) {
+                            alertMoreThanOne();
+                            callback();
+                            return;
+                        }
+                        renderComparisonModal(modalOpts);
+                        functions.renderEntities(parsedEntities);
+                        let modal = $('.ah-compare-modal');
+                        $(modal).modal('show');
+                        callback();
+                    }
+                }
+        );
+    });
+
+    function alertMoreThanOne() {
+        alert('В сравнении должно участвовать более одной сущности');
+    }
+}
+
+function renderComparisonModal(modalOpts) {
+    $(`.ah-compare-modal`).remove();
+
+    $('body').append(`
+        <div class="modal ah-dynamic-bs-modal ah-compare-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">${modalOpts.title}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <button class="ah-compare-scroll ah-compare-scroll-left" data-direction="left">
+                            <span class="glyphicon glyphicon-chevron-left ah-compare-scroll-arrow"></span>
+                        </button>
+                        <button class="ah-compare-scroll ah-compare-scroll-right" data-direction="right">
+                            <span class="glyphicon glyphicon-chevron-right ah-compare-scroll-arrow"></span>
+                        </button>
+                        
+                        <div class="ah-compare-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    let modal = document.querySelector(`.ah-compare-modal`);
+    let scrollBtns = modal.querySelectorAll('.ah-compare-scroll');
+    let container = modal.querySelector('.ah-compare-container');
+
+    $(modal).on('shown.bs.modal', modalShownHandler);
+    modal.addEventListener('click', modalClickHandler);
+    modal.addEventListener('transitionend', modalTransitionendHandler);
+
+    function modalShownHandler() {
+        // если есть скролл у ограниченных по высоте ячеек, добавить коллапс
+        let allCollapsible = modal.querySelectorAll('.ah-compare-collapsible');
+        for (let i = 0; i < allCollapsible.length; i++) {
+            let elem = allCollapsible[i];
+            if (elem.scrollHeight > elem.clientHeight) { // есть скоролл
+                let row = elem.closest('.ah-compare-row'),
+                    showMore = row.nextElementSibling;
+
+                showMore.classList.remove('hidden');
+            }
+        }
+
+        // проверка скролл баттонов
+        checkScrollBtns();
+    }
+
+    function modalClickHandler(e) {
+        let target = e.target;
+        let container = modal.querySelector('.ah-compare-container');
+
+        while (target !== this) {
+            // collapse
+            if (target.classList.contains('ah-compare-show-more')) {
+                let prev = target.previousElementSibling;
+                let collapsible = prev.querySelectorAll('.ah-compare-collapsible');
+
+                $(collapsible).toggleClass('ah-none-overflow-y');
+                target.querySelector('.glyphicon-collapse-down').classList.toggle('glyphicon-collapse-up');
+            }
+
+            // scroll
+            if (target.classList.contains('ah-compare-scroll') && !target.disabled) {
+                let direction = target.dataset.direction;
+                let abutmentCells = container.querySelectorAll('.ah-compare-cell:first-child');
+                let exceptAbutmentCells = container.querySelectorAll('.ah-compare-cell:not(:first-child)');
+                let cellWidth = container.querySelector('.ah-compare-cell').offsetWidth;
+                let allHidden = modal.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+
+                if (direction === 'right' && getScrollSizeRight(container) !== 0) {
+                    for (let i = 0; i < scrollBtns.length; i++) {
+                        scrollBtns[i].disabled = true;
+                    }
+
+                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
+                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+                        let lastHidden = allHidden[allHidden.length - 1];
+                        let nextVisible = (lastHidden) ? lastHidden.nextElementSibling : abutmentCells[i].nextElementSibling;
+
+                        nextVisible.classList.add('ah-compare-cell-hidden-by-scroll');
+                    }
+
+                    for (let i = 0; i < exceptAbutmentCells.length; i++) {
+                        let cell = exceptAbutmentCells[i];
+                        let cellRight = parseFloat(getComputedStyle(cell).right);
+                        cell.style.right = +(cellRight + cellWidth) + 'px';
+                    }
+                }
+
+                if (direction === 'left' && allHidden.length !== 0) {
+                    for (let i = 0; i < scrollBtns.length; i++) {
+                        scrollBtns[i].disabled = true;
+                    }
+                    for (let i = 0; i < abutmentCells.length; i++) { // показывать опорное всегда
+                        let allHidden = abutmentCells[i].parentNode.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+                        let lastHidden = allHidden[allHidden.length - 1];
+                        if (lastHidden) {
+                            lastHidden.classList.remove('ah-compare-cell-hidden-by-scroll');
+                        }
+
+                        for (let i = 0; i < exceptAbutmentCells.length; i++) {
+                            let cell = exceptAbutmentCells[i];
+                            let cellRight = parseFloat(getComputedStyle(cell).right);
+                            cell.style.right = +(cellRight - cellWidth) + 'px';
+                        }
+                    }
+                }
+            }
+
+            target = target.parentNode;
+        }
+    }
+
+    function modalTransitionendHandler(e) {
+        let target = e.target;
+
+        // убрать disabled у баттонов для скролла
+        if (target.classList.contains('ah-compare-cell')) {
+            for (let i = 0; i < scrollBtns.length; i++) {
+                scrollBtns[i].disabled = false;
+            }
+            checkScrollBtns();
+        }
+    }
+
+    function checkScrollBtns() {
+        let rightScroll = modal.querySelector('.ah-compare-scroll[data-direction="right"]');
+        let leftScroll = modal.querySelector('.ah-compare-scroll[data-direction="left"]');
+        let allHiddens = modal.querySelectorAll('.ah-compare-cell-hidden-by-scroll');
+
+        if (getScrollSizeRight(container) === 0) {
+            rightScroll.classList.add('ah-compare-scroll-disabled');
+        } else {
+            rightScroll.classList.remove('ah-compare-scroll-disabled');
+        }
+
+        if (allHiddens.length === 0) {
+            leftScroll.classList.add('ah-compare-scroll-disabled');
+        } else {
+            leftScroll.classList.remove('ah-compare-scroll-disabled');
+        }
+    }
+}
+
+function renderCompareItems(items) {
+    let modal = $('.ah-compare-modal');
+    let modalContainer = $(modal).find('.ah-compare-container');
+    let statusPatterns = {
+        blocked: /\bblocked\b/i,
+        rejected: /\brejected\b/i,
+        paid: /\bpaid\b/i,
+        active: /\b(added|activated|unblocked)\b/i,
+        closed_removed_archived: /\b(removed|closed|archived)\b/i,
+        vas: /\b(premium|vip|pushed up|highlighted)\b/i
+    };
+    let rows = {
+        id_title_price: '',
+        status_reasons: '',
+        sortTime: '',
+        photos: '',
+        description: '',
+        microCategory: '',
+        region: '',
+        phone_ip: '',
+        sellerName: '',
+        user: ''
+    };
+    let firstObj = Object.keys(items)[0];
+    let abutmentItemId = items[firstObj].id;
+
+    for (let key in items) {
+        if (!items.hasOwnProperty(key)) continue;
+
+        let item = items[key];
+        let mainPhoto = '';
+        let prevPhotos = '';
+        let reasons = '';
+        let microCategoryes = [];
+
+        // превьюшки
+        item.photos.forEach(function(photo, i) {
+            let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
+            prevPhotos += `
+                <div class="ah-photo-prev-wrap">
+                    <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
+                </div>
+            `;
+        });
+
+        // главное фото
+        if (item.photos.length !== 0) {
+            mainPhoto = `
+                <span class="ah-compare-photo-count">${item.photos.length}</span>
+                <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
+                    class="ah-photo-link">
+                </a>
+            `;
+        } else {
+            mainPhoto = `<div class="text-muted">Нет Фото</div>`;
+        }
+
+        // причины
+        if (item.reasons.length !== 0) {
+            reasons = `(${item.reasons.join(', ')})`;
+        }
+
+        // микрокатегория
+        item.microCategoryes.forEach(function(mircoCategory, i) {
+            microCategoryes.push(`<span data-compare="microCategory[${i}]" data-item-id="${item.id}">${mircoCategory}</span>`);
+        });
+
+        // статусы
+        if (statusPatterns.blocked.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.blocked, `
+            <span class="text-danger" title="${reasons}">
+                $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
+            </span>`);
+        }
+        if (statusPatterns.rejected.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.rejected, `
+            <span class="text-warning">
+                $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
+            </span>`);
+        }
+        if (statusPatterns.paid.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.paid, '<span class="text-primary">$&</span>');
+        }
+        if (statusPatterns.active.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.active, '<span class="text-success">$&</span>');
+        }
+        if (statusPatterns.closed_removed_archived.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.closed_removed_archived, '<span class="text-muted">$&</span>');
+        }
+        if (statusPatterns.vas.test(item.status)) {
+            item.status = item.status.replace(statusPatterns.vas, '<span class="ah-text-vas">$&</span>');
+        }
+
+        // ячейки
+        rows.id_title_price += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="text-muted"><span class="ah-compare-items-item-id" data-item-id="${item.id}">${item.id}</span></span>,
+                <a target="_blank" class="ah-compare-items-item-title" href="/items/item/info/${item.id}" 
+                    data-compare="title" data-item-id="${item.id}">${item.title}</a>
+                (<span data-compare="price" data-item-id="${item.id}">${item.price}${(/\d/.test(item.price)) ? ' руб.' : ''}</span>)
+            </div>
+        `;
+
+        rows.status_reasons += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="ah-compare-items-status">${item.status}</span>
+            </div>
+        `;
+
+        rows.sortTime += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span title="Sort Time">${item.sortTime}</span>
+            </div>
+        `;
+
+        rows.photos += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <div class="ah-compare-photo-main">
+                    ${mainPhoto}
+                </div>
+                <div class="ah-compare-photo-prev ah-compare-collapsible">
+                    ${prevPhotos}
+                </div>
+            </div>
+        `;
+
+        rows.microCategory += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <i>${microCategoryes.join(' / ')}</i>
+            </div>
+        `;
+
+        rows.description += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <div class="ah-compare-items-cell-description ah-compare-collapsible"
+                    data-compare="description" data-item-id="${item.id}">${item.description}</div>
+            </div>
+        `;
+
+        rows.region += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="ah-compare-items-label">Город:</span>
+                <span data-compare="region" data-item-id="${item.id}">${item.region}</span>
+            </div>
+        `;
+
+        rows.phone_ip += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="ah-compare-items-label">Тел.:</span>
+                <span data-compare="phone" data-item-id="${item.id}">${item.phone}</span>,
+                <span class="ah-compare-items-label">IP:</span>
+                <span>
+                <button data-compare="ip" data-item-id="${item.id}" 
+                    class="btn btn-link ah-pseudo-link ah-compare-items-ip-info-btn" data-ip="${item.ip}">
+                    ${item.ip}
+                </button>
+                </span>
+            </div>
+        `;
+
+        rows.sellerName += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="ah-compare-items-label">Название:</span>
+                <span data-compare="sellerName" data-item-id="${item.id}">${item.sellerName}</span>
+            </div>
+        `;
+
+        rows.user += `
+            <div class="ah-compare-cell" data-item-id="${item.id}">
+                <span class="ah-compare-items-label">Пользователь:</span>
+                <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userMail" data-item-id="${item.id}">
+                    ${item.userMail}</a>, 
+                <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a>
+            </div>
+        `;
+    }
+
+    $(modalContainer).append(`
+        <div class="ah-compare-row">
+            ${rows.id_title_price}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.status_reasons}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.sortTime}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.photos}
+        </div>
+        <div class="ah-compare-row ah-compare-show-more hidden">
+            <span class="ah-compare-items-more-text">
+                Фото <span class="glyphicon glyphicon-collapse-down"></span>
+            </span>
+        </div>
+
+        <div class="ah-compare-row">
+            ${rows.microCategory}
+        </div>
+        <div class="ah-compare-row ah-compare-items-row-description">
+            ${rows.description}
+        </div>
+        <div class="ah-compare-row ah-compare-show-more hidden">
+            <span class="ah-compare-items-more-text">
+                Описания <span class="glyphicon glyphicon-collapse-down"></span>
+            </span>
+        </div>
+
+        <div class="ah-compare-row">
+            ${rows.region}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.phone_ip}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.sellerName}
+        </div>
+        <div class="ah-compare-row">
+            ${rows.user}
+        </div>
+    `);
+
+    // опорное
+    let abutmentItemIdNode = $(modal).find(`.ah-compare-items-item-id[data-item-id="${abutmentItemId}"]`);
+    $(abutmentItemIdNode).before(`<span class="label label-primary">Опорное</span> `);
+
+    // тултип причина
+    $(modal).find(`.ah-compare-items-reason-tooltip`).tooltip({
+        placement: 'bottom',
+        container: 'body'
+    });
+
+    // поповер инфо об ip
+    let ipPopovers = $(modal).find('.ah-compare-items-ip-info-btn');
+    $(ipPopovers).click(function () {
+        let ip = $(this).data('ip');
+        let btn = $(this);
+        btnLoaderOn($(btn));
+
+        getIpInfo(ip)
+            .then(
+                response => showIpInfoPopover($(btn), response),
+                error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
+            ).then(
+                () => btnLoaderOff($(btn))
+            );
+    });
+
+    // копирование айтемов
+    let itemsToCopy = $(modal).find('.ah-compare-items-item-id');
+    copyDataTooltip(itemsToCopy, {
+        title: getCopyTooltipContentAlt('скопировать с заголовком'),
+        getText: function(elem) {
+            let itemId = $(elem).text().trim();
+            return `№${itemId}`;
+        },
+        getTextAlt: function(elem) {
+            let itemTitle = $(elem).parents('.ah-compare-cell').find('.ah-compare-items-item-title').text();
+            let itemId = $(elem).text().trim();
+            return `№${itemId} («${itemTitle}»)`;
+        }
+    });
+
+    // фото
+    $(modal).find('.ah-photo-prev-wrap').click(function () {
+        let allPreviews = this.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
+        let mainPhoto = this.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main .ah-photo-link');
+        let currPreview = this.querySelector('.ah-photo-prev-img');
+        let originalImg = currPreview.dataset.originalImage;
+
+        $(allPreviews).removeClass('ah-photo-prev-img-active');
+        currPreview.classList.add('ah-photo-prev-img-active');
+        mainPhoto.style.backgroundImage = `url(${originalImg})`;
+        mainPhoto.href = originalImg;
+    });
+
+    // сравнение
+    let allCompareNodes = $(modal).find('[data-compare]');
+    let abutmentNodes = $(allCompareNodes).filter(`[data-item-id="${abutmentItemId}"]`);
+    let comparingNodes = $(allCompareNodes).not(`[data-item-id="${abutmentItemId}"]`);
+    $(abutmentNodes).each(function () {
+        let abutment = $(this);
+        let abutmentText = $(abutment).text().trim().toLocaleLowerCase();
+        let abutmentDataCompare = $(abutment).data('compare');
+
+        $(comparingNodes).each(function () {
+            let comparing = $(this);
+            let comparingText = $(comparing).text().trim().toLocaleLowerCase();
+            let comparingDataCompare = $(comparing).data('compare');
+
+            if (abutmentText === comparingText && abutmentDataCompare === comparingDataCompare) {
+                $(this).addClass('ah-compare-matched');
+            }
+        });
+    });
 }

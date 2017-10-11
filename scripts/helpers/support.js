@@ -203,6 +203,8 @@ function startSupport() {
             addRefundInfo(); // инфо о Refund
 
             timeInCity();
+
+            addCompareItemsItemInfo();
         }
 
         // Items search

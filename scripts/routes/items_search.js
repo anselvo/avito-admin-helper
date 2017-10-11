@@ -607,7 +607,7 @@ function copyItemsOnItemsSearch() {
 	});
     copyDataTooltip(itemsIdsNodes, {
     	placement: 'right',
-		title: '<div>Клик - скопировать</div><div><kbd>Alt</kbd>+Клик - скопировать с заголовком</div>',
+		title: getCopyTooltipContentAlt('скопировать с заголовком'),
         getText: function(elem) {
             let itemId = $(elem).text().trim();
             return `№${itemId}`;

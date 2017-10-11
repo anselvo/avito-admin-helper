@@ -383,8 +383,9 @@
   },
   "css": [],
   "js": [
+    "modal.js",
     "tooltip.js",
     "popover.js"
   ],
-  "customizerUrl": "https://getbootstrap.com/docs/3.3/customize/?id=5c36a6473ad87519d5a7ea99fe199830"
+  "customizerUrl": "https://getbootstrap.com/docs/3.3/customize/?id=2d90a738a3a564ef730b2f0df73a12e4"
 }
