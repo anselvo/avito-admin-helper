@@ -361,7 +361,7 @@ function renderCreateNewTicketWindow(route) {
     $('#create-ticket-choose-tags').click(function (e) {
         $(this).next().find('input[type="text"]').val('');
 
-        var removeTagBtn = $(modal).find('.ah-helpdesk-tag-removeOld');
+        var removeTagBtn = $(modal).find('.ah-helpdesk-tag-remove');
         if (removeTagBtn.is(e.target)) {
             return false;
         }
@@ -613,7 +613,7 @@ function getHDTemplates() {
                                     allTagNames.forEach(function (tagName) {
                                         if (~exsistingTagNames.indexOf(tagName))
                                             return;
-                                        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-removeOld">×</button></div>');
+                                        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
                                     });
                                 }
 
@@ -808,7 +808,7 @@ function createTicketRenderedTagsHandler() {
 
         $(addedTagIdsBlock).append('<input type="hidden" name="create-ticket-tags[' + addedTagsLength + ']" value="' + tagId + '">');
 
-        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-removeOld">×</button></div>');
+        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
 
         setTimeout(() => {
             $(this).remove();
@@ -823,7 +823,7 @@ function createTicketRemoveTagBtnHandler() {
     var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var addedTagIdsBlock = $('#create-ticket-added-tag-ids');
 
-    var removeTagBtn = $(modal).find('.ah-helpdesk-tag-removeOld');
+    var removeTagBtn = $(modal).find('.ah-helpdesk-tag-remove');
     $(removeTagBtn).unbind('click').click(function () {
         var clickedBtn = $(this);
         var $addedHolder = $(clickedBtn).parents('#create-ticket-choose-tags').find('.ah-helpdesk-tag');
@@ -947,7 +947,23 @@ function substituteCreateTicketValues() {
     $(modal).find('[name="create-ticket-description"]').val(description);
     $(modal).find('[name="create-ticket-requesterEmail"]').val(requesterEmail);
     $(modal).find('[name="create-ticket-requesterName"]').val(requesterName);
+
+    // tag callcenter for voice support
+    let allowedCallcenterTagSubdivisions = [
+        79, // 1st line - voice support	Вероника Чалова
+        80, // 1st line - voice support	Елизавета Шульгина
+        30 // script developers
+    ];
+    if (~allowedCallcenterTagSubdivisions.indexOf(+userGlobalInfo.subdivision_id)) {
+        let addedTagIdsBlock = $(modal).find('#create-ticket-added-tag-ids');
+        let addedTagsBlock = $(modal).find('#create-ticket-choose-tags');
+        $(addedTagIdsBlock).append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
+        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+        createTicketRemoveTagBtnHandler();
+    }
+
 }
+
 function searchHDUserNameInTickets(mail) {
 
     mail = mail.replace(/\@/, '%40');
