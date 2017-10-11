@@ -309,10 +309,17 @@ function renderRefundInfo(responseBody, data) {
     let responseRows = $(responseBody).find('.billing .table tbody tr'),
         resultRows = ``,
         resultContent = `<h6>Дата: <span class="text-muted">${data.dateRange.split('-')[0]}</span></h6>`,
-        totalAmount = 0,
         userId = +$('[href^="/users/user/info/"]').attr('href').replace(/\D/g, ''),
         overlayContainer = $(data.clickedElem).parents('.overlay-container'),
         hasMorePages = !!($(responseBody).find('ul.pagination').length);
+
+    let total = {
+        all: 0,
+        real: 0,
+        bonus: 0,
+        promoBonus: 0
+    };
+    let totalFormatted = {};
 
     if ($(responseRows).length === 0) {
         resultContent += `
@@ -341,7 +348,17 @@ function renderRefundInfo(responseBody, data) {
                 replacedContent = amountPopoverContent.replace('billing-amount-real', 'text-info')
                     .replace('billing-amount-promo', 'text-success');
 
-            totalAmount += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
+            let div = document.createElement('div');
+            $(div).append(amountPopoverContent);
+            let real = $(div).find('.billing-amount-real').text().replace(/,/, '.').replace(/\s+/g, '');
+            let bonus = $(div).find('.billing-amount-bonus').text().replace(/,/, '.').replace(/\s+/g, '');
+            let promoBonus = $(div).find('.billing-amount-promo').text().replace(/,/, '.').replace(/\s+/g, '');
+
+            total.real += parseFloat(real);
+            total.bonus += parseFloat(bonus);
+            total.promoBonus += parseFloat(promoBonus);
+
+            total.all += parseFloat(amountText.slice(1).replace(/,/, '.').replace(/\s+/g, ''));
             $(amountPopover).attr('data-content', replacedContent);
             resultRows += `
                 <tr><td>${$(this).find('td:eq(4)').html()}</td><td class="text-nowrap">${$(amountCell).html()}</td></tr>
@@ -356,6 +373,11 @@ function renderRefundInfo(responseBody, data) {
                 </table>
             </div>
         `;
+
+        for (let key in total) {
+            if (!total.hasOwnProperty(key)) continue;
+            totalFormatted[key] = total[key].toFixed(2).replace('.', ',');
+        }
     }
 
     $(overlayContainer).append('<div class="ah-overlay show"></div>');
@@ -363,11 +385,20 @@ function renderRefundInfo(responseBody, data) {
         container: 'body',
         html: true,
         title: `
-                <b>Всего: </b><span class="ah-refund-total-amount">${totalAmount.toFixed(2).replace('.', ',')}</span> руб.
-                <span class="ah-refund-info-title-links">
-                    <a target="_blank" href="/users/account/info/${userId}">Счёт</a> | 
-                    <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
-                </span>
+                <div class="ah-refund__title-row">
+                    <b>Всего: </b>
+                    <span class="ah-refund-total-amount">${totalFormatted.all}</span>
+                    <span class="ah-refund-info-title-links">
+                        <a target="_blank" href="/users/account/info/${userId}">Счёт</a>,
+                        <a target="_blank" href="${data.getUrl()}">Wallet Log</a>
+                    </span>
+                </div>
+                <div class="ah-refund__title-row">
+                    <span>Из них: </span>
+                    <span class="text-info"><span class="ah-refund-total-amount">${totalFormatted.real}</span>  руб.</span> |
+                    <span class="text-muted"><span class="ah-refund-total-amount">${totalFormatted.bonus}</span>  бонусов</span> |
+                    <span class="text-success"><span class="ah-refund-total-amount">${totalFormatted.promoBonus}</span>  промо бонусов</span>
+                </div>
                 `,
         content: resultContent,
         trigger: 'manual',
@@ -382,16 +413,8 @@ function renderRefundInfo(responseBody, data) {
     }).popover('show');
 
     let popover = $('.ah-refund-info-popover');
-    copyDataTooltip( $(popover).find('.ah-refund-total-amount'), {
-        placement: 'right',
-        // title: getCopyTooltipContentAlt('скопировать с шаблоном'),
-        // getTextAlt: function(elem) {
-        //     return 'Мы компенсировали затраченные средства в размере ' + $(elem).text() + ' рублей, они были зачислены на Ваш Кошелек Avito.\n\n' +
-        //     'Вы можете воспользоваться этими средствами для оплаты дополнительных услуг и сервисов на Avito. ' +
-        //     'История операций доступна по ссылке: https://www.avito.ru/account/history';
-        // },
-        // getNotificationAlt: () => 'Скопировано с шаблоном'
-    });
+    let allTotals = $(popover).find('.ah-refund-total-amount');
+    copyDataTooltip(allTotals);
     $(popover).find('.js-popover').addClass('ah-pseudo-link').popover();
 
     let totalRefundBtn = $('.ah-get-total-refund-info');

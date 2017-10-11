@@ -4958,10 +4958,23 @@ select.ah-form-control:focus {
 }
 
 .ah-refund-info-popover {
-    min-width: 420px;
+    min-width: 450px;
 }
 
 .ah-refund-info-popover .table-scroll, .ah-refund-info-popover .alert {
+    margin-bottom: 0;
+}
+
+.ah-refund__title-row {
+    margin-bottom: 4px;
+    padding: 2px 0;
+}
+
+.ah-refund__title-row:first-child {
+    font-size: 15px;
+}
+
+.ah-refund__title-row:last-child {
     margin-bottom: 0;
 }
 

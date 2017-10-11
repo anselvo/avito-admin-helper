@@ -731,13 +731,12 @@ function createNotHidingPopover(target, content, options) {
     ).on("mouseenter", function () {
         let _this = this;
         $(this).popover("show");
-        $(".popover").on("mouseleave", function () {
+        $(".ah-not-hiding-popover").unbind('mouseleave').on("mouseleave", function () {
             $(_this).popover('hide');
         });
     }).on("mouseleave", function () {
         let _this = this;
-
-        if (!$(".popover:hover").length) {
+        if (!$(".ah-not-hiding-popover:hover").length) {
             $(_this).popover("hide");
         }
     });
