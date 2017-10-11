@@ -776,9 +776,10 @@ function getWlLinkForUser(userId) {
 
 // имя пользователя
 function getUserNameTamplate(text) {
-    let splitted = text.split(' ');
+    let splitted = text.trim().split(' ');
     let res = [];
     splitted.forEach((item) => {
+        if (!item[0]) return;
         res.push( item[0].toUpperCase() + item.slice(1).toLowerCase() );
     });
 
