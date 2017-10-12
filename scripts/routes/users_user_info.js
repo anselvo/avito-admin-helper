@@ -375,7 +375,10 @@ function addPremiumUsersIndicator() {
             'Загрузка...</span>');
         }
         var shopId = $(shopLink).attr('href').replace(/\D/g, '');
-        sendShopInfoRequest(shopId);
+        getShopInfo(shopId).then(
+            response => checkPremiumUsersShopInfo(response, 'support'),
+            error => console.log(error)
+        );
     }
 }
 
@@ -420,21 +423,6 @@ function checkPremiumUsersList(userId) {
         var text = 'RE premium';
         premiumUsersIndicatorHandler(text, css);
     });
-}
-function sendShopInfoRequest(shopId) {
-    var url = 'https://adm.avito.ru/shops/info/view/' + shopId;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.send();
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                var response = xhr.responseText;
-                checkPremiumUsersShopInfo(response, 'support');
-            }
-        }
-    };
 }
 
 // индикатор Расширение

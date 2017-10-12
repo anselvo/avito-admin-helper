@@ -2610,7 +2610,10 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                             'Загрузка...</span>');
                         }
                         let shopId = $(shopLink).attr('href').replace(/\D/g, '');
-                        sendShopInfoRequest(shopId);
+                        getShopInfo(shopId).then(
+                            response => checkPremiumUsersShopInfo(response, 'support'),
+                            error => console.log(error)
+                        );
                     } catch(e) {
                         console.log(e);
                     }
