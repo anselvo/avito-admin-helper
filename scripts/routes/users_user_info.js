@@ -149,30 +149,35 @@ function userChangeEmail() {
 
 // доп инфа об УЗ
 function showUserInfoIndicators(indicators) {
-    $('.col-xs-offset-1').append(''+
-    '<div id="statusUser" style="display: block;'+
-        'position: absolute; z-index:10; font-weight: bolder; '+
-        'font-size: 15px; top: 0; right: 100%; white-space: nowrap; background-color: white">'+
-    '</div>');
+    $('.col-xs-offset-1').append(`
+        <div id="statusUser" class="ah-user-indicators"></div>
+    `);
+
     let block = $('#statusUser');
 
-    let colorFired = '#5cb85c';
+    let shopLink = $('[href^="/shops/info/view/"]');
+    let shopId = null;
+    if ($(shopLink).length !==0) {
+        shopId = $(shopLink).attr('href').replace(/\D/g, '');
+    }
+    let userId = getParamOnUserInfo('user-id');
+    let isShopInfoRequired = false;
 
     // Инн
     if (~indicators.indexOf('inn')) {
-        $(block).append('<div class="unactive" id="statusINN">• ИНН</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="statusINN">• ИНН</div>');
         let innIndicator = $('#statusINN');
         let innInput = $('[name="inn"]');
         if ($(innInput).val()) {
-            $(innIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(innIndicator));
             let innParentBlock = $(innInput).parents('.form-group');
             let innInfoBlock = $(innParentBlock).find('div.i-verify');
             if ($(innInfoBlock).hasClass('i-verify-checked')) {
-                $(innIndicator).append('<span class="glyphicon glyphicon glyphicon-ok-sign '+
-                'text-success" style="margin-left: 4px; top: 3px;"></span>');
+                $(innIndicator).append('<span class="glyphicon glyphicon-ok-sign '+
+                'text-success" style="margin-left: 4px;"></span>');
             } else {
                 $(innIndicator).append('<span class="glyphicon glyphicon-remove-sign '+
-                'text-danger" style="margin-left: 4px; top: 3px;"></span>');
+                'text-danger" style="margin-left: 4px;"></span>');
             }
         }
 
@@ -182,11 +187,11 @@ function showUserInfoIndicators(indicators) {
 
     // Про
     if (~indicators.indexOf('pro')) {
-        $(block).append('<div class="unactive" id="statusPro">• ЛК Про</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="statusPro">• ЛК Про</div>');
         let proIndicator = $('#statusPro');
         let proInput = $('#isPro');
         if ($(proInput).is(":checked")) {
-            $(proIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(proIndicator));
         }
 
         let proParent = $(proInput).parents('.form-group');
@@ -195,12 +200,12 @@ function showUserInfoIndicators(indicators) {
     
     // Юр. лицо
     if (~indicators.indexOf('legalEntity')) {
-        $(block).append('<div class="unactive" id="legalEntity">• Юр. лицо</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="legalEntity">• Юр. лицо</div>');
         let legalIndicator = $('#legalEntity');
         let companyInfoForm = $('#company-info');
         let convertHelpBlock = $(companyInfoForm).find('.help-block');
         if ($(companyInfoForm).length !== 0 && ~$(convertHelpBlock).text().indexOf('converted on')) {
-            $(legalIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(legalIndicator));
         }
 
         let legalParent = $(companyInfoForm)
@@ -211,11 +216,11 @@ function showUserInfoIndicators(indicators) {
 
     // Автозагрузка
     if (~indicators.indexOf('auto')) {
-        $(block).append('<div class="unactive" id="statusAuto">• Автозагрузка</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="statusAuto">• Автозагрузка</div>');
         let autoIndicator = $('#statusAuto');
         let autoInput = $('#isAutoupload');
         if ($(autoInput).is(":checked")) {
-            $(autoIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(autoIndicator));
         }
 
         let autoParent = $(autoInput).parents('.form-group');
@@ -224,12 +229,12 @@ function showUserInfoIndicators(indicators) {
 
     // Магазин
     if (~indicators.indexOf('shop')) {
-        $(block).append('<div class="unactive" id="statusShop">• Магазин</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="statusShop">• Магазин</div>');
         let shopIndicator = $('#statusShop');
         let shopInput = $('.control-label:contains(Магазин)').next().find('a');
         let shopInputText = $(shopInput).text();
         if (~shopInputText.indexOf("Оплачен")) {
-            $(shopIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(shopIndicator));
         }
 
         let shopParent = $(shopInput).parents('.form-group');
@@ -238,7 +243,7 @@ function showUserInfoIndicators(indicators) {
 
     // Подписка
     if (~indicators.indexOf('subscription')) {
-        $(block).append('<div class="unactive" id="statusSubscription">'+
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="statusSubscription">'+
         '• Подписка</div>');
         let subscrIndicator = $('#statusSubscription');
         let subscrInput = $('.form-group:contains(Подписка) a');
@@ -253,8 +258,8 @@ function showUserInfoIndicators(indicators) {
                 && ~shopInputText.indexOf("Оплачен")) {
             var sub = subscrInputText.split('"');
             $(subscrIndicator).text($(subscrIndicator).text() + ': ' + sub[1]);
-            $(subscrIndicator).css({'color': '' + colorFired + ''});
-            $(shopIndicator).css({'color': 'rgb(189, 189, 189)'});
+            fireUpIndicator($(subscrIndicator));
+            snuffOutIndicator($(shopIndicator));
         }
 
         let subscrParent = $(subscrInput).parents('.form-group');
@@ -263,12 +268,12 @@ function showUserInfoIndicators(indicators) {
 
     // Персональный менеджер
     if (~indicators.indexOf('persManager')) {
-        $(block).append('<div class="unactive" id="personalManager">'+
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="personalManager">'+
         '• Перс. менеджер</div>');
         let persManagerIndicator = $('#personalManager');
         let persManagerSelect = $('select[name="managerId"]');
         if ($(persManagerSelect).val()) {
-            $(persManagerIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(persManagerIndicator));
         }
 
         let persManagerParent = $(persManagerSelect).parents('.form-group');
@@ -277,7 +282,7 @@ function showUserInfoIndicators(indicators) {
 
     // Авито доставка
     if (~indicators.indexOf('delivery')) {
-        $(block).append('<div class="unactive" id="avitoDelivery">'+
+        $(block).append('<div class="ah-user-indicators-item ah-inactive" id="avitoDelivery">'+
         '• Avito Доставка</div>');
         let deliveryIndicator = $('#avitoDelivery');
         let deliveryForm = $('.user-info-deliver-form');
@@ -286,7 +291,7 @@ function showUserInfoIndicators(indicators) {
 
         if ($(deliveryIsActive).is(':checked')
                 && $(deliveryApiKey).val()) {
-            $(deliveryIndicator).css({'color': '' + colorFired + ''});
+            fireUpIndicator($(deliveryIndicator));
         }
 
         let deliveryParent = $(deliveryIsActive).parents('.form-group');
@@ -295,14 +300,93 @@ function showUserInfoIndicators(indicators) {
     
     // только банковский перевод
     if (~indicators.indexOf('onlyBankTransfer')) {
-        $(block).append('<div class="unactive loading-indicator-text" id="onlyBankTransfer">• Загрузка...</div>');
+        $(block).append('<div class="ah-user-indicators-item ah-inactive loading-indicator-text" id="onlyBankTransfer">• Загрузка...</div>');
         let indicator = $('#onlyBankTransfer');
         let userId = getParamOnUserInfo('user-id');
-        getOnlyBankTransferStatus(userId, indicator, colorFired);
+        let classFired = 'ah-user-indicators-fired';
+        getOnlyBankTransferStatus(userId, indicator, classFired);
+    }
+
+    // REPremium
+    if (~indicators.indexOf('REPremium')) {
+        isShopInfoRequired = true;
+        $(block).append(''+
+            '<div class="ah-user-indicators-item ah-inactive" id="REpremium">'+
+            '• <span class="loading-indicator-text">Загрузка...</span>'+
+            '</div>');
+
+        if (!shopId) {
+            checkPremiumUsersList(userId);
+        }
+    }
+
+    // Расширение
+    if (~indicators.indexOf('extension')) {
+        isShopInfoRequired = true;
+        $(block).append(''+
+            '<div class="ah-user-indicators-item ah-inactive" id="ExtensionInd">'+
+            '• <span class="ah-user-indicators-item-name">Расширение</span>'+
+            '</div>');
+    }
+
+    // инфа с шопа
+    if (isShopInfoRequired && shopId) {
+        let subscrIndicator = $('#statusSubscription');
+        let isFired = $(subscrIndicator)[0].hasAttribute('fired');
+        if (isFired) {
+            $(subscrIndicator).html('• Подписка: <br><span '+
+                'class="ah-user-indicators-subtext">'+
+                'Загрузка...</span>');
+        }
+
+        let extIndicator = $('#ExtensionInd');
+        let indicatorNameBlock = $(extIndicator).find('.ah-user-indicators-item-name');
+        $(indicatorNameBlock).text('Загрузка...');
+        $(indicatorNameBlock).addClass('loading-indicator-text');
+
+        getShopInfo(shopId).then(
+            response => {
+                if (~indicators.indexOf('REPremium')) {
+                    checkPremiumUsersShopInfo(response, 'support');
+                }
+
+                if (~indicators.indexOf('extension')) {
+                    $(indicatorNameBlock).text('Расширение');
+                    $(indicatorNameBlock).removeClass('loading-indicator-text');
+
+                    let params = getParamsShopInfo(response);
+                    if (params.extensions.length !== 0) {
+                        let classFired = 'ah-user-indicators-fired-danger';
+                        fireUpIndicator($(extIndicator), classFired);
+                        $(extIndicator).append(`
+                            <span class="text-info glyphicon glyphicon-info-sign" id="extensionIndicatorSubinfo"></span>
+                        `);
+
+                        $('#extensionIndicatorSubinfo').tooltip({
+                            html: true,
+                            container: 'body',
+                            template: '<div class="tooltip ah-extension-subinfo-tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+                            title: `<ul>${params.extensions.map((item) => '<li>' + item.name + '</li>').join('')}</ul>`
+                        });
+                    }
+                }
+            },
+            error => console.log(error)
+        );
+    }
+
+    function fireUpIndicator(indicator, classFired) {
+        let className = classFired || 'ah-user-indicators-fired';
+        $(indicator).removeClass('ah-inactive').addClass(className);
+    }
+
+    function snuffOutIndicator(indicator) {
+        let firedClasses = 'ah-user-indicators-fired ah-user-indicators-fired-danger';
+        $(indicator).removeClass(firedClasses).addClass('ah-inactive');
     }
 }
 
-function getOnlyBankTransferStatus(userId, indicator, colorFired) {
+function getOnlyBankTransferStatus(userId, indicator, classFired) {
     var url = 'https://adm.avito.ru/users/account/info/' + userId;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -319,7 +403,7 @@ function getOnlyBankTransferStatus(userId, indicator, colorFired) {
                 let isChecked = $(checkbox).prop('checked');
                 let text = $(label).next().find('.form-control-static').text();
                 if (isChecked || ~text.indexOf('Включено') ) {
-                    $(indicator).css({'color': '' + colorFired + ''});
+                    $(indicator).addClass(classFired);
                 }
                 
                 $(indicator).text('• Только банк. перевод');
@@ -343,42 +427,6 @@ function userInfoScrollableIndic(scrollTo, indicator) {
         $(indicator).click(function () {
             scrollToElem(scrollTo);
         });
-    }
-}
-
-function addPremiumUsersIndicator() {
-    var userId = getParamOnUserInfo('user-id');
-
-    $('#statusUser').append(''+
-    '<div class="unactive" id="REpremium">'+
-        '• <span class="loading-indicator-text">Загрузка...</span>'+
-    '</div>');
-
-    if (!userId || !isFinite(userId)) {
-        var css = {
-            'color': 'black'
-        };
-        var text = 'Error';
-        premiumUsersIndicatorHandler(text, css);
-        return;
-    }
-
-    var shopLink = $('[href^="/shops/info/view/"]');
-    if ($(shopLink).length === 0) {
-        checkPremiumUsersList(userId);
-    } else {
-        let subscrIndicator = $('#statusSubscription');
-        let isFired = $(subscrIndicator)[0].hasAttribute('fired');
-        if (isFired) {
-            $(subscrIndicator).html('• Подписка: <br><span '+
-            'style="font-size: 12px; color: #000; margin-left: 9px; font-weight: 400;">'+
-            'Загрузка...</span>');
-        }
-        var shopId = $(shopLink).attr('href').replace(/\D/g, '');
-        getShopInfo(shopId).then(
-            response => checkPremiumUsersShopInfo(response, 'support'),
-            error => console.log(error)
-        );
     }
 }
 
@@ -425,32 +473,6 @@ function checkPremiumUsersList(userId) {
     });
 }
 
-// индикатор Расширение
-function addExtensionIndicator() {
-    let userId = +getParamOnUserInfo('user-id');
-    $('#statusUser').append(''+
-        '<div class="unactive" id="ExtensionInd">'+
-        '• <span>Расширение</span><span id="ExtensionIndGroup"></span>'+
-        '</div>');
-
-    checkExtensionIndUser(userId);
-}
-
-function checkExtensionIndUser(userId) {
-    let indicator = $('#ExtensionInd');
-    let indicatorGroup = $('#ExtensionIndGroup');
-
-    let colorFired = '#d9534f';
-
-    if (~extensionIndGroupOne.indexOf(userId)) {
-        $(indicator).css('color', ''+ colorFired +'');
-        $(indicatorGroup).text(' - 1');
-    }
-    if (~extensionIndGroupTwo.indexOf(userId)) {
-        $(indicator).css('color', ''+ colorFired +'');
-        $(indicatorGroup).text(' - 2');
-    }
-}
 // альтернативный поиск по телефону (с ???)
 function alternatePhoneSearch() {
 

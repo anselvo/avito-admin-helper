@@ -842,9 +842,55 @@ input[id ^= "sh-quick-theme-btn"]:active {
 	color: #DC143C; /* lsdkfj */
 }
 
-.unactive { 
-    color: #BDBDBD; 
+.ah-user-indicators {
+    display: block;
+    position: absolute;
+    z-index:10;
+    font-weight: bolder;
+    font-size: 15px;
+    top: 0;
+    right: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
+
+.ah-user-indicators .glyphicon {
+    top: 3px;
+}
+
+.ah-user-indicators-item {
     padding: 0 4px;
+}
+
+.ah-inactive {
+    color: #BDBDBD;
+}
+
+.ah-user-indicators-fired {
+    color: #5cb85c;
+}
+
+.ah-user-indicators-fired-danger {
+    color: rgb(217, 83, 79);
+}
+
+.ah-user-indicators-subtext {
+    margin-left: 9px;
+    font-size: 12px;
+    color: #000;
+    font-weight: 400;
+    min-width: 160px;
+    display: inline-block;
+    white-space: normal;
+}
+
+.ah-extension-subinfo-tooltip .tooltip-inner {
+    text-align: left;
+}
+
+.ah-extension-subinfo-tooltip .tooltip-inner ul {
+    padding-left: 15px;
+    margin-bottom: 0;
 }
 
 #outputTextFrame {

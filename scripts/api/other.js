@@ -365,7 +365,7 @@ function checkPremiumUsersShopInfo(html, script) {
         let isFired = $(subscrIndicator)[0].hasAttribute('fired');
         if (isFired) {
             $('#statusSubscription').html( '• Подписка: <br><span '+
-            'style="font-size: 12px; color: #000; margin-left: 9px; font-weight: 400;">' 
+            'class="ah-user-indicators-subtext">'
             + subscrInfoText +'</span>');
         }
     }
@@ -865,6 +865,52 @@ function getParamsItemInfo(html) {
     res.price = $(searchNode).find('#fld_price').val();
     res.photos = $(searchNode).find('.js-photo-component').data('json');
 
+    return res;
+}
+
+// параметры на странице шопа
+function getParamsShopInfo(html) {
+    let searchNode;
+    if (html) {
+        let tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        searchNode = tmp;
+    } else {
+        searchNode = document;
+    }
+
+    let res = {};
+    let allHeaders = searchNode.querySelectorAll('h4');
+
+    // extensions
+    let extensionsHeader = [].find.call(allHeaders, singleItem => singleItem.firstChild.data === 'Расширения');
+    let infoHeader = [].find.call(allHeaders, singleItem => singleItem.firstChild.data === 'Информация');
+    let allExtensionsGroups = getFormGroups(extensionsHeader, infoHeader);
+    let extensions = [];
+    allExtensionsGroups.forEach((item) => {
+        let allLabels = item.querySelectorAll('.control-label');
+        let nameLabel = [].find.call(allLabels, single => single.firstChild.data === 'Название');
+        let nameValue = nameLabel.nextElementSibling.textContent;
+        extensions.push({
+            name: nameValue
+        });
+    });
+
+    // return all .form-groups from (@param startNode, @param endNode]
+    function getFormGroups(startNode, endNode) {
+        let groups = [];
+
+        while (startNode && startNode !== endNode) {
+            if (startNode.classList.contains('form-group')) {
+                groups.push(startNode);
+            }
+            startNode = startNode.nextElementSibling;
+        }
+
+        return groups;
+    }
+
+    res.extensions = extensions;
     return res;
 }
 

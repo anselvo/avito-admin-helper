@@ -2594,35 +2594,71 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             }
 
             let agentSubdivision = userGlobalInfo.subdivision;
+
+            let shopLink = $(response).find('[href^="/shops/info/view/"]');
+            let shopId = null;
+            if ($(shopLink).length !==0) {
+                shopId = $(shopLink).attr('href').replace(/\D/g, '');
+            }
+            let isShopInfoRequired = false;
+
             if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
+                isShopInfoRequired = true;
                 $('#companyInfo table tr:eq(1)').append('<td id="REpremium"><span class="loading-indicator-text">Загрузка...</span></td>');
-                let shopLink = $(response).find('[href^="/shops/info/view/"]');
-                if ($(shopLink).length === 0) {
+                if (!shopId) {
                     checkPremiumUsersList(id);
-                } else {
-                    try {
-                        let subscrIndicator = $('#statusSubscription');
-                        let isFired = $(subscrIndicator)[0].hasAttribute('fired');
-                        if (isFired) {
-                            $(subscrIndicator).html('• Подписка: <br><span '+
-                            'style="font-size: 12px; color: #000; '+
-                            'margin-left: 9px; font-weight: 400;">'+
-                            'Загрузка...</span>');
-                        }
-                        let shopId = $(shopLink).attr('href').replace(/\D/g, '');
-                        getShopInfo(shopId).then(
-                            response => checkPremiumUsersShopInfo(response, 'support'),
-                            error => console.log(error)
-                        );
-                    } catch(e) {
-                        console.log(e);
-                    }
                 }
             }
 
             if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
-                $('#companyInfo table').append('<tr><td></td><td id="ExtensionInd"><span>Расширение</span><span id="ExtensionIndGroup"></span></td><td></td></tr>');
-                checkExtensionIndUser(+id);
+                isShopInfoRequired = true;
+                $('#companyInfo table').append('<tr><td></td><td id="ExtensionInd"><span class="ah-user-indicators-item-name">Расширение</span></td><td></td></tr>');
+            }
+
+            // инфа с шопа
+            if (isShopInfoRequired && shopId) {
+                let subscrIndicator = $('#statusSubscription');
+                let isFired = $(subscrIndicator)[0].hasAttribute('fired');
+                if (isFired) {
+                    $(subscrIndicator).html('• Подписка: <br><span '+
+                        'style="font-size: 12px; color: #000; '+
+                        'margin-left: 9px; font-weight: 400;">'+
+                        'Загрузка...</span>');
+                }
+
+                let extIndicator = $('#ExtensionInd');
+                let indicatorNameBlock = $(extIndicator).find('.ah-user-indicators-item-name');
+                $(indicatorNameBlock).text('Загрузка...');
+                $(indicatorNameBlock).addClass('loading-indicator-text');
+
+                getShopInfo(shopId).then(
+                    response => {
+                        if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
+                            checkPremiumUsersShopInfo(response, 'support');
+                        }
+
+                        if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
+                            $(indicatorNameBlock).text('Расширение');
+                            $(indicatorNameBlock).removeClass('loading-indicator-text');
+
+                            let params = getParamsShopInfo(response);
+                            if (params.extensions.length !== 0) {
+                                $(extIndicator).removeClass('ah-inactive').addClass('ah-user-indicators-fired-danger');
+                                $(extIndicator).append(`
+                                    <span class="text-info glyphicon glyphicon-info-sign" id="extensionIndicatorSubinfo"></span>
+                                `);
+
+                                $('#extensionIndicatorSubinfo').tooltip({
+                                    html: true,
+                                    container: 'body',
+                                    template: '<div class="tooltip ah-extension-subinfo-tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+                                    title: `<ul>${params.extensions.map((item) => '<li>' + item.name + '</li>').join('')}</ul>`
+                                });
+                            }
+                        }
+                    },
+                    error => console.log(error)
+                );
             }
         } else {
             if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="company">установить как компанию</a>');

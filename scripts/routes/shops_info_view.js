@@ -533,7 +533,7 @@ function indicateNoneditableFields() {
 }
 
 function showPremiumUsers(id) {
-    $('#shop-header .main-info').append('<div class="unactive" id="REpremium" style="float: right; font-style: italic;"><span class="loading-indicator-text">Загрузка...</span></div>');
+    $('#shop-header .main-info').append('<div class="ah-user-indicators-item ah-inactive" id="REpremium" style="float: right; font-style: italic;"><span class="loading-indicator-text">Загрузка...</span></div>');
 
     if (!id || !isFinite(id)) {
         $('#REpremium span').removeClass('loading-indicator-text');

@@ -33,12 +33,8 @@ function startInfoDoc() {
             adminTableCategory();
             
             // индикаторы
-            showUserInfoIndicators(['inn', 'legalEntity', 'auto', 'shop', 
-                'subscription', 'persManager', 'delivery', 'onlyBankTransfer']);
-
-            addPremiumUsersIndicator();
-
-            addExtensionIndicator();
+            showUserInfoIndicators(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager', 'delivery',
+                'onlyBankTransfer', 'REPremium', 'extension']);
 
             // переход в HD
             linkToHDOnUser();
