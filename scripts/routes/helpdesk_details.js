@@ -2570,57 +2570,16 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         if (type.indexOf('компания') + 1) {
             if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="personal">установить как частное лицо</a>');
 
-            $('#rightPanelBody').append('<div id="companyInfo"><table><tr><td id="statusINN">ИНН</td><td id="statusPro">ЛК Про</td><td id="statusSubscription">Подписка</td></tr><tr><td id="statusShop">Магазин</td><td id="statusAuto">Автозагрузка</td></tr></table></div>');
-
-            let shop = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
-            let subscration = $(response).find('.form-group:contains(Тип) .form-control-static a').text();
-
-            if ($(response).find('[name="inn"]').val() && $(response).find('[name="inn"]').val() !== "")
-                $('#statusINN').css({'color': '#5cb85c'});
-            if ($(response).find('#isPro').is(":checked"))
-                $('#statusPro').css({'color': '#5cb85c'});
-            if ($(response).find('#isAutoupload').is(":checked")) {
-                $('#statusAuto').css({'color': '#5cb85c'});
-            }
-            if ($(response).find('.form-group:contains(Магазин) a').text().indexOf("Оплачен") + 1) {
-                $('#statusShop').css({'color': '#5cb85c'});
-            }
-            if ($(response).find('.form-group:contains(Подписка) a').text().indexOf("Подписка") + 1
-                    && $(response).find('.form-group:contains(Магазин) a').text().indexOf("Оплачен") + 1) {
-                let sub = $(response).find('.form-group:contains(Подписка) a').text().split('"');
-                $('#statusSubscription').text(sub[1]);
-                $('#statusSubscription').css({'color': '#5cb85c'});
-                $('#statusShop').css({'color': 'rgb(189, 189, 189)'});
-            }
-
             let agentSubdivision = userGlobalInfo.subdivision;
-            if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
-                $('#companyInfo table tr:eq(1)').append('<td id="REpremium"><span class="loading-indicator-text">Загрузка...</span></td>');
-                let shopLink = $(response).find('[href^="/shops/info/view/"]');
-                if ($(shopLink).length === 0) {
-                    checkPremiumUsersList(id);
-                } else {
-                    try {
-                        let subscrIndicator = $('#statusSubscription');
-                        let isFired = $(subscrIndicator)[0].hasAttribute('fired');
-                        if (isFired) {
-                            $(subscrIndicator).html('• Подписка: <br><span '+
-                            'style="font-size: 12px; color: #000; '+
-                            'margin-left: 9px; font-weight: 400;">'+
-                            'Загрузка...</span>');
-                        }
-                        let shopId = $(shopLink).attr('href').replace(/\D/g, '');
-                        sendShopInfoRequest(shopId);
-                    } catch(e) {
-                        console.log(e);
-                    }
-                }
-            }
 
-            if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
-                $('#companyInfo table').append('<tr><td></td><td id="ExtensionInd"><span>Расширение</span><span id="ExtensionIndGroup"></span></td><td></td></tr>');
-                checkExtensionIndUser(+id);
+            let indicators = ['inn','pro', 'auto', 'shop', 'subscription'];
+            if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
+                indicators.push('REPremium');
             }
+            if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
+                indicators.push('extension');
+            }
+            addIndicatorsHelpdeskDetails(indicators, $(response));
         } else {
             if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="company">установить как компанию</a>');
         }

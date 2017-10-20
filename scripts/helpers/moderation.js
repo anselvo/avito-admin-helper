@@ -92,6 +92,9 @@ function startModerator() {
 
             // Одобрить
             allowItem();
+
+            // Сравнение объяв
+            addCompareItemsItemInfo();
 		}
 
         // User info
