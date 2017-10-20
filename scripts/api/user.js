@@ -450,15 +450,16 @@ function closeLoadBarInfoWindow() {
     $('.userInfoMain').show();
 }
 
-function getParamOnUserInfo(param) { // параметры на странице юзера
+function getParamOnUserInfo(param, html) { // параметры на странице юзера
+    let searchNode = html || $('html');
     switch (param) {
         case 'user-id':
-            let userId = +$('form[action^="/users/user/edit"] [data-user-id]').attr('data-user-id');
-            return userId;
+            let userId = searchNode.find('form[action^="/users/user/edit"] [data-user-id]').attr('data-user-id');
+            return +userId;
             break;
 
         case 'e-mail':
-            let userEmail = $('.js-fakeemail-field').text();
+            let userEmail = searchNode.find('.js-fakeemail-field').text();
             return userEmail;
             break;
 
@@ -467,4 +468,3 @@ function getParamOnUserInfo(param) { // параметры на странице
     }
 
 }
-

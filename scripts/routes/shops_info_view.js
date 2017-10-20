@@ -532,55 +532,40 @@ function indicateNoneditableFields() {
     $(fieldLabels).append('<span class="icon-lock" style="margin-left: 2px;" title="Клиент не может редактировать это поле"></span>');
 }
 
-function showPremiumUsers(id) {
-    $('#shop-header .main-info').append('<div class="ah-user-indicators-item ah-inactive" id="REpremium" style="float: right; font-style: italic;"><span class="loading-indicator-text">Загрузка...</span></div>');
+function showPremiumUsers(userId) {
+    let mainInfo = $('#shop-header .main-info');
+    mainInfo.append('<div class="ah-user-indicators-item ah-inactive" id="REpremium" style="float: right; font-style: italic;"></div>');
+    let container = $('#REpremium');
+    container.append(`<span data-indicator="REPremium"></span>`);
 
-    if (!id || !isFinite(id)) {
-        $('#REpremium span').removeClass('loading-indicator-text');
-        $('#REpremium span').text('Error');
-        $('#REpremium').css('color', 'rgb(217, 83, 79)');
-        return;
-    }
-
-    chrome.runtime.sendMessage({
-        method: 'POST',
-        action: 'XMLHttpRequest',
-        url: 'http://avitoadm.ru/support_helper/other/premium_users.json',
-    }, function (response) {
-        if (response == 'error') {
-            var css = {
-                'color': 'rgb(217, 83, 79)'
-            }
-            var text = 'Error';
-            premiumUsersIndicatorHandler(text, css);
-            return;
-        }
-
-        try {
-            var response = JSON.parse(response);
-        } catch (e) {
-            var css = {
-                'color': 'rgb(217, 83, 79)'
-            }
-            var text = 'Error';
-            premiumUsersIndicatorHandler(text, css);
-            return;
-        }
-
-        for (var i = 0; i < response.realty.length; i++) {
-            if (id == response.realty[i].id) {
-                var css = {
-                    'color': '#5cb85c',
-                    'font-weight': 'bold',
-                    'font-style': 'normal'
+    let indicators = new AhIndicators(['REPremium'], container);
+    let rePremium = indicators.get().rePremium;
+    let shopIndicators = new ShopInfoIndicators();
+    if (shopIndicators.getRePremiumInfo().isFired) {
+        indicators.fireUp(rePremium);
+    } else {
+        indicators.addLoader(rePremium);
+        getPremiumUsersList().then(
+            response => {
+                try {
+                    for (let i = 0; i < response.realty.length; i++) {
+                        if (+userId === +response.realty[i].id) {
+                            indicators.fireUp(rePremium);
+                            return;
+                        }
+                    }
+                    indicators.snuffOut(rePremium);
+                } catch (e) {
+                    indicators.showError(rePremium);
+                    console.log(e);
                 }
-                var text = 'RE premium';
-                premiumUsersIndicatorHandler(text, css);
-                return;
+            },
+            error => {
+                indicators.showError(rePremium);
+                console.log(error);
             }
-        }
-        checkPremiumUsersShopInfo(document, 'traffic');
-    });
+        );
+    }
 }
 
 // добавление/удаление детачнутых элементов на правой панели

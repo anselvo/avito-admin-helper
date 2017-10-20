@@ -40,3 +40,40 @@ function getShopInfo(id) {
             return response.text();
         });
 }
+
+// user account info
+function getUserAccountInfo(id) {
+    return fetch(`https://adm.avito.ru/users/account/info/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.text();
+    });
+}
+
+// список юзеров RE Premium
+function getPremiumUsersList() {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "GET",
+                url: "http://avitoadm.ru/support_helper/other/premium_users.json"
+            },
+            function (response) {
+                if (response === 'error') {
+                    reject('response error');
+                }
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                resolve(json);
+            }
+        );
+    });
+}

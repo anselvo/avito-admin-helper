@@ -127,7 +127,7 @@ function startSupport() {
             if (+userGlobalInfo.subdivision_id === 13 // 2nd line
                 || +userGlobalInfo.subdivision_id === 30 // script developers
                 ) {
-                userIndicators.push('legalEntity');
+                userIndicators.splice(2, 0, 'legalEntity');
             }
             if (~allowedPremiumUsersSubd.indexOf(userGlobalInfo.subdivision)) {
                 userIndicators.push('REPremium');
@@ -135,7 +135,7 @@ function startSupport() {
             if (~allowedExtensionIndSubd.indexOf(userGlobalInfo.subdivision)) {
                 userIndicators.push('extension');
             }
-            showUserInfoIndicators(userIndicators);
+            addIndicatorsUserInfo(userIndicators);
 
             alternatePhoneSearch();
 

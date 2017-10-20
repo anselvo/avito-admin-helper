@@ -298,86 +298,6 @@ function getMailForAnswer(email) {
 }
 // Копирование Email для ответа ---
 
-// Проверка премиум-юзера на странице шопа +++
-function checkPremiumUsersShopInfo(html, script) {
-    var allLabels = [];
-    var blocks = $(html).find('h4:contains(Тариф подписки)').nextAll();
-    for (var i = 0; i < $(blocks).length; i++) {
-        var block = $(blocks).slice(i, i + 1);
-
-        if ($(block)[0].nodeName === 'H4')
-            break;
-
-        var label = $(block).find('.control-label');
-        if (!$(label).length)
-            continue;
-        allLabels.push($(label)[0]);
-    }
-
-    var verticalBlock = [].find.call(allLabels, 
-    singleItem => singleItem.innerText === 'Вертикаль');
-    var verticalValue = $(verticalBlock).next().text();
-
-    var tariffPlanBlock = [].find.call(allLabels, 
-    singleItem => singleItem.innerText === 'Тарифный план');
-    var tariffPlanValue = $(tariffPlanBlock).next().text();
-
-    var statusBlock = [].find.call(allLabels, 
-    singleItem => singleItem.innerText === 'Статус');
-    var statusValue = $(statusBlock).next().text();
-
-    if (~verticalValue.indexOf('Realty')
-            && ~tariffPlanValue.indexOf('Золото')
-            && ~statusValue.indexOf('Оплачено')) {
-        switch (script) {
-            case 'support':
-                var css = {'color': '#d9534f'};
-                break;
-
-            case 'traffic':
-                var css = {'color': '#5cb85c', 
-                    'font-weight': 'bold', 
-                    'font-style': 'normal'
-                };
-                break;
-        }
-
-        var text = 'RE premium';
-        premiumUsersIndicatorHandler(text, css);
-    } else if (script === 'support') {
-        var userId = getParamOnUserInfo('user-id');
-        userId = userId || $('[href^="/users/user/info"]').text();
-        checkPremiumUsersList(userId);
-    } else {
-        var css = {};
-        var text = 'RE premium';
-        premiumUsersIndicatorHandler(text, css);
-    }
-    
-    // инфа о подписке
-    if (script === 'support') {
-        let reg = / $/;
-        let subscrInfoText = statusValue.replace(reg, '') 
-            +', '+ verticalValue.replace(reg, '') 
-            +', '+ tariffPlanValue.replace(reg, '');
-        
-        let subscrIndicator = $('#statusSubscription');
-        let isFired = $(subscrIndicator)[0].hasAttribute('fired');
-        if (isFired) {
-            $('#statusSubscription').html( '• Подписка: <br><span '+
-            'class="ah-user-indicators-subtext">'
-            + subscrInfoText +'</span>');
-        }
-    }
-}
-
-function premiumUsersIndicatorHandler(text, css) {
-    $('#REpremium span').removeClass('loading-indicator-text');
-    $('#REpremium span').text(text);
-    $('#REpremium').css(css);
-}
-// Проверка премиум-юзера на странице шопа ---
-
 // jQuery case-insensitive +++
 jQuery.extend(
         jQuery.expr[':'].containsCI = function (a, i, m) {
@@ -870,47 +790,69 @@ function getParamsItemInfo(html) {
 
 // параметры на странице шопа
 function getParamsShopInfo(html) {
-    let searchNode;
-    if (html) {
-        let tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        searchNode = tmp;
-    } else {
-        searchNode = document;
-    }
+    let searchNode = html || $('html');
 
     let res = {};
-    let allHeaders = searchNode.querySelectorAll('h4');
+    res.extensions = [];
+    res.subscription = {};
+
+    let allHeaders = searchNode.find('h4');
+
+    let extensionsHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Расширения');
+    let subscriptionHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Тариф подписки');
 
     // extensions
-    let extensionsHeader = [].find.call(allHeaders, singleItem => singleItem.firstChild.data === 'Расширения');
-    let infoHeader = [].find.call(allHeaders, singleItem => singleItem.firstChild.data === 'Информация');
-    let allExtensionsGroups = getFormGroups(extensionsHeader, infoHeader);
+    let allExtensionsGroups = getFormGroups(extensionsHeader, 'H4');
     let extensions = [];
     allExtensionsGroups.forEach((item) => {
         let allLabels = item.querySelectorAll('.control-label');
-        let nameLabel = [].find.call(allLabels, single => single.firstChild.data === 'Название');
-        let nameValue = nameLabel.nextElementSibling.textContent;
+        let nameLabel = [].find.call(allLabels, single => single.textContent === 'Название');
+        if (!nameLabel) return;
+
         extensions.push({
-            name: nameValue
+            name: nameLabel.nextElementSibling.textContent
         });
     });
+    res.extensions = extensions;
 
-    // return all .form-groups from (@param startNode, @param endNode]
-    function getFormGroups(startNode, endNode) {
+    // subscription tariff
+    let allSubscriptionGroups = getFormGroups(subscriptionHeader, 'H4');
+    if (!allSubscriptionGroups.length) {
+        res.subscription = null;
+    } else {
+        allSubscriptionGroups.forEach((item) => {
+            let label = item.querySelector('.control-label');
+            if (!label) return;
+
+            let labelName = label.textContent;
+            if (labelName === 'Статус') {
+                res.subscription.status = label.nextElementSibling.textContent.trim();
+            }
+            if (labelName === 'Вертикаль') {
+                res.subscription.vertical = label.nextElementSibling.textContent.trim();
+            }
+            if (labelName === 'Тарифный план') {
+                res.subscription.tariffPlan = label.nextElementSibling.textContent.trim();
+            }
+        });
+    }
+
+    // возвращает все .form-groups от startNode и далее, пока не встретит тег с именем breakTagName
+    function getFormGroups(startNode, breakTagName) {
         let groups = [];
 
-        while (startNode && startNode !== endNode) {
+        do {
+            if (!startNode) break;
+
             if (startNode.classList.contains('form-group')) {
                 groups.push(startNode);
             }
             startNode = startNode.nextElementSibling;
-        }
+        } while (startNode && startNode.nodeName !== breakTagName);
 
         return groups;
     }
 
-    res.extensions = extensions;
     return res;
 }
 
