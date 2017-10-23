@@ -78,6 +78,12 @@ function startInfoDoc() {
             getAllUsers(); // инфа обо всех пользователях
         }
 
+        // billing/invoices
+        if (~currentUrl.indexOf('https://adm.avito.ru/billing/invoices')
+            || ~currentUrl.indexOf('https://adm.avito.ru/adm/billing/invoices')) {
+            showUsersIdsBillingInvoices();
+        }
+
         // root
         let mainPageReg = /adm\.avito\.ru\/$/i;
         if (mainPageReg.test(currentUrl)) {
