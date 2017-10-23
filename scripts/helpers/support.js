@@ -248,7 +248,10 @@ function startSupport() {
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
 
-            addWlLinkOnAccountInfo(); // переход в ВЛ со страницы счета (все статусы, последние пол года)
+            // переход в ВЛ со страницы счета (все статусы, последние пол года)
+            addWlLinkAccountInfo(getWlLinkForUser,
+                {linkTitle: 'Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода'}
+            );
         }
 
         // walletlog

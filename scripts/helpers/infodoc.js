@@ -60,6 +60,9 @@ function startInfoDoc() {
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
             userViewOperations();
+
+            // addWLLinkForDocumentsAccountInfo();
+            addWlLinkAccountInfo(getWlLinkForDocuments);
         }
 
         // walletlog
