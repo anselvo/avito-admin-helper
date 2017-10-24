@@ -875,6 +875,21 @@ function getParamsShopInfo(html) {
     return res;
 }
 
+function getParamsUserInfo(html) {
+    let searchNode = html || $('html');
+
+    let res = {};
+
+    let activeFeesPackagesTable = searchNode.find('.fees-packages-active_content .table');
+    let expiredFeesPackagesTable = searchNode.find('.fees-packages-expired_content .table');
+
+    res.activeFeesPackagesTableHtml = activeFeesPackagesTable[0].outerHTML;
+    res.expiredFeesPackagesTableHtml = expiredFeesPackagesTable[0].outerHTML;
+
+    return res;
+
+}
+
 // получить оставшийся скролл справа
 function getScrollSizeRight(elem) {
     return elem.scrollWidth - elem.scrollLeft - elem.clientWidth;
@@ -1395,4 +1410,172 @@ function renderCompareItems(items) {
             }
         });
     });
+}
+
+// информация о пакетах размещений
+function showLfPackagesBtnHandler(btn) {
+    btn.click(function () {
+        let allInfoBlocks = $('.ah-lf-package-info');
+        if (allInfoBlocks.length === 0) {
+            alert('На странице нет операций с пакетами размещений');
+            return;
+        }
+
+        let self = $(this);
+        btnLoaderOn(self);
+        let callback = function() {
+            btnLoaderOff(self);
+            outTextFrame('Информация о пакетах добавлена к операциям');
+        };
+        showLfPackagesInfo(callback);
+    });
+}
+
+function showLfPackagesInfo(callback) {
+    callback = callback || function() {};
+
+    let allInfoBlocks = $('.ah-lf-package-info');
+
+    allInfoBlocks.html(`<span class="text-muted">Загрузка...</span>`);
+
+    let allUsersIds = getUsersIds();
+    let doneRequestCount = 0;
+    allUsersIds.forEach((userId) => {
+        getUserInfo(userId).then(
+            response => {
+                let params = getParamsUserInfo($(response));
+                renderLfPackagesInfo(params, userId);
+            },
+            error => renderLfPackagesError(error, userId)
+        ).then(
+            () => {
+                doneRequestCount++;
+                if (allUsersIds.length === doneRequestCount) {
+                    callback();
+                }
+            }
+        );
+    });
+
+    function renderLfPackagesError(error, userId) {
+        let errorNodes = allInfoBlocks.filter(`[data-user-id="${userId}"]`);
+        errorNodes.html(`<span class="text-danger">Ошибка: ${error.status} ${(error.statusText) ? `(${error.statusText})` : ''}</span>`)
+    }
+
+    function renderLfPackagesInfo(params, userId) {
+        let allPackages = getPackagesIdsForUser(userId);
+        allPackages.forEach((id) => {
+            let info = getLfPackageInfo(id, params.activeFeesPackagesTableHtml, params.expiredFeesPackagesTableHtml);
+            let nodes = allInfoBlocks.filter(`[data-package-id="${id}"]`);
+            let html;
+            let isFound = false;
+
+            if (info.status) {
+                isFound = true;
+                let statusClass = (info.status === 'Active') ? 'text-success' : '';
+                html = `
+                    <i>Пакет: </i> 
+                    <span class="${statusClass} ah-lf-package-details">
+                        <b>${info.status}</b> <span class="text-muted">(${info.size})</span>
+                    </span>
+                `;
+            } else {
+                html = `<span>Пакет: </span> <span class="text-muted">не найден</span>`;
+            }
+
+            nodes.html(html);
+
+            if (isFound) {
+                let popoverTargets = $(nodes).find('.ah-lf-package-details');
+                let popoverContent = `
+                    <table class="ah-lf-package-details-table">
+                        <tr>
+                            <td>Регион</td><td>${info.location}</td>
+                        </tr>
+                        <tr>
+                            <td>Категория</td><td>${info.category}</td>
+                        </tr>
+                        <tr>
+                            <td>Размер</td><td>${info.size}</td>
+                        </tr>
+                        <tr>
+                            <td>Срок действия</td><td>${info.expires}</td>
+                        </tr>
+                        <tr>
+                            <td>Длительность</td><td>${(info.duration) ? info.duration : '-'}</td>
+                        </tr>
+                    </table>
+                `;
+
+                $(popoverTargets).popover({
+                    trigger: 'hover',
+                    container: 'body',
+                    content: popoverContent,
+                    html: true
+                });
+            }
+        });
+    }
+
+    function getPackagesIdsForUser(userId) {
+        let tmp = {};
+        allInfoBlocks.each(function () {
+            let userIdIter = $(this).data('userId').toString();
+            if (userIdIter !== userId) return;
+
+            let packageId = $(this).data('packageId');
+            tmp[packageId] = true;
+        });
+
+        return Object.keys(tmp);
+    }
+
+    function getUsersIds() {
+        let tmp = {};
+        allInfoBlocks.each(function () {
+            let id = $(this).data('userId');
+            tmp[id] = true;
+        });
+
+        return Object.keys(tmp);
+    }
+
+    function getLfPackageInfo(packageId, activeTableHtml, expiredTableHtml) {
+        let activeTable = $(activeTableHtml);
+        let expiredTable = $(expiredTableHtml);
+        let info = {};
+
+        info.id = packageId;
+
+        let activeCol = activeTable.find(`.id-col:contains(${packageId})`);
+        let expiredCol = expiredTable.find(`.id-col:contains(${packageId})`);
+
+        if (activeCol.length !== 0) {
+            info.status = 'Active';
+
+            let row = activeCol.parent();
+            info.location = row.find('.location-col').text();
+            info.category = row.find('.category-col').text().trim();
+            info.size = row.find('.size-col').text();
+            info.duration = row.find('.duration-col').text();
+            info.expires = row.find('.expires-col').text();
+        }
+
+        if (expiredCol.length !== 0) {
+            info.status = 'Expired';
+
+            let row = expiredCol.parent();
+            info.location = row.find('.location-col').text();
+            info.category = row.find('.category-col').text().trim();
+            info.size = row.find('.size-col').text();
+            info.expires = row.find('.expires-col').text();
+            info.duration = null;
+        }
+
+        if (expiredCol.length === 0 && activeCol.length === 0) {
+            info.status = null;
+        }
+
+        return info;
+    }
 }

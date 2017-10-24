@@ -77,3 +77,15 @@ function getPremiumUsersList() {
         );
     });
 }
+
+// user info
+function getUserInfo(id) {
+    return fetch(`https://adm.avito.ru/users/user/info/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.text();
+    });
+}

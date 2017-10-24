@@ -5313,3 +5313,24 @@ select.ah-form-control:focus {
     max-height: none;
     overflow: visible;
 }
+
+.ah-lf-package-details-table td {
+    padding: 2px 4px;
+}
+.ah-lf-package-details-table td:first-child {
+    font-weight: bold;
+}
+.ah-lf-package-details {
+    border-bottom: 1px dotted #777777;
+}
+.ah-lf-package-details:hover {
+    border-bottom-color: transparent;
+}
+.ah-account-history-table-controls {
+    margin-bottom: 10px;
+}
+
+.ah-wl-controls-btn {
+    margin-top: -2px;
+    margin-left: 10px;
+}

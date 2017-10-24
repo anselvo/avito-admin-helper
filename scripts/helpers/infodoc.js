@@ -63,6 +63,8 @@ function startInfoDoc() {
 
             // addWLLinkForDocumentsAccountInfo();
             addWlLinkAccountInfo(getWlLinkForDocuments);
+
+            addLfPackageInfoAccountInfo();
         }
 
         // walletlog
@@ -72,6 +74,8 @@ function startInfoDoc() {
             reservedOperation('/billing/walletlog');
 
             countMoneyWalletlog();
+
+            addLfPackageInfoWalletlog();
         }
 
         // helpdesk

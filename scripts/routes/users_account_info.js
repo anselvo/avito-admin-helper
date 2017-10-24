@@ -430,3 +430,38 @@ function addWlLinkAccountInfo(getLinkFunc, options) {
     let link = getLinkFunc(userId);
     $('#history').find('a[href^="/users/account/info"]').after(` <a title="${linkTitle}" target="_blank" style="font-size: 14px;" href="${link}">Wallet Log</a>`);
 }
+
+// инфа о пакетах
+function addLfPackageInfoAccountInfo() {
+    let userId = $('a[href^="/users/user/info/"]').text();
+    let table = $('.account-history');
+    let rows = table.find('tbody tr');
+    let packageReg = /(из|по|покупка) пакет[ау]/i;
+    rows.each(function() {
+        let row = $(this);
+        let descriptionCell = row.find('td:eq(1)');
+        let descriptionText = descriptionCell.text();
+        let statusCell = row.find('td:eq(4)');
+        let statusText = statusCell.text().trim();
+        if (packageReg.test(descriptionText) && ~statusText.indexOf('Исполнено')) {
+            let ids = descriptionText.match(/\d+/);
+            if (ids) {
+                let packageId = ids[0];
+                descriptionCell.append(`<div data-package-id="${packageId}" data-user-id="${userId}" 
+                    class="ah-lf-package-info"></div>`);
+            }
+        }
+    });
+
+    table.before(`
+        <div class="ah-account-history-table-controls">
+            <button class="btn btn-info btn-xs" id="get-lf-packages-info-btn" title="Показать информацию о пакетах размещений">
+                <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF
+            </button>
+        </div>
+    `);
+
+    showLfPackagesBtnHandler($('#get-lf-packages-info-btn'));
+
+
+}
