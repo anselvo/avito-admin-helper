@@ -41,10 +41,10 @@ function statusItemWalletlog(options) {
     }
 }
 
-function addLfPackageInfoWalletlog() {
+function addPackageInfoWalletlog() {
     let table = $('.billing .table');
     let rows = table.find('tbody tr');
-    let packageReg = /(из|по|покупка) пакет[ау]/i;
+    let packageReg = /((из|по|покупка) пакет[ау])|(пакет «)/i;
     rows.each(function() {
         let row = $(this);
         let descriptionCell = row.find('td:eq(4)');
@@ -58,15 +58,15 @@ function addLfPackageInfoWalletlog() {
                 let userId = row.find('td:eq(3)').text().trim();
 
                 descriptionCell.append(`<div data-package-id="${packageId}" data-user-id="${userId}" 
-                    class="ah-lf-package-info"></div>`);
+                    class="ah-package-info"></div>`);
             }
         }
     });
 
     let wlResultNode = $('.billing-walletlog-result');
     wlResultNode.append(`
-        <button class="btn btn-info btn-xs pull-right ah-wl-controls-btn" id="get-lf-packages-info-btn" title="Показать информацию о пакетах размещений">
-            <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF
+        <button class="btn btn-info btn-xs pull-right ah-wl-controls-btn" id="get-lf-packages-info-btn" title="Показать информацию о пакетах LF и CV">
+            <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF и CV
         </button>
     `);
 

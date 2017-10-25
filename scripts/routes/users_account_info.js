@@ -432,11 +432,11 @@ function addWlLinkAccountInfo(getLinkFunc, options) {
 }
 
 // инфа о пакетах
-function addLfPackageInfoAccountInfo() {
+function addPackageInfoAccountInfo() {
     let userId = $('a[href^="/users/user/info/"]').text();
     let table = $('.account-history');
     let rows = table.find('tbody tr');
-    let packageReg = /(из|по|покупка) пакет[ау]/i;
+    let packageReg = /((из|по|покупка) пакет[ау])|(пакет «)/i;
     rows.each(function() {
         let row = $(this);
         let descriptionCell = row.find('td:eq(1)');
@@ -448,20 +448,18 @@ function addLfPackageInfoAccountInfo() {
             if (ids) {
                 let packageId = ids[0];
                 descriptionCell.append(`<div data-package-id="${packageId}" data-user-id="${userId}" 
-                    class="ah-lf-package-info"></div>`);
+                    class="ah-package-info"></div>`);
             }
         }
     });
 
     table.before(`
         <div class="ah-account-history-table-controls">
-            <button class="btn btn-info btn-xs" id="get-lf-packages-info-btn" title="Показать информацию о пакетах размещений">
-                <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF
+            <button class="btn btn-info btn-xs" id="get-lf-packages-info-btn" title="Показать информацию о пакетах LF и CV">
+                <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF и CV
             </button>
         </div>
     `);
 
     showLfPackagesBtnHandler($('#get-lf-packages-info-btn'));
-
-
 }

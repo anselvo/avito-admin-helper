@@ -880,14 +880,18 @@ function getParamsUserInfo(html) {
 
     let res = {};
 
-    let activeFeesPackagesTable = searchNode.find('.fees-packages-active_content .table');
-    let expiredFeesPackagesTable = searchNode.find('.fees-packages-expired_content .table');
+    let activeLFPackagesTable = searchNode.find('.fees-packages-active_content .table');
+    let expiredLFPackagesTable = searchNode.find('.fees-packages-expired_content .table');
+    let activeCVPackagesTable = searchNode.find('h4:contains(Купленные и активные пакеты просмотров)').next();
+    let expiredCVPackagesTable = searchNode.find('h4:contains(Истёкшие, завершённые и отменённые пакеты просмотров)')
+        .next().find('.table');
 
-    res.activeFeesPackagesTableHtml = activeFeesPackagesTable[0].outerHTML;
-    res.expiredFeesPackagesTableHtml = expiredFeesPackagesTable[0].outerHTML;
+    res.activeLFPackagesTableHtml = (activeLFPackagesTable.length) ? activeLFPackagesTable[0].outerHTML : null;
+    res.expiredLFPackagesTableHtml = (expiredLFPackagesTable.length) ? expiredLFPackagesTable[0].outerHTML : null;
+    res.activeCVPackagesTableHtml = (activeCVPackagesTable.length) ? activeCVPackagesTable[0].outerHTML : null;
+    res.expiredCVPackagesTableHtml = (expiredCVPackagesTable.length) ? expiredCVPackagesTable[0].outerHTML : null;
 
     return res;
-
 }
 
 // получить оставшийся скролл справа
@@ -1415,9 +1419,9 @@ function renderCompareItems(items) {
 // информация о пакетах размещений
 function showLfPackagesBtnHandler(btn) {
     btn.click(function () {
-        let allInfoBlocks = $('.ah-lf-package-info');
+        let allInfoBlocks = $('.ah-package-info');
         if (allInfoBlocks.length === 0) {
-            alert('На странице нет операций с пакетами размещений');
+            alert('На странице нет операций с пакетами');
             return;
         }
 
@@ -1434,7 +1438,7 @@ function showLfPackagesBtnHandler(btn) {
 function showLfPackagesInfo(callback) {
     callback = callback || function() {};
 
-    let allInfoBlocks = $('.ah-lf-package-info');
+    let allInfoBlocks = $('.ah-package-info');
 
     allInfoBlocks.html(`<span class="text-muted">Загрузка...</span>`);
 
@@ -1444,9 +1448,15 @@ function showLfPackagesInfo(callback) {
         getUserInfo(userId).then(
             response => {
                 let params = getParamsUserInfo($(response));
-                renderLfPackagesInfo(params, userId);
+                let packagesTables = {
+                    activeLF: params.activeLFPackagesTableHtml,
+                    expiredLF: params.expiredLFPackagesTableHtml,
+                    activeCV: params.activeCVPackagesTableHtml,
+                    expiredCV: params.expiredCVPackagesTableHtml
+                };
+                renderPackagesInfo(packagesTables, userId);
             },
-            error => renderLfPackagesError(error, userId)
+            error => renderPackagesError(error, userId)
         ).then(
             () => {
                 doneRequestCount++;
@@ -1457,60 +1467,37 @@ function showLfPackagesInfo(callback) {
         );
     });
 
-    function renderLfPackagesError(error, userId) {
+    function renderPackagesError(error, userId) {
         let errorNodes = allInfoBlocks.filter(`[data-user-id="${userId}"]`);
         errorNodes.html(`<span class="text-danger">Ошибка: ${error.status} ${(error.statusText) ? `(${error.statusText})` : ''}</span>`)
     }
 
-    function renderLfPackagesInfo(params, userId) {
+    function renderPackagesInfo(packagesTables, userId) {
         let allPackages = getPackagesIdsForUser(userId);
         allPackages.forEach((id) => {
-            let info = getLfPackageInfo(id, params.activeFeesPackagesTableHtml, params.expiredFeesPackagesTableHtml);
+            let info = getPackageInfo(id, packagesTables);
             let nodes = allInfoBlocks.filter(`[data-package-id="${id}"]`);
             let html;
             let isFound = false;
 
-            if (info.status) {
+            if (info) {
                 isFound = true;
-                let statusClass = (info.status === 'Active') ? 'text-success' : '';
-                html = `
-                    <i>Пакет: </i> 
-                    <span class="${statusClass} ah-lf-package-details">
-                        <b>${info.status}</b> <span class="text-muted">(${info.size})</span>
-                    </span>
-                `;
+                html = info.html;
             } else {
-                html = `<span>Пакет: </span> <span class="text-muted">не найден</span>`;
+                html = `<span class="text-muted">Пакет не найден</span>`;
             }
 
             nodes.html(html);
 
             if (isFound) {
                 let popoverTargets = $(nodes).find('.ah-lf-package-details');
-                let popoverContent = `
-                    <table class="ah-lf-package-details-table">
-                        <tr>
-                            <td>Регион</td><td>${info.location}</td>
-                        </tr>
-                        <tr>
-                            <td>Категория</td><td>${info.category}</td>
-                        </tr>
-                        <tr>
-                            <td>Размер</td><td>${info.size}</td>
-                        </tr>
-                        <tr>
-                            <td>Срок действия</td><td>${info.expires}</td>
-                        </tr>
-                        <tr>
-                            <td>Длительность</td><td>${(info.duration) ? info.duration : '-'}</td>
-                        </tr>
-                    </table>
-                `;
+                let popoverContent = info.htmlPopover;
 
                 $(popoverTargets).popover({
                     trigger: 'hover',
                     container: 'body',
                     content: popoverContent,
+                    template: `<div class="popover ah-package-info-popover"><div class="arrow"></div><div class="popover-content"></div></div>`,
                     html: true
                 });
             }
@@ -1540,42 +1527,179 @@ function showLfPackagesInfo(callback) {
         return Object.keys(tmp);
     }
 
-    function getLfPackageInfo(packageId, activeTableHtml, expiredTableHtml) {
-        let activeTable = $(activeTableHtml);
-        let expiredTable = $(expiredTableHtml);
+    function getPackageInfo(packageId, packagesTables) {
         let info = {};
 
-        info.id = packageId;
+        let activeLFTable = packagesTables.activeLF;
+        let expiredLFTable = packagesTables.expiredLF;
+        let activeCVTable = packagesTables.activeCV;
+        let expiredCVTable = packagesTables.expiredCV;
 
-        let activeCol = activeTable.find(`.id-col:contains(${packageId})`);
-        let expiredCol = expiredTable.find(`.id-col:contains(${packageId})`);
+        if (activeLFTable) { // активный LF
+            let column = $(activeLFTable).find(`.id-col:contains(${packageId})`);
+            if (column.length !== 0) {
+                let row = column.parent();
 
-        if (activeCol.length !== 0) {
-            info.status = 'Active';
+                let location = row.find('.location-col').text();
+                let category = row.find('.category-col').text().trim();
+                let size = row.find('.size-col').text();
+                let duration = row.find('.duration-col').text();
+                let expires = row.find('.expires-col').text();
 
-            let row = activeCol.parent();
-            info.location = row.find('.location-col').text();
-            info.category = row.find('.category-col').text().trim();
-            info.size = row.find('.size-col').text();
-            info.duration = row.find('.duration-col').text();
-            info.expires = row.find('.expires-col').text();
+                info.html = `
+                    <i>Пакет ${packageId}: </i>
+                    <span class="text-success ah-lf-package-details">
+                        <b>Active</b> <span class="text-muted">(${size})</span>
+                    </span>
+                `;
+
+                info.htmlPopover = `
+                    <table class="ah-package-details-table">
+                        <tr>
+                            <td>Регион</td><td>${location}</td>
+                        </tr>
+                        <tr>
+                            <td>Категория</td><td>${category}</td>
+                        </tr>
+                        <tr>
+                            <td>Размер</td><td>${size}</td>
+                        </tr>
+                        <tr>
+                            <td>Длительность</td><td>${duration}</td>
+                        </tr>
+                        <tr>
+                            <td>Срок действия</td><td>${expires}</td>
+                        </tr>
+                    </table>
+                `;
+
+                return info;
+            }
         }
 
-        if (expiredCol.length !== 0) {
-            info.status = 'Expired';
+        if (expiredLFTable) { // истекший LF
+            let column = $(expiredLFTable).find(`.id-col:contains(${packageId})`);
+            if (column.length !== 0) {
+                let row = column.parent();
 
-            let row = expiredCol.parent();
-            info.location = row.find('.location-col').text();
-            info.category = row.find('.category-col').text().trim();
-            info.size = row.find('.size-col').text();
-            info.expires = row.find('.expires-col').text();
-            info.duration = null;
+                let location = row.find('.location-col').text();
+                let category = row.find('.category-col').text().trim();
+                let size = row.find('.size-col').text();
+                let expires = row.find('.expires-col').text();
+
+                info.html = `
+                    <i>Пакет ${packageId}: </i>
+                    <span class="ah-lf-package-details">
+                        <b>Expired</b> <span class="text-muted">(${size})</span>
+                    </span>
+                `;
+
+                info.htmlPopover = `
+                    <table class="ah-package-details-table">
+                        <tr>
+                            <td>Регион</td><td>${location}</td>
+                        </tr>
+                        <tr>
+                            <td>Категория</td><td>${category}</td>
+                        </tr>
+                        <tr>
+                            <td>Размер</td><td>${size}</td>
+                        </tr>
+                        <tr>
+                            <td>Срок действия</td><td>${expires}</td>
+                        </tr>
+                    </table>
+                `;
+
+                return info;
+            }
         }
 
-        if (expiredCol.length === 0 && activeCol.length === 0) {
-            info.status = null;
+        if (activeCVTable) { // активный CV
+            let column = $(activeCVTable).find(`td:eq(0):contains(${packageId})`);
+            if (column.length !== 0) {
+                let row = column.parent();
+
+                let name = row.find('td:eq(1)').text();
+                let size = row.find('td:eq(2)').text();
+                let status = row.find('td:eq(3)').text();
+                let paid = row.find('td:eq(4)').text();
+                let expires = row.find('td:eq(5)').text();
+
+                info.html = `
+                    <i>Пакет ${packageId}: </i>
+                    <span class="text-success ah-lf-package-details">
+                        <b>${status}</b> <span class="text-muted">(${size})</span>
+                    </span>
+                `;
+
+                info.htmlPopover = `
+                    <table class="ah-package-details-table">
+                        <tr>
+                            <td>Название</td><td>${name}</td>
+                        </tr>
+                        <tr>
+                            <td>Просмотры</td><td>${size}</td>
+                        </tr>
+                        <tr>
+                            <td>Статус</td><td>${status}</td>
+                        </tr>
+                        <tr>
+                            <td>Оплачен</td><td>${paid}</td>
+                        </tr>
+                        <tr>
+                            <td>Истекает</td><td>${expires}</td>
+                        </tr>
+                    </table>
+                `;
+
+                return info;
+            }
         }
 
+        if (expiredCVTable) { // истекший CV
+            let column = $(expiredCVTable).find(`td:eq(0):contains(${packageId})`);
+            if (column.length !== 0) {
+                let row = column.parent();
+
+                let name = row.find('td:eq(1)').text();
+                let size = row.find('td:eq(2)').text();
+                let status = row.find('td:eq(3)').text();
+                let paid = row.find('td:eq(4)').text();
+                let deactivated = row.find('td:eq(5)').text();
+
+                info.html = `
+                    <i>Пакет ${packageId}: </i>
+                    <span class="ah-lf-package-details">
+                        <b>${status}</b> <span class="text-muted">(${size})</span>
+                    </span>
+                `;
+
+                info.htmlPopover = `
+                    <table class="ah-package-details-table">
+                        <tr>
+                            <td>Название</td><td>${name}</td>
+                        </tr>
+                        <tr>
+                            <td>Просмотры</td><td>${size}</td>
+                        </tr>
+                        <tr>
+                            <td>Статус</td><td>${status}</td>
+                        </tr>
+                        <tr>
+                            <td>Оплачен</td><td>${paid}</td>
+                        </tr>
+                        <tr>
+                            <td>Деактивирован</td><td>${deactivated}</td>
+                        </tr>
+                    </table>
+                `;
+
+                return info;
+            }
+        }
+
+        info = null;
         return info;
     }
 }
