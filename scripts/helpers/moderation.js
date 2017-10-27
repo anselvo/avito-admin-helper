@@ -141,5 +141,10 @@ function startModerator() {
 
             usersSearchBlockUser();
         }
+
+        // /detectives/queue/search
+        if (~currentUrl.indexOf('https://adm.avito.ru/detectives/queue/search')) {
+			addHoldItems();
+		}
 	});
 }

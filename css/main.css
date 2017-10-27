@@ -5339,3 +5339,73 @@ select.ah-form-control:focus {
 .popover.ah-package-info-popover {
     max-width: 500px;
 }
+
+.panel.ah-holded-items-wrapper {
+    position: fixed;
+    bottom: 4px;
+    left: 4px;
+    margin: 0;
+    /*width: 400px;*/
+}
+
+.ah-holded-items-wrapper table,
+.ah-holded-items-wrapper .table-scroll {
+    margin: 0;
+}
+
+.ah-holded-items-wrapper .panel-heading {
+    padding: 10px 5px;
+    position: relative;
+}
+
+.ah-holded-items-wrapper .panel-body {
+    padding: 0;
+}
+
+.ah-holded-items-wrapper .table-scroll {
+    max-height: 200px;
+}
+
+.ah-holded-items-wrapper  h2 {
+    font-size: 16px;
+    margin: 0;
+    padding-right: 40px;
+}
+
+.ah-holded-items-wrapper  h3 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.ah-holded-items-wrapper[empty] .ah-holded-items-btn-collapse {
+    display: none;
+}
+
+.ah-holded-items-btn-collapse {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+}
+
+.ah-hold-item-dropdown {
+    display: inline-block;
+}
+
+.ah-hold-item-menu a {
+    cursor: pointer;
+}
+
+.table.ah-holded-items-table {
+    width: 400px;
+}
+
+.ah-holded-items-table td {
+    padding: 2px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ah-holded-items-table td:first-child {
+    min-width: 250px;
+    max-width: 250px;;
+}
