@@ -249,6 +249,9 @@ function showComparePhotosPre(id, appendID) {
             if (status.indexOf('Expired')+1) {
                 comparePhotoRemoveButton('Item '+id+' is expired');
             }
+            if (status.indexOf('Archived')+1) {
+                comparePhotoRemoveButton('Item '+id+' is archived');
+            }
 
             $('#'+appendID+' a').attr('target','_blank');
             for (var i = 0; i < jsonParsePhotos.length; ++i) {

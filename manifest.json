@@ -55,6 +55,8 @@
 				"scripts/routes/helpdesk.js",
 				"scripts/routes/helpdesk_details.js",
 				"scripts/routes/billing_walletlog.js",
+				"scripts/routes/billing_invoices.js",
+				"scripts/routes/detectives_queue_search.js",
 
 				"scripts/helpers/smm.js",
 				"scripts/helpers/support.js",

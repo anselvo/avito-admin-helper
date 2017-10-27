@@ -40,3 +40,35 @@ function statusItemWalletlog(options) {
         outTextFrame('На странице нет операций к объявлениям');
     }
 }
+
+function addPackageInfoWalletlog() {
+    let table = $('.billing .table');
+    let rows = table.find('tbody tr');
+    let packageReg = /((из|по|покупка) пакет[ау])|(пакет «)/i;
+    rows.each(function() {
+        let row = $(this);
+        let descriptionCell = row.find('td:eq(4)');
+        let descriptionText = descriptionCell.text();
+        let statusCell = row.find('td:eq(9)');
+        let statusText = statusCell.text().trim();
+        if (packageReg.test(descriptionText) && ~statusText.indexOf('Исполнено')) {
+            let ids = descriptionText.match(/\d+/);
+            if (ids) {
+                let packageId = ids[0];
+                let userId = row.find('td:eq(3)').text().trim();
+
+                descriptionCell.append(`<div data-package-id="${packageId}" data-user-id="${userId}" 
+                    class="ah-package-info"></div>`);
+            }
+        }
+    });
+
+    let wlResultNode = $('.billing-walletlog-result');
+    wlResultNode.append(`
+        <button class="btn btn-info btn-xs pull-right ah-wl-controls-btn" id="get-lf-packages-info-btn" title="Показать информацию о пакетах LF и CV">
+            <span class="glyphicon glyphicon-info-sign"></span> Пакеты LF и CV
+        </button>
+    `);
+
+    showLfPackagesBtnHandler($('#get-lf-packages-info-btn'));
+}

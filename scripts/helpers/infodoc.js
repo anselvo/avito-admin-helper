@@ -60,6 +60,11 @@ function startInfoDoc() {
             // дополнения к операциям резервирования
             reservedOperation('/users/account/info');
             userViewOperations();
+
+            // addWLLinkForDocumentsAccountInfo();
+            addWlLinkAccountInfo(getWlLinkForDocuments);
+
+            addPackageInfoAccountInfo();
         }
 
         // walletlog
@@ -69,6 +74,8 @@ function startInfoDoc() {
             reservedOperation('/billing/walletlog');
 
             countMoneyWalletlog();
+
+            addPackageInfoWalletlog();
         }
 
         // helpdesk
@@ -76,6 +83,12 @@ function startInfoDoc() {
             findAgentID(); // ID агента
             
             getAllUsers(); // инфа обо всех пользователях
+        }
+
+        // billing/invoices
+        if (~currentUrl.indexOf('https://adm.avito.ru/billing/invoices')
+            || ~currentUrl.indexOf('https://adm.avito.ru/adm/billing/invoices')) {
+            showUsersIdsBillingInvoices();
         }
 
         // root
