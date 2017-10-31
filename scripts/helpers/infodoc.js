@@ -31,6 +31,9 @@ function startInfoDoc() {
 
             // сопоставления логинов с категорией
             adminTableCategory();
+
+            // парсер комментов
+            linksOnComments('td.is-break', currentUrl);
             
             // индикаторы
             addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager', 'delivery',
@@ -44,6 +47,8 @@ function startInfoDoc() {
             addFixedTools($('body'), ['scroll-top']);
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+
+            checkCessionUserInfo(); // проверить цессию
         }
 
         // users/search
@@ -54,6 +59,9 @@ function startInfoDoc() {
         // Account info
         if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
                 || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
+            // парсер комментов
+            linksOnComments('td.is-break', currentUrl);
+
             // добавление кнопок подсчета в Account info
             countMoneyAccount();
 
