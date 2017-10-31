@@ -1365,8 +1365,10 @@ input[id ^= "sh-quick-theme-btn"]:active {
 }
 
 .redTemple  {
-	background: #d70000;
+	background: #ffaa1a;
 	color:#fff;
+    border-radius: 3px;
+    padding: 0 1px;
 }
 
 .preTimer {

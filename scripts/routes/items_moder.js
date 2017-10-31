@@ -725,7 +725,7 @@ function find_words(whatParse, where, category) { //поиск слов
     if (whatParse !== '') {
 
         for (let key in whatParse) {
-            if (whatParse.hasOwnProperty(key)) {
+            if (whatParse.hasOwnProperty(key) && category) {
                 if (category.indexOf(key) + 1) {
                     what = what.concat(whatParse[key]);
                     break;

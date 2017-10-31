@@ -118,39 +118,21 @@ function hideSubcategory() {
 }
 
 function comparisonInfo() {
-    $('.js-comparison-link').click(function () {
-        let contentLoad = setInterval(function () {
-            let exist = $('.js-comparison .comparison-user');
-            if (exist.length > 0) {
-                clearInterval(contentLoad);
+    let target = $('.js-modal-content')[0];
 
-                addComparisonInfo();
-                comparisonInfoApply();
-            }
-        }, 200);
+    let observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) addComparisonInfo(mutation.addedNodes[0]);
+        });
     });
-}
 
-function comparisonInfoApply() {
-    $('.js-btn-apply').click(checking);
-    $('.js-comparison-modal').keyup(function(event) { if (event.keyCode === 32) { checking(); } } );
+    let config = { childList: true };
 
-    function checking() {
-        let contentLoadApply = setInterval(function () {
-            let exist = $('.js-comparison .comparison-user');
-            let ahIn = $('.js-comparison').attr('ah-in');
-            if (exist.length > 0 && !ahIn) {
-                clearInterval(contentLoadApply);
-
-                addComparisonInfo();
-                comparisonInfoApply();
-            }
-        }, 200);
-    }
+    observer.observe(target,  config);
 }
 
 function addComparisonInfo() {
-    let basedItemID = $('.js-comparison').attr('ah-in', 'true').attr('data-based-item');
+    let basedItemID = $('.js-comparison').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
 
     let content = $('[data-based-item="'+basedItemID+'"]');
