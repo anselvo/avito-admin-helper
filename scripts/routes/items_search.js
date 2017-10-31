@@ -82,11 +82,13 @@ function loadItemInfo(id) {
             }
 
             if (lastStatus) $('.ah-item-info[itemid="'+id+'"]').append(
+            	'<hr style="margin: 3px 0 3px">' +
                 '<div><b>Пред.:</b> ' + lastStatus + '</div>' +
                 '<div><b>Дата:</b> ' + lastTime + '</div>'
             );
 
             if (ip) $('.ah-item-info[itemid="'+id+'"]').append(
+                '<hr style="margin: 3px 0 3px">' +
                 '<div>' +
                 '<b>IP:</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip='+ip+'" target="_blank">'+ip+'</a>' +
                 '</div>'
