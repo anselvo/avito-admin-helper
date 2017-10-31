@@ -1,4 +1,4 @@
-function antifraudLinks() {
+function antifraudLinks(page) {
     let trList = $('#items').find('tr');
     let flagDispersion = 5;
     let priceDispersion = 20;
@@ -9,7 +9,10 @@ function antifraudLinks() {
     let formatDateEnd = parseDateToSearchFormat(dateEnd);
 
     for (let i = 0; i < trList.length; ++i) {
-        let categoryItemID = $(trList[i]).attr('data-category');
+        let categoryItemID;
+        if (page === 'pre') categoryItemID = $(trList[i]).attr('data-category');
+        else categoryItemID = $(trList[i]).find('[name="item_id[]"]').attr('data-category');
+
         let locationItemID = $(trList[i]).attr('data-location');
 
         let firstParam = '', firstParamMap = '';
@@ -18,7 +21,10 @@ function antifraudLinks() {
             firstParamMap = JSON.parse($(trList[i]).attr('data-params-map'))[firstParam[0]];
         }
 
-        let itemPrice = parseInt($(trList[i]).find('.item-info-row:eq(0)')[0].firstChild.data.replace(/\D/g, ''));
+        let itemPrice;
+        if (page === 'pre') itemPrice = parseInt($(trList[i]).find('.item-info-row:eq(0)')[0].firstChild.data.replace(/\D/g, ''));
+        else itemPrice = parseInt($(trList[i]).find('.item-price').text().replace(/\D/g, ''));
+
         let itemPriceMin = '';
         let itemPriceMax = '';
         if (itemPrice) {
@@ -33,7 +39,7 @@ function antifraudLinks() {
             let percentMax = percent + flagDispersion;
 
             let flagName = $(flagList[j]).find('.name').text();
-            let flagInfo = $('div.js-multiselect-reasons ul.multiselect-container li:contains(' + flagName + ')').find('input[type="checkbox"]')[0];
+            let flagInfo = $('ul.multiselect-container li:contains(' + flagName + ')').find('input[type="checkbox"]')[0];
             let flagId = $(flagInfo).val();
 
             if (flagId) {
@@ -58,8 +64,9 @@ function antifraudLinks() {
         }
     }
 }
-// Авто добавление причине в поле "Другая причина"
 
+
+// Авто добавление причине в поле "Другая причина"
 function autoOtherReasons() {
     $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
         let findReason = setInterval(function () {
