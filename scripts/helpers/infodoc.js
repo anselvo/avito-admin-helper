@@ -36,7 +36,7 @@ function startInfoDoc() {
             linksOnComments('td.is-break', currentUrl);
             
             // индикаторы
-            addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager', 'delivery',
+            addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager',
                 'onlyBankTransfer', 'REPremium', 'extension']);
 
             // переход в HD
