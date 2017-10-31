@@ -33,7 +33,8 @@ function premoderationsStartNew() {
     // пометка объявлений, что они тестовые
     abTest();
 
-    antifraudLinks();
+    // добавление ссылок для антифрода
+    antifraudLinks('pre');
 }
 
 function abTest() {

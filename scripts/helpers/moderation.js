@@ -70,6 +70,9 @@ function startModerator() {
 
 			// Обработка клика рядом с checkbox
             chooseItem();
+
+			// линки для антифрода
+            antifraudLinks('post');
 		}
 
 		// Item info
