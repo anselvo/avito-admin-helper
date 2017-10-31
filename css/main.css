@@ -5409,3 +5409,22 @@ select.ah-form-control:focus {
     min-width: 250px;
     max-width: 250px;;
 }
+
+.ah-cession-info-wrapper {
+    margin-bottom: 6px;
+    line-height: 22px;
+}
+
+.ah-cession-info-title {
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.ah-cession-info-item {
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.ah-cession-info-item:hover {
+    background-color: rgb(245, 245, 245);
+}
