@@ -4394,12 +4394,16 @@ select.ah-form-control:focus {
     background: rgba(0, 0, 0, 0.05) !important;
 }
 
-.userAgent {
+.ah-item-info-main {
+    max-width: 500px;
+}
+
+.ah-post-userAgent {
     max-width: 500px;
     display: none;
 }
 
-.userAgent span {
+.ah-post-userAgent span {
     color:  #00008B;
 }
 
@@ -4479,7 +4483,7 @@ select.ah-form-control:focus {
 @keyframes rotate { from { transform:  rotate(0); }	to {transform: rotate(360deg); } }
 
 
-.around-bordered-table tr:first-child td { 
+.around-bordered-table tr:first-child td {
 	border-top: none;
 }
 
@@ -4534,36 +4538,36 @@ select.ah-form-control:focus {
 }
 
 #ah-fixed-tools-holder {
-    display: block; 
-    position: fixed; 
-    z-index: 5; 
-    right: 6px; 
-    bottom: 6px; 
-    box-shadow: 0 0 0px 6px rgba(221, 221, 224, .6); 
+    display: block;
+    position: fixed;
+    z-index: 5;
+    right: 6px;
+    bottom: 6px;
+    box-shadow: 0 0 0px 6px rgba(221, 221, 224, .6);
     margin-bottom: 4px;
 }
 
 #ah-scrolltop-btn {
-    border-radius: 0; 
-    transition: none; 
-    line-height: 20px; 
+    border-radius: 0;
+    transition: none;
+    line-height: 20px;
     width: 35px;
 }
 
 .hd-global-settings-wrapper {
-    color: black; 
-    font-size: 14px; 
-    line-height: 20px; 
-    display: none; 
-    border: 1px solid rgb(204, 204, 204); 
-    padding: 4px; 
+    color: black;
+    font-size: 14px;
+    line-height: 20px;
+    display: none;
+    border: 1px solid rgb(204, 204, 204);
+    padding: 4px;
     background-color: white;
 }
 
 #sh-settings-bottom-right-btn {
-    border-radius: 0; 
-    transition: none; 
-    line-height: 20px; 
+    border-radius: 0;
+    transition: none;
+    line-height: 20px;
     width: 145px;
 }
 
@@ -4579,11 +4583,6 @@ select.ah-form-control:focus {
     position: absolute;
     right: 16px;
     margin-top: -60px;
-}
-
-.ah-description-post hr {
-    margin-bottom: 5px;
-    margin-top: 5px;
 }
 
 .ah-description-post-header {
@@ -5429,4 +5428,9 @@ select.ah-form-control:focus {
 
 .ah-cession-info-item:hover {
     background-color: rgb(245, 245, 245);
+}
+
+.ah-separate-line {
+    margin: 3px 0 3px;
+    max-width: 500px;
 }

@@ -347,10 +347,10 @@ function clickActionButton() {
         }
 
         if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
-            $('.userAgent').hide();
+            $('.ah-post-userAgent').hide();
             $(selector).find('span.ah-menu-name').text('Показать User Info').removeClass('showUserAgent');
         } else {
-            $('.userAgent').show();
+            $('.ah-post-userAgent').show();
             $(selector).find('span.ah-menu-name').text('Скрыть User Info').addClass('showUserAgent').attr('show', 'true');
         }
 
@@ -526,8 +526,8 @@ function usersInfoForManyItems(id) {
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
 
             $('[ah-post-block-chance="'+id+'"]').text(chance);
-            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.userAgent').show();
-            $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
+            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.ah-post-userAgent').show();
+            $('[userAgent="'+id+'"]').text(userAgent).parents('.ah-post-userAgent').show();
         }
     };
 }
