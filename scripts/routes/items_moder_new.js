@@ -122,7 +122,7 @@ function comparisonInfo() {
 
     let observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
-            if (mutation.addedNodes.length > 0) addComparisonInfo(mutation.addedNodes[0]);
+            if (mutation.addedNodes.length > 0) addComparisonInfo();
         });
     });
 
