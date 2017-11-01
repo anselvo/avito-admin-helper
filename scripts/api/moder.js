@@ -116,6 +116,17 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         event.stopPropagation();
     });
 
+    if (localStorage.autoCheckOtherReason) addAutoCheckSuggestReason();
+}
+
+
+function addAutoCheckSuggestReason() {
+    let suggestReason = $('.moderateBox_item:contains(Неправильная категория) .description').text().toLowerCase();
+    suggestReason = suggestReason.substring(0, 1).toUpperCase() + suggestReason.substring(1);
+
+    if (suggestReason !== '') {
+        $('[name="ah-other-reasons"]').closest('label:contains(' + suggestReason + ') input[type="checkbox"]').prop('checked', true).change();
+    }
 }
 
 function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
@@ -1259,12 +1270,15 @@ function getSettings() {
     $('.infoSetting-chbx').append('<div id="otherSetting"><b style="color:red;">Other settings:</b></div>');
     $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="activeItemsPre" style="margin-right: 3px;">Active items on user</label>');
     $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="imageSearchComparison" style="margin-right: 3px;">Image search in comparison</label>');
+    $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="autoCheckOtherReason" style="margin-right: 3px;">Auto check comment for "Other reason"</label>');
 
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
+    if (!localStorage.autoCheckOtherReason) localStorage.autoCheckOtherReason = 'false';
 
     if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
     if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
+    if (localStorage.autoCheckOtherReason === 'true') $('input[value="autoCheckOtherReason"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
         if ($('input[value="activeItemsPre"]').prop('checked')) {
@@ -1277,6 +1291,12 @@ function getSettings() {
             localStorage.imageSearchComparison = 'true';
         } else {
             localStorage.imageSearchComparison = 'false';
+        }
+
+        if ($('input[value="autoCheckOtherReason"]').prop('checked')) {
+            localStorage.autoCheckOtherReason = 'true';
+        } else {
+            localStorage.autoCheckOtherReason = 'false';
         }
     });
     // OTHER SETTINGS
