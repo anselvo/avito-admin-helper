@@ -738,8 +738,7 @@ function find_words(whatParse, where, category) { //поиск слов
         if (whatParse['Все']) {
             what = what.concat(whatParse['Все']);
         }
-
-        let text = where.text();
+        let text = where.html();
 
         if (text) {
             for (let i = 0; i < what.length; i++) {
