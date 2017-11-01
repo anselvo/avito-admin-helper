@@ -49,7 +49,11 @@ function itemsInfoForItems() {
     for (let i = 1; i < itemList.length; i++) {
         let id = $(itemList[i]).attr("data-id");
 
-        $(itemList[i]).find('td:eq(4)').append('<div class="ah-item-info" itemid="'+id+'"></div>')
+        $(itemList[i]).find('td:eq(4)').append('<div class="ah-item-info ah-item-info-status" itemid="' + id + '"></div>');
+
+        $(itemList[i])
+            .find('.description-cell')
+            .append('<div class="ah-item-info ah-item-info-main" itemid="' + id + '"></div>');
 
         loadItemInfo(id);
     }
@@ -66,6 +70,9 @@ function loadItemInfo(id) {
             let response = xhr.responseText;
             let ip = $(response).find('[data-ip]').attr('data-ip');
 
+            let microCategory = $(response).find('.form-group:contains(Микрокатегория) .form-control-static').html();
+            let address = $(response).find('.form-group:contains(Адрес) input[type="text"]').val();
+
             let historyTable = $(response).find('[data-url*="frst_history"] tbody tr');
             let lastStatus = null;
             let lastTime = null;
@@ -81,12 +88,24 @@ function loadItemInfo(id) {
                 }
             }
 
-            if (lastStatus) $('.ah-item-info[itemid="'+id+'"]').append(
+            if (address) $('.ah-item-info-main[itemid="' + id + '"').append(
+                '<hr style="margin: 3px 0 3px">' +
+                '<div><b>Адрес:</b> '+ address + '</div>'
+            );
+
+            if (microCategory) $('.ah-item-info-main[itemid="' + id + '"').append(
+                '<hr style="margin: 3px 0 3px">' +
+                '<div><b>Микрокатегория:</b> '+ microCategory + '</div>'
+            );
+
+            if (lastStatus) $('.ah-item-info-status[itemid="' + id + '"]').append(
+            	'<hr style="margin: 3px 0 3px">' +
                 '<div><b>Пред.:</b> ' + lastStatus + '</div>' +
                 '<div><b>Дата:</b> ' + lastTime + '</div>'
             );
 
-            if (ip) $('.ah-item-info[itemid="'+id+'"]').append(
+            if (ip) $('.ah-item-info-status[itemid="' + id + '"]').append(
+                '<hr style="margin: 3px 0 3px">' +
                 '<div>' +
                 '<b>IP:</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip='+ip+'" target="_blank">'+ip+'</a>' +
                 '</div>'
@@ -143,15 +162,18 @@ function addChooseButton() {
 
         $(loginList[i]).parent()
 			.css('padding', '5px')
-			.after('<hr style="margin-bottom: 10px; margin-top: 0">')
+			.after('<hr class="ah-separate-line">')
 			.append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">')
-            .append('<br><span  class="userAgent" title="User chance">' +
+            .append('<br><span  class="ah-post-userAgent" title="User chance">' +
                 '<b>Chance:</b> ' +
                 '<span ah-post-block-chance="'+id+'" style="color:#65a947">?</span>/<span style="color:red;">10</span>' +
                 '<span ah-post-block-chance-time="'+id+'"></span>' +
                 '</span>');
 
-        $(loginList[i]).parents('tr').find('.description-cell').append('<div class="userAgent"><b>User agent:</b> <span userAgent="'+id+'"></span></div>');
+        $(loginList[i])
+            .parents('tr')
+            .find('.description-cell')
+            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>Тех инфо:</b> <span userAgent="'+id+'"></span></div>');
     }
 
     clickChooseButton();
@@ -173,7 +195,7 @@ function smartSNP(id) {
     request.open("GET", href, true);
     request.send(null);
     request.onreadystatechange=function() {
-        if (request.readyState == 4 && request.status == 200) {
+        if (request.readyState === 4 && request.status === 200) {
             var r = request.responseText;
 
             var email = $(r).find('.js-fakeemail-field').text();
@@ -585,7 +607,7 @@ function addDescriptionToItemSearch() {
 		let description = $(itemList[i]).find('[href^="/items/item/info/"]').attr('title');
 
 		$(itemList[i]).find('.description-cell').append('<div class="ah-description-post" style="display: none">' +
-					'<hr>' +
+					'<hr class="ah-separate-line">' +
 					'<div class="ah-description-post-header">Описание:</div>' +
 					'<div class="ah-description-post-body">' + description + '</div>' +
 				'</div>');

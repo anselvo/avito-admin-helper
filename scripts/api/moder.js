@@ -116,6 +116,17 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         event.stopPropagation();
     });
 
+    if (localStorage.autoCheckOtherReason) addAutoCheckSuggestReason();
+}
+
+
+function addAutoCheckSuggestReason() {
+    let suggestReason = $('.moderateBox_item:contains(Неправильная категория) .description').text().toLowerCase();
+    suggestReason = suggestReason.substring(0, 1).toUpperCase() + suggestReason.substring(1);
+
+    if (suggestReason !== '') {
+        $('[name="ah-other-reasons"]').closest('label:contains(' + suggestReason + ') input[type="checkbox"]').prop('checked', true).change();
+    }
 }
 
 function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
@@ -347,10 +358,10 @@ function clickActionButton() {
         }
 
         if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
-            $('.userAgent').hide();
+            $('.ah-post-userAgent').hide();
             $(selector).find('span.ah-menu-name').text('Показать User Info').removeClass('showUserAgent');
         } else {
-            $('.userAgent').show();
+            $('.ah-post-userAgent').show();
             $(selector).find('span.ah-menu-name').text('Скрыть User Info').addClass('showUserAgent').attr('show', 'true');
         }
 
@@ -526,8 +537,8 @@ function usersInfoForManyItems(id) {
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
 
             $('[ah-post-block-chance="'+id+'"]').text(chance);
-            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.userAgent').show();
-            $('[userAgent="'+id+'"]').text(userAgent).parents('.userAgent').show();
+            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.ah-post-userAgent').show();
+            $('[userAgent="'+id+'"]').text(userAgent).parents('.ah-post-userAgent').show();
         }
     };
 }
@@ -585,6 +596,7 @@ function settings() {
 function addWordsIllumination() {
     if (!localStorage.title) localStorage.title = '';
     if (!localStorage.title1) localStorage.title1 = '';
+    if (!localStorage.titleColor) localStorage.titleColor = '';
 
     var chbx1 = $('<input/>',{
         class: 'mycheckbox1 mh-dafault-checkbox',
@@ -603,6 +615,7 @@ function addWordsIllumination() {
         click:  function () {
             sbrosBut('.item_title');
             sbrosBut('.item-info-name a');
+            localStorage.titleColor = $("#textaclasscolor").val();
             var temp = $("#textaclass").val();
             localStorage.title = temp;
             var temp1 = $("#textaclass1").val();
@@ -655,9 +668,19 @@ function addWordsIllumination() {
         'Пример 2\n\t дом, информ, ангент, кривая труба';
 
     //RK блок для подсветки слов
+    let colorTitle = `Формат цветов задавать след методами:
+        - Hexadecimal colors
+        - RGB colors
+        - RGBA colors
+        - HSL colors
+        - HSLA colors
+        - Predefined/Cross-browser color names
+        `;
+
     $('div.block-descriptionMode').append('<div class="illumination" style=""><span style="display: block; margin-bottom: 10px; font-size: 14px;">Подсветка слов</span></div>');
-    $('div.illumination').append('<textarea  class="textaclassS" id="textaclass" placeholder="тут запрос на описание" style="width: 100%; height: 65px; resize: none; padding: 5px; border-radius: 4px;" title="'+titleInfo+'">'+localStorage.title+'</textarea>');
+    $('div.illumination').append('<textarea class="textaclassS" id="textaclass" placeholder="тут запрос на описание" style="width: 100%; height: 65px; resize: none; padding: 5px; border-radius: 4px;" title="'+titleInfo+'">'+localStorage.title+'</textarea>');
     $('div.illumination').append('<textarea class="textaclasstitle" id="textaclass1" placeholder="тут запрос на заголовок" style="width: 100%; height: 40px;resize: none;padding: 5px; margin-top: 6px; border-radius: 4px;">'+localStorage.title1+'</textarea>');
+    $('div.illumination').append('<textarea class="textaclassColor" id="textaclasscolor" placeholder="цвет подсветки" style="width: 100%; height: 30px; resize: none;padding: 5px; margin-top: 6px; border-radius: 4px;" title="'+colorTitle+'">'+localStorage.titleColor+'</textarea>');
     $('div.illumination').append('<div class="illumination-btn-box" style="margin-top: 6px;"></div>');
     $('div.illumination-btn-box').append(butSearch);
     $('div.illumination-btn-box').append(butReload);
@@ -1247,12 +1270,15 @@ function getSettings() {
     $('.infoSetting-chbx').append('<div id="otherSetting"><b style="color:red;">Other settings:</b></div>');
     $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="activeItemsPre" style="margin-right: 3px;">Active items on user</label>');
     $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="imageSearchComparison" style="margin-right: 3px;">Image search in comparison</label>');
+    $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="autoCheckOtherReason" style="margin-right: 3px;">Auto check comment for "Other reason"</label>');
 
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
+    if (!localStorage.autoCheckOtherReason) localStorage.autoCheckOtherReason = 'false';
 
     if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
     if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
+    if (localStorage.autoCheckOtherReason === 'true') $('input[value="autoCheckOtherReason"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
         if ($('input[value="activeItemsPre"]').prop('checked')) {
@@ -1265,6 +1291,12 @@ function getSettings() {
             localStorage.imageSearchComparison = 'true';
         } else {
             localStorage.imageSearchComparison = 'false';
+        }
+
+        if ($('input[value="autoCheckOtherReason"]').prop('checked')) {
+            localStorage.autoCheckOtherReason = 'true';
+        } else {
+            localStorage.autoCheckOtherReason = 'false';
         }
     });
     // OTHER SETTINGS
