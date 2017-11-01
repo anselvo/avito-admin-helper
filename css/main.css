@@ -1364,11 +1364,10 @@ input[id ^= "sh-quick-theme-btn"]:active {
 	background: #f4f8ff;
 }
 
-.redTemple  {
+.ah-highlight-words  {
 	background: #ffaa1a;
 	color:#fff;
-    border-radius: 3px;
-    padding: 0 1px;
+    border-radius: 2px;
 }
 
 .preTimer {
@@ -4404,7 +4403,7 @@ select.ah-form-control:focus {
 }
 
 .ah-post-userAgent span {
-    color:  #00008B;
+    color: #00008B;
 }
 
 /* Moderation Right bar statistic */

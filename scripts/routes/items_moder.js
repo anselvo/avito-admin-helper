@@ -712,7 +712,7 @@ function find_title_user(what, className){
         var title = $(className).slice(i,i+1).text();
         for(var j=0; j < what.length; j++) {
             a = new RegExp( what[j], "gi" );
-            title = title.replace(a, '<span class="redTemple" oldOpis="'+title+'">$&</span>');
+            title = title.replace(a, '<span class="ah-highlight-words" oldOpis="'+title+'">$&</span>');
             $(className).slice(i,i+1).html(title);
 
         }
@@ -721,6 +721,8 @@ function find_title_user(what, className){
 
 
 function find_words(whatParse, where, category) { //поиск слов
+    let titleColor = localStorage.titleColor;
+
     let what = [];
     if (whatParse !== '') {
 
@@ -737,12 +739,12 @@ function find_words(whatParse, where, category) { //поиск слов
             what = what.concat(whatParse['Все']);
         }
 
-        let text = where.html();
+        let text = where.text();
 
         if (text) {
             for (let i = 0; i < what.length; i++) {
                 let a = new RegExp(what[i], "gi");
-                text = text.replace(a, '<span class="redTemple">$&</span>');
+                text = text.replace(a, '<span class="ah-highlight-words" style="background: ' + titleColor + '">$&</span>');
             }
 
             where.html(text);
