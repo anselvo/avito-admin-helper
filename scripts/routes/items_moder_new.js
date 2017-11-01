@@ -163,7 +163,8 @@ function addComparisonInfo() {
             find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
         else {
             for (let j = 0; j < comparisonDescriptionListChildren.length; ++j) {
-                find_words(wordsParse, $(comparisonDescriptionListChildren[j]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
+                if ($(comparisonDescriptionListChildren[j]).find('span').length === 0)
+                    find_words(wordsParse, $(comparisonDescriptionListChildren[j]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
             }
         }
 

@@ -91,7 +91,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
             {name: "Хобби и отдых", reason: ['Коллекционирование', 'Спорт и отдых', 'Книги и журналы', 'Велосипеды', 'Музыкальные инструменты', 'Охота и рыбалка', 'Билеты и путешествия']},
             {name: "Недвижимость", reason: ['Квартиры', 'Дома, дачи, коттеджи', 'Земельные участки', 'Коммерческая недвижимость', 'Гаражи и машиноместа', 'Комнаты', 'Недвижимость за рубежом']},
             {name: "Работа", reason: ['Резюме', 'Вакансии']},
-            {name: "Услуги", reason: ['Предложение услуг']},
+            {name: "Услуги", reason: ['Предложения услуг']},
             {name: "Животные", reason: ['Кошки', 'Собаки', 'Товары для животных', 'Другие животные', 'Аквариум', 'Птицы']},
             {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес']}
         ]
@@ -116,7 +116,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         event.stopPropagation();
     });
 
-    if (localStorage.autoCheckOtherReason) addAutoCheckSuggestReason();
+    if (localStorage.autoCheckOtherReason === 'true') addAutoCheckSuggestReason();
 }
 
 
