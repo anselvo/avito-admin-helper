@@ -721,7 +721,7 @@ function find_title_user(what, className){
 
 
 function find_words(whatParse, where, category) { //поиск слов
-    let titleColor = localStorage.titleColor;
+    const titleColor = localStorage.titleColor;
 
     let what = [];
     if (whatParse !== '') {

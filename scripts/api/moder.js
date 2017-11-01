@@ -596,7 +596,7 @@ function settings() {
 function addWordsIllumination() {
     if (!localStorage.title) localStorage.title = '';
     if (!localStorage.title1) localStorage.title1 = '';
-    if (!localStorage.titleColor) localStorage.titleColor = '';
+    if (!localStorage.titleColor) localStorage.titleColor = '#ffaa1a';
 
     var chbx1 = $('<input/>',{
         class: 'mycheckbox1 mh-dafault-checkbox',
@@ -615,7 +615,6 @@ function addWordsIllumination() {
         click:  function () {
             sbrosBut('.item_title');
             sbrosBut('.item-info-name a');
-            localStorage.titleColor = $("#textaclasscolor").val();
             var temp = $("#textaclass").val();
             localStorage.title = temp;
             var temp1 = $("#textaclass1").val();
@@ -680,13 +679,18 @@ function addWordsIllumination() {
     $('div.block-descriptionMode').append('<div class="illumination" style=""><span style="display: block; margin-bottom: 10px; font-size: 14px;">Подсветка слов</span></div>');
     $('div.illumination').append('<textarea class="textaclassS" id="textaclass" placeholder="тут запрос на описание" style="width: 100%; height: 65px; resize: none; padding: 5px; border-radius: 4px;" title="'+titleInfo+'">'+localStorage.title+'</textarea>');
     $('div.illumination').append('<textarea class="textaclasstitle" id="textaclass1" placeholder="тут запрос на заголовок" style="width: 100%; height: 40px;resize: none;padding: 5px; margin-top: 6px; border-radius: 4px;">'+localStorage.title1+'</textarea>');
-    $('div.illumination').append('<textarea class="textaclassColor" id="textaclasscolor" placeholder="цвет подсветки" style="width: 100%; height: 30px; resize: none;padding: 5px; margin-top: 6px; border-radius: 4px;" title="'+colorTitle+'">'+localStorage.titleColor+'</textarea>');
+    $('div.illumination').append('<input id="highlight-color" type="color" value="' + localStorage.titleColor + '">');
+
     $('div.illumination').append('<div class="illumination-btn-box" style="margin-top: 6px;"></div>');
     $('div.illumination-btn-box').append(butSearch);
     $('div.illumination-btn-box').append(butReload);
     $('div.illumination-btn-box').append(butReloadFull);
     $('div.illumination').append('<div class="mh-chbx-field" style="margin-top: 8px;"></div>')
     $('div.mh-chbx-field').append(chbx1,'<label style="" for="chbx1">Искать в названии</label>');
+
+    $('#highlight-color').change(function () {
+        localStorage.titleColor = $(this).val();
+    });
 }
 //+++++ Подсветка слов +++++//
 
