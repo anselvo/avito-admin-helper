@@ -239,8 +239,7 @@ function renderCreateNewTicketWindow(route) {
                 return;
             }
 
-            mail = mail.replace(/@/, '%40');
-            var isOpened = window.open('https://adm.avito.ru/helpdesk?p=1&requesterEmail=' + mail + '&sortField=createdTxtime&sortType=desc');
+            var isOpened = window.open('https://adm.avito.ru/helpdesk?p=1&requesterEmail="' + mail + '"&sortField=createdTxtime&sortType=desc');
             if (!isOpened) {
                 alert('К сожалению, невозможно открыть окно, так как в вашем браузере блокируются всплывающие окна для этого сайта.\nПожалуйста, снимите эту блокировку для сайта adm.avito.ru.');
             }
@@ -966,8 +965,8 @@ function substituteCreateTicketValues() {
 
 function searchHDUserNameInTickets(mail) {
 
-    mail = mail.replace(/\@/, '%40');
-    var url = 'https://adm.avito.ru/helpdesk/api/1/ticket/search?p=1&sortField=createdTxtime&sortType=desc&requesterEmail=' + mail + '&statusId%5B%5D=&problemId%5B%5D=&tags%5B%5D=';
+    mail = encodeURIComponent(mail);
+    var url = 'https://adm.avito.ru/helpdesk/api/1/ticket/search?p=1&sortField=createdTxtime&sortType=desc&requesterEmail="' + mail + '"&statusId%5B%5D=&problemId%5B%5D=&tags%5B%5D=';
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);

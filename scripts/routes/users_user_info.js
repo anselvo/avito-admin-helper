@@ -798,8 +798,8 @@ function usersInfoElements() {
 
 // переход в HD
 function linkToHDOnUser() {
-    var mailToUrl = $('.js-fakeemail-field').text().replace(/\@/, '%40');
-    $('.header__title:eq(0)').append('<span style="color: rgb(189, 189, 189);"> | </span><span style="font-size: 14px; vertical-align: middle;"><a id="" style="cursor: pointer;" href="https://adm.avito.ru/helpdesk?p=1&requesterEmail=' + mailToUrl + '&sortField=createdTxtime&sortType=desc" target="_blank">Перейти в Helpdesk</a></span>');
+    var mailToUrl = $('.js-fakeemail-field').text();
+    $('.header__title:eq(0)').append('<span style="color: rgb(189, 189, 189);"> | </span><span style="font-size: 14px; vertical-align: middle;"><a id="" style="cursor: pointer;" href="https://adm.avito.ru/helpdesk?p=1&requesterEmail=&#34;' + mailToUrl + '&#34;&sortField=createdTxtime&sortType=desc" target="_blank">Перейти в Helpdesk</a></span>');
 }
 
 // переход в ВЛ со страницы юзера (все статусы, последние пол года)
