@@ -47,8 +47,6 @@ function startInfoDoc() {
             addFixedTools($('body'), ['scroll-top']);
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
-
-            checkCessionUserInfo(); // проверить цессию
         }
 
         // users/search
