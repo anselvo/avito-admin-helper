@@ -116,7 +116,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         event.stopPropagation();
     });
 
-    if (localStorage.autoCheckOtherReason) addAutoCheckSuggestReason();
+    if (localStorage.autoCheckOtherReason === 'true') addAutoCheckSuggestReason();
 }
 
 
