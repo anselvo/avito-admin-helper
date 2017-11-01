@@ -158,7 +158,7 @@ function addComparisonInfo() {
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
-        let comparisonDescriptionListChildren = $(comparisonDescriptionList[i]).find('span');
+        const comparisonDescriptionListChildren = $(comparisonDescriptionList[i]).find('span');
         if (comparisonDescriptionListChildren.length === 0)
             find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
         else {
