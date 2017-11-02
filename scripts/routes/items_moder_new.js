@@ -153,8 +153,8 @@ function addComparisonInfo() {
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
-    // добавить причины отклонения для услуг
-    optionOtherReasons('.moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
+    // добавить причины отклонения
+    optionOtherReasons('.btn-group-reject .moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
