@@ -68,7 +68,9 @@ function startInfoDoc() {
             userViewOperations();
 
             // addWLLinkForDocumentsAccountInfo();
-            addWlLinkAccountInfo(getWlLinkForDocuments);
+            addWlLinkAccountInfo(getWlLinkForDocuments, {
+                linkName: 'Сумма закрывающих'
+            });
 
             addPackageInfoAccountInfo();
         }
