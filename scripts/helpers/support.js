@@ -103,6 +103,8 @@ function startSupport() {
             getAllUsers(); // инфа обо всех пользователях
 
             renderCreateNewTicketWindow('/helpdesk/details'); // отрисовка окна создания тикета
+
+            getNegativeUsers(); // инфа о негативных юзерах
         }
 
         // User info
@@ -375,6 +377,8 @@ function addShElementsInfo() {
     addIpPopoverOnLeftPanel(); // поповер для айпи на левой панели
 
     addPhoneNumberPopoverOnLeftPanel(); // поповер для номера телефона на левой панели
+
+    addNegativeUsersAbusesNotification(); // нотификация о жалобах от крайне негативных юзеров
 }
 
 function addShElementsUser() {

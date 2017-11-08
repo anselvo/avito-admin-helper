@@ -3381,6 +3381,78 @@ function addPhoneNumberPopoverOnLeftPanel() {
 }
 //++++++++++ поповер для номера телефона на левой панели ++++++++++//
 
+//---------- нотификация о жалобах от крайне негативных юзеров ----------//
+function addNegativeUsersAbusesNotification() {
+    const doc = document;
+    const existingNotification = doc.getElementById('ah-negative-users-abuses-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+
+    const clientLinkNode = doc.querySelector('a[href^="/helpdesk/client/"]');
+    if (!clientLinkNode) return;
+
+    const detailsPanel = doc.querySelector('.helpdesk-details-panel');
+    const notification = doc.createElement('div');
+    notification.setAttribute('id', 'ah-negative-users-abuses-notification');
+    notification.className = 'alert ah-helpdesk-notification ah-negative-user-notification';
+    detailsPanel.parentNode.insertBefore(notification, detailsPanel);
+
+    const clientHref = clientLinkNode.getAttribute('href');
+    const currentClientId = +clientHref.replace(/\D/g, '');
+
+    const negativesInfo = JSON.parse(localStorage['/helpdesk/negativeUsers']);
+    if (negativesInfo.isLoading) {
+        notification.classList.add('ah-loading-notification');
+        notification.innerHTML = `Загрузка информации о негативных клиентах...`;
+        return;
+    }
+
+    if (negativesInfo.error && !negativesInfo.clients) {
+        notification.classList.add('alert-danger', 'ah-load-error');
+        notification.innerHTML = `Возникла ошибка при загрузке информации о негативных клиентах`;
+        return;
+    }
+
+    let isFromCache = false;
+    if (negativesInfo.error && negativesInfo.clients) {
+        isFromCache = true;
+    }
+
+    const currentInfo = negativesInfo.clients.find(item => item.client_id === currentClientId);
+
+    if (currentInfo) {
+        showNotification(currentInfo);
+    } else {
+        notification.classList.add('hidden');
+    }
+
+    function showNotification(info) {
+        const currentTicketId = getCurrentTicketId(location.href);
+        let notificationClassName = (+currentTicketId === info.root_ticket_id) ? 'alert-danger' : 'alert-warning';
+        notification.classList.add(notificationClassName);
+        let notificationTextHtml = (+currentTicketId === info.root_ticket_id) ?
+            `Жалобы данного клиента обрабатываются в текущем обращении.
+            <strong>Не закрывайте данное обращение со статусом "Решено".</strong>` :
+            `Жалобы данного клиента обрабатываются в 
+                <strong>
+                    <a target="_blank" href="/helpdesk/details/${info.root_ticket_id}">отдельном обращении 
+                        <span class="glyphicon glyphicon-new-window"></span></a>
+                </strong>`;
+
+        notification.innerHTML = `${notificationTextHtml} 
+            (<i>Клиент: </i><span class="label label-default ah-user-type-label">${info.type_name}</span>)`;
+
+        if (isFromCache) {
+            const cache = doc.createElement('span');
+            cache.className = `label label-warning ah-from-cache-label`;
+            cache.innerHTML = `Данные взяты из кэша`;
+            notification.appendChild(cache);
+        }
+    }
+}
+//++++++++++ нотификация о жалобах от крайне негативных юзеров ++++++++++//
+
 //++++++++++ очистка цитат ++++++++++//
 function blockquoteClear() {
     var size = $('blockquote').length;

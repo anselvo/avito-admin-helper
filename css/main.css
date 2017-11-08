@@ -5433,3 +5433,39 @@ select.ah-form-control:focus {
     margin: 3px 0 3px;
     max-width: 500px;
 }
+
+.alert.ah-helpdesk-notification {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.ah-helpdesk-notification a {
+    text-decoration: underline;
+    color: #0091d9;
+}
+.ah-helpdesk-notification a:hover {
+    text-decoration: none;
+}
+
+.ah-negative-user-notification.ah-loading-notification {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    padding: 4px 15px;
+    color: rgb(105, 105, 105);
+}
+
+.ah-negative-user-notification.ah-load-error {
+    padding: 4px 15px;
+}
+
+.ah-negative-user-notification {
+    position: relative;
+}
+
+.ah-negative-user-notification .ah-from-cache-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 14px;
+    line-height: 14px;
+}
