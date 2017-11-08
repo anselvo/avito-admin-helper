@@ -46,7 +46,7 @@
 				"scripts/routes/items_search.js",
 				"scripts/routes/items_comparison.js",
 				"scripts/routes/items_moder.js",
-				"scripts/routes/items_moder_new.js",
+				"scripts/routes/items_moder_old.js",
 				"scripts/routes/users_user_info.js",
 				"scripts/routes/users_search.js",
 				"scripts/routes/users_account_info.js",
