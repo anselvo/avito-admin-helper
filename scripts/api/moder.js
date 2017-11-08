@@ -110,18 +110,21 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
     for (let i = 0; i < block.length; ++i) {
         addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory);
         addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService);
+
+        if (localStorage.autoCheckOtherReason === 'true')
+            addAutoCheckSuggestReason(block[i], reasonSelector);
     }
 
     $('.ah-other-reasons').click(function (event) {
         event.stopPropagation();
     });
 
-    if (localStorage.autoCheckOtherReason === 'true') addAutoCheckSuggestReason();
+
 }
 
 
-function addAutoCheckSuggestReason() {
-    let suggestReason = $('.moderateBox_item:contains(Неправильная категория) .description').text().toLowerCase();
+function addAutoCheckSuggestReason(block, reasonSelector) {
+    let suggestReason = $(block).find(reasonSelector+':contains(Неправильная категория) .description').text().toLowerCase();
     suggestReason = suggestReason.substring(0, 1).toUpperCase() + suggestReason.substring(1);
 
     if (suggestReason !== '') {

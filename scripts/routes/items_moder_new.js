@@ -138,7 +138,7 @@ function addComparisonInfo() {
 
     let content = $('[data-based-item="'+basedItemID+'"]');
 
-    let comparisonItemParamList = $(content).find('.user-main-info');
+    let comparisonItemParamList = $(content).find('.details-info');
 
     let comparisonUserList = $(content).find('.comparison-user-wrap');
     let comparisonImageList = $(content).find('.gallery-prev');
@@ -153,18 +153,20 @@ function addComparisonInfo() {
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
-    // добавить причины отклонения для услуг
-    optionOtherReasons('.moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
+    // добавить причины отклонения
+    optionOtherReasons('.btn-group-reject .moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
     for (let i = 0; i < comparisonUserList.length; ++i) {
         const comparisonDescriptionListChildren = $(comparisonDescriptionList[i]).find('span');
+        const comparisonItemCategory = $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title");
+
         if (comparisonDescriptionListChildren.length === 0)
-            find_words(wordsParse, $(comparisonDescriptionList[i]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
+            find_words(wordsParse, $(comparisonDescriptionList[i]), comparisonItemCategory);
         else {
             for (let j = 0; j < comparisonDescriptionListChildren.length; ++j) {
                 if ($(comparisonDescriptionListChildren[j]).find('span').length === 0)
-                    find_words(wordsParse, $(comparisonDescriptionListChildren[j]), $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title"));
+                    find_words(wordsParse, $(comparisonDescriptionListChildren[j]), comparisonItemCategory);
             }
         }
 
