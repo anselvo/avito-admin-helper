@@ -425,10 +425,11 @@ function toggleUserViewOperations() {
 function addWlLinkAccountInfo(getLinkFunc, options) {
     options = options || {};
     let linkTitle = options.linkTitle || '';
+    let linkName = options.linkName || 'Wallet Log';
 
     let userId = $('a[href^="/users/user/info/"]').text();
     let link = getLinkFunc(userId);
-    $('#history').find('a[href^="/users/account/info"]').after(` <a title="${linkTitle}" target="_blank" style="font-size: 14px;" href="${link}">Wallet Log</a>`);
+    $('#history').find('a[href^="/users/account/info"]').after(` <a title="${linkTitle}" target="_blank" style="font-size: 14px;" href="${link}">${linkName}</a>`);
 }
 
 // инфа о пакетах

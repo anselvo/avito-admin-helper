@@ -147,6 +147,41 @@ function getAllUsers() {
     );
 }
 
+// инфа о негативных юзерах
+function getNegativeUsers() {
+    const lsKey = '/helpdesk/negativeUsers';
+    let res = {
+        isLoading: true,
+        error: null
+    };
+
+    try {
+        const currentLs = JSON.parse(localStorage[lsKey]);
+        res.clients = currentLs.clients;
+    } catch (e) {
+        res.clients = null;
+    }
+
+    localStorage[lsKey] = JSON.stringify(res);
+
+    getNegativeUsersRequest().then(
+        response => {
+            res.clients = response;
+            return res;
+        },
+        error => {
+            res.error = error.toString();
+            return res;
+        }
+    ).then(
+        (res) => {
+            res.isLoading = false;
+            localStorage[lsKey] = JSON.stringify(res);
+            addNegativeUsersAbusesNotification();
+        }
+    );
+}
+
 //++++++++++++++ Создание обращения ++++++++++++++//
 function renderCreateNewTicketWindow(route) {
     $('#layer-blackout-modal').append('<div class="ah-modal-content" data-modal-info="modal-create-new-ticket" style="top: 30px;"><div class="ah-modal-container" style=""></div></div>');

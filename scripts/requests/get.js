@@ -89,3 +89,28 @@ function getUserInfo(id) {
         return response.text();
     });
 }
+
+// негативные пользователи
+function getNegativeUsersRequest() {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "GET",
+                url: "http://avitoadm.ru/admin/sections/helpdesk/negative_users/include/php/user/get.php"
+            },
+            function (response) {
+                if (response === 'error') {
+                    reject('response error');
+                }
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                resolve(json);
+            }
+        );
+    });
+}
