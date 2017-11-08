@@ -18,7 +18,7 @@ function startIntern() {
         if (location1.indexOf("https://adm.avito.ru/items/comparison/") > -1) {
             premoderationInternComparison(userGlobalInfo.username, location1);
         }
-        if (location1.indexOf("https://adm.avito.ru/items/moder_new") + 1) {
+        if (location1.indexOf("https://adm.avito.ru/items/moder") + 1) {
             addButtonsIntern();
             premoderationInternNew(userGlobalInfo.username, 'pre');
             premoderationInternComparisonNew();
