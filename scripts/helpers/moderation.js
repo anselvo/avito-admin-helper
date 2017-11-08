@@ -30,14 +30,10 @@ function startModerator() {
 		if (!localStorage.checkboxInfo) localStorage.checkboxInfo = '';
 
 		// PRE
-		if (currentUrl.indexOf("https://adm.avito.ru/items/moder")+1 && currentUrl.indexOf("https://adm.avito.ru/items/moder_new") === -1) {
-			premoderationsStart();
-		}
-
-		// New Pre
-        if (currentUrl.indexOf("https://adm.avito.ru/items/moder_new")+1) {
+		if (currentUrl.indexOf("https://adm.avito.ru/items/moder")+1) {
+			// premoderationsStart(); скрипт для старой прежке, страница удалена
             premoderationsStartNew();
-        }
+		}
 		
 		// POST
 		if (currentUrl.indexOf('https://adm.avito.ru/items/search') + 1 || currentUrl.indexOf('https://adm.avito.ru/adm/items/search') + 1) {
