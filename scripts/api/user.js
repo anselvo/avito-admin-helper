@@ -87,6 +87,7 @@ function usersInfo(id, itemid, offset, query) {
 
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('17')+1) $('.userInfoMain').append('<div id="ah-info-chance" class="userInfoDiv"><b>Chance:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="userInfoDiv"><b>Items:</b> </div>');
     if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div>');
@@ -157,6 +158,8 @@ function usersInfo(id, itemid, offset, query) {
             let ip = $(ruser).find('[data-ip]:eq(0)').text();
             let status = $(ruser).find('.form-group:contains(Статус) div b').text();
             let nameuser =  $(ruser).find('.form-group:contains(Название) input').attr('value');
+            const chanceTmp = $(ruser).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
+            const chance = chanceTmp ? parseInt(chanceTmp.replace('cval_', '')) : 0;
 
             let dateStart = new Date(new Date() - 7.776e+9);
             let dateEnd = new Date();
@@ -169,11 +172,18 @@ function usersInfo(id, itemid, offset, query) {
             if (status.indexOf('Block')+1) color = 'red';
             if (status.indexOf('Unconfirmed')+1) color = 'orange';
 
+            let colorChance = '#2e8b57';
+            if (chance >= 7) {
+                colorChance = '#e00';
+                $('.userInfo').css({ 'box-shadow': 'rgba(255, 8, 8, 0.25) 0px 0px 20px 1px' });
+            }
+
             $('#ah-info-email').append('<span>'+ email + '</span> ');
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
             $('#lastIP').append(visitIpTime + '- <a href="https://adm.avito.ru/users/search?ip='+ip+'" target="_blank">'+ip+'</a> ');
+            $('#ah-info-chance').append('<b style="color: ' + colorChance + '">' + chance + '</b>');
 
             // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
             emailHistory('#ah-info-email', id);
