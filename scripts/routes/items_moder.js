@@ -38,38 +38,44 @@ function premoderationsStartNew() {
 }
 
 function abTest() {
-    let defaultValue = '[{"categoryID": "10","locationID": "660710"}]';
+    let abTestInfo = [
+        { categoryID: "10", locationID: "660710" },
+        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" },
+    ];
 
-    if (!localStorage.abTest) localStorage.abTest = defaultValue;
-
-    try {
-        let abTestInfo = JSON.parse(localStorage.abTest);
-
-        for (let i = 0; i < abTestInfo.length; ++i) {
-            markTestItems(abTestInfo[i].categoryID, abTestInfo[i].locationID);
-        }
-    } catch (e) {
-        localStorage.abTest = defaultValue;
-        outTextFrame('Неправильный JSON для A/B теста. Были назначены данные по умолчанию. ID категории - 10, ID локации - 660710');
+    for (let i = 0; i < abTestInfo.length; ++i) {
+        markTestItems(abTestInfo[i].categoryID, abTestInfo[i].locationID, abTestInfo[i].containsOption);
     }
 }
 
-function markTestItems(categoryID, locationID) {
+function markTestItems(categoryID, locationID, containsOption) {
+    containsOption = containsOption ? containsOption : '';
+
     $.ajax({
         type: 'GET',
         url: 'https://adm.avito.ru/js/locations?json=true&id='+locationID,
         success: function(data) {
-            for (let i = 0; i < data.length; ++i) {
-                let id = data[i].id;
+            if (data.length === 0) {
+                abTestHighlight(categoryID, locationID, containsOption);
+            } else {
+                for (let i = 0; i < data.length; ++i) {
+                    let id = data[i].id;
 
-                let items = $('tr[data-category="'+categoryID+'"][data-location="'+id+'"]');
-
-                $(items).find('.item-info-row:eq(1)')
-                    .addClass('ah-ab-test-mark')
-                    .prepend('<div class="ah-ab-test">A/B TEST</div>');
+                    abTestHighlight(categoryID, id, containsOption);
+                }
             }
         }
     })
+}
+
+function abTestHighlight(categoryID, locationID, containsOption) {
+    let items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+
+    console.log('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+
+    $(items).find('.item-info-row:eq(1)')
+        .addClass('ah-ab-test-mark')
+        .prepend('<div class="ah-ab-test">A/B TEST</div>');
 }
 
 function hideSubcategory() {
