@@ -35,10 +35,10 @@ chrome.runtime.onInstalled.addListener(function(details) {
 	cookieInfo();
 
 	// запускаем чекер натификайшенов
-	chrome.alarms.create('notification', {delayInMinutes: 0.1, periodInMinutes: 0.5});
+	chrome.alarms.create('notification', {delayInMinutes: 1, periodInMinutes: 5});
 
 	// запускаем чекер дня
-    chrome.alarms.create('day', {delayInMinutes: 0.1, periodInMinutes: 0.5});
+    chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
 });
 
 // ЛОВИТ БУДИЛЬНИК
