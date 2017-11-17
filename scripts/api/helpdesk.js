@@ -198,9 +198,8 @@ function renderCreateNewTicketWindow(route) {
     $(modalColumn).append('<div class="ah-modal-body" style=""></div>');
     var body = $(modalColumn).find('.ah-modal-body');
 
-    // Канал и источник
-    $(body).append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 10px 0 0; margin-bottom: 0;"><div class="ah-field-title" style="">Канал</div><div class="ah-field-horizontal ah-field-flex"><select class="ah-form-control" style="" name="create-ticket-channelId"><option value="1">Почта</option><option value="2">Форма</option><option value="3">Телефон</option><option value="4">Чат</option><option value="5" selected>Агент</option></select></div></div>');
-    $(body).append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 0 0 10px; margin-bottom: 0;"><div class="ah-field-title" style="">Источник</div><div class="ah-field-horizontal ah-field-flex"><select class="ah-form-control" style="" name="create-ticket-receivedAtEmail"><option value="support@avito.ru">support@avito.ru</option><option value="shop_support@avito.ru">shop_support@avito.ru</option><option value="android@avito.ru">android@avito.ru</option><option value="ios@avito.ru">ios@avito.ru</option><option value="supportautoload@avito.ru">supportautoload@avito.ru</option><option value="dostavkasupport@avito.ru">dostavkasupport@avito.ru</option><option value="uslugipro@avito.ru">uslugipro@avito.ru</option><option value="info@actiagent.ru">info@actiagent.ru</option><option value="info@actidealer.ru">info@actidealer.ru</option></select></div></div>');
+    // Источник
+    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Источник</div><div><select class="ah-form-control" style="" name="create-ticket-receivedAtEmail"><option value="support@avito.ru">support@avito.ru</option><option value="shop_support@avito.ru">shop_support@avito.ru</option><option value="android@avito.ru">android@avito.ru</option><option value="ios@avito.ru">ios@avito.ru</option><option value="supportautoload@avito.ru">supportautoload@avito.ru</option><option value="dostavkasupport@avito.ru">dostavkasupport@avito.ru</option><option value="uslugipro@avito.ru">uslugipro@avito.ru</option><option value="info@actiagent.ru">info@actiagent.ru</option><option value="info@actidealer.ru">info@actidealer.ru</option></select></div></div>');
     $(body).append('<div class="ah-clearfix" style="margin-bottom: 15px;"></div>');
 
     // Тема запроса
@@ -437,10 +436,6 @@ function renderCreateNewTicketWindow(route) {
     $(createTicketBtn).click(function () {
         var errors = [];
 
-        var channelId = $(body).find('[name="create-ticket-channelId"]').val();
-        if (!channelId)
-            errors.push('Канал');
-
         var receivedAtEmail = $(body).find('[name="create-ticket-receivedAtEmail"]').val();
         if (!receivedAtEmail)
             errors.push('Источник');
@@ -472,7 +467,7 @@ function renderCreateNewTicketWindow(route) {
 
         var data = [{
                 name: 'channelId',
-                value: channelId
+                value: 5
             }, {
                 name: 'receivedAtEmail',
                 value: receivedAtEmail
@@ -937,8 +932,6 @@ function showCreateNewTicketWindow() {
     showModal();
 }
 function substituteCreateTicketValues() {
-    var channelId = $('[name="channelId"]').val();
-    channelId = channelId || '5';
     var receivedAtEmail = $('[name="receivedAtEmail"]').val();
     receivedAtEmail = receivedAtEmail || 'support@avito.ru';
 
@@ -974,7 +967,6 @@ function substituteCreateTicketValues() {
     var requesterName = $('[href^="/helpdesk/client/"]').text();
 
     var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-//    $(modal).find('[name="create-ticket-channelId"]').val(channelId);
     $(modal).find('[name="create-ticket-receivedAtEmail"]').val(receivedAtEmail);
     $(modal).find('[name="create-ticket-theme"]').val(theme).change();
     $(modal).find('[name="create-ticket-problem"]').val(problemId);
