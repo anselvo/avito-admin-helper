@@ -5469,3 +5469,23 @@ select.ah-form-control:focus {
     height: 14px;
     line-height: 14px;
 }
+
+.ah-copy-item-btn-fees-modal {
+    float: right;
+    margin-top: -2px;
+    margin-left: 2px;
+}
+
+.ah-copy-item-cell-fees-modal {
+    padding: 0 !important;
+}
+
+.ah-copy-item-cell-fees-modal label {
+    padding: 8px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.ah-copy-item-cell-fees-modal label:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}

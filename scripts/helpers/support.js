@@ -172,6 +172,8 @@ function startSupport() {
             addIPSystemAccessLink(); // ссылки на system/access рядом с IP
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+
+            copyItemsIdsLimitDetails(); // копирование айтемов в "Истории использования лимитов"
         }
 
         // Item info

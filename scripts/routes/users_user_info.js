@@ -808,3 +808,103 @@ function addWlLinkOnUserInfo() {
     let link = getWlLinkForUser(userId);
     $('a[href^="/users/account/info/"]').after(`| <a title="Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода" target="_blank" href="${link}">Wallet Log</a>`);
 }
+
+function copyItemsIdsLimitDetails() {
+    const feesAvailableNode = document.getElementById('fees-packages-available');
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            const addedNodes = mutation.addedNodes;
+            addedNodes.forEach((node) => {
+                if (node.nodeType === 1 && node.closest('.limits-details-modal') && node.nodeName === 'TR') {
+                    addCopyBtn(node);
+                    // addCheckboxes(node);
+                }
+
+                // if (node.nodeType === 1 && node.classList.contains('limits-details-modal')) {
+                //     const th = document.createElement('th');
+                //     const tableHeadRow = node.querySelector('thead tr');
+                //     th.innerHTML = '<label><input type="checkbox" class="ah-copy-item-checkbox-fees-modal"></label>';
+                //     th.className = 'ah-copy-item-cell-fees-modal ah-copy-item-cell-head';
+                //     tableHeadRow.insertBefore(th, tableHeadRow.firstChild);
+                // }
+            });
+        });
+    });
+    const config = { childList: true, subtree: true };
+    observer.observe(feesAvailableNode, config);
+
+    feesAvailableNode.addEventListener('click', function(e) {
+        let target = e.target;
+        while (target !== this) {
+            if (target.classList.contains('ah-copy-item-btn-fees-modal')) {
+                const itemId = target.dataset.itemId;
+                const text = `№${itemId}`;
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+                outTextFrame(`Скопировано: ${text}`);
+            }
+            target = target.parentNode;
+        }
+    });
+
+    // feesAvailableNode.addEventListener('change', function (e) {
+    //     let target = e.target;
+    //
+    //     const modal = this.querySelector('.modal.in');
+    //     const allBodyCells = modal.querySelectorAll('.ah-copy-item-cell-body');
+    //     const allBodyCheckboxes = [].filter.call(allBodyCells, item => item.querySelector('input[type="checkbox"]'));
+    //     const allBodyCheckboxesChecked = [].filter.call(allBodyCells, item => item.querySelector('input[type="checkbox"]').checked);
+    //     const headCheckbox = modal.querySelector('.ah-copy-item-cell-head input[type="checkbox"]');
+    //
+    //     while (target !== this) {
+    //         if (target.nodeType === 1 && target.closest('.ah-copy-item-cell-head')) {
+    //             console.log(allBodyCheckboxes, headCheckbox.checked);
+    //             if (headCheckbox.checked) {
+    //                 allBodyCheckboxes.forEach(input => {
+    //                     input.checked = true;
+    //                 });
+    //             } else {
+    //                 allBodyCheckboxes.forEach(input => {
+    //                     input.checked = false;
+    //                 });
+    //             }
+    //         }
+    //
+    //         if (target.nodeType === 1 && target.closest('.ah-copy-item-cell-body')) {
+    //             if (allBodyCheckboxes.length === allBodyCheckboxesChecked.length) {
+    //                 headCheckbox.checked = true;
+    //                 headCheckbox.indeterminate = false;
+    //             }
+    //
+    //             if (allBodyCheckboxes.length > allBodyCheckboxesChecked.length) {
+    //                 headCheckbox.indeterminate = true;
+    //             }
+    //
+    //             if (allBodyCheckboxesChecked.length === 0) {
+    //                 headCheckbox.checked = false;
+    //                 headCheckbox.indeterminate = false;
+    //             }
+    //         }
+    //
+    //         target = target.parentNode;
+    //     }
+    // });
+
+    function addCopyBtn(row) {
+        const itemLink = row.querySelector('a[href^="/items/item/info/"]');
+        const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-default btn-xs ah-copy-item-btn-fees-modal';
+        btn.innerHTML = '<span class="glyphicon glyphicon-copy"></span>';
+        btn.setAttribute('data-item-id', itemId);
+        itemLink.parentNode.appendChild(btn);
+    }
+
+    // function addCheckboxes(row) {
+    //     const itemLink = row.querySelector('a[href^="/items/item/info/"]');
+    //     const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
+    //     const td = document.createElement('td');
+    //     td.innerHTML = `<label><input data-item-id="${itemId}" type="checkbox" class="ah-copy-item-checkbox-fees-modal"></label>`;
+    //     td.className = 'ah-copy-item-cell-fees-modal ah-copy-item-cell-body';
+    //     row.insertBefore(td, row.firstChild);
+    // }
+}
