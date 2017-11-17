@@ -88,6 +88,25 @@ function startInfoDoc() {
 
         // helpdesk
         if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
+
+            const app = document.getElementById('app');
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1
+                            && node.classList.contains('helpdesk-tab-pane')
+                            && [].find.call(node.querySelectorAll('h4'),
+                                item => ~item.className.indexOf('details-left-panel-title'))) {
+
+                            infoDocTicketInfo();
+                        }
+                    });
+                });
+            });
+
+            const config = {childList: true, subtree: true};
+            observer.observe(app, config);
+
             findAgentID(); // ID агента
             
             getAllUsers(); // инфа обо всех пользователях
