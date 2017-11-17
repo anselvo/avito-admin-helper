@@ -92,6 +92,25 @@ function startSupport() {
 
         var currentUrl = window.location.href;
         if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
+
+            const app = document.getElementById('app');
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1
+                            && node.classList.contains('helpdesk-tab-pane')
+                            && [].find.call(node.querySelectorAll('h4'),
+                                    item => ~item.className.indexOf('details-left-panel-title'))) {
+
+                            addShElementsInfo();
+                        }
+                    });
+                });
+            });
+
+            const config = {childList: true, subtree: true};
+            observer.observe(app, config);
+
             // иконка во вкладке
             let iconLink = $('head').find('[rel="shortcut icon"]');
             $(iconLink).attr('href', 'https://43.img.avito.st/640x480/2839321043.jpg');

@@ -2873,6 +2873,13 @@ function attendantTLBtnHandler(btn) {
 		alert('Для отправки обращения дежурному тимлидеру Вы долджны быть назначены в качестве Исполнителя');
         return;
 	}
+
+	// проверка вкладки "Параметры"
+    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+	if (allPanelHeaders.length === 0) {
+        alert('Пожалуйста, перейдите во вкладку "Параметры" и повторите попытку');
+        return;
+    }
 	
     if (!$(btn).hasClass('sh-active-btn')) {
         $('#sh-loading-layer').show();
