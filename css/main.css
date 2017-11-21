@@ -5470,22 +5470,25 @@ select.ah-form-control:focus {
     line-height: 14px;
 }
 
-.ah-copy-item-btn-fees-modal {
-    float: right;
+.ah-fees-modal-copy-item-btn {
     margin-top: -2px;
-    margin-left: 2px;
+    margin-left: 6px;
 }
 
-.ah-copy-item-cell-fees-modal {
+.ah-fees-modal-cell {
     padding: 0 !important;
 }
 
-.ah-copy-item-cell-fees-modal label {
+.ah-fees-modal-cell label {
     padding: 8px;
     margin: 0;
     cursor: pointer;
 }
 
-.ah-copy-item-cell-fees-modal label:hover {
+.ah-fees-modal-cell .ah-fees-modal-checkbox {
+    cursor: pointer;
+}
+
+.ah-fees-modal-cell label:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }

@@ -173,7 +173,7 @@ function startSupport() {
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
 
-            copyItemsIdsLimitDetails(); // копирование айтемов в "Истории использования лимитов"
+            feesAvailableModal(); // добавить функционал для модалок "История использования лимитов"
         }
 
         // Item info

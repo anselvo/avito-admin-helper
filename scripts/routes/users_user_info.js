@@ -809,102 +809,148 @@ function addWlLinkOnUserInfo() {
     $('a[href^="/users/account/info/"]').after(`| <a title="Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода" target="_blank" href="${link}">Wallet Log</a>`);
 }
 
-function copyItemsIdsLimitDetails() {
+function feesAvailableModal() {
     const feesAvailableNode = document.getElementById('fees-packages-available');
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            const addedNodes = mutation.addedNodes;
-            addedNodes.forEach((node) => {
-                if (node.nodeType === 1 && node.closest('.limits-details-modal') && node.nodeName === 'TR') {
-                    addCopyBtn(node);
-                    // addCheckboxes(node);
-                }
+    const feesAvailableGlobalNode = document.getElementById('fees-packages-available-global');
 
-                // if (node.nodeType === 1 && node.classList.contains('limits-details-modal')) {
-                //     const th = document.createElement('th');
-                //     const tableHeadRow = node.querySelector('thead tr');
-                //     th.innerHTML = '<label><input type="checkbox" class="ah-copy-item-checkbox-fees-modal"></label>';
-                //     th.className = 'ah-copy-item-cell-fees-modal ah-copy-item-cell-head';
-                //     tableHeadRow.insertBefore(th, tableHeadRow.firstChild);
-                // }
+    observe(feesAvailableNode);
+    observe(feesAvailableGlobalNode);
+
+    feesAvailableNode.addEventListener('click', handleClick);
+    feesAvailableNode.addEventListener('change', handleChange);
+    feesAvailableGlobalNode.addEventListener('click', handleClick);
+    feesAvailableGlobalNode.addEventListener('change', handleChange);
+
+    function observe(node) {
+        if (!node) return;
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                const addedNodes = mutation.addedNodes;
+                addedNodes.forEach((node) => {
+                    if (node.nodeType === 1 && node.closest('.limits-details-modal') && node.nodeName === 'TR') {
+                        addCopyBtns(node);
+                        addCheckboxes(node);
+                    }
+
+                    if (node.nodeType === 1 && node.classList.contains('limits-details-modal')) {
+                        addHeadCheckbox(node);
+                        addCopyAllBtn(node);
+                    }
+                });
             });
         });
-    });
-    const config = { childList: true, subtree: true };
-    observer.observe(feesAvailableNode, config);
 
-    feesAvailableNode.addEventListener('click', function(e) {
-        let target = e.target;
-        while (target !== this) {
-            if (target.classList.contains('ah-copy-item-btn-fees-modal')) {
-                const itemId = target.dataset.itemId;
-                const text = `№${itemId}`;
-                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
-                outTextFrame(`Скопировано: ${text}`);
-            }
-            target = target.parentNode;
-        }
-    });
+        const config = { childList: true, subtree: true };
+        observer.observe(node, config);
+    }
 
-    // feesAvailableNode.addEventListener('change', function (e) {
-    //     let target = e.target;
-    //
-    //     const modal = this.querySelector('.modal.in');
-    //     const allBodyCells = modal.querySelectorAll('.ah-copy-item-cell-body');
-    //     const allBodyCheckboxes = [].filter.call(allBodyCells, item => item.querySelector('input[type="checkbox"]'));
-    //     const allBodyCheckboxesChecked = [].filter.call(allBodyCells, item => item.querySelector('input[type="checkbox"]').checked);
-    //     const headCheckbox = modal.querySelector('.ah-copy-item-cell-head input[type="checkbox"]');
-    //
-    //     while (target !== this) {
-    //         if (target.nodeType === 1 && target.closest('.ah-copy-item-cell-head')) {
-    //             console.log(allBodyCheckboxes, headCheckbox.checked);
-    //             if (headCheckbox.checked) {
-    //                 allBodyCheckboxes.forEach(input => {
-    //                     input.checked = true;
-    //                 });
-    //             } else {
-    //                 allBodyCheckboxes.forEach(input => {
-    //                     input.checked = false;
-    //                 });
-    //             }
-    //         }
-    //
-    //         if (target.nodeType === 1 && target.closest('.ah-copy-item-cell-body')) {
-    //             if (allBodyCheckboxes.length === allBodyCheckboxesChecked.length) {
-    //                 headCheckbox.checked = true;
-    //                 headCheckbox.indeterminate = false;
-    //             }
-    //
-    //             if (allBodyCheckboxes.length > allBodyCheckboxesChecked.length) {
-    //                 headCheckbox.indeterminate = true;
-    //             }
-    //
-    //             if (allBodyCheckboxesChecked.length === 0) {
-    //                 headCheckbox.checked = false;
-    //                 headCheckbox.indeterminate = false;
-    //             }
-    //         }
-    //
-    //         target = target.parentNode;
-    //     }
-    // });
-
-    function addCopyBtn(row) {
+    function addCopyBtns(row) {
         const itemLink = row.querySelector('a[href^="/items/item/info/"]');
         const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
         const btn = document.createElement('button');
-        btn.className = 'btn btn-default btn-xs ah-copy-item-btn-fees-modal';
+        btn.className = 'btn btn-default btn-xs ah-fees-modal-copy-item-btn';
         btn.innerHTML = '<span class="glyphicon glyphicon-copy"></span>';
         btn.setAttribute('data-item-id', itemId);
+        btn.title = 'Скопировать';
         itemLink.parentNode.appendChild(btn);
     }
 
-    // function addCheckboxes(row) {
-    //     const itemLink = row.querySelector('a[href^="/items/item/info/"]');
-    //     const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
-    //     const td = document.createElement('td');
-    //     td.innerHTML = `<label><input data-item-id="${itemId}" type="checkbox" class="ah-copy-item-checkbox-fees-modal"></label>`;
-    //     td.className = 'ah-copy-item-cell-fees-modal ah-copy-item-cell-body';
-    //     row.insertBefore(td, row.firstChild);
-    // }
+    function addCheckboxes(row) {
+        const itemLink = row.querySelector('a[href^="/items/item/info/"]');
+        const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
+        const td = document.createElement('td');
+        td.innerHTML = `<label><input data-item-id="${itemId}" type="checkbox" class="ah-fees-modal-checkbox ah-checkbox-body"></label>`;
+        td.className = 'ah-fees-modal-cell ah-cell-body';
+        row.insertBefore(td, row.firstChild);
+    }
+
+    function addHeadCheckbox(modal) {
+        const th = document.createElement('th');
+        const tableHeadRow = modal.querySelector('thead tr');
+        th.innerHTML = '<label><input type="checkbox" class="ah-fees-modal-checkbox ah-checkbox-head"></label>';
+        th.className = 'ah-fees-modal-cell';
+        tableHeadRow.insertBefore(th, tableHeadRow.firstChild);
+    }
+
+    function addCopyAllBtn(modal) {
+        const body = modal.querySelector('.modal-body');
+        const row = document.createElement('div');
+        row.innerHTML = `
+            <button class="btn btn-default btn-sm ah-fees-modal-copy-all-btn">Скопировать отмеченные</button>
+        `;
+        body.insertBefore(row, body.firstChild);
+    }
+
+    function handleClick(e) {
+        const target = e.target;
+
+        if (target.closest('.ah-fees-modal-copy-item-btn')) {
+            const itemId = target.closest('.ah-fees-modal-copy-item-btn').dataset.itemId;
+            const text = `№${itemId}`;
+            chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+            outTextFrame(`Скопировано: ${text}`);
+        }
+
+        if (target.closest('.ah-fees-modal-copy-all-btn')) {
+            const modal = target.closest('.limits-details-modal');
+            const allCheckboxes = modal.querySelectorAll('.ah-fees-modal-checkbox[data-item-id]');
+            const allChecked = [].filter.call(allCheckboxes, item => item.checked);
+            const unique = new Set();
+            allChecked.forEach(item => {
+                unique.add(item.dataset.itemId);
+            });
+
+            if (unique.size > 0) {
+                const formatted = Array.from(unique).map(item => `№${item}`);
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: formatted.join(', ')});
+                outTextFrame(`Отмеченные ID скопированы`);
+            }
+        }
+    }
+
+    function handleChange(e) {
+        const target = e.target;
+
+        const modal = this.querySelector('.modal.in');
+        const allBodyCheckboxes = modal.querySelectorAll('.ah-checkbox-body');
+        const headCheckbox = modal.querySelector('.ah-checkbox-head');
+
+        if (target.classList.contains('ah-checkbox-body')) {
+            const itemId = target.dataset.itemId;
+            const isChecked = target.checked;
+            const allSame = [].filter.call(allBodyCheckboxes, item => item.dataset.itemId === itemId);
+            allSame.forEach(item => {
+                item.checked = isChecked;
+            });
+            const allBodyCheckboxesChecked = [].filter.call(allBodyCheckboxes, item => item.checked);
+
+            if (allBodyCheckboxes.length === allBodyCheckboxesChecked.length) {
+                headCheckbox.checked = true;
+                headCheckbox.indeterminate = false;
+            }
+
+            if (allBodyCheckboxes.length > allBodyCheckboxesChecked.length) {
+                headCheckbox.checked = false;
+                headCheckbox.indeterminate = true;
+            }
+
+            if (allBodyCheckboxesChecked.length === 0) {
+                headCheckbox.checked = false;
+                headCheckbox.indeterminate = false;
+            }
+        }
+
+        if (target.classList.contains('ah-checkbox-head')) {
+            if (headCheckbox.checked) {
+                allBodyCheckboxes.forEach(input => {
+                    input.checked = true;
+                });
+            } else {
+                allBodyCheckboxes.forEach(input => {
+                    input.checked = false;
+                });
+            }
+        }
+    }
 }
