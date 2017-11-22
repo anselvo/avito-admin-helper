@@ -175,7 +175,7 @@ function usersInfo(id, itemid, offset, query) {
             let colorChance = '#2e8b57';
             if (chance >= 7) {
                 colorChance = '#e00';
-                $('.userInfo').css({ 'box-shadow': 'rgba(255, 8, 8, 0.25) 0px 0px 20px 1px' });
+                $('.userInfo').css({ 'box-shadow': 'rgb(255, 8, 8) 0px 0px 10px 0px' });
             }
 
             $('#ah-info-email').append('<span>'+ email + '</span> ');
@@ -215,17 +215,16 @@ function usersInfo(id, itemid, offset, query) {
                     let firstParam = $(ritem).find('.js-component__parameters select[data-id]:eq(0)').attr('data-id');
                     let firstParamVal = $(ritem).find('.js-component__parameters select[data-id]:eq(0) option:selected').attr('value');
 
+                    let phoneNumberList = $(phoneList).find('td:eq(0) input.form-control');
+
                     for (let i = 0; i < phoneList.length; i++) {
-                        let number = $(phoneList[i]).find('input[name^="phone["]').attr("value");
-                        let newNumber = '';
-                        for(let j = 1; j < 8; j++) {
-                            newNumber = newNumber + number[j];
-                        }
+                        let number = $(phoneNumberList[i]).attr("value");
+                        let newNumber = number.substring(1, 8);
 
                         let verify = '';
                         let verifyDate = '';
 
-                        if ($(ruser).find('.controls-phone .i-verify').slice(i,i+1).hasClass('i-verify-checked')) {
+                        if ($(phoneList[i]).find('.i-verify').hasClass('i-verify-checked')) {
                             verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
                             verifyDate = $(phoneList[i]).find('.phone-verify-date').text();
                         } else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
