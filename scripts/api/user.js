@@ -142,7 +142,6 @@ function usersInfo(id, itemid, offset, query) {
         }
     });
 
-    let startedTime = new Date().getTime();
     // ЗАПРОС НА ПОЛЬЗОВАТЕЛЯ
     let request = new XMLHttpRequest();
     request.open("GET", href, true);
@@ -216,8 +215,10 @@ function usersInfo(id, itemid, offset, query) {
                     let firstParam = $(ritem).find('.js-component__parameters select[data-id]:eq(0)').attr('data-id');
                     let firstParamVal = $(ritem).find('.js-component__parameters select[data-id]:eq(0) option:selected').attr('value');
 
+                    let phoneNumberList = $(phoneList).find('td:eq(0) input.form-control');
+
                     for (let i = 0; i < phoneList.length; i++) {
-                        let number = $(phoneList[i]).find('input[name^="phone["]').attr("value");
+                        let number = $(phoneNumberList[i]).attr("value");
                         let newNumber = number.substring(1, 8);
 
                         let verify = '';
@@ -254,8 +255,6 @@ function usersInfo(id, itemid, offset, query) {
                     ymapapi(addressItem);
 
                     closeLoadBarInfoWindow();
-                    let endTime = new Date().getTime();
-                    console.log((endTime - startedTime)/1000 + " seconds");
                 }
             };
         }
