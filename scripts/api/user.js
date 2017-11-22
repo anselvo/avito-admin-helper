@@ -176,7 +176,7 @@ function usersInfo(id, itemid, offset, query) {
             let colorChance = '#2e8b57';
             if (chance >= 7) {
                 colorChance = '#e00';
-                $('.userInfo').css({ 'box-shadow': 'rgba(255, 8, 8, 0.25) 0px 0px 20px 1px' });
+                $('.userInfo').css({ 'box-shadow': 'rgb(255, 8, 8) 0px 0px 10px 0px' });
             }
 
             $('#ah-info-email').append('<span>'+ email + '</span> ');
