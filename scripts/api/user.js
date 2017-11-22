@@ -142,6 +142,7 @@ function usersInfo(id, itemid, offset, query) {
         }
     });
 
+    let startedTime = new Date().getTime();
     // ЗАПРОС НА ПОЛЬЗОВАТЕЛЯ
     let request = new XMLHttpRequest();
     request.open("GET", href, true);
@@ -217,15 +218,12 @@ function usersInfo(id, itemid, offset, query) {
 
                     for (let i = 0; i < phoneList.length; i++) {
                         let number = $(phoneList[i]).find('input[name^="phone["]').attr("value");
-                        let newNumber = '';
-                        for(let j = 1; j < 8; j++) {
-                            newNumber = newNumber + number[j];
-                        }
+                        let newNumber = number.substring(1, 8);
 
                         let verify = '';
                         let verifyDate = '';
 
-                        if ($(ruser).find('.controls-phone .i-verify').slice(i,i+1).hasClass('i-verify-checked')) {
+                        if ($(phoneList[i]).find('.i-verify').hasClass('i-verify-checked')) {
                             verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
                             verifyDate = $(phoneList[i]).find('.phone-verify-date').text();
                         } else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
@@ -256,6 +254,8 @@ function usersInfo(id, itemid, offset, query) {
                     ymapapi(addressItem);
 
                     closeLoadBarInfoWindow();
+                    let endTime = new Date().getTime();
+                    console.log((endTime - startedTime)/1000 + " seconds");
                 }
             };
         }
