@@ -5434,7 +5434,7 @@ select.ah-form-control:focus {
     max-width: 500px;
 }
 
-.alert.ah-helpdesk-notification {
+.ah-helpdesk-notification.alert {
     margin-bottom: 0;
     border-radius: 0;
 }
