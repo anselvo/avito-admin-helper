@@ -68,6 +68,8 @@
 			"run_at": "document_start"
 		}
     ],
+
+	"web_accessible_resources" : ["scripts/injected/helpdesk.js"],
 	
 	"permissions": [
 		"webRequest",
