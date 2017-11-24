@@ -4,6 +4,7 @@ chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
     USER = result.user;
 
+    testWebSocket(USER);
     setBadgetIcon(SCRIPT);
 });
 
@@ -662,17 +663,30 @@ function notificationCheck() {
 }
 
 
-let sock = new SockJS('https://mydomain.com/my_prefix');
-sock.onopen = function() {
-    console.log('open');
-    sock.send('test');
-};
+function testWebSocket(user) {
+    let stompClient = null;
 
-sock.onmessage = function(e) {
-    console.log('message', e.data);
-    sock.close();
-};
+    let socket = new SockJS('http://localhost:8080/ws/notification');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe('/topic/test', function (e) {
+        });
 
-sock.onclose = function() {
-    console.log('close');
-};
+        stompClient.send('/app/get/user', {}, 1);
+        stompClient.send('/app/test/1', {});
+    });
+
+    // socket.onopen = function() {
+    //     console.log('open');
+    //     socket.send('test');
+    // };
+    //
+    // socket.onmessage = function(e) {
+    //     console.log('message', e.data);
+    //     socket.close();
+    // };
+    //
+    // socket.onclose = function() {
+    //     console.log('close');
+    // };
+}
