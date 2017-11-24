@@ -828,14 +828,21 @@ function feesAvailableModal() {
             mutations.forEach(function(mutation) {
                 const addedNodes = mutation.addedNodes;
                 addedNodes.forEach((node) => {
-                    if (node.nodeType === 1 && node.closest('.limits-details-modal') && node.nodeName === 'TR') {
-                        addCopyBtns(node);
-                        addCheckboxes(node);
+                    if (node.nodeType !== 1) return;
+
+                    if (node.closest('.limits-details-modal') && node.nodeName === 'TR') {
+                        addCopyBtn(node);
+                        addCheckbox(node);
                     }
 
-                    if (node.nodeType === 1 && node.classList.contains('limits-details-modal')) {
+                    if (node.classList.contains('limits-details-modal')) {
                         addHeadCheckbox(node);
-                        addCopyAllBtn(node);
+                        addControls(node);
+                    }
+
+                    if (node.hasAttribute('data-page')) {
+                        const modal = node.closest('.limits-details-modal');
+                        resetHeadCheckbox(modal);
                     }
                 });
             });
@@ -845,7 +852,7 @@ function feesAvailableModal() {
         observer.observe(node, config);
     }
 
-    function addCopyBtns(row) {
+    function addCopyBtn(row) {
         const itemLink = row.querySelector('a[href^="/items/item/info/"]');
         const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
         const btn = document.createElement('button');
@@ -856,7 +863,7 @@ function feesAvailableModal() {
         itemLink.parentNode.appendChild(btn);
     }
 
-    function addCheckboxes(row) {
+    function addCheckbox(row) {
         const itemLink = row.querySelector('a[href^="/items/item/info/"]');
         const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
         const td = document.createElement('td');
@@ -873,13 +880,44 @@ function feesAvailableModal() {
         tableHeadRow.insertBefore(th, tableHeadRow.firstChild);
     }
 
-    function addCopyAllBtn(modal) {
+    function addControls(modal) {
         const body = modal.querySelector('.modal-body');
         const row = document.createElement('div');
+        row.className = 'ah-fees-modal-controls-wrapper';
         row.innerHTML = `
-            <button class="btn btn-default btn-sm ah-fees-modal-copy-all-btn">Скопировать отмеченные</button>
+            <div class="dropdown">
+                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    Отмечено объявлений - <span class="ah-fees-modal-checked-count" data-checked-ids="[]">0</span> 
+                        <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="ah-fees-modal-copy-all">Скопировать ID</a></li>
+                </ul>
+            </div>
         `;
         body.insertBefore(row, body.firstChild);
+    }
+
+    function resetHeadCheckbox(modal) {
+        const checkbox = modal.querySelector('.ah-checkbox-head');
+        checkbox.checked = false;
+    }
+
+    function checkHeadCheckbox(checkbox, visible, visibleChecked) {
+        if (visible.length === visibleChecked.length) {
+            checkbox.checked = true;
+            checkbox.indeterminate = false;
+        }
+
+        if (visible.length > visibleChecked.length) {
+            checkbox.checked = false;
+            checkbox.indeterminate = true;
+        }
+
+        if (visibleChecked.length === 0) {
+            checkbox.checked = false;
+            checkbox.indeterminate = false;
+        }
     }
 
     function handleClick(e) {
@@ -892,20 +930,28 @@ function feesAvailableModal() {
             outTextFrame(`Скопировано: ${text}`);
         }
 
-        if (target.closest('.ah-fees-modal-copy-all-btn')) {
+        if (target.closest('.ah-fees-modal-copy-all')) {
             const modal = target.closest('.limits-details-modal');
-            const allCheckboxes = modal.querySelectorAll('.ah-fees-modal-checkbox[data-item-id]');
-            const allChecked = [].filter.call(allCheckboxes, item => item.checked);
-            const unique = new Set();
-            allChecked.forEach(item => {
-                unique.add(item.dataset.itemId);
-            });
+            const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
+            const ids = JSON.parse(checkedCounter.dataset.checkedIds);
 
-            if (unique.size > 0) {
-                const formatted = Array.from(unique).map(item => `№${item}`);
+            if (ids.length > 0) {
+                const formatted = ids.map(item => `№${item}`);
                 chrome.runtime.sendMessage({action: 'copyToClipboard', text: formatted.join(', ')});
                 outTextFrame(`Отмеченные ID скопированы`);
             }
+        }
+
+        if (target.closest('li[data-page]')) {
+            const modal = target.closest('.limits-details-modal');
+            const allBodyCheckboxes = modal.querySelectorAll('.ah-checkbox-body');
+            const allBodyCheckboxesVisible = [].filter.call(allBodyCheckboxes, item => {
+                const row = item.closest('tr');
+                return getComputedStyle(row).display !== 'none';
+            });
+            const allBodyCheckboxesCheckedVisible = [].filter.call(allBodyCheckboxesVisible, item => item.checked);
+            const headCheckbox = modal.querySelector('.ah-checkbox-head');
+            checkHeadCheckbox(headCheckbox, allBodyCheckboxesVisible, allBodyCheckboxesCheckedVisible);
         }
     }
 
@@ -914,6 +960,10 @@ function feesAvailableModal() {
 
         const modal = this.querySelector('.modal.in');
         const allBodyCheckboxes = modal.querySelectorAll('.ah-checkbox-body');
+        const allBodyCheckboxesVisible = [].filter.call(allBodyCheckboxes, item => {
+            const row = item.closest('tr');
+            return getComputedStyle(row).display !== 'none';
+        });
         const headCheckbox = modal.querySelector('.ah-checkbox-head');
 
         if (target.classList.contains('ah-checkbox-body')) {
@@ -923,34 +973,32 @@ function feesAvailableModal() {
             allSame.forEach(item => {
                 item.checked = isChecked;
             });
-            const allBodyCheckboxesChecked = [].filter.call(allBodyCheckboxes, item => item.checked);
-
-            if (allBodyCheckboxes.length === allBodyCheckboxesChecked.length) {
-                headCheckbox.checked = true;
-                headCheckbox.indeterminate = false;
-            }
-
-            if (allBodyCheckboxes.length > allBodyCheckboxesChecked.length) {
-                headCheckbox.checked = false;
-                headCheckbox.indeterminate = true;
-            }
-
-            if (allBodyCheckboxesChecked.length === 0) {
-                headCheckbox.checked = false;
-                headCheckbox.indeterminate = false;
-            }
         }
 
         if (target.classList.contains('ah-checkbox-head')) {
             if (headCheckbox.checked) {
-                allBodyCheckboxes.forEach(input => {
+                allBodyCheckboxesVisible.forEach(input => {
                     input.checked = true;
                 });
             } else {
-                allBodyCheckboxes.forEach(input => {
+                allBodyCheckboxesVisible.forEach(input => {
                     input.checked = false;
                 });
             }
         }
+
+        const allBodyCheckboxesChecked = [].filter.call(allBodyCheckboxes, item => item.checked);
+        const allBodyCheckboxesCheckedVisible = [].filter.call(allBodyCheckboxesVisible, item => item.checked);
+
+        checkHeadCheckbox(headCheckbox, allBodyCheckboxesVisible, allBodyCheckboxesCheckedVisible);
+
+        const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
+        const unique = new Set();
+        allBodyCheckboxesChecked.forEach(item => {
+            unique.add(item.dataset.itemId);
+        });
+        const uniqueArr = Array.from(unique);
+        checkedCounter.setAttribute('data-checked-ids', JSON.stringify(uniqueArr));
+        checkedCounter.innerHTML = uniqueArr.length;
     }
 }
