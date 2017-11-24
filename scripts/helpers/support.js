@@ -226,6 +226,8 @@ function startSupport() {
             timeInCity();
 
             addCompareItemsItemInfo();
+
+            addAccountLinkItemInfo();
         }
 
         // Items search
