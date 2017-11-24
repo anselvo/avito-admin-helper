@@ -812,6 +812,7 @@ function addWlLinkOnUserInfo() {
 function feesAvailableModal() {
     const feesAvailableNode = document.getElementById('fees-packages-available');
     const feesAvailableGlobalNode = document.getElementById('fees-packages-available-global');
+    let checkedIds = [];
 
     observe(feesAvailableNode);
     observe(feesAvailableGlobalNode);
@@ -887,7 +888,7 @@ function feesAvailableModal() {
         row.innerHTML = `
             <div class="dropdown">
                 <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    Отмечено объявлений - <span class="ah-fees-modal-checked-count" data-checked-ids="[]">0</span> 
+                    Отмечено объявлений - <span class="ah-fees-modal-checked-count">0</span> 
                         <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -931,12 +932,8 @@ function feesAvailableModal() {
         }
 
         if (target.closest('.ah-fees-modal-copy-all')) {
-            const modal = target.closest('.limits-details-modal');
-            const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
-            const ids = JSON.parse(checkedCounter.dataset.checkedIds);
-
-            if (ids.length > 0) {
-                const formatted = ids.map(item => `№${item}`);
+            if (checkedIds.length > 0) {
+                const formatted = checkedIds.map(item => `№${item}`);
                 chrome.runtime.sendMessage({action: 'copyToClipboard', text: formatted.join(', ')});
                 outTextFrame(`Отмеченные ID скопированы`);
             }
@@ -998,7 +995,7 @@ function feesAvailableModal() {
             unique.add(item.dataset.itemId);
         });
         const uniqueArr = Array.from(unique);
-        checkedCounter.setAttribute('data-checked-ids', JSON.stringify(uniqueArr));
         checkedCounter.innerHTML = uniqueArr.length;
+        checkedIds = uniqueArr;
     }
 }
