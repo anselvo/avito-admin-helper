@@ -191,6 +191,8 @@ function startSupport() {
             addIPSystemAccessLink(); // ссылки на system/access рядом с IP
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+
+            feesAvailableModal(); // добавить функционал для модалок "История использования лимитов"
         }
 
         // Item info
