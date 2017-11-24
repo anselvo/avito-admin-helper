@@ -5509,3 +5509,7 @@ select.ah-form-control:focus {
 .ah-fees-modal-controls-wrapper .dropdown-menu > li {
     cursor: pointer;
 }
+
+.ah-fees-modal-open-search:visited {
+    color: #333 !important;
+}

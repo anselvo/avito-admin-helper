@@ -891,7 +891,13 @@ function feesAvailableModal() {
                         <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="ah-fees-modal-copy-all">Скопировать ID</a></li>
+                    <li>
+                        <a class="ah-fees-modal-copy-all">Скопировать ID</a>
+                    </li>
+                    <li>
+                        <a href="https://adm.avito.ru/items/search" target="_blank" 
+                            class="ah-fees-modal-open-search">Открыть в /items/search</a>
+                    </li>
                 </ul>
             </div>
         `;
@@ -993,6 +999,8 @@ function feesAvailableModal() {
         checkHeadCheckbox(headCheckbox, allBodyCheckboxesVisible, allBodyCheckboxesCheckedVisible);
 
         const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
+        const openAllLink = modal.querySelector('.ah-fees-modal-open-search');
+
         const unique = new Set();
         allBodyCheckboxesChecked.forEach(item => {
             unique.add(item.dataset.itemId);
@@ -1000,5 +1008,6 @@ function feesAvailableModal() {
         const uniqueArr = Array.from(unique);
         checkedCounter.setAttribute('data-checked-ids', JSON.stringify(uniqueArr));
         checkedCounter.innerHTML = uniqueArr.length;
+        openAllLink.href = `https://adm.avito.ru/items/search?query=${uniqueArr.join('|')}`;
     }
 }
