@@ -69,7 +69,7 @@
 		}
     ],
 
-	"web_accessible_resources" : ["scripts/injected/helpdesk.js"],
+	"web_accessible_resources" : ["inject/helpdesk.js"],
 	
 	"permissions": [
 		"webRequest",

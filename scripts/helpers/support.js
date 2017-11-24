@@ -93,7 +93,7 @@ function startSupport() {
 
         var currentUrl = window.location.href;
         if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
-            injectScript(chrome.runtime.getURL('/scripts/injected/helpdesk.js'), document.body);
+            injectScript(chrome.runtime.getURL('/inject/helpdesk.js'), document.body);
 
             document.addEventListener('receiveHelpdeskStore', e => {
                 settingsGlobal.helpdeskStore = e.detail;
