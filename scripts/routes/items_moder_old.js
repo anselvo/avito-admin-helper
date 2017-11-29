@@ -800,18 +800,15 @@ function searchWordsGlobal(temp1, temp2, className) {  //глобальный п
 
 // отклонение или блокировка
 function submitItem(data) {
-    // console.log(data);
-    var formData = new FormData();
+    let formData = new FormData();
 
     formData.append('item_id', data.itemId);
     formData.append('version', data.version);
     formData.append('action', data.action);
 
-
-    if (typeof data.reason == "object") {
+    if (typeof data.reason === "object") {
         for (var i = 0; i < data.reason.length; i++) {
-            // console.log(data.reason[i], typeof data.reason[i]);
-            if (data.reason[i] == 'null') {
+            if (data.reason[i] === 'null') {
                 alert('Что-то пошло не так');
                 return;
             }
@@ -822,22 +819,24 @@ function submitItem(data) {
     }
 
 
-    var url = 'https://adm.avito.ru/items/moder/submit';
+    if (data.customReason) {
+        formData.append('customReason', data.customReason);
+        formData.append('reasons[]', data.customReason);
+    }
 
-    var xhr = new XMLHttpRequest();
+
+    let url = 'https://adm.avito.ru/items/moder/submit';
+
+    let xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
-
     xhr.send(formData);
-
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            // console.log(xhr.responseText);
+        if (xhr.readyState === 4 && xhr.status === 200) {
             $('tr[data-id="' + data.itemId + '"]').remove();
         }
 
-        if (xhr.readyState == 4 && xhr.status > 200) {
-            // alert('Произошла ошибка. Техническая информация:\n' + xhr.status  + ': ' + xhr.statusText + '\n\nОбъявление будет открыто в новой вкладке');
-            // window.open('https://adm.avito.ru/items/item/info/' + data.itemId + '','_blank');
+        if (xhr.readyState === 4 && xhr.status > 200) {
+
 
             $('body').append('<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="mh-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>' + xhr.status  + ': ' + xhr.statusText + '</span></b><hr class="mh-default-hr"><span>Ссылка на объявление: <a href="https://adm.avito.ru/items/item/info/' + data.itemId + '" target="_blank">'+ data.itemId +'</a></span></div>');
 

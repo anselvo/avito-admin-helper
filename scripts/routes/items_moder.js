@@ -232,10 +232,6 @@ function addComparisonInfo() {
     }
 }
 
-function comparisonSmartFlags(content) {
-
-}
-
 function colorButtons() {
     let list = $('.b-antifraud-actions');
 
@@ -308,106 +304,91 @@ function addElementsForEachItemNew() {
     $('.item-info-row_user-actions').after('<div class="item-info-row mh_items"></div>');
 
     // для цикла
-    var lastReject = '';
+    let lastReject = '';
+    let addElementsForEachItem = localStorage.addElementsForEachItem;
 
-    var n = $('.item-info').length;
-    for (var i = 0; i < n; i++) {
+    let trList = $('#items').find('tr');
+    for (let i = 0; i < trList.length; i++) {
+        let value = $(trList[i]).find('.item-info').attr("id");
+        let itemVersion = $(trList[i]).find('input[name="version"]').val();
 
-
-        var value = $('.item-info').slice(i, i+1).attr("id");
-        var itemVersion = $('input[name="version"]').slice(i, i+1).val();
-
-        var paramId = null;
-        var paramsArr = $('tr[id^="item_"]').slice(i, i+1).data('params');
+        let paramId = null;
+        let paramsArr = $(trList[i]).data('params');
 
         if (paramsArr) {
-            for (var j = 0; j < paramsArr.length; j++) {
-                if (paramsArr[j][1] == 'Адрес') {
+            for (let j = 0; j < paramsArr.length; j++) {
+                if (paramsArr[j][1] === 'Адрес') {
                     paramId = paramsArr[j][0];
                 }
             }
         }
 
-        var title = $('.item-info-name a').slice(i, i + 1).attr("title");
-
         // ------ отображение кол-ва активных айтемов, как в items/search  ------ //
 
-        if (localStorage.addElementsForEachItem == 'true') {
-            getActiveItems(i);
-        }
-
-        function getActiveItems(i) {
-            // $('div.user-actions a[href ^= "/items/search"]').slice(i,i+1).html('test');
-            var url = $('div.item-info-row_user-actions a[href ^= "/items/search"]').slice(i,i+1).attr('href');
-            // console.log(url);
-            // console.log(url);
-
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.send();
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    var r = xhr.responseText;
-
-                    var activeItems = $(r).find('a[href ^= "/items/search?user_id"]:eq(0)').text();
-                    var categoryItem = $(r).find('.form-group:contains(Категория) option:selected').parents('.category').attr('label');
-
-                    if (categoryItem == 'Недвижимость') {
-                        var bleach = $(r).find('a[href^="/items/item/soil"]');
-                        var reasonBlock = $(r).find('#adminTable:contains(Блокировка учётной записи)');
-
-                        if (bleach.length != 0 && reasonBlock.length != 0) $('h3.item-info-name').slice(i,i+1).append('<span title="Данное объявление находится на прозвоне" style="font-weight: bold; color: #099f00; font-size: 19px; margin-left: 10px;">&#9742;</span>');
-                    }
-
-                    $('div.item-info-row_user-actions a[href ^= "/items/search"]').slice(i,i+1).html(activeItems);
-                }
-            };
+        if (addElementsForEachItem === 'true') {
+            getActiveItems(trList[i]);
         }
 
         // ++++++ отображение кол-ва активных айтемов, как в items/search  ++++++ //
         value = value.replace("desc_","");
 
-        for (var key in localStorage) {
+        for (let key in localStorage) {
             if (key.indexOf('createdButtons') + 1) {
 
-                var tmpKey = localStorage.getItem(key).split(' ');
+                let tmpKey = localStorage.getItem(key).split(' ');
 
-                for (var j = 0; j < tmpKey.length; j++) {
-                    var name = tmpKey[j].split('|&|')[0];
-                    var action = tmpKey[j].split('|&|')[1];
-                    var reason = tmpKey[j].split('|&|')[2];
+                for (let j = 0; j < tmpKey.length; j++) {
+                    let name = tmpKey[j].split('|&|')[0];
+                    let action = tmpKey[j].split('|&|')[1];
+                    let reason = tmpKey[j].split('|&|')[2];
 
-                    if (name == '') continue;
+                    if (name === '') continue;
 
-                    if (name == reason) { // для отклонений за "параметр" Адрес
+                    if (name === reason) { // для отклонений за "параметр" Адрес
                         reason = '175_' + paramId;
                     }
 
-                    // console.log(reason);
-
-                    $('.mh_items').slice(i,i+1).append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
+                    $(trList[i])
+                        .find('.mh_items')
+                        .append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
                 }
+            }
+        }
+
+        // ++++++ отображение кол-ва активных айтемов, для неправильной категории  ++++++ //
+        let localReasons = JSON.parse(localStorage.otherReasonsCategoryBox);
+
+        for (let j = 0; j < localReasons.length; ++j) {
+            let category = localReasons[j];
+
+            if (category.show === 'true') $(trList[i])
+                .find('.mh_items')
+                .append('<input type="button" value="' + category.short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + '">');
+
+            for (let k = 0; k < category.reason.length; ++k) {
+                if (category.reason[k].show === 'true') $(trList[i])
+                    .find('.mh_items')
+                    .append('<input type="button" value="' + category.reason[k].short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + ' -> ' + category.reason[k].name + '">');
+
             }
         }
     }
 
 
     $('div.mh_items input.mh-action-btn').click(function() {
-        var dataObj = {
+        let dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
             action: $(this).data('action'),
-            reason: String($(this).data('reason'))
-        }
+            reason: String($(this).data('reason')),
+            customReason: $(this).attr('title') ? $(this).attr('title') : null
+        };
 
 
         if (~dataObj.reason.indexOf('_')) {
             dataObj.reason = dataObj.reason.split('_');
         }
 
-        // console.log(dataObj.reason, typeof dataObj.reason);
         submitItem(dataObj);
     });
 
@@ -422,14 +403,6 @@ function addElementsForEachItemNew() {
         class: 'btn btn-default green',
         xernia: lastReject,
         click: function () {
-            // lastReject = lastReject.replace("/items/item/info/","");
-            // if(lastReject==''){
-            //     outTextFrame('Ничего небыло отклонено или заблокировано!');
-            // }else{
-            //     var href = 'https://adm.avito.ru/items/search?date=&phone=&user=&ip=&query='+lastReject+'&price_min=&price_max=&percent_min=&percent_max=&sort_field=sort_time';
-            //     window.open(href, '_blank');
-            // }
-
             window.open('https://adm.avito.ru/moderation/statistics/user/actions', '_blank');
         }
     });
@@ -451,4 +424,30 @@ function addElementsForEachItemNew() {
     $("#textaclass").keypress(function(){
         $("#mbuttonS").removeAttr('disabled');
     });
+}
+
+
+function getActiveItems(selector) {
+    let url = $(selector).find('div.item-info-row_user-actions a[href ^= "/items/search"]').attr('href');
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var r = xhr.responseText;
+
+            var activeItems = $(r).find('a[href ^= "/items/search?user_id"]:eq(0)').text();
+            var categoryItem = $(r).find('.form-group:contains(Категория) option:selected').parents('.category').attr('label');
+
+            if (categoryItem === 'Недвижимость') {
+                var bleach = $(r).find('a[href^="/items/item/soil"]');
+                var reasonBlock = $(r).find('#adminTable:contains(Блокировка учётной записи)');
+
+                if (bleach.length !== 0 && reasonBlock.length !== 0) $(selector).find('h3.item-info-name').append('<span title="Данное объявление находится на прозвоне" style="font-weight: bold; color: #099f00; font-size: 19px; margin-left: 10px;">&#9742;</span>');
+            }
+
+            $(selector).find('div.item-info-row_user-actions a[href ^= "/items/search"]').html(activeItems);
+        }
+    };
 }
