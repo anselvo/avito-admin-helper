@@ -371,7 +371,7 @@ function addElementsForEachItemNew() {
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
                     'title="' + category.name + '"' +
-                    'style="background: ' + category.color + '"">');
+                    'style="box-shadow: inset 0px 0px 13px 0px ' + category.color + '"">');
 
             for (let k = 0; k < category.reason.length; ++k) {
                 if (category.reason[k].show === 'true') $(trList[i])
@@ -384,7 +384,7 @@ function addElementsForEachItemNew() {
                         'data-action="reject" ' +
                         'data-version="' + itemVersion + '" ' +
                         'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
-                        'style="background: ' + category.reason[k].color + '">');
+                        'style="box-shadow: inset 0px 0px 13px 0px ' + category.reason[k].color + '">');
 
             }
         }
