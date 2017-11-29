@@ -363,12 +363,28 @@ function addElementsForEachItemNew() {
 
             if (category.show === 'true') $(trList[i])
                 .find('.mh_items')
-                .append('<input type="button" value="' + category.short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + '">');
+                .append('<input type="button" ' +
+                    'value="' + category.short_name + '" ' +
+                    'class="btn btn-default btn-sm mh-action-btn" ' +
+                    'bvalue="' + value + '" ' +
+                    'data-reason="178" ' +
+                    'data-action="reject" ' +
+                    'data-version="' + itemVersion + '" ' +
+                    'title="' + category.name + '"' +
+                    'style="box-shadow: inset 0px 0px 13px 0px ' + category.color + '"">');
 
             for (let k = 0; k < category.reason.length; ++k) {
                 if (category.reason[k].show === 'true') $(trList[i])
                     .find('.mh_items')
-                    .append('<input type="button" value="' + category.reason[k].short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + ' -> ' + category.reason[k].name + '">');
+                    .append('<input type="button" ' +
+                        'value="' + category.reason[k].short_name + '" ' +
+                        'class="btn btn-default btn-sm mh-action-btn" ' +
+                        'bvalue="' + value + '" ' +
+                        'data-reason="178" ' +
+                        'data-action="reject" ' +
+                        'data-version="' + itemVersion + '" ' +
+                        'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
+                        'style="box-shadow: inset 0px 0px 13px 0px ' + category.reason[k].color + '">');
 
             }
         }
