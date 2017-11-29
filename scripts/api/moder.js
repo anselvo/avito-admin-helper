@@ -1143,6 +1143,140 @@ function getSettings() {
     $('.reject-chbx-description').append(chbxDescrInCorrect,'<label for="chbxDescrInCorrect" class="mh-default-label">Некорректное</label>','<br>');
     $('.reject-chbx-description').append(chbxVacancyNonDetailed,'<label for="chbxVacancyNonDetailed" class="mh-default-label">Не подробное (вакансии)</label>','<br>');
 
+    //RK Неправильная категория
+    $('#divOptions').append('<div class="ah-chbx-category mh-options-group" style="display: none; margin: 5px;"></div>');
+    $('.ah-chbx-category').append('' +
+        '<span style="color:red; font-size:17px;">Отклонение Неправильная категория с подписями</span>' +
+        '<div class="ah-chbx-category-body" style="white-space: nowrap; overflow: auto; width: 850px;"></div>');
+
+    const jsonOtherReasonsCategoryBox = [
+        {
+            name: "Личные вещи", color: '#CCCC00', short_name: 'ЛВ', show: "false",
+            reason: [
+                { name: 'Одежда, обувь, аксессуары', color: '#FFFF00', short_name: 'ЛВ_Оде', show: "false" },
+                { name: 'Детская одежда и обувь', color: '#FFFF33', short_name: 'ЛВ_Дет', show: "false"  },
+                { name: 'Товары для детей и игрушки', color: '#FFFF66', short_name: 'ЛВ_Игр', show: "false"  },
+                { name: 'Красота и здоровье', color: '#FFFF99', short_name: 'ЛВ_Крас', show: "false"  },
+                { name: 'Часы и украшения', color: '#FFFFCC', short_name: 'ЛВ_Часы', show: "false"  }
+            ]
+        },
+        {
+            name: "Для дома и дачи", color: '#996600', short_name: 'ДДД', show: "false",
+            reason: [
+                { name: 'Ремонт и строительство', color: '#CC9933', short_name: 'ДДД_Рем', show: "false"  },
+                { name: 'Мебель и интерьер', color: '#CC9900', short_name: 'ДДД_Меб', show: "false"  },
+                { name: 'Бытовая техника', color: '#FFCC33', short_name: 'ДДД_Быт', show: "false"  },
+                { name: 'Растения', color: '#FFCC00', short_name: 'ДДД_Раст', show: "false"  },
+                { name: 'Продукты питания', color: '#FFCC66', short_name: 'ДДД_Пит', show: "false"  },
+                { name: 'Посуда и товары для кухни', color: '#CC9966', short_name: 'ДДД_Пос', show: "false"  }
+            ]
+        },
+        {
+            name: "Транспорт", color: '#CC0033', short_name: 'ТР', show: "false",
+            reason: [
+                { name: 'Запчасти и аксессуары', color: '#FF0033', short_name: 'ТР_Зап', show: "false"  },
+                { name: 'Автомобили', color: '#FF3333', short_name: 'ТР_Авт', show: "false"  },
+                { name: 'Грузовики и спецтехника', color: '#FF6666', short_name: 'ТР_Груз', show: "false"  },
+                { name: 'Мотоциклы и мототехника', color: '#FF9999', short_name: 'ТР_Мот', show: "false"  },
+                { name: 'Водный транспорт', color: '#FF3300', short_name: 'ТР_Водн', show: "false"  }
+            ]
+        },
+        {
+            name: "Бытовая электроника", color: '#0033CC', short_name: 'БЭ', show: "false",
+            reason: [
+                { name: 'Телефоны', color: '#003399', short_name: 'БЭ_Тел', show: "false"  },
+                { name: 'Аудио и видео', color: '#0033FF', short_name: 'БЭ_Ауд', show: "false"  },
+                { name: 'Товары для компьютера', color: '#0000CC', short_name: 'БЭ_ТовКомп', show: "false"  },
+                { name: 'Фототехника', color: '#6666CC', short_name: 'БЭ_Фото', show: "false"  },
+                { name: 'Оргтехника и расходники', color: '#6666FF', short_name: 'БЭ_Оргт', show: "false"  },
+                { name: 'Игры, приставки и программы', color: '#9999FF', short_name: 'БЭ_Игры', show: "false"  },
+                { name: 'Ноутбуки', color: '#6600FF', short_name: 'БЭ_Ноут', show: "false"  },
+                { name: 'Планшеты и электронные книги', color: '#9999CC', short_name: 'БЭ_Планш', show: "false"  },
+                { name: 'Настольные компьютеры', color: '#CCCCFF', short_name: 'БЭ_НастКомп', show: "false"  }
+            ]
+        },
+        {
+            name: "Хобби и отдых", color: '#336666', short_name: 'ХО', show: "false",
+            reason: [
+                { name: 'Коллекционирование', color: '#006666', short_name: 'ХО_Колл', show: "false"  },
+                { name: 'Спорт и отдых', color: '#669999', short_name: 'ХО_Спорт', show: "false"  },
+                { name: 'Книги и журналы', color: '#339999', short_name: 'ХО_Книги', show: "false"  },
+                { name: 'Велосипеды', color: '#66CCCC', short_name: 'ХО_Вело', show: "false"  },
+                { name: 'Музыкальные инструменты', color: '#99CCCC', short_name: 'ХО_Муз', show: "false"  },
+                { name: 'Охота и рыбалка', color: '#0099CC', short_name: 'ХО_Охота', show: "false"  },
+                { name: 'Билеты и путешествия', color: '#00CCFF', short_name: 'ХО_Бил', show: "false"  }
+            ]
+        },
+        {
+            name: "Недвижимость", color: '#009933', short_name: 'RE', show: "false",
+            reason: [
+                { name: 'Квартиры', color: '#00CC66', short_name: 'RE_Кварт', show: "false"  },
+                { name: 'Дома, дачи, коттеджи', color: '#33CC66', short_name: 'RE_Дома', show: "false"  },
+                { name: 'Земельные участки', color: '#00FF99', short_name: 'RE_ЗемУч', show: "false"  },
+                { name: 'Коммерческая недвижимость', color: '#33FF99', short_name: 'RE_Коммерц', show: "false"  },
+                { name: 'Гаражи и машиноместа', color: '#33CC99', short_name: 'RE_Гараж', show: "false"  },
+                { name: 'Комнаты', color: '#66FFCC', short_name: 'RE_Комнт', show: "false"  },
+                { name: 'Недвижимость за рубежом', color: '#33CCCC', short_name: 'RE_Зарубеж', show: "false"  }
+            ]
+        },
+        {
+            name: "Работа", color: '#009900', short_name: 'Работ', show: "false",
+            reason: [
+                { name: 'Резюме', color: '#669933', short_name: 'Работ_Рез', show: "false"  },
+                { name: 'Вакансии', color: '#CCFF99', short_name: 'Работ_Вак', show: "false"  }
+            ]
+        },
+        {
+            name: "Услуги", color: '#9900FF', short_name: 'Услуги', show: "false",
+            reason: [
+                { name: 'Предложения услуг', color: '#9933FF', short_name: 'Услуги_П', show: "false"  }
+            ]
+        },
+        {
+            name: "Животные", color: '#99CC66	', short_name: 'Жив', show: "false",
+            reason: [
+                { name: 'Кошки', color: '#99CC00', short_name: 'Жив_Кош', show: "false"  },
+                { name: 'Собаки', color: '#669933', short_name: 'Жив_Соб', show: "false"  },
+                { name: 'Товары для животных', color: '#66CC00', short_name: 'Жив_Тов', show: "false"  },
+                { name: 'Другие животные', color: '#99FF66', short_name: 'Жив_Другие', show: "false"  },
+                { name: 'Аквариум', color: '#99FF00', short_name: 'Жив_Аква', show: "false"  },
+                { name: 'Птицы', color: '#66CC33', short_name: 'Жив_Птицы', show: "false"  }
+            ]
+        },
+        {
+            name: "Для бизнеса", color: '#CCCC33', short_name: 'ДБ', show: "false",
+            reason: [
+                { name: 'Оборудование для бизнеса', color: '#999933', short_name: 'ДБ_Обор', show: "false"  },
+                { name: 'Готовый бизнес', color: '#CCCC66', short_name: 'ДБ_ГотБ', show: "false"  }
+            ]
+        }
+    ];
+
+    if (!localStorage.otherReasonsCategoryBox) localStorage.otherReasonsCategoryBox = JSON.stringify(jsonOtherReasonsCategoryBox);
+
+    let otherReasonsCategory = JSON.parse(localStorage.otherReasonsCategoryBox);
+
+    for (let i = 0; i < otherReasonsCategory.length; ++i) {
+        let checked = '';
+        if (otherReasonsCategory[i].show === 'true') checked = 'checked';
+        else checked = '';
+        let labels = '<div>' +
+            '<span style="color:red; font-size:14px;">' + otherReasonsCategory[i].name + '</span><br>' +
+            '<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="reject-category" short-name="' + otherReasonsCategory[i].short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + otherReasonsCategory[i].name + '</label>' +
+            '</div>';
+
+        for (let j = 0; j < otherReasonsCategory[i].reason.length; ++j) {
+            let reason = otherReasonsCategory[i].reason[j];
+
+            if (reason.show === 'true') checked = 'checked';
+            else checked = '';
+
+            labels += '<div><label class="mh-default-label"><input type="checkbox" class="mh-default-checkbox" name="reject-category" short-name="' + reason.short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + reason.name + '</label></div>';
+        }
+
+        $('.ah-chbx-category-body').append('<div style="display: inline-block; vertical-align: top; margin-right: 10px">' + labels + '</div>');
+    }
+
     // RK Блокировка общее
     $('#divOptions').append('<div class="chbx" style="margin-top: 10px;"></div>');
     $('.chbx').append('<div class="block-chbx mh-options-group btncheck" style="display: inline-block; float: left; padding-bottom: 13px;"></div>');
@@ -1227,10 +1361,10 @@ function getSettings() {
             var tmp = localStorage.checkboxInfo;
             tmp = tmp.replace(val+'|', '');
             localStorage.checkboxInfo = tmp;
-            if (val == 'infoSetting7') $('#phoneSetting').hide();
+            if (val === 'infoSetting7') $('#phoneSetting').hide();
         } else {
             localStorage.checkboxInfo += val+'|';
-            if (val == 'infoSetting7') $('#phoneSetting').show();
+            if (val === 'infoSetting7') $('#phoneSetting').show();
         }
     });
 
@@ -1240,7 +1374,7 @@ function getSettings() {
 
     if (!localStorage.abusesSetting) localStorage.abusesSetting = 'false';
 
-    if (localStorage.abusesSetting == 'true') $('input[value="checkItems"]').prop('checked', true);
+    if (localStorage.abusesSetting === 'true') $('input[value="checkItems"]').prop('checked', true);
 
     $('[name="abuses"]:checkbox').change(function () {
         if ($('input[value="checkItems"]').prop('checked')) {
@@ -1329,24 +1463,63 @@ function getSettings() {
 
 
     // запоминаем состояния чекбоксов в локалсторадж
-    $('.btncheck input[type="checkbox"]').click(function() {
-        if ( $(this).prop('checked') ) {
-            localStorage.setItem( $(this).attr('id'), "true" );
-            // console.log($(this).attr('id') + ' added to local');
-        } else {
-            localStorage.setItem( $(this).attr('id'), "false" );
-            // console.log($(this).attr('id') + ' NOT added to local');
-        }
+    $('.btncheck input[type="checkbox"]')
+        .click(function() {
+            if ( $(this).prop('checked') ) {
+                localStorage.setItem( $(this).attr('id'), "true" );
+                // console.log($(this).attr('id') + ' added to local');
+            } else {
+                localStorage.setItem( $(this).attr('id'), "false" );
+                // console.log($(this).attr('id') + ' NOT added to local');
+            }
+        })
+        .each(function(indx) {
+            if ( localStorage.getItem( $(this).attr('id') ) === "true" ) {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+        });
+
+    checkOtherReasonsBox();
+}
+
+
+function checkOtherReasonsBox() {
+    let categorySelector = $('#chbxKategor');
+
+    if (categorySelector.prop('checked')) {
+        $('.ah-chbx-category').show();
+    }
+
+    categorySelector.change(function () {
+        $('.ah-chbx-category').toggle()
     });
 
-    $('.btncheck input[type="checkbox"]').each(function(indx) {
-        if ( localStorage.getItem( $(this).attr('id') ) == "true" ) {
-            $(this).prop("checked", true);
+    $('[name="reject-category"]').change(function () {
+        if ($(this).prop('checked')) {
+            changeOtherReasonsBoxStatus($(this).attr('short-name'), 'true');
         } else {
-            $(this).prop("checked", false);
+            changeOtherReasonsBoxStatus($(this).attr('short-name'), 'false');
         }
     });
 }
+
+function changeOtherReasonsBoxStatus(short_name, show) {
+    let localReasons = JSON.parse(localStorage.otherReasonsCategoryBox);
+
+    for (let i = 0; i < localReasons.length; ++i) {
+        let category = localReasons[i];
+        if (category.short_name === short_name) category.show = show;
+
+        for (let j = 0; j < category.reason.length; ++j) {
+            if (category.reason[j].short_name === short_name) category.reason[j].show = show;
+        }
+    }
+
+    localStorage.otherReasonsCategoryBox = JSON.stringify(localReasons);
+}
+
 
 // обработчик кнопки OK в окне настроек
 function chekButton() {
