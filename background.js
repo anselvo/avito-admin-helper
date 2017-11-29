@@ -666,27 +666,23 @@ function notificationCheck() {
 function testWebSocket(user) {
     let stompClient = null;
 
-    let socket = new SockJS('http://localhost:8080/ws/notification');
+    let socket = new SockJS('http://localhost:8080/ws');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        stompClient.subscribe('/topic/test', function (e) {
+    // stompClient.debug = null;
+    stompClient.connect('asergeev', '',  {name: user.username}, function (frame) {
+        stompClient.subscribe('/user/queue/error', function (e) {
         });
 
-        stompClient.send('/app/get/user', {}, 1);
-        stompClient.send('/app/test/1', {});
-    });
+        stompClient.subscribe('/user/queue/notification.new', function (e) {
+        });
 
-    // socket.onopen = function() {
-    //     console.log('open');
-    //     socket.send('test');
-    // };
-    //
-    // socket.onmessage = function(e) {
-    //     console.log('message', e.data);
-    //     socket.close();
-    // };
-    //
-    // socket.onclose = function() {
-    //     console.log('close');
-    // };
+        stompClient.subscribe('/user/queue/notification.update', function (e) {
+        });
+
+        // stompClient.send('/app/notification/'+user.id+'/unread', {});
+        // stompClient.send('/app/notification/update/read', {}, JSON.stringify({uuid: '781a7e64-0f6b-485d-ba7e-2d888a4ab1ee', id: '1'}));
+
+
+        stompClient.send('/app/notification/test', {});
+    });
 }
