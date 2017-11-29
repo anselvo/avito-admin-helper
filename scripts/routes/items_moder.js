@@ -363,12 +363,28 @@ function addElementsForEachItemNew() {
 
             if (category.show === 'true') $(trList[i])
                 .find('.mh_items')
-                .append('<input type="button" value="' + category.short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + '">');
+                .append('<input type="button" ' +
+                    'value="' + category.short_name + '" ' +
+                    'class="btn btn-default btn-sm mh-action-btn" ' +
+                    'bvalue="' + value + '" ' +
+                    'data-reason="178" ' +
+                    'data-action="reject" ' +
+                    'data-version="' + itemVersion + '" ' +
+                    'title="' + category.name + '"' +
+                    'style="background: ' + category.color + '"">');
 
             for (let k = 0; k < category.reason.length; ++k) {
                 if (category.reason[k].show === 'true') $(trList[i])
                     .find('.mh_items')
-                    .append('<input type="button" value="' + category.reason[k].short_name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="178" data-action="reject" data-version="' + itemVersion + '" title="' + category.name + ' -> ' + category.reason[k].name + '">');
+                    .append('<input type="button" ' +
+                        'value="' + category.reason[k].short_name + '" ' +
+                        'class="btn btn-default btn-sm mh-action-btn" ' +
+                        'bvalue="' + value + '" ' +
+                        'data-reason="178" ' +
+                        'data-action="reject" ' +
+                        'data-version="' + itemVersion + '" ' +
+                        'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
+                        'style="background: ' + category.reason[k].color + '">');
 
             }
         }
