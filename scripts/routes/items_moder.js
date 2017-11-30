@@ -370,8 +370,9 @@ function addElementsForEachItemNew() {
                     'data-reason="178" ' +
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
+                    'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;"' +
                     'title="' + category.name + '"' +
-                    'style="box-shadow: inset 0px 0px 13px 0px ' + category.color + '"">');
+                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '"">');
 
             for (let k = 0; k < category.reason.length; ++k) {
                 if (category.reason[k].show === 'true') $(trList[i])
@@ -383,8 +384,9 @@ function addElementsForEachItemNew() {
                         'data-reason="178" ' +
                         'data-action="reject" ' +
                         'data-version="' + itemVersion + '" ' +
+                        'data-comment="Пожалуйста, измените на &#34;' + category.name + ' -> ' + category.reason[k].name + '&#34;"' +
                         'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
-                        'style="box-shadow: inset 0px 0px 13px 0px ' + category.reason[k].color + '">');
+                        'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '">');
 
             }
         }
@@ -397,7 +399,7 @@ function addElementsForEachItemNew() {
             version: $(this).data('version'),
             action: $(this).data('action'),
             reason: String($(this).data('reason')),
-            customReason: $(this).attr('title') ? $(this).attr('title') : null
+            customReason: $(this).data('comment') ? $(this).data('comment') : null
         };
 
 
