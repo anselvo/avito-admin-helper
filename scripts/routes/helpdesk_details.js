@@ -3396,17 +3396,12 @@ function addNegativeUsersAbusesNotification() {
         existingNotification.remove();
     }
 
-    const clientLinkNode = doc.querySelector('a[href^="/helpdesk/client/"]');
-    if (!clientLinkNode) return;
-
     const detailsPanel = doc.querySelector('.helpdesk-details-panel');
     const notification = doc.createElement('div');
     notification.setAttribute('id', 'ah-negative-users-abuses-notification');
     notification.className = 'alert ah-helpdesk-notification ah-negative-user-notification';
+    if (!detailsPanel) return;
     detailsPanel.parentNode.insertBefore(notification, detailsPanel);
-
-    const clientHref = clientLinkNode.getAttribute('href');
-    const currentClientId = +clientHref.replace(/\D/g, '');
 
     const negativesInfo = JSON.parse(localStorage['/helpdesk/negativeUsers']);
     if (negativesInfo.isLoading) {
@@ -3426,6 +3421,10 @@ function addNegativeUsersAbusesNotification() {
         isFromCache = true;
     }
 
+    document.dispatchEvent(new Event('requestHelpdeskStore'));
+    const helpdeskStore = settingsGlobal.helpdeskStore;
+    if (!helpdeskStore) return;
+    const currentClientId = helpdeskStore.tickets.loadedInfo.requesterId;
     const currentInfo = negativesInfo.clients.find(item => item.client_id === currentClientId);
 
     if (currentInfo) {

@@ -509,3 +509,18 @@ function addCompareItemsItemInfo() {
         });
     });
 }
+
+function addAccountLinkItemInfo() {
+    const form = document.getElementById('form_item');
+    const itemSearchLink = form.querySelector('a[href^="/items/search?user_id="]');
+    const userId = itemSearchLink.href.replace(/\D/g, '');
+
+    const divider = document.createTextNode('| ');
+    const accountLink = document.createElement('a');
+    accountLink.href = `/users/account/info/${userId}`;
+    accountLink.textContent = 'Счёт';
+    accountLink.target = '_blank';
+
+    itemSearchLink.parentNode.insertBefore(divider, itemSearchLink.nextElementSibling);
+    itemSearchLink.parentNode.insertBefore(accountLink, itemSearchLink.nextElementSibling);
+}

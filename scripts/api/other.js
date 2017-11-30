@@ -1703,3 +1703,9 @@ function showLfPackagesInfo(callback) {
         return info;
     }
 }
+
+function injectScript(url, node) {
+    const script = document.createElement('script');
+    script.setAttribute('src', url);
+    node.appendChild(script);
+}

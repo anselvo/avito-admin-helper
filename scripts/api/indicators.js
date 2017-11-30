@@ -25,6 +25,10 @@ function AhIndicators(indicatorsArr, container) {
             index: indicatorsArr.indexOf('subscription'),
             text: 'Подписка'
         },
+        subscriptionIndividual: {
+            index: indicatorsArr.indexOf('subscriptionIndividual'),
+            text: 'Подписка ФЛ'
+        },
         persManager: {
             index: indicatorsArr.indexOf('persManager'),
             text: 'Перс. менеджер'
@@ -134,6 +138,16 @@ function AhIndicators(indicatorsArr, container) {
                 indicators.subscription.node.append(`<br><span class="ah-indicators-subtext">${info.subType}</span>`);
             } else {
                 snuffOut(indicators.subscription);
+            }
+        }
+
+        // subscriptionIndividual
+        if (indicators.subscriptionIndividual.on) {
+            let info = userIndicators.getSubscriptionIndividualInfo();
+            if (info.isFired) {
+                fireUp(indicators.subscriptionIndividual);
+            } else {
+                snuffOut(indicators.subscriptionIndividual);
             }
         }
 
@@ -345,6 +359,7 @@ function UserInfoIndicators(options) {
     let shopInputText = shopInput.text();
     let subscrInput = searchNode.find('.form-group:contains(Подписка) a');
     let subscrInputText = subscrInput.text();
+    let subscriptionIndividualSelect = searchNode.find('#category');
     let persManagerSelect = searchNode.find('select[name="managerId"]');
     let deliveryForm = searchNode.find('.user-info-deliver-form');
     let deliveryIsActive = deliveryForm.find('[name="isActive"]');
@@ -397,6 +412,13 @@ function UserInfoIndicators(options) {
         res.isFired = !!(~subscrInputText.indexOf("Подписка") && ~shopInputText.indexOf("Оплачен"));
         res.subType = (res.isFired) ? subscrInputText.split('"')[1] : '';
         res.scrollTo = subscrInput.parents('.form-group');
+        return res;
+    };
+
+    this.getSubscriptionIndividualInfo = function() {
+        let res = {};
+        res.isFired = !!(subscriptionIndividualSelect.find('option:selected').length);
+        res.scrollTo = subscriptionIndividualSelect.parents('.form-group');
         return res;
     };
 
@@ -480,6 +502,7 @@ function addIndicatorsUserInfo(indicatorsArr) {
     let autoScrollTo = userIndicators.getAutoInfo().scrollTo;
     let shopScrollTo = userIndicators.getShopInfo().scrollTo;
     let subscriptionScrollTo = userIndicators.getSubscriptionInfo().scrollTo;
+    let subscriptionIndividualScrollTo = userIndicators.getSubscriptionIndividualInfo().scrollTo;
     let perManagerScrollTo = userIndicators.getPersManagerInfo().scrollTo;
 
     userInfoScrollableIndic(innScrollTo, indicatorsObj.inn.node);
@@ -488,6 +511,7 @@ function addIndicatorsUserInfo(indicatorsArr) {
     userInfoScrollableIndic(autoScrollTo, indicatorsObj.auto.node);
     userInfoScrollableIndic(shopScrollTo, indicatorsObj.shop.node);
     userInfoScrollableIndic(subscriptionScrollTo, indicatorsObj.subscription.node);
+    userInfoScrollableIndic(subscriptionIndividualScrollTo, indicatorsObj.subscriptionIndividual.node);
     userInfoScrollableIndic(perManagerScrollTo, indicatorsObj.persManager.node);
 }
 

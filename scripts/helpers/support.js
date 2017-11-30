@@ -29,8 +29,9 @@ function startSupport() {
         if (request.onUpdated === 'ticketUser')
             setTimeout(addShElementsUser, 200);
 
-        if (request.onUpdated === 'ticketInfo')
+        if (request.onUpdated === 'ticketInfo') {
             setTimeout(addShElementsInfo, 100);
+        }
 
         if (request.onUpdated === 'ticketQueue')
             setTimeout(addShElementsQueue, 100);
@@ -92,6 +93,11 @@ function startSupport() {
 
         var currentUrl = window.location.href;
         if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
+            injectScript(chrome.runtime.getURL('/inject/helpdesk.js'), document.body);
+
+            document.addEventListener('receiveHelpdeskStore', e => {
+                settingsGlobal.helpdeskStore = e.detail;
+            });
 
             const app = document.getElementById('app');
             const observer = new MutationObserver(function (mutations) {
@@ -191,6 +197,8 @@ function startSupport() {
             addIPSystemAccessLink(); // ссылки на system/access рядом с IP
 
             addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+
+            feesAvailableModal(); // добавить функционал для модалок "История использования лимитов"
         }
 
         // Item info
@@ -226,6 +234,8 @@ function startSupport() {
             timeInCity();
 
             addCompareItemsItemInfo();
+
+            addAccountLinkItemInfo();
         }
 
         // Items search

@@ -808,3 +808,206 @@ function addWlLinkOnUserInfo() {
     let link = getWlLinkForUser(userId);
     $('a[href^="/users/account/info/"]').after(`| <a title="Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода" target="_blank" href="${link}">Wallet Log</a>`);
 }
+
+function feesAvailableModal() {
+    const feesAvailableNode = document.getElementById('fees-packages-available');
+    const feesAvailableGlobalNode = document.getElementById('fees-packages-available-global');
+
+    observe(feesAvailableNode);
+    observe(feesAvailableGlobalNode);
+
+    feesAvailableNode.addEventListener('click', handleClick);
+    feesAvailableNode.addEventListener('change', handleChange);
+    feesAvailableGlobalNode.addEventListener('click', handleClick);
+    feesAvailableGlobalNode.addEventListener('change', handleChange);
+
+    function observe(node) {
+        if (!node) return;
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                const addedNodes = mutation.addedNodes;
+                addedNodes.forEach((node) => {
+                    if (node.nodeType !== 1) return;
+
+                    if (node.closest('.limits-details-modal') && node.nodeName === 'TR') {
+                        addCopyBtn(node);
+                        addCheckbox(node);
+                    }
+
+                    if (node.classList.contains('limits-details-modal')) {
+                        addHeadCheckbox(node);
+                        addControls(node);
+                    }
+
+                    if (node.hasAttribute('data-page')) {
+                        const modal = node.closest('.limits-details-modal');
+                        resetHeadCheckbox(modal);
+                    }
+                });
+            });
+        });
+
+        const config = { childList: true, subtree: true };
+        observer.observe(node, config);
+    }
+
+    function addCopyBtn(row) {
+        const itemLink = row.querySelector('a[href^="/items/item/info/"]');
+        const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-default btn-xs ah-fees-modal-copy-item-btn';
+        btn.innerHTML = '<span class="glyphicon glyphicon-copy"></span>';
+        btn.setAttribute('data-item-id', itemId);
+        btn.title = 'Скопировать';
+        itemLink.parentNode.appendChild(btn);
+    }
+
+    function addCheckbox(row) {
+        const itemLink = row.querySelector('a[href^="/items/item/info/"]');
+        const itemId = itemLink.getAttribute('href').replace(/\D/g, '');
+        const td = document.createElement('td');
+        td.innerHTML = `<label><input data-item-id="${itemId}" type="checkbox" class="ah-fees-modal-checkbox ah-checkbox-body"></label>`;
+        td.className = 'ah-fees-modal-cell ah-cell-body';
+        row.insertBefore(td, row.firstChild);
+    }
+
+    function addHeadCheckbox(modal) {
+        const th = document.createElement('th');
+        const tableHeadRow = modal.querySelector('thead tr');
+        th.innerHTML = '<label><input type="checkbox" class="ah-fees-modal-checkbox ah-checkbox-head"></label>';
+        th.className = 'ah-fees-modal-cell';
+        tableHeadRow.insertBefore(th, tableHeadRow.firstChild);
+    }
+
+    function addControls(modal) {
+        const body = modal.querySelector('.modal-body');
+        const row = document.createElement('div');
+        row.className = 'ah-fees-modal-controls-wrapper';
+        row.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    Отмечено объявлений - <span class="ah-fees-modal-checked-count" data-checked-ids="[]">0</span> 
+                        <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="ah-fees-modal-copy-all">Скопировать ID</a>
+                    </li>
+                    <li>
+                        <a href="https://adm.avito.ru/items/search" target="_blank" 
+                            class="ah-fees-modal-open-search">Открыть в /items/search</a>
+                    </li>
+                </ul>
+            </div>
+        `;
+        body.insertBefore(row, body.firstChild);
+    }
+
+    function resetHeadCheckbox(modal) {
+        const checkbox = modal.querySelector('.ah-checkbox-head');
+        checkbox.checked = false;
+    }
+
+    function checkHeadCheckbox(checkbox, visible, visibleChecked) {
+        if (visible.length === visibleChecked.length) {
+            checkbox.checked = true;
+            checkbox.indeterminate = false;
+        }
+
+        if (visible.length > visibleChecked.length) {
+            checkbox.checked = false;
+            checkbox.indeterminate = true;
+        }
+
+        if (visibleChecked.length === 0) {
+            checkbox.checked = false;
+            checkbox.indeterminate = false;
+        }
+    }
+
+    function handleClick(e) {
+        const target = e.target;
+
+        if (target.closest('.ah-fees-modal-copy-item-btn')) {
+            const itemId = target.closest('.ah-fees-modal-copy-item-btn').dataset.itemId;
+            const text = `№${itemId}`;
+            chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+            outTextFrame(`Скопировано: ${text}`);
+        }
+
+        if (target.closest('.ah-fees-modal-copy-all')) {
+            const modal = target.closest('.limits-details-modal');
+            const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
+            const ids = JSON.parse(checkedCounter.dataset.checkedIds);
+
+            if (ids.length > 0) {
+                const formatted = ids.map(item => `№${item}`);
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: formatted.join(', ')});
+                outTextFrame(`Отмеченные ID скопированы`);
+            }
+        }
+
+        if (target.closest('li[data-page]')) {
+            const modal = target.closest('.limits-details-modal');
+            const allBodyCheckboxes = modal.querySelectorAll('.ah-checkbox-body');
+            const allBodyCheckboxesVisible = [].filter.call(allBodyCheckboxes, item => {
+                const row = item.closest('tr');
+                return getComputedStyle(row).display !== 'none';
+            });
+            const allBodyCheckboxesCheckedVisible = [].filter.call(allBodyCheckboxesVisible, item => item.checked);
+            const headCheckbox = modal.querySelector('.ah-checkbox-head');
+            checkHeadCheckbox(headCheckbox, allBodyCheckboxesVisible, allBodyCheckboxesCheckedVisible);
+        }
+    }
+
+    function handleChange(e) {
+        const target = e.target;
+
+        const modal = this.querySelector('.modal.in');
+        const allBodyCheckboxes = modal.querySelectorAll('.ah-checkbox-body');
+        const allBodyCheckboxesVisible = [].filter.call(allBodyCheckboxes, item => {
+            const row = item.closest('tr');
+            return getComputedStyle(row).display !== 'none';
+        });
+        const headCheckbox = modal.querySelector('.ah-checkbox-head');
+
+        if (target.classList.contains('ah-checkbox-body')) {
+            const itemId = target.dataset.itemId;
+            const isChecked = target.checked;
+            const allSame = [].filter.call(allBodyCheckboxes, item => item.dataset.itemId === itemId);
+            allSame.forEach(item => {
+                item.checked = isChecked;
+            });
+        }
+
+        if (target.classList.contains('ah-checkbox-head')) {
+            if (headCheckbox.checked) {
+                allBodyCheckboxesVisible.forEach(input => {
+                    input.checked = true;
+                });
+            } else {
+                allBodyCheckboxesVisible.forEach(input => {
+                    input.checked = false;
+                });
+            }
+        }
+
+        const allBodyCheckboxesChecked = [].filter.call(allBodyCheckboxes, item => item.checked);
+        const allBodyCheckboxesCheckedVisible = [].filter.call(allBodyCheckboxesVisible, item => item.checked);
+
+        checkHeadCheckbox(headCheckbox, allBodyCheckboxesVisible, allBodyCheckboxesCheckedVisible);
+
+        const checkedCounter = modal.querySelector('.ah-fees-modal-checked-count');
+        const openAllLink = modal.querySelector('.ah-fees-modal-open-search');
+
+        const unique = new Set();
+        allBodyCheckboxesChecked.forEach(item => {
+            unique.add(item.dataset.itemId);
+        });
+        const uniqueArr = Array.from(unique);
+        checkedCounter.setAttribute('data-checked-ids', JSON.stringify(uniqueArr));
+        checkedCounter.innerHTML = uniqueArr.length;
+        openAllLink.href = `https://adm.avito.ru/items/search?query=${uniqueArr.join('|')}`;
+    }
+}
