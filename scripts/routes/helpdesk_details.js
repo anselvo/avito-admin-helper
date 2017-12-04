@@ -3247,30 +3247,239 @@ function addItemIdPopoverOnLeftPanel() {
     if ($('#ahItemIdOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
-        let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
-        let allLabels = $(classifHeader).next().find('tr td:first-child');
-        let itemIdLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Номер объявления');
-        let itemLink = $(itemIdLabel).next().find('a');
+        const allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+        const classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
+        const $allLabels = $(classifHeader).next().find('tr td:first-child');
+        const itemIdLabel = [].find.call($allLabels, singleItem => singleItem.firstChild.data === 'Номер объявления');
+        const $itemLink = $(itemIdLabel).next().find('a');
+        $itemLink.wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
+        const $popoverNode = $('#ahItemIdOnLeftPanelPopover');
+        const $overlay = $('#sh-loading-layer');
 
-        $(itemLink).wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
-        let itemId = $(itemLink).text();
-        let content = `
-            <button type="button" class="btn btn-default btn-sm" id="copyItemIdOnLeftPanel" data-copy-text="${itemId}">
-                <span class="glyphicon glyphicon-copy"></span> Скопировать
-            </button>
+        const itemId = $itemLink.text();
+        const content = `
+            <div class="btn-group-vertical">
+                <button type="button" class="btn btn-info btn-sm" id="ah-infoItemOnLeftPanel" data-item-id="${itemId}">
+                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
+                </button>
+                <button type="button" class="btn btn-default btn-sm" id="ah-copyItemIdOnLeftPanel" data-item-id="${itemId}">
+                    <span class="glyphicon glyphicon-copy"></span> Скопировать
+                </button>
+            </div>
         `;
-        createNotHidingPopover($('#ahItemIdOnLeftPanelPopover'), content, {
+
+        createNotHidingPopover($popoverNode, content, {
             placement: 'top',
             onShownFunc: function() {
-                let copyBtn = $('#copyItemIdOnLeftPanel');
-                $(copyBtn).unbind('click').click(function () {
-                    let text = `№${$(this).data('copyText')}`;
+                const $copyBtn = $('#ah-copyItemIdOnLeftPanel');
+                $copyBtn.click(function () {
+                    const text = `№${$(this).data('itemId')}`;
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
                     outTextFrame(`Скопировано: ${text}`);
                 });
+
+                const $infoBtn = $('#ah-infoItemOnLeftPanel');
+                $infoBtn.click(function () {
+                    const $btn = $(this);
+                    const id = $btn.data('itemId');
+                    $overlay.show();
+
+                    getItemInfo(id).then(
+                        response => {
+                            const params = getParamsItemInfo(response);
+                            renderItemInfo(params);
+                        },
+                        error => alert(`Ошибка: \n${error.status}\n${error.statusText}`)
+                    ).then(() => $overlay.hide());
+                });
             }
         });
+
+        // item info dialog
+        function renderItemInfo(item) {
+            if (document.querySelector('.ah-item-info-dialog')) {
+                document.querySelector('.ah-item-info-dialog').remove();
+            }
+
+            const hdLeftPanel = document.querySelector('.helpdesk-side-panel');
+            const dialog = document.createElement('div');
+            const navBar = document.querySelector('.navbar-fixed-top');
+            const navBarHeight = navBar.clientHeight;
+            const hdLeftPanelWidth = hdLeftPanel.clientWidth;
+
+            dialog.className = 'ah-dialog ah-item-info-dialog hidden';
+            dialog.addEventListener('click', function (e) {
+                const target = e.target;
+
+                if (target.classList.contains('close')) {
+                    // this.classList.add('hidden');
+                    this.remove();
+                }
+            });
+
+            hdLeftPanel.appendChild(dialog);
+
+            // draggable
+            $(dialog).draggable({
+                containment: 'window',
+                handle: '.ah-dialog-header'
+            });
+
+            const statusPatterns = {
+                blocked: /\bblocked\b/i,
+                rejected: /\brejected\b/i,
+                paid: /\bpaid\b/i,
+                active: /\b(added|activated|unblocked)\b/i,
+                closed_removed_archived: /\b(removed|closed|archived)\b/i,
+                vas: /\b(premium|vip|pushed up|highlighted)\b/i
+            };
+            const reasons = item.reasons.join(', ');
+            const comparisonLinkNode = (item.comparisonLink) ? `
+                <div class="ah-item-info-row">
+                    <a href="${item.comparisonLink}" target="_blank">Показать дубликаты 
+                        <span class="glyphicon glyphicon-new-window"></span></a>
+                </div>
+            ` : ``;
+            const activeVAS = (item.activeVAS.length) ? item.activeVAS.map(item => {
+                let iconNode;
+                switch (item.name) {
+                    case 'Премиум':
+                        iconNode = `<i class="ah-vas-icon ah-vas-icon-premium-xs"></i>`;
+                        break;
+
+                    case 'VIP':
+                        iconNode = `<i class="ah-vas-icon ah-vas-icon-vip-xs"></i>`;
+                        break;
+
+                    case 'Push up':
+                        iconNode = `<i class="ah-vas-icon ah-vas-icon-push-up-xs"></i>`;
+                        break;
+
+                    case 'Выделенное':
+                        iconNode = `<i class="ah-vas-icon ah-vas-icon-highlight-xs"></i>`;
+                        break;
+
+                    default: iconNode = ``;
+                }
+
+                return `<span class="label label-warning ah-item-info-vas-label" ${(item.expires) ? `title="${item.expires}"` : ``}>${iconNode}${item.name}</span>`
+            }).join(' ') : `-`;
+
+            // статусы
+            if (statusPatterns.blocked.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.blocked, `
+                <span class="text-danger" title="${reasons}">
+                    $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" 
+                        title="${reasons}" data-placement="bottom"></span></span>`);
+            }
+            if (statusPatterns.rejected.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.rejected, `
+                <span class="text-warning">
+                    $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" 
+                        title="${reasons}" data-placement="bottom"></span></span>`);
+            }
+            if (statusPatterns.paid.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.paid, '<span class="text-primary">$&</span>');
+            }
+            if (statusPatterns.active.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.active, '<span class="text-success">$&</span>');
+            }
+            if (statusPatterns.closed_removed_archived.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.closed_removed_archived, '<span class="text-muted">$&</span>');
+            }
+            if (statusPatterns.vas.test(item.status)) {
+                item.status = item.status.replace(statusPatterns.vas, '<span class="ah-text-vas">$&</span>');
+            }
+
+            dialog.innerHTML = `
+                <div class="ah-dialog-content">
+                    <div class="ah-dialog-header ah-header-draggable">
+                        <button class="close">×</button>
+                        <h4 class="ah-dialog-title">Объявление</h4>
+                    </div>
+                    <div class="ah-dialog-body">
+                        <div class="ah-item-info-row ah-item-info-row-main">
+                            <span class="ah-item-info-item-id">${item.id}</span>,
+                            <a href="${item.siteLink}" target="_blank" class="ah-item-info-item-title">${item.title}</a>
+                            <span class="ah-item-info-price">(${item.price}${(/\d/.test(item.price)) ? ' руб.' : ''})</span>
+                        </div>
+                        
+                        <div class="ah-item-info-row-group">
+                            <div class="ah-item-info-row">
+                                <b>${item.status}</b>,
+                                <span class="ah-pseudo-link ah-item-info-time-popover" data-toggle="popover" 
+                                    data-placement="bottom" data-trigger="hover" data-html="true" 
+                                    data-content="
+                                        <table class='ah-item-time-popover-table'>
+                                            <tr>
+                                                <td>Sort time: </td><td>${item.sortTime}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Update time: </td><td>${item.updateTime}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Start time: </td><td>${item.startTime}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Finish time: </td><td>${item.finishTime}</td>
+                                            </tr>
+                                        </table>">
+                                    Время
+                                </span>
+                            </div>
+                            ${comparisonLinkNode}
+                            <div class="ah-item-info-row">
+                                <span>Активные VAS: </span> 
+                                ${activeVAS}
+                            </div>
+                        </div>
+                        <div class="ah-item-info-row-group">
+                            <div class="ah-item-info-row">
+                                <i>${item.microCategoryes.join(' / ')}</i>
+                            </div>
+                            <div class="ah-item-info-row">
+                                <div class="ah-item-info-description">${item.description}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="ah-item-info-row-group">
+                            <div class="ah-item-info-row">
+                                <b>${item.sellerName}</b>
+                            </div>
+                            <div class="ah-item-info-row ah-item-info-row-contacts">
+                                <span><span class="glyphicon text-danger glyphicon-map-marker"></span> ${item.region}</span>,
+                                <span><span class="glyphicon glyphicon-earphone"></span> ${item.phone}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // позиция и размер
+            dialog.style.cssText = `top: ${navBarHeight}px; left: 0px; width: ${hdLeftPanelWidth}px`;
+
+            // поповер времени
+            $(dialog.querySelector('.ah-item-info-time-popover')).popover();
+            // тултип причин блокировки/отклонения
+            $(dialog.querySelector('.ah-compare-items-reason-tooltip')).tooltip();
+
+            // копирование айтемов
+            copyDataTooltip($(dialog.querySelector('.ah-item-info-item-id')), {
+                title: getCopyTooltipContentAlt('скопировать с заголовком'),
+                getText: function(elem) {
+                    const itemId = $(elem).text().trim();
+                    return `№${itemId}`;
+                },
+                getTextAlt: function(elem) {
+                    const $idNode = $(elem);
+                    let itemTitle = $idNode.parent().find('.ah-item-info-item-title').text();
+                    let itemId = $idNode.text().trim();
+                    return `№${itemId} («${itemTitle}»)`;
+                }
+            });
+
+            dialog.classList.remove('hidden');
+        }
     } catch (e) {}
 }
 //++++++++++ поповер для айди айтема на левой панели ++++++++++//
