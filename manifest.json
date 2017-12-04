@@ -86,7 +86,8 @@
 		"http://*.avitoadm.ru/*",
 		"https://br-analytics.ru/*",
 		"https://yandex.ru/*",
-		"https://google.ru/*"
+		"https://google.ru/*",
+		"http://localhost:8080/*"
 	],
 
     "icons": {
