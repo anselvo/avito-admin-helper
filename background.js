@@ -664,25 +664,39 @@ function notificationCheck() {
 
 
 function testWebSocket(user) {
-    let stompClient = null;
 
-    let socket = new SockJS('http://localhost:8080/ws');
-    stompClient = Stomp.over(socket);
-    // stompClient.debug = null;
-    stompClient.connect('asergeev', '',  {name: user.username}, function (frame) {
-        stompClient.subscribe('/user/queue/error', function (e) {
-        });
+    $.ajax({
+        url: "http://spring.avitoadm.ru/login",
+        type: 'POST',
+        data: 'username=asergeev&password=0000',
+        headers: { "X-Ajax-call": 'true' },
+        success: function(data, textStatus, xhr) {
+            console.log(xhr.status);
 
-        stompClient.subscribe('/user/queue/notification.new', function (e) {
-        });
+            let stompClient = null;
 
-        stompClient.subscribe('/user/queue/notification.update', function (e) {
-        });
+            let socket = new SockJS('http://spring.avitoadm.ru/ws');
+            stompClient = Stomp.over(socket);
+            // stompClient.debug = null;
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/user/queue/error', function (e) {
+                });
 
-        // stompClient.send('/app/notification/'+user.id+'/unread', {});
-        // stompClient.send('/app/notification/update/read', {}, JSON.stringify({uuid: '781a7e64-0f6b-485d-ba7e-2d888a4ab1ee', id: '1'}));
+                stompClient.subscribe('/user/queue/notification.new', function (e) {
+                });
 
+                stompClient.subscribe('/user/queue/notification.update', function (e) {
+                });
 
-        stompClient.send('/app/notification/test', {});
+                // get unread notification for login user
+                stompClient.send('/app/notification/unread', {});
+
+                // make notification as read
+                // stompClient.send('/app/notification/update/read', {}, '66032c75-f287-42b2-9051-fd24a1da624a');
+            });
+        },
+        error: function (result) {
+            console.log(result);
+        }
     });
 }
