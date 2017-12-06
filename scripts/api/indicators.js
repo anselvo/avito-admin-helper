@@ -417,7 +417,8 @@ function UserInfoIndicators(options) {
 
     this.getSubscriptionIndividualInfo = function() {
         let res = {};
-        res.isFired = !!(subscriptionIndividualSelect.find('option:selected').length);
+        res.isFired = (subscriptionIndividualSelect.find('option:selected').length === 1
+            && subscriptionIndividualSelect.find('option:selected').val() === '114');
         res.scrollTo = subscriptionIndividualSelect.parents('.form-group');
         return res;
     };
