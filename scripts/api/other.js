@@ -778,10 +778,19 @@ function getParamsItemInfo(html) {
         microCategoryBlock = $(microCategoryLabel).next(),
         microCategories = [];
 
+    const entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
     $(searchNode).find('.reasons span[data-id]').each(function () {
-        reasons.push($(this).text());
+        reasons.push( $(this).text().replace(/[&<>"'\/]/g, s => entityMap[s]) );
     });
-    $(microCategoryBlock).find('[data-toggle="tooltip"]:not(.icon-category-suggest)').each(function () {
+    $(microCategoryBlock).find('[data-toggle="tooltip"]:not([class*="icon-category-suggest"])').each(function () {
         microCategories.push($(this).text().replace(/\n/g, '').trim());
     });
 
@@ -794,6 +803,9 @@ function getParamsItemInfo(html) {
     res.status = $(statusBlock).find('span:eq(0)').text().trim();
     res.reasons = reasons;
     res.sortTime = $(timeBlock).find('span:eq(0)').text().trim();
+    res.updateTime = $(timeBlock).find('span:eq(1)').text().trim();
+    res.startTime = $(timeBlock).find('span:eq(2)').text().trim();
+    res.finishTime = $(timeBlock).find('span:eq(3)').text().trim();
     res.sellerName = $(searchNode).find('#fld_seller_name').val();
     res.manager = $(searchNode).find('#fld_manager').val();
     res.phone = $(searchNode).find('#fld_phone').val();
@@ -803,6 +815,15 @@ function getParamsItemInfo(html) {
     res.description = $(searchNode).find('#fld_description').text();
     res.price = $(searchNode).find('#fld_price').val();
     res.photos = $(searchNode).find('.js-photo-component').data('json');
+    res.comparisonLink = $(searchNode).find('a[href^="/items/comparison"]').attr('href') || null;
+    res.activeVAS = [].map.call($(searchNode).find('.paid-services .btn-warning'), item => {
+        const res = {};
+        const $item = $(item);
+        res.name = $item.text().trim();
+        res.expires = $item.attr('title') || null;
+        return res;
+    });
+    res.siteLink = $(searchNode).find('a[href^="https://www.avito.ru/"]').attr('href');
 
     return res;
 }
