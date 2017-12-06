@@ -3255,16 +3255,18 @@ function addItemIdPopoverOnLeftPanel() {
         $itemLink.wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
         const $popoverNode = $('#ahItemIdOnLeftPanelPopover');
         const $overlay = $('#sh-loading-layer');
+        // const infoBtn = `
+        //     <button type="button" class="btn btn-info btn-sm" id="ah-infoItemOnLeftPanel" data-item-id="${itemId}">
+        //            <span class="glyphicon glyphicon-info-sign"></span> Инфо
+        //     </button>
+        // `;
 
         const itemId = $itemLink.text();
         const content = `
             <div class="btn-group-vertical">
-                <button type="button" class="btn btn-info btn-sm" id="ah-infoItemOnLeftPanel" data-item-id="${itemId}">
-                    <span class="glyphicon glyphicon-info-sign"></span> Инфо
-                </button>
                 <button type="button" class="btn btn-default btn-sm" id="ah-copyItemIdOnLeftPanel" data-item-id="${itemId}">
-                    <span class="glyphicon glyphicon-copy"></span> Скопировать
-                </button>
+                   <span class="glyphicon glyphicon-copy"></span> Скопировать
+               </button>
             </div>
         `;
 
@@ -3278,22 +3280,75 @@ function addItemIdPopoverOnLeftPanel() {
                     outTextFrame(`Скопировано: ${text}`);
                 });
 
-                const $infoBtn = $('#ah-infoItemOnLeftPanel');
-                $infoBtn.click(function () {
-                    const $btn = $(this);
-                    const id = $btn.data('itemId');
-                    $overlay.show();
-
-                    getItemInfo(id).then(
-                        response => {
-                            const params = getParamsItemInfo(response);
-                            renderItemInfo(params);
-                        },
-                        error => alert(`Ошибка: \n${error.status}\n${error.statusText}`)
-                    ).then(() => $overlay.hide());
-                });
+                // const $infoBtn = $('#ah-infoItemOnLeftPanel');
+                // $infoBtn.click(function () {
+                //     const $btn = $(this);
+                //     const id = $btn.data('itemId');
+                //     $overlay.show();
+                //
+                //     getItemInfo(id).then(
+                //         response => {
+                //             const params = getParamsItemInfo(response);
+                //             renderItemInfo(params);
+                //         },
+                //         error => alert(`Ошибка: \n${error.status}\n${error.statusText}`)
+                //     ).then(() => $overlay.hide());
+                // });
             }
         });
+
+        // A/B test
+        const userName = userGlobalInfo.username;
+        const groupA = ['dalfereva', 'kanisimov', 'dpodyacheva', 'lakhmirova', 'ibakunina', 'sbespalov', 'ibushuev', 'lvaliullina', 'mgovyadkova', 'sgornakova', 'agorchakov', 'vvgrigorev', 'egusev', 'kdemyanova', 'rdolgopolyy', 'adrachev', 'vduchenko', 'kefremov', 'aefremova', 'mszhinkina', 'nzhirokhov', 'azarubin', 'vzubashov', 'vistratov', 'akarev', 'mkletnev', 'aklimina', 'ekokoreva', 'kkondratov', 'aakononenko', 'akosykh', 'akrasnikov', 'akrasnova', 'akrutilina', 'dkubynin', 'vfedorov'];
+        const groupB = ['mskuznetsov', 'aikuznetsova', 'olyadova', 'smamaeva', 'dmanitsyn', 'dmaslov', 'ematveeva', 'pmirenkov', 'imiusskiy', 'dmikhaylov', 'vmokeeva', 'dmorozova', 'anesterova', 'anikonov', 'eochirov', 'avpavlova', 'dpavlova', 'rapankratov', 'apatrusheva', 'kplegacheva', 'mponomareva', 'mpospelova', 'dprostsevich', 'nromanova', 'lseleznev', 'ksichkoriz', 'nslobodchikov', 'yutikhonkova', 'ttikhonova', 'otrifonov', 'uturchanina', 'sukolov', 'vkudelko', 'pfilatov', 'ayaglenko', 'martemiev'];
+
+        if (~groupA.indexOf(userName)) {
+            const data = {
+                userId: localStorage.agentID,
+                ticketId: getCurrentTicketId(window.location.href),
+                groupName: 'A'
+            };
+
+            handleOpenItemPageABTest($itemLink, data);
+        }
+
+        if (~groupB.indexOf(userName)) {
+            const id = $itemLink.text();
+            $itemLink.replaceWith(`<span class="ah-pseudo-link" style="border-bottom: none;" 
+                id="ah-ab-test-item-info-link">${id}</span>`);
+
+            $('#ah-ab-test-item-info-link').unbind('click').click(function() {
+                $overlay.show();
+
+                getItemInfo(id).then(
+                    response => {
+                        const params = getParamsItemInfo(response);
+                        renderItemInfo(params);
+                    },
+                    error => alert(`Ошибка: \n${error.status}\n${error.statusText}`)
+                ).then(() => $overlay.hide());
+            });
+        }
+
+        function handleOpenItemPageABTest($itemLink, data) {
+            $itemLink.unbind('click').click(function () {
+                // console.log(data);
+
+                addHdItemInfoLog(data);
+            });
+
+            $itemLink.on('contextmenu', function (e) {
+                e.preventDefault();
+            });
+
+            $itemLink.unbind('mouseup').on('mouseup', function (e) {
+                if (e.which === 2) {
+                    // console.log(data);
+
+                    addHdItemInfoLog(data);
+                }
+            });
+        }
 
         // item info dialog
         function renderItemInfo(item) {
@@ -3400,7 +3455,7 @@ function addItemIdPopoverOnLeftPanel() {
                     <div class="ah-dialog-body">
                         <div class="ah-item-info-row ah-item-info-row-main">
                             <span class="ah-item-info-item-id">${item.id}</span>,
-                            <a href="${item.siteLink}" target="_blank" class="ah-item-info-item-title">${item.title}</a>
+                            <a href="/items/item/info/${item.id}" target="_blank" class="ah-item-info-item-title">${item.title}</a>
                             <span class="ah-item-info-price">(${item.price}${(/\d/.test(item.price)) ? ' руб.' : ''})</span>
                         </div>
                         
@@ -3478,6 +3533,15 @@ function addItemIdPopoverOnLeftPanel() {
                 }
             });
 
+            // A/B test
+            const $itemLink = $(dialog.querySelector('.ah-item-info-item-title'));
+            const data = {
+                userId: localStorage.agentID,
+                ticketId: getCurrentTicketId(window.location.href),
+                groupName: 'B'
+            };
+
+            handleOpenItemPageABTest($itemLink, data);
             dialog.classList.remove('hidden');
         }
     } catch (e) {}
