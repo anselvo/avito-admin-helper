@@ -43,7 +43,8 @@ function abTest() {
         { categoryID: "10", locationID: "660300" },
         { categoryID: "10", locationID: "628780" },
         { categoryID: "10", locationID: "625670" },
-        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" }
+        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" },
+        { categoryID: "24", locationID: "653240", containsOption: "Квартиры / Сдам  / Посуточно" }
     ];
 
     for (let i = 0; i < abTestInfo.length; ++i) {
