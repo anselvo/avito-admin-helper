@@ -36,7 +36,7 @@ function personalStatistics() {
     });
 
     personalStatisticsMouse();
-    setFixedElemUnderFooter($('#rightShotBar'));
+    setFixedElemUnderFooter($('#rightShotBar'), 0);
 }
 
 function personalStatisticsMouse() {
