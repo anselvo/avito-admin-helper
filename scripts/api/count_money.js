@@ -170,7 +170,7 @@ function renderMoneyCounter() {
         showMoneyCounterCurrentUser();
     }
 
-    setFixedElemUnderFooter($('#money-counter-block'));
+    setFixedElemUnderFooter($('#money-counter-block'), 2);
 
     let moneyCounterValue = $('#money-counter-value');
 

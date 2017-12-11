@@ -310,24 +310,24 @@ jQuery.extend(
 // jQuery case-insensitive ---
 
 // приклеивает fixed элемент к верхушке футера в БО +++
-function setFixedElemUnderFooter(elem) {
-    checkFooterVisibility(elem);
+function setFixedElemUnderFooter(elem, indent) {
+    checkFooterVisibility(elem, indent);
     $(document).scroll(function () {
-        checkFooterVisibility(elem);
+        checkFooterVisibility(elem, indent);
     });
 }
-function checkFooterVisibility(elem) {
-    var footerHeight = $('footer').outerHeight() + 2;
+function checkFooterVisibility(elem, indent) {
+    var footerHeight = $('footer').outerHeight() + indent;
     var scrollTop = $(window).scrollTop();
     var windowHeight = $(window).height();
     var offset = $('.js-footer-gotop').offset();
-    var bottomValue = (windowHeight + scrollTop + 2) - offset.top;
+    var bottomValue = (windowHeight + scrollTop + indent) - offset.top;
 
     var isFooterVisible = isInWindow('.js-footer-gotop', footerHeight);
     if (isFooterVisible) {
         $(elem).css('bottom', '' + bottomValue + 'px');
     } else {
-        $(elem).css('bottom', '2px');
+        $(elem).css('bottom', indent + 'px');
     }
 }
 // приклеивает fixed элемент к верхушке футера в БО ---
@@ -540,7 +540,7 @@ function addFixedTools(elem, tools) {
 
     $(elem).append('<div id="ah-fixed-tools-holder"></div>');
     let holder = $('#ah-fixed-tools-holder');
-    setFixedElemUnderFooter(holder);
+    setFixedElemUnderFooter(holder, 2);
     
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();
