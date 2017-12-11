@@ -317,7 +317,7 @@ function setFixedElemUnderFooter(elem, indent) {
     });
 }
 function checkFooterVisibility(elem, indent) {
-    var footerHeight = $('footer').outerHeight() + 2;
+    var footerHeight = $('footer').outerHeight() + indent;
     var scrollTop = $(window).scrollTop();
     var windowHeight = $(window).height();
     var offset = $('.js-footer-gotop').offset();
@@ -327,7 +327,7 @@ function checkFooterVisibility(elem, indent) {
     if (isFooterVisible) {
         $(elem).css('bottom', '' + bottomValue + 'px');
     } else {
-        $(elem).css('bottom', '2px');
+        $(elem).css('bottom', indent + 'px');
     }
 }
 // приклеивает fixed элемент к верхушке футера в БО ---

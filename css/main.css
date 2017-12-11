@@ -4408,19 +4408,25 @@ select.ah-form-control:focus {
 
 /* Moderation Right bar statistic */
 #rightShotBar {
-    display:inline-block;
-    position:fixed;
-    right:0;
-    bottom:0;
-    z-index:5;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 200px;
+    bottom: 0;
+    z-index: 1100;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #personalStatistics {
-    cursor: default;
-    background: rgb(241, 248, 255);
-    border: 1px solid #eeeeee;
-    padding: 9px;
-    font-weight: bold;
+    cursor: pointer;
+    background: #f5f5f5;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 1px solid #e6e6e6;
+    border-bottom: 0;
+    padding: 0 16px;
     color: #9f9f9f;
 }
 
