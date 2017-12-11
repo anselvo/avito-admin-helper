@@ -4858,7 +4858,7 @@ select.ah-form-control:focus {
     width: 100%;
     cursor: pointer;
     font-weight: normal;
-    padding: 0 2px;
+    padding: 2px 5px;
 }
 
 .ah-other-reasons .popover-content label:hover {
@@ -4867,6 +4867,10 @@ select.ah-form-control:focus {
 
 .ah-other-reasons [name="ah-other-reasons"] {
     margin-right: 5px;
+}
+
+.ah-other-reason-block input, .ah-other-reason-block span {
+    vertical-align: middle;
 }
 
 .ah-copy-tooltip-pseudo-link {
