@@ -65,30 +65,3 @@ function getAdmWithSuperAcc(url) {
         );
     });
 }
-
-// логировать просмотр инфо айтема для эксперимента
-function addHdItemInfoLog(data) {
-    return new Promise(function(resolve, reject) {
-        chrome.runtime.sendMessage({
-                action: 'XMLHttpRequest',
-                method: "POST",
-                url: "http://avitoadm.ru/support_helper/hd_item_info_log/add.php",
-                data: "params=" + JSON.stringify(data),
-            },
-
-            function (response) {
-                let json;
-                try {
-                    json = JSON.parse(response);
-                } catch (e) {
-                    reject(e);
-                }
-
-                if (!json.success) reject(json.message);
-
-                resolve(json);
-            }
-        );
-    });
-
-}

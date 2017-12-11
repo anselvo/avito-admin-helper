@@ -3254,7 +3254,7 @@ function addItemIdPopoverOnLeftPanel() {
         const $itemLink = $(itemIdLabel).next().find('a');
         $itemLink.wrap(`<span id="ahItemIdOnLeftPanelPopover"></span>`);
         const $popoverNode = $('#ahItemIdOnLeftPanelPopover');
-        const $overlay = $('#sh-loading-layer');
+        // const $overlay = $('#sh-loading-layer');
         // const infoBtn = `
         //     <button type="button" class="btn btn-info btn-sm" id="ah-infoItemOnLeftPanel" data-item-id="${itemId}">
         //            <span class="glyphicon glyphicon-info-sign"></span> Инфо
@@ -3297,253 +3297,191 @@ function addItemIdPopoverOnLeftPanel() {
             }
         });
 
-        // A/B test
-        const userName = userGlobalInfo.username;
-        const groupA = ['dalfereva', 'kanisimov', 'dpodyacheva', 'lakhmirova', 'ibakunina', 'sbespalov', 'ibushuev', 'lvaliullina', 'mgovyadkova', 'sgornakova', 'agorchakov', 'vvgrigorev', 'egusev', 'kdemyanova', 'rdolgopolyy', 'adrachev', 'vduchenko', 'kefremov', 'aefremova', 'mszhinkina', 'nzhirokhov', 'azarubin', 'vzubashov', 'vistratov', 'akarev', 'mkletnev', 'aklimina', 'ekokoreva', 'kkondratov', 'aakononenko', 'akosykh', 'akrasnikov', 'akrasnova', 'akrutilina', 'dkubynin', 'vfedorov'];
-        const groupB = ['mskuznetsov', 'aikuznetsova', 'olyadova', 'smamaeva', 'dmanitsyn', 'dmaslov', 'ematveeva', 'pmirenkov', 'imiusskiy', 'dmikhaylov', 'vmokeeva', 'dmorozova', 'anesterova', 'anikonov', 'eochirov', 'avpavlova', 'dpavlova', 'rapankratov', 'apatrusheva', 'kplegacheva', 'mponomareva', 'mpospelova', 'dprostsevich', 'nromanova', 'lseleznev', 'ksichkoriz', 'nslobodchikov', 'yutikhonkova', 'ttikhonova', 'otrifonov', 'uturchanina', 'sukolov', 'vkudelko', 'pfilatov', 'ayaglenko', 'martemiev'];
-
-        if (~groupA.indexOf(userName)) {
-            const data = {
-                userId: localStorage.agentID,
-                ticketId: getCurrentTicketId(window.location.href),
-                groupName: 'A'
-            };
-
-            handleOpenItemPageABTest($itemLink, data);
-        }
-
-        if (~groupB.indexOf(userName)) {
-            const id = $itemLink.text();
-            $itemLink.replaceWith(`<span class="ah-pseudo-link" style="border-bottom: none;" 
-                id="ah-ab-test-item-info-link">${id}</span>`);
-
-            $('#ah-ab-test-item-info-link').unbind('click').click(function() {
-                $overlay.show();
-
-                getItemInfo(id).then(
-                    response => {
-                        const params = getParamsItemInfo(response);
-                        renderItemInfo(params);
-                    },
-                    error => alert(`Ошибка: \n${error.status}\n${error.statusText}`)
-                ).then(() => $overlay.hide());
-            });
-        }
-
-        function handleOpenItemPageABTest($itemLink, data) {
-            $itemLink.unbind('click').click(function () {
-                // console.log(data);
-
-                addHdItemInfoLog(data);
-            });
-
-            $itemLink.on('contextmenu', function (e) {
-                e.preventDefault();
-            });
-
-            $itemLink.unbind('mouseup').on('mouseup', function (e) {
-                if (e.which === 2) {
-                    // console.log(data);
-
-                    addHdItemInfoLog(data);
-                }
-            });
-        }
-
         // item info dialog
-        function renderItemInfo(item) {
-            if (document.querySelector('.ah-item-info-dialog')) {
-                document.querySelector('.ah-item-info-dialog').remove();
-            }
-
-            const hdLeftPanel = document.querySelector('.helpdesk-side-panel');
-            const dialog = document.createElement('div');
-            const navBar = document.querySelector('.navbar-fixed-top');
-            const navBarHeight = navBar.clientHeight;
-            const hdLeftPanelWidth = hdLeftPanel.clientWidth;
-
-            dialog.className = 'ah-dialog ah-item-info-dialog hidden';
-            dialog.addEventListener('click', function (e) {
-                const target = e.target;
-
-                if (target.classList.contains('close')) {
-                    // this.classList.add('hidden');
-                    this.remove();
-                }
-            });
-
-            hdLeftPanel.appendChild(dialog);
-
-            // draggable
-            $(dialog).draggable({
-                containment: 'window',
-                handle: '.ah-dialog-header'
-            });
-
-            const statusPatterns = {
-                blocked: /\bblocked\b/i,
-                rejected: /\brejected\b/i,
-                paid: /\bpaid\b/i,
-                active: /\b(added|activated|unblocked)\b/i,
-                closed_removed_archived: /\b(removed|closed|archived)\b/i,
-                vas: /\b(premium|vip|pushed up|highlighted)\b/i
-            };
-            const reasons = item.reasons.join(', ');
-            const comparisonLinkNode = (item.comparisonLink) ? `
-                <div class="ah-item-info-row">
-                    <a href="${item.comparisonLink}" target="_blank">Показать дубликаты 
-                        <span class="glyphicon glyphicon-new-window"></span></a>
-                </div>
-            ` : ``;
-            const activeVAS = (item.activeVAS.length) ? item.activeVAS.map(item => {
-                let iconNode;
-                switch (item.name) {
-                    case 'Премиум':
-                        iconNode = `<i class="ah-vas-icon ah-vas-icon-premium-xs"></i>`;
-                        break;
-
-                    case 'VIP':
-                        iconNode = `<i class="ah-vas-icon ah-vas-icon-vip-xs"></i>`;
-                        break;
-
-                    case 'Push up':
-                        iconNode = `<i class="ah-vas-icon ah-vas-icon-push-up-xs"></i>`;
-                        break;
-
-                    case 'Выделенное':
-                        iconNode = `<i class="ah-vas-icon ah-vas-icon-highlight-xs"></i>`;
-                        break;
-
-                    default: iconNode = ``;
-                }
-
-                return `<span class="label label-warning ah-item-info-vas-label" ${(item.expires) ? `title="${item.expires}"` : ``}>${iconNode}${item.name}</span>`
-            }).join(' ') : `-`;
-
-            // статусы
-            if (statusPatterns.blocked.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.blocked, `
-                <span class="text-danger" title="${reasons}">
-                    $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" 
-                        title="${reasons}" data-placement="bottom"></span></span>`);
-            }
-            if (statusPatterns.rejected.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.rejected, `
-                <span class="text-warning">
-                    $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" 
-                        title="${reasons}" data-placement="bottom"></span></span>`);
-            }
-            if (statusPatterns.paid.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.paid, '<span class="text-primary">$&</span>');
-            }
-            if (statusPatterns.active.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.active, '<span class="text-success">$&</span>');
-            }
-            if (statusPatterns.closed_removed_archived.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.closed_removed_archived, '<span class="text-muted">$&</span>');
-            }
-            if (statusPatterns.vas.test(item.status)) {
-                item.status = item.status.replace(statusPatterns.vas, '<span class="ah-text-vas">$&</span>');
-            }
-
-            dialog.innerHTML = `
-                <div class="ah-dialog-content">
-                    <div class="ah-dialog-header ah-header-draggable">
-                        <button class="close">×</button>
-                        <h4 class="ah-dialog-title">Объявление</h4>
-                    </div>
-                    <div class="ah-dialog-body">
-                        <div class="ah-item-info-row ah-item-info-row-main">
-                            <span class="ah-item-info-item-id">${item.id}</span>,
-                            <a href="/items/item/info/${item.id}" target="_blank" class="ah-item-info-item-title">${item.title}</a>
-                            <span class="ah-item-info-price">(${item.price}${(/\d/.test(item.price)) ? ' руб.' : ''})</span>
-                        </div>
-                        
-                        <div class="ah-item-info-row-group">
-                            <div class="ah-item-info-row">
-                                <b>${item.status}</b>,
-                                <span class="ah-pseudo-link ah-item-info-time-popover" data-toggle="popover" 
-                                    data-placement="bottom" data-trigger="hover" data-html="true" 
-                                    data-content="
-                                        <table class='ah-item-time-popover-table'>
-                                            <tr>
-                                                <td>Sort time: </td><td>${item.sortTime}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Update time: </td><td>${item.updateTime}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Start time: </td><td>${item.startTime}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Finish time: </td><td>${item.finishTime}</td>
-                                            </tr>
-                                        </table>">
-                                    Время
-                                </span>
-                            </div>
-                            ${comparisonLinkNode}
-                            <div class="ah-item-info-row">
-                                <span>Активные VAS: </span> 
-                                ${activeVAS}
-                            </div>
-                        </div>
-                        <div class="ah-item-info-row-group">
-                            <div class="ah-item-info-row">
-                                <i>${item.microCategoryes.join(' / ')}</i>
-                            </div>
-                            <div class="ah-item-info-row">
-                                <div class="ah-item-info-description">${item.description}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="ah-item-info-row-group">
-                            <div class="ah-item-info-row">
-                                <b>${item.sellerName}</b>
-                            </div>
-                            <div class="ah-item-info-row ah-item-info-row-contacts">
-                                <span><span class="glyphicon text-danger glyphicon-map-marker"></span> ${item.region}</span>,
-                                <span><span class="glyphicon glyphicon-earphone"></span> ${item.phone}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // позиция и размер
-            dialog.style.cssText = `top: ${navBarHeight}px; left: 0px; width: ${hdLeftPanelWidth}px`;
-
-            // поповер времени
-            $(dialog.querySelector('.ah-item-info-time-popover')).popover();
-            // тултип причин блокировки/отклонения
-            $(dialog.querySelector('.ah-compare-items-reason-tooltip')).tooltip();
-
-            // копирование айтемов
-            copyDataTooltip($(dialog.querySelector('.ah-item-info-item-id')), {
-                title: getCopyTooltipContentAlt('скопировать с заголовком'),
-                getText: function(elem) {
-                    const itemId = $(elem).text().trim();
-                    return `№${itemId}`;
-                },
-                getTextAlt: function(elem) {
-                    const $idNode = $(elem);
-                    let itemTitle = $idNode.parent().find('.ah-item-info-item-title').text();
-                    let itemId = $idNode.text().trim();
-                    return `№${itemId} («${itemTitle}»)`;
-                }
-            });
-
-            // A/B test
-            const $itemLink = $(dialog.querySelector('.ah-item-info-item-title'));
-            const data = {
-                userId: localStorage.agentID,
-                ticketId: getCurrentTicketId(window.location.href),
-                groupName: 'B'
-            };
-
-            handleOpenItemPageABTest($itemLink, data);
-            dialog.classList.remove('hidden');
-        }
+        // function renderItemInfo(item) {
+        //     if (document.querySelector('.ah-item-info-dialog')) {
+        //         document.querySelector('.ah-item-info-dialog').remove();
+        //     }
+        //
+        //     const hdLeftPanel = document.querySelector('.helpdesk-side-panel');
+        //     const dialog = document.createElement('div');
+        //     const navBar = document.querySelector('.navbar-fixed-top');
+        //     const navBarHeight = navBar.clientHeight;
+        //     const hdLeftPanelWidth = hdLeftPanel.clientWidth;
+        //
+        //     dialog.className = 'ah-dialog ah-item-info-dialog hidden';
+        //     dialog.addEventListener('click', function (e) {
+        //         const target = e.target;
+        //
+        //         if (target.classList.contains('close')) {
+        //             // this.classList.add('hidden');
+        //             this.remove();
+        //         }
+        //     });
+        //
+        //     hdLeftPanel.appendChild(dialog);
+        //
+        //     // draggable
+        //     $(dialog).draggable({
+        //         containment: 'window',
+        //         handle: '.ah-dialog-header'
+        //     });
+        //
+        //     const statusPatterns = {
+        //         blocked: /\bblocked\b/i,
+        //         rejected: /\brejected\b/i,
+        //         paid: /\bpaid\b/i,
+        //         active: /\b(added|activated|unblocked)\b/i,
+        //         closed_removed_archived: /\b(removed|closed|archived)\b/i,
+        //         vas: /\b(premium|vip|pushed up|highlighted)\b/i
+        //     };
+        //     const reasons = item.reasons.join(', ');
+        //     const comparisonLinkNode = (item.comparisonLink) ? `
+        //         <div class="ah-item-info-row">
+        //             <a href="${item.comparisonLink}" target="_blank">Показать дубликаты
+        //                 <span class="glyphicon glyphicon-new-window"></span></a>
+        //         </div>
+        //     ` : ``;
+        //     const activeVAS = (item.activeVAS.length) ? item.activeVAS.map(item => {
+        //         let iconNode;
+        //         switch (item.name) {
+        //             case 'Премиум':
+        //                 iconNode = `<i class="ah-vas-icon ah-vas-icon-premium-xs"></i>`;
+        //                 break;
+        //
+        //             case 'VIP':
+        //                 iconNode = `<i class="ah-vas-icon ah-vas-icon-vip-xs"></i>`;
+        //                 break;
+        //
+        //             case 'Push up':
+        //                 iconNode = `<i class="ah-vas-icon ah-vas-icon-push-up-xs"></i>`;
+        //                 break;
+        //
+        //             case 'Выделенное':
+        //                 iconNode = `<i class="ah-vas-icon ah-vas-icon-highlight-xs"></i>`;
+        //                 break;
+        //
+        //             default: iconNode = ``;
+        //         }
+        //
+        //         return `<span class="label label-warning ah-item-info-vas-label" ${(item.expires) ? `title="${item.expires}"` : ``}>${iconNode}${item.name}</span>`
+        //     }).join(' ') : `-`;
+        //
+        //     // статусы
+        //     if (statusPatterns.blocked.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.blocked, `
+        //         <span class="text-danger" title="${reasons}">
+        //             $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip"
+        //                 title="${reasons}" data-placement="bottom"></span></span>`);
+        //     }
+        //     if (statusPatterns.rejected.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.rejected, `
+        //         <span class="text-warning">
+        //             $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip"
+        //                 title="${reasons}" data-placement="bottom"></span></span>`);
+        //     }
+        //     if (statusPatterns.paid.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.paid, '<span class="text-primary">$&</span>');
+        //     }
+        //     if (statusPatterns.active.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.active, '<span class="text-success">$&</span>');
+        //     }
+        //     if (statusPatterns.closed_removed_archived.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.closed_removed_archived, '<span class="text-muted">$&</span>');
+        //     }
+        //     if (statusPatterns.vas.test(item.status)) {
+        //         item.status = item.status.replace(statusPatterns.vas, '<span class="ah-text-vas">$&</span>');
+        //     }
+        //
+        //     dialog.innerHTML = `
+        //         <div class="ah-dialog-content">
+        //             <div class="ah-dialog-header ah-header-draggable">
+        //                 <button class="close">×</button>
+        //                 <h4 class="ah-dialog-title">Объявление</h4>
+        //             </div>
+        //             <div class="ah-dialog-body">
+        //                 <div class="ah-item-info-row ah-item-info-row-main">
+        //                     <span class="ah-item-info-item-id">${item.id}</span>,
+        //                     <a href="/items/item/info/${item.id}" target="_blank" class="ah-item-info-item-title">${item.title}</a>
+        //                     <span class="ah-item-info-price">(${item.price}${(/\d/.test(item.price)) ? ' руб.' : ''})</span>
+        //                 </div>
+        //
+        //                 <div class="ah-item-info-row-group">
+        //                     <div class="ah-item-info-row">
+        //                         <b>${item.status}</b>,
+        //                         <span class="ah-pseudo-link ah-item-info-time-popover" data-toggle="popover"
+        //                             data-placement="bottom" data-trigger="hover" data-html="true"
+        //                             data-content="
+        //                                 <table class='ah-item-time-popover-table'>
+        //                                     <tr>
+        //                                         <td>Sort time: </td><td>${item.sortTime}</td>
+        //                                     </tr>
+        //                                     <tr>
+        //                                         <td>Update time: </td><td>${item.updateTime}</td>
+        //                                     </tr>
+        //                                     <tr>
+        //                                         <td>Start time: </td><td>${item.startTime}</td>
+        //                                     </tr>
+        //                                     <tr>
+        //                                         <td>Finish time: </td><td>${item.finishTime}</td>
+        //                                     </tr>
+        //                                 </table>">
+        //                             Время
+        //                         </span>
+        //                     </div>
+        //                     ${comparisonLinkNode}
+        //                     <div class="ah-item-info-row">
+        //                         <span>Активные VAS: </span>
+        //                         ${activeVAS}
+        //                     </div>
+        //                 </div>
+        //                 <div class="ah-item-info-row-group">
+        //                     <div class="ah-item-info-row">
+        //                         <i>${item.microCategoryes.join(' / ')}</i>
+        //                     </div>
+        //                     <div class="ah-item-info-row">
+        //                         <div class="ah-item-info-description">${item.description}</div>
+        //                     </div>
+        //                 </div>
+        //
+        //                 <div class="ah-item-info-row-group">
+        //                     <div class="ah-item-info-row">
+        //                         <b>${item.sellerName}</b>
+        //                     </div>
+        //                     <div class="ah-item-info-row ah-item-info-row-contacts">
+        //                         <span><span class="glyphicon text-danger glyphicon-map-marker"></span> ${item.region}</span>,
+        //                         <span><span class="glyphicon glyphicon-earphone"></span> ${item.phone}</span>
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     `;
+        //
+        //     // позиция и размер
+        //     dialog.style.cssText = `top: ${navBarHeight}px; left: 0px; width: ${hdLeftPanelWidth}px`;
+        //
+        //     // поповер времени
+        //     $(dialog.querySelector('.ah-item-info-time-popover')).popover();
+        //     // тултип причин блокировки/отклонения
+        //     $(dialog.querySelector('.ah-compare-items-reason-tooltip')).tooltip();
+        //
+        //     // копирование айтемов
+        //     copyDataTooltip($(dialog.querySelector('.ah-item-info-item-id')), {
+        //         title: getCopyTooltipContentAlt('скопировать с заголовком'),
+        //         getText: function(elem) {
+        //             const itemId = $(elem).text().trim();
+        //             return `№${itemId}`;
+        //         },
+        //         getTextAlt: function(elem) {
+        //             const $idNode = $(elem);
+        //             let itemTitle = $idNode.parent().find('.ah-item-info-item-title').text();
+        //             let itemId = $idNode.text().trim();
+        //             return `№${itemId} («${itemTitle}»)`;
+        //         }
+        //     });
+        //
+        //     dialog.classList.remove('hidden');
+        // }
     } catch (e) {}
 }
 //++++++++++ поповер для айди айтема на левой панели ++++++++++//
