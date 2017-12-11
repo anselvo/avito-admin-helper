@@ -69,18 +69,23 @@ function antifraudLinks(page) {
 // Авто добавление причине в поле "Другая причина"
 function autoOtherReasons() {
     $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
+        let $elem = $(this);
         let findReason = setInterval(function () {
             let box = $('.moderate-modal');
 
             if ($(box).length > 0) {
                 clearInterval(findReason);
-                optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]');
+                let prob = $elem.parents('tr').data('pathProbs');
+                optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]', prob);
             }
         }, 100);
     });
 }
 
-function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
+function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
+    let ahReasonSelector = $('.ah-other-reasons');
+    ahReasonSelector.remove();
+
     let otherReasonsCategory = {
         name: "Неправильная категория",
         reason: [
@@ -108,20 +113,47 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
     let block = $(blockSelector);
 
     for (let i = 0; i < block.length; ++i) {
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory);
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService);
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory, prob);
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService, prob);
 
         if (localStorage.autoCheckOtherReason === 'true')
             addAutoCheckSuggestReason(block[i], reasonSelector);
     }
 
-    $('.ah-other-reasons').click(function (event) {
+    ahReasonSelector.click(function (event) {
         event.stopPropagation();
     });
 
-
 }
 
+function addOtherReasonProb(name, prob) {
+    let progress = '';
+    let probability = 0;
+
+    for (let i = 0; i < prob.length; ++i) {
+        if (prob[i]) {
+            let categoryName = prob[i].categoryName;
+            let tmp = categoryName.split(" / ");
+            let currentProbability = prob[i].prob.toFixed(2) * 100;
+
+            if ((name === tmp[0] || name === tmp[1]) && probability < currentProbability) {
+                probability = currentProbability;
+
+                let color = '#2f8b55';
+
+                if (probability > 70) color = '#f75a20';
+                else if (probability > 30) color = '#fc7b23';
+                else if (probability > 0) color = '#96873c';
+
+                progress = '<div class="progress-line" style="display: block; margin-left: 20px; border: 1px solid ' + color + ';">' +
+                    '<div class="progress-bar" style="background-color: ' + color + '; width: ' + probability + 'px;"></div>' +
+                    '</div>';
+            }
+        }
+    }
+
+    return progress;
+}
 
 function addAutoCheckSuggestReason(block, reasonSelector) {
     let suggestReason = $(block).find(reasonSelector+':contains(Неправильная категория) .description').text().toLowerCase();
@@ -132,7 +164,7 @@ function addAutoCheckSuggestReason(block, reasonSelector) {
     }
 }
 
-function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
+function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob) {
     let name = otherReasons.name;
     let reasons = otherReasons.reason;
 
@@ -140,84 +172,94 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
 
     let content = '';
     let inReasons = [];
+
     for (let i = 0; i < reasons.length; ++i) {
+        let progress = '';
         if (typeof reasons[i] === "object") {
-            content += '<div class="ah-other-reason-block ah-has-children"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i].name + '</label></div>';
+            progress = addOtherReasonProb(reasons[i].name, prob);
+
+            content += '<div class="ah-other-reason-block ah-has-children">' +
+                    '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i].name + progress + '</span></label>' +
+                '</div>';
+
             inReasons.push(reasons[i]);
-        } else content += '<div class="ah-other-reason-block"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i] + '</label></div>';
+        } else {
+            progress = addOtherReasonProb(reasons[i], prob);
+
+            content += '<div class="ah-other-reason-block">' +
+                    '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i] + progress + '</span></label>' +
+                '</div>';
+        }
     }
 
     let template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
 
-    if ($(reasonSelectorContain).find('.ah-other-reasons').length === 0) {
+    $(reasonSelectorContain)
+        .append(template)
+        .mouseenter(function () {
+            let blockItem = $(this).find('>.ah-other-reasons');
 
-        $(reasonSelectorContain)
-            .append(template)
-            .mouseenter(function () {
-                let blockItem = $(this).find('>.ah-other-reasons');
+            $(blockItem).show();
 
-                $(blockItem).show();
+            let width = $(blockItem).width();
+            let offset = $(blockItem).offset();
 
-                let width = $(blockItem).width();
-                let offset = $(blockItem).offset();
+            let rightPoint = offset.left + width;
+            if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
+        })
+        .mouseleave(function () {
+            let blockItem = $(this).find('>.ah-other-reasons');
 
-                let rightPoint = offset.left + width;
-                if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
-            })
-            .mouseleave(function () {
-                let blockItem = $(this).find('>.ah-other-reasons');
+            $(blockItem).hide();
+        });
 
-                $(blockItem).hide();
-            });
+    $(reasonSelectorContain)
+        .find('[type="checkbox"]')
+        .change(function () {
+            // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
+            let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
-        $(reasonSelectorContain)
-            .find('[type="checkbox"]')
-            .change(function () {
-                // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
-                let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
+            if ($(this).prop('checked')) {
+                // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
 
-                if ($(this).prop('checked')) {
-                    // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
+                $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
+            } else {
+                $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
 
-                    $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
-                } else {
-                    $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
+                let notCheckedReasons = $(this).parents(difParent);
 
-                    let notCheckedReasons = $(this).parents(difParent);
-
-                    for (let i = 0; i < notCheckedReasons.length; ++i) {
-                        if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
-                    }
+                for (let i = 0; i < notCheckedReasons.length; ++i) {
+                    if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
                 }
+            }
 
-                let text = '';
+            let text = '';
 
-                // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
-                let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
+            // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
+            let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
-                if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
+            if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
-                for (let i = 0; i < checkedReasons.length; ++i) {
-                    if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
-                        let texReason = $(checkedReasons[i]).parent().text();
-                        let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
-                        let textChildren = '';
+            for (let i = 0; i < checkedReasons.length; ++i) {
+                if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
+                    let texReason = $(checkedReasons[i]).parent().text();
+                    let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
+                    let textChildren = '';
 
-                        for (let j = 0; j < textChildrenSelector.length; ++j) {
-                            textChildren += $(textChildrenSelector[j]).text() + ' -> ';
-                        }
-
-                        if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
-                        else text += ' или "' + textChildren + texReason + '"';
+                    for (let j = 0; j < textChildrenSelector.length; ++j) {
+                        textChildren += $(textChildrenSelector[j]).text() + ' -> ';
                     }
+
+                    if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
+                    else text += ' или "' + textChildren + texReason + '"';
                 }
+            }
 
-                $(block).find(textSelector).val(text);
-            });
+            $(block).find(textSelector).val(text);
+        });
 
-        for (let i = 0; i < inReasons.length; ++i)
-            addOtherReasons(block, '.ah-other-reason-block', textSelector, inReasons[i]);
-    }
+    for (let i = 0; i < inReasons.length; ++i)
+        addOtherReasons(block, '.ah-other-reason-block', textSelector, inReasons[i], prob);
 }
 
 // ФООРМИРОВАНИЕ ССЫЛКИ ПО ПАРАМЕТРАМ
