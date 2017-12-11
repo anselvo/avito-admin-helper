@@ -69,13 +69,13 @@ function antifraudLinks(page) {
 // Авто добавление причине в поле "Другая причина"
 function autoOtherReasons() {
     $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
-        let $elem = $(this);
+        let buttonSelector = $(this);
         let findReason = setInterval(function () {
             let box = $('.moderate-modal');
 
             if ($(box).length > 0) {
                 clearInterval(findReason);
-                let prob = $elem.parents('tr').data('pathProbs');
+                let prob = buttonSelector.parents('tr').data('pathProbs');
                 optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]', prob);
             }
         }, 100);
@@ -83,10 +83,10 @@ function autoOtherReasons() {
 }
 
 function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
-    let ahReasonSelector = $('.ah-other-reasons');
+    const ahReasonSelector = $('.ah-other-reasons');
     ahReasonSelector.remove();
 
-    let otherReasonsCategory = {
+    const otherReasonsCategory = {
         name: "Неправильная категория",
         reason: [
             {name: "Личные вещи", reason: ['Одежда, обувь, аксессуары', 'Детская одежда и обувь', 'Товары для детей и игрушки', 'Красота и здоровье', 'Часы и украшения']},
@@ -102,7 +102,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
         ]
     };
 
-    let otherReasonsService = {
+    const otherReasonsService = {
         name: "Вид услуги",
         reason: ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
             'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
@@ -110,7 +110,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
             'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
     };
 
-    let block = $(blockSelector);
+    const block = $(blockSelector);
 
     for (let i = 0; i < block.length; ++i) {
         addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory, prob);
@@ -132,9 +132,9 @@ function addOtherReasonProb(name, prob) {
 
     for (let i = 0; i < prob.length; ++i) {
         if (prob[i]) {
-            let categoryName = prob[i].categoryName;
-            let tmp = categoryName.split(" / ");
-            let currentProbability = prob[i].prob.toFixed(2) * 100;
+            const categoryName = prob[i].categoryName;
+            const tmp = categoryName.split(" / ");
+            const currentProbability = prob[i].prob.toFixed(2) * 100;
 
             if ((name === tmp[0] || name === tmp[1]) && probability < currentProbability) {
                 probability = currentProbability;
@@ -165,10 +165,10 @@ function addAutoCheckSuggestReason(block, reasonSelector) {
 }
 
 function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob) {
-    let name = otherReasons.name;
-    let reasons = otherReasons.reason;
+    const name = otherReasons.name;
+    const reasons = otherReasons.reason;
 
-    let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
+    const reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
     let content = '';
     let inReasons = [];
@@ -192,7 +192,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
         }
     }
 
-    let template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
+    const template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
 
     $(reasonSelectorContain)
         .append(template)
@@ -201,14 +201,14 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
 
             $(blockItem).show();
 
-            let width = $(blockItem).width();
-            let offset = $(blockItem).offset();
+            const width = $(blockItem).width();
+            const offset = $(blockItem).offset();
 
-            let rightPoint = offset.left + width;
+            const rightPoint = offset.left + width;
             if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
         })
         .mouseleave(function () {
-            let blockItem = $(this).find('>.ah-other-reasons');
+            const blockItem = $(this).find('>.ah-other-reasons');
 
             $(blockItem).hide();
         });
@@ -217,7 +217,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
         .find('[type="checkbox"]')
         .change(function () {
             // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
-            let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
+            const difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
             if ($(this).prop('checked')) {
                 // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
@@ -236,14 +236,14 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
             let text = '';
 
             // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
-            let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
+            const checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
             if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
             for (let i = 0; i < checkedReasons.length; ++i) {
                 if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
-                    let texReason = $(checkedReasons[i]).parent().text();
-                    let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
+                    const texReason = $(checkedReasons[i]).parent().text();
+                    const textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
                     let textChildren = '';
 
                     for (let j = 0; j < textChildrenSelector.length; ++j) {
