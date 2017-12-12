@@ -321,6 +321,7 @@ function addElementsForEachItemNew() {
     for (let i = 0; i < trList.length; i++) {
         let value = $(trList[i]).find('.item-info').attr("id");
         let itemVersion = $(trList[i]).find('input[name="version"]').val();
+        let prob = $(trList[i]).data('pathProbs');
 
         let paramId = null;
         let paramsArr = $(trList[i]).data('params');
@@ -380,23 +381,35 @@ function addElementsForEachItemNew() {
                     'data-reason="178" ' +
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
-                    'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;"' +
-                    'title="' + category.name + '"' +
-                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '"">');
+                    'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;" ' +
+                    'title="' + category.name + '" ' +
+                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '">');
 
             for (let k = 0; k < category.reason.length; ++k) {
-                if (category.reason[k].show === 'true') $(trList[i])
-                    .find('.mh_items')
-                    .append('<input type="button" ' +
-                        'value="' + category.reason[k].short_name + '" ' +
-                        'class="btn btn-default btn-sm mh-action-btn" ' +
-                        'bvalue="' + value + '" ' +
-                        'data-reason="178" ' +
-                        'data-action="reject" ' +
-                        'data-version="' + itemVersion + '" ' +
-                        'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;"' +
-                        'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
-                        'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '">');
+                let background = '#fff';
+                let probability = 0;
+
+                for (let z = 0; z < prob.length; ++z)
+                    if (prob[z] && prob[z].categoryName === category.name + ' / ' + category.reason[k].name) {
+                        probability = prob[z].prob.toFixed(2) * 100;
+
+                        background = 'linear-gradient(to right, ' + category.reason[k].color +  '1f ' + probability + '%, #fff ' + probability + '%)';
+                    }
+
+                if (category.reason[k].show === 'true' || probability > 0) {
+                    $(trList[i])
+                        .find('.mh_items')
+                        .append('<input type="button" ' +
+                            'value="' + category.reason[k].short_name + '" ' +
+                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="178" ' +
+                            'data-action="reject" ' +
+                            'data-version="' + itemVersion + '" ' +
+                            'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
+                            'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
+                            'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                }
 
             }
         }
