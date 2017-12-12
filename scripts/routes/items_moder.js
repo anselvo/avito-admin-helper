@@ -148,6 +148,8 @@ function comparisonInfo() {
 }
 
 function addComparisonInfo() {
+    $('.modal-content').css('margin-bottom', '25px');
+
     let basedItemID = $('.js-comparison').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
 
