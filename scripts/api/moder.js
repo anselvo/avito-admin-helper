@@ -204,7 +204,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
                         let textChildren = '';
 
                         for (let j = 0; j < textChildrenSelector.length; ++j) {
-                            textChildren += $(textChildrenSelector[j]).text() + ' -> ';
+                            textChildren += $(textChildrenSelector[j]).text() + ' / ';
                         }
 
                         if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';

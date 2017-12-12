@@ -385,7 +385,7 @@ function addElementsForEachItemNew() {
                         'data-reason="178" ' +
                         'data-action="reject" ' +
                         'data-version="' + itemVersion + '" ' +
-                        'data-comment="Пожалуйста, измените на &#34;' + category.name + ' -> ' + category.reason[k].name + '&#34;"' +
+                        'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;"' +
                         'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
                         'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '">');
 
