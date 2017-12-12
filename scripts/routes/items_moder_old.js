@@ -37,7 +37,7 @@ function personalStatistics() {
     });
 
     personalStatisticsMouse();
-    setFixedElemUnderFooter($('#ah-rightShotBar'), 0);
+    // setFixedElemUnderFooter($('#ah-rightShotBar'), 0);
 }
 
 function personalStatisticsMouse() {
