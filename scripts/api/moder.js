@@ -176,7 +176,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
     for (let i = 0; i < reasons.length; ++i) {
         let progress = '';
         if (typeof reasons[i] === "object") {
-            progress = addOtherReasonProb(reasons[i].name, prob);
+            if (prob) progress = addOtherReasonProb(reasons[i].name, prob);
 
             content += '<div class="ah-other-reason-block ah-has-children">' +
                     '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i].name + progress + '</span></label>' +
@@ -184,7 +184,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
 
             inReasons.push(reasons[i]);
         } else {
-            progress = addOtherReasonProb(reasons[i], prob);
+            if (prob) progress = addOtherReasonProb(reasons[i], prob);
 
             content += '<div class="ah-other-reason-block">' +
                     '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i] + progress + '</span></label>' +
