@@ -198,6 +198,9 @@ function addButtonsIntern() {
 		 '<div class="moderateBox_item" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_13" value="13"> </div> <div class="moderateBox_data"> <div class="b-antifraud"> <div class="name">Несколько товаров</div> <div class="progress-line" style="display: none;"><div class="progress-bar"></div></div> <div class="description" style="display: none;"></div> </div> </div> </div>'+
 		 '</div>'+
 		 '<div class="moderateBox_item_container">'+
+         '<div class="moderateBox_item" data-category-ids="116,82,0,101,106,89,90,91,92,93,94,24,23,25,26,85,42,86,27,29,11,30,28,88,32,97,31,98,99,96,84,33,38,100,14,81,10,21,20,87,19,34,83,36,102,39,40,1,2,35,4,5,6,7,105,8,104,43,114,110,115,113,112,109,9,103" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_14" value="14"> </div> <div class="moderateBox_data"> <div class="b-antifraud" title="0%"> <div class="name">Не подробное</div> <div class="progress-line" style="display: none; border: 1px solid rgb(47, 139, 85);"><div class="progress-bar" style="background-color: rgb(47, 139, 85); width: 0px;"></div></div> <div class="description" style="display: none;"></div> </div> </div> </div>'+
+    	 '</div>'+
+		 '<div class="moderateBox_item_container">'+
 		 '<div class="moderateBox_item" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_122" value="122"> </div> <div class="moderateBox_data"> <div class="b-antifraud"> <div class="name">Отсутствие товара</div> <div class="progress-line" style="display: none;"><div class="progress-bar"></div></div> <div class="description" style="display: none;"></div> </div> </div> </div>'+
 		 '</div>'+
 		 '<div class="moderateBox_item_container">'+
