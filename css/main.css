@@ -4407,19 +4407,18 @@ select.ah-form-control:focus {
 }
 
 /* Moderation Right bar statistic */
-#rightShotBar {
+#ah-rightShotBar {
     position: fixed;
     display: flex;
     justify-content: center;
     margin: auto;
-    width: 200px;
     bottom: 0;
     z-index: 1100;
     left: 50%;
     transform: translateX(-50%);
 }
 
-#personalStatistics {
+#ah-personalStatistics {
     cursor: pointer;
     background: #f5f5f5;
     border-top-left-radius: 5px;
@@ -4436,6 +4435,14 @@ select.ah-form-control:focus {
 
 .ah-info a:visited {
     color: rgb(143, 65, 65);
+}
+
+.ah-stat-block {
+    display: inline-block;
+}
+
+.ah-stat-block:not(:first-child) {
+    margin-left: 10px;
 }
 
 .searchByImageLinks {
