@@ -2,7 +2,6 @@
 function linksOnComments(tableClass, currentUserID) {
     $(tableClass+' .sh-unicode-links').detach();
 
-    var id = $('span.js-user-id').text();
     var n = $(tableClass).length;
 
     // Patterns
@@ -35,7 +34,13 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            // change to comparison link
+            // text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
+            let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+            for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
+
+            text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
 
             $(commentBlock).html(text);
         }
@@ -46,7 +51,13 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            // change to comparison link
+            // text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+
+            let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+            for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
+
+            text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
 
             $(commentBlock).html(text);
         }
