@@ -1,14 +1,16 @@
 
 function personalStatistics() {
+    if (window.location.href.indexOf("helpdesk") + 1) return;
+
     $('body').append('<div id="ah-rightShotBar"></div>');
     $('#ah-rightShotBar').append('<div id="ah-personalStatistics"></div>');
     $('#ah-personalStatistics').append('<div class="ah-statHide">Statistics</div>')
         .append('<div class="ah-statShow" style="display:none;"></div>');
     $('.ah-statShow')
-        .append('<div class="ah-stat-block" style="color: #ac212b">Users is blocked: <span id="ah-blockUserCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #c83daf">Items is blocked: <span id="ah-blockItemCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #e98b94">Items is rejected: <span id="ah-rejectItemCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #4c8b46;">Items is allowed: <span id="ah-allowAllCount">0</span></div>');
+        .append('<div class="ah-stat-block" style="color: #ac212b8a">Users is blocked: <span id="ah-blockUserCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #c83daf99">Items is blocked: <span id="ah-blockItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #e98b94cc">Items is rejected: <span id="ah-rejectItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #4c8b46b3;">Items is allowed: <span id="ah-allowAllCount">0</span></div>');
 
     chrome.storage.local.get(['mod_stat', 'currentDay'], function (result) {
         $('#blockUserCount').text(result.mod_stat.blockUserCount);
@@ -37,7 +39,6 @@ function personalStatistics() {
     });
 
     personalStatisticsMouse();
-    // setFixedElemUnderFooter($('#ah-rightShotBar'), 0);
 }
 
 function personalStatisticsMouse() {
