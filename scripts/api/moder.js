@@ -1194,13 +1194,13 @@ function getSettings() {
 
     const jsonOtherReasonsCategoryBox = [
         {
-            name: "Личные вещи", color: '#CCCC00', short_name: 'ЛВ', show: "false",
+            name: "Личные вещи", color: '#f4f400', short_name: 'ЛВ', show: "false",
             reason: [
-                { name: 'Одежда, обувь, аксессуары', color: '#FFFF00', short_name: 'ЛВ_Оде', show: "false" },
-                { name: 'Детская одежда и обувь', color: '#FFFF33', short_name: 'ЛВ_Дет', show: "false"  },
-                { name: 'Товары для детей и игрушки', color: '#FFFF66', short_name: 'ЛВ_Игр', show: "false"  },
-                { name: 'Красота и здоровье', color: '#FFFF99', short_name: 'ЛВ_Крас', show: "false"  },
-                { name: 'Часы и украшения', color: '#FFFFCC', short_name: 'ЛВ_Часы', show: "false"  }
+                { name: 'Одежда, обувь, аксессуары', color: '#dfcc01', short_name: 'ЛВ_Оде', show: "false" },
+                { name: 'Детская одежда и обувь', color: '#dfcf11', short_name: 'ЛВ_Дет', show: "false"  },
+                { name: 'Товары для детей и игрушки', color: '#dfd32f', short_name: 'ЛВ_Игр', show: "false"  },
+                { name: 'Красота и здоровье', color: '#dfd74a', short_name: 'ЛВ_Крас', show: "false"  },
+                { name: 'Часы и украшения', color: '#DFDD61', short_name: 'ЛВ_Часы', show: "false"  }
             ]
         },
         {
