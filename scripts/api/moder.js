@@ -1188,7 +1188,8 @@ function getSettings() {
     //RK Неправильная категория
     $('#divOptions').append('<div class="ah-chbx-category mh-options-group" style="display: none; margin: 5px;"></div>');
     $('.ah-chbx-category').append('' +
-        '<span style="color:red; font-size:17px;">Отклонение Неправильная категория с подписями</span>' +
+        '<span style="color:red; font-size:17px;">Отклонение "Неправильная категория с подписями"</span>' +
+        '<label class="mh-default-label" style="float: right; color: #9f0707">Авто кнопки с прогнозами <input class="mh-default-checkbox" type="checkbox" name="other" value="autoProbButtons" style="margin-right: 3px;"></label>' +
         '<div class="ah-chbx-category-body" style="white-space: nowrap; overflow: auto; width: 850px;"></div>');
 
     const jsonOtherReasonsCategoryBox = [
@@ -1459,12 +1460,20 @@ function getSettings() {
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
     if (!localStorage.autoCheckOtherReason) localStorage.autoCheckOtherReason = 'false';
+    if (!localStorage.autoProbButtons) localStorage.autoProbButtons = 'false';
 
     if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
     if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
     if (localStorage.autoCheckOtherReason === 'true') $('input[value="autoCheckOtherReason"]').prop('checked', true);
+    if (localStorage.autoProbButtons === 'true') $('input[value="autoProbButtons"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
+        if ($('input[value="autoProbButtons"]').prop('checked')) {
+            localStorage.autoProbButtons = 'true';
+        } else {
+            localStorage.autoProbButtons = 'false';
+        }
+
         if ($('input[value="activeItemsPre"]').prop('checked')) {
             localStorage.addElementsForEachItem = 'true';
         } else {

@@ -6,7 +6,7 @@ function premoderationsStartNew() {
     addElementsForEachItemNew();
 
     // Добавляет Info и Abuse и Block user
-    addsomeelementsNew();
+    addSomeElementsNew();
 
     // Сравнение фото
     comparePhotoPreNew();
@@ -254,20 +254,19 @@ function colorButtons() {
     }
 }
 
-function addsomeelementsNew() {
-    var user = $('.item-info-row_user-actions').length;
+function addSomeElementsNew() {
+    const trList = $('#items').find('tr');
 
-    for(var i=0; i<user; i++){
-        var id = $('#items tr').slice(i,i+1).find('a[href^="/users/user/info/"]').attr("href").split("/")[4];
-        var itemid = $('.item-info').slice(i,i+1).attr("id").replace('desc_', '');
-        var category = $('#items tr').slice(i,i+1).attr("data-category");
-        var params = $('#items tr').slice(i,i+1).attr("data-params-map");
-        params = params ? params.replace(/"/g, "&quot;") : '{}';
-        var cityItem = $('#items tr').slice(i,i+1).attr("data-location");
-        var type = $('#items tr').slice(i,i+1).find('.item-info-row-item-type:contains(Тип)').parent().text();
+    for(let i = 0; i < trList.length; i++){
+        const id = $(trList[i]).find('a[href^="/users/user/info/"]').attr("href").split("/")[4];
+        const itemid = $(trList[i]).attr("id").substring(5);
+        const category = $(trList[i]).attr("data-category");
+        const params = $(trList[i]).attr("data-params-map") ? $(trList[i]).attr("data-params-map").replace(/"/g, "&quot;") : '{}';
+        const cityItem = $(trList[i]).attr("data-location");
+        const type = $(trList[i]).find('.item-info-row-item-type:contains(Тип)').parent().text();
 
         // USER INFO and USER ABUSE
-        $('.item-info-name').slice(i,i+1)
+        $(trList[i]).find('.item-info-name')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'">WL</a></span>')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'">Abuses</a></span>')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;">' +
@@ -276,9 +275,15 @@ function addsomeelementsNew() {
                 '<input type="text" placeholder="Info query" class="infoQuery"></span>');
 
         // кнопки блокировки
-        if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
-        if (localStorage.createdButtons.indexOf('blockUser|&|PA')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="PA" title="Подозрительная активность">');
-        if (localStorage.createdButtons.indexOf('blockUser|&|BN')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="BN" title="Несколько учетных записей">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|PA')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="PA" title="Подозрительная активность">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|BN')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="BN" title="Несколько учетных записей">');
     }
 
     usersInfoAction();
@@ -311,7 +316,11 @@ function addsomeelementsNew() {
 
 function addElementsForEachItemNew() {
     // блок для кнопок хелпера
-    $('.item-info-row_user-actions').after('<div class="item-info-row mh_items"></div>');
+    $('.item-info-row_user-actions').after('<div class="item-info-row ah-mh-items">' +
+            '<div id="ah-but-reject-block"></div>' +
+            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span><span class="ah-but-auto-prob"></span></div>' +
+            '<div id="ah-but-block-users"></div>' +
+        '</div>');
 
     // для цикла
     let lastReject = '';
@@ -360,8 +369,14 @@ function addElementsForEachItemNew() {
                     }
 
                     $(trList[i])
-                        .find('.mh_items')
-                        .append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
+                        .find('#ah-but-reject-block')
+                        .append('<input type="button" ' +
+                            'value="' + name + '" ' +
+                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="' + reason + '" ' +
+                            'data-action="' + action + '" ' +
+                            'data-version="' + itemVersion + '">');
                 }
             }
         }
@@ -373,7 +388,7 @@ function addElementsForEachItemNew() {
             let category = localReasons[j];
 
             if (category.show === 'true') $(trList[i])
-                .find('.mh_items')
+                .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
                 .append('<input type="button" ' +
                     'value="' + category.short_name + '" ' +
                     'class="btn btn-default btn-sm mh-action-btn" ' +
@@ -396,9 +411,22 @@ function addElementsForEachItemNew() {
                         background = 'linear-gradient(to right, ' + category.reason[k].color +  '1f ' + probability + '%, #fff ' + probability + '%)';
                     }
 
-                if (category.reason[k].show === 'true' || probability > 0) {
+                if (category.reason[k].show === 'true') {
                     $(trList[i])
-                        .find('.mh_items')
+                        .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
+                        .append('<input type="button" ' +
+                            'value="' + category.reason[k].short_name + '" ' +
+                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="178" ' +
+                            'data-action="reject" ' +
+                            'data-version="' + itemVersion + '" ' +
+                            'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
+                            'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
+                            'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                } else if (probability > 0 && localStorage.autoProbButtons === 'true') {
+                    $(trList[i])
+                        .find('#ah-but-reject-with-comment .ah-but-auto-prob')
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
                             'class="btn btn-default btn-sm mh-action-btn" ' +
@@ -416,7 +444,7 @@ function addElementsForEachItemNew() {
     }
 
 
-    $('div.mh_items input.mh-action-btn').click(function() {
+    $('div.ah-mh-items input.mh-action-btn').click(function() {
         let dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
