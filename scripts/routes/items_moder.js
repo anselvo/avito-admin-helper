@@ -398,10 +398,10 @@ function addElementsForEachItemNew() {
                     'data-version="' + itemVersion + '" ' +
                     'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;" ' +
                     'title="' + category.name + '" ' +
-                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '; background: transparent">');
+                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '; background: white">');
 
             for (let k = 0; k < category.reason.length; ++k) {
-                let background = 'transparent';
+                let background = 'white';
                 let probability = 0;
 
                 for (let z = 0; z < prob.length; ++z)
