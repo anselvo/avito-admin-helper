@@ -317,7 +317,7 @@ function eyeLinks(list) {
 
 function addInfoToItems() {
     $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
-        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Показать' +
+        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown" style="padding: 1px 9px">Показать' +
         '  <span class="caret"></span></button>' +
         '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
         '</div>');

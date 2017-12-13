@@ -5701,3 +5701,17 @@ select.ah-form-control:focus {
 .ah-but-auto-prob {
     padding: 0 5px;
 }
+
+.ah-auto-refund-label {
+    cursor: pointer;
+    display: inline-block;
+    height: 23px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 5px;
+    margin-left: 5px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
