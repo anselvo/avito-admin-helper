@@ -632,22 +632,22 @@ function addElementsForEachItem() {
                     var action = tmpKey[j].split('|&|')[1];
                     var reason = tmpKey[j].split('|&|')[2];
 
-                    if (name == '') continue;
+                    if (name === '') continue;
 
-                    if (name == reason) { // для отклонений за "параметр" Адрес
+                    if (name === reason) { // для отклонений за "параметр" Адрес
                         reason = '175_' + paramId;
                     }
 
                     // console.log(reason);
 
-                    $('div.it_tiles').slice(i,i+1).append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
+                    $('div.it_tiles').slice(i,i+1).append('<input type="button" value="' + name + '" class="btn btn-default btn-sm ah-mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
                 }
             }
         }
     }
 
 
-    $('div.it_tiles input.mh-action-btn').click(function() {
+    $('div.it_tiles input.ah-mh-action-btn').click(function() {
         var dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
@@ -665,7 +665,7 @@ function addElementsForEachItem() {
     });
 
 
-    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.mh-action-btn").click(function(){
+    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function(){
         lastReject += $(this).parents('tr:eq(0)').attr("data-id")+ '|';
     });
 

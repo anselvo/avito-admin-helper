@@ -318,7 +318,7 @@ function addElementsForEachItemNew() {
     // блок для кнопок хелпера
     $('.item-info-row_user-actions').after('<div class="item-info-row ah-mh-items">' +
             '<div id="ah-but-reject-block"></div>' +
-            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span><span class="ah-but-auto-prob"></span></div>' +
+            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span> | <span class="ah-but-auto-prob"></span></div>' +
             '<div id="ah-but-block-users"></div>' +
         '</div>');
 
@@ -372,7 +372,7 @@ function addElementsForEachItemNew() {
                         .find('#ah-but-reject-block')
                         .append('<input type="button" ' +
                             'value="' + name + '" ' +
-                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
                             'bvalue="' + value + '" ' +
                             'data-reason="' + reason + '" ' +
                             'data-action="' + action + '" ' +
@@ -391,17 +391,17 @@ function addElementsForEachItemNew() {
                 .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
                 .append('<input type="button" ' +
                     'value="' + category.short_name + '" ' +
-                    'class="btn btn-default btn-sm mh-action-btn" ' +
+                    'class="btn btn-default btn-sm ah-mh-action-btn" ' +
                     'bvalue="' + value + '" ' +
                     'data-reason="178" ' +
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
                     'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;" ' +
                     'title="' + category.name + '" ' +
-                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '">');
+                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '; background: transparent">');
 
             for (let k = 0; k < category.reason.length; ++k) {
-                let background = '#fff';
+                let background = 'transparent';
                 let probability = 0;
 
                 for (let z = 0; z < prob.length; ++z)
@@ -416,7 +416,7 @@ function addElementsForEachItemNew() {
                         .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
-                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
                             'bvalue="' + value + '" ' +
                             'data-reason="178" ' +
                             'data-action="reject" ' +
@@ -429,7 +429,7 @@ function addElementsForEachItemNew() {
                         .find('#ah-but-reject-with-comment .ah-but-auto-prob')
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
-                            'class="btn btn-default btn-sm mh-action-btn" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
                             'bvalue="' + value + '" ' +
                             'data-reason="178" ' +
                             'data-action="reject" ' +
@@ -444,7 +444,7 @@ function addElementsForEachItemNew() {
     }
 
 
-    $('div.ah-mh-items input.mh-action-btn').click(function() {
+    $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
         let dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
@@ -462,7 +462,7 @@ function addElementsForEachItemNew() {
     });
 
 
-    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.mh-action-btn").click(function(){
+    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function(){
         lastReject += $(this).parents('tr:eq(0)').attr("data-id")+ '|';
     });
 
