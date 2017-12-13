@@ -395,12 +395,12 @@ function clickActionButton() {
     let showUserInfo = false;
 
     function clickPostUserAgent() {
-        let selector = $('.ah-postUserAgent');
-
         if (!showUserInfo) {
             showUserInfo = true;
             usersInfoForItems();
         }
+
+        let selector = $('.ah-postUserAgent');
 
         if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
             $('.ah-post-userAgent').hide();
@@ -413,6 +413,15 @@ function clickActionButton() {
     }
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
+
+    if (userGlobalInfo.subdivision === 'DJB' ||
+        userGlobalInfo.subdivision === 'DSR' ||
+        userGlobalInfo.subdivision === 'D3D' ||
+        userGlobalInfo.subdivision === 'DBH' ||
+        userGlobalInfo.subdivision === 'DRE' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'SD') clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
