@@ -398,7 +398,7 @@ function addElementsForEachItemNew() {
                     'data-version="' + itemVersion + '" ' +
                     'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;" ' +
                     'title="' + category.name + '" ' +
-                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '; background: white">');
+                    'style="box-shadow: inset 0 0 5px 0 ' + category.color + '; background: white">');
 
             for (let k = 0; k < category.reason.length; ++k) {
                 let background = 'white';
@@ -423,7 +423,7 @@ function addElementsForEachItemNew() {
                             'data-version="' + itemVersion + '" ' +
                             'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
                             'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
-                            'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                            'style="box-shadow: inset 0 0 5px 0 ' + category.reason[k].color + '; background: ' + background + '">');
                 } else if (probability > 0 && localStorage.autoProbButtons === 'true') {
                     $(trList[i])
                         .find('#ah-but-reject-with-comment .ah-but-auto-prob')
@@ -437,7 +437,7 @@ function addElementsForEachItemNew() {
                             'data-version="' + itemVersion + '" ' +
                             'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
                             'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
-                            'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                            'style="box-shadow: inset 0 0 5px 0 ' + category.reason[k].color + '; background: ' + background + '">');
                 }
 
             }
