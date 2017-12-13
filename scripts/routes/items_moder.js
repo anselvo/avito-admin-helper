@@ -318,7 +318,7 @@ function addElementsForEachItemNew() {
     // блок для кнопок хелпера
     $('.item-info-row_user-actions').after('<div class="item-info-row ah-mh-items">' +
             '<div id="ah-but-reject-block"></div>' +
-            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span> | <span class="ah-but-auto-prob"></span></div>' +
+            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span><span class="ah-but-auto-prob"></span></div>' +
             '<div id="ah-but-block-users"></div>' +
         '</div>');
 
@@ -427,6 +427,7 @@ function addElementsForEachItemNew() {
                 } else if (probability > 0 && localStorage.autoProbButtons === 'true') {
                     $(trList[i])
                         .find('#ah-but-reject-with-comment .ah-but-auto-prob')
+                        .css({ 'border-left': '1px solid black' })
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
                             'class="btn btn-default btn-sm ah-mh-action-btn" ' +

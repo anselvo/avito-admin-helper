@@ -5693,3 +5693,11 @@ select.ah-form-control:focus {
 .ah-mh-action-btn:not(:first-child) {
     margin-left: 1px;
 }
+
+.ah-but-not-auto-prob {
+    margin-right: 5px;
+}
+
+.ah-but-auto-prob {
+    padding: 0 5px;
+}
