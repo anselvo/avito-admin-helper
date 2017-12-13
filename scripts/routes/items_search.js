@@ -37,6 +37,17 @@ function showItemsInfoForItems() {
 
     $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
 
+    console.log(userGlobalInfo.subdivision);
+
+    if (userGlobalInfo.subdivision === 'DJB' ||
+        userGlobalInfo.subdivision === 'DSR' ||
+        userGlobalInfo.subdivision === 'D3D' ||
+        userGlobalInfo.subdivision === 'DBH' ||
+        userGlobalInfo.subdivision === 'DRE' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'SD') clickPostShowItemInfo();
+
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'I'.charCodeAt(0))
             clickPostShowItemInfo();
@@ -148,8 +159,8 @@ function postBlockUsers() {
     if (!sessionStorage.postBlockID) sessionStorage.postBlockID = '';
     if (!sessionStorage.postBlockActiveUserID) sessionStorage.postBlockActiveUserID = '';
 
-    addActionButton();
     addChooseButton();
+    addActionButton();
     usersListCheck();
 }
 
