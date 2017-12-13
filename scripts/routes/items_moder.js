@@ -82,7 +82,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 function abTestHighlight(categoryID, locationID, containsOption) {
     let items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
-    $(items).find('.item-info-row:eq(1)')
+    $(items).find('.item-info-row_user-actions').prev()
         .addClass('ah-ab-test-mark')
         .prepend('<div class="ah-ab-test">A/B TEST</div>');
 }

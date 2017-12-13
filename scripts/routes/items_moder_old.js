@@ -653,7 +653,7 @@ function addElementsForEachItem() {
             version: $(this).data('version'),
             action: $(this).data('action'),
             reason: String($(this).data('reason'))
-        }
+        };
 
 
         if (~dataObj.reason.indexOf('_')) {
