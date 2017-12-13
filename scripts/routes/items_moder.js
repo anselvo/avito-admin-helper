@@ -277,13 +277,13 @@ function addSomeElementsNew() {
         // кнопки блокировки
         if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)
             $(trList[i]).find('#ah-but-block-users')
-                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red ah-mh-action-btn" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
         if (localStorage.createdButtons.indexOf('blockUser|&|PA')+1 && type.indexOf('Магазин') === -1)
             $(trList[i]).find('#ah-but-block-users')
                 .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="PA" title="Подозрительная активность">');
         if (localStorage.createdButtons.indexOf('blockUser|&|BN')+1 && type.indexOf('Магазин') === -1)
             $(trList[i]).find('#ah-but-block-users')
-                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="BN" title="Несколько учетных записей">');
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red ah-mh-action-btn" value="BN" title="Несколько учетных записей">');
     }
 
     usersInfoAction();

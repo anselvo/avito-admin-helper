@@ -13,18 +13,18 @@ function personalStatistics() {
         .append('<div class="ah-stat-block" style="color: #4c8b46b3;">Items is allowed: <span id="ah-allowAllCount">0</span></div>');
 
     chrome.storage.local.get(['mod_stat', 'currentDay'], function (result) {
-        $('#blockUserCount').text(result.mod_stat.blockUserCount);
-        $('#blockItemCount').text(result.mod_stat.blockItemCount);
-        $('#rejectItemCount').text(result.mod_stat.rejectItemCount);
-        $('#allowAllCount').text(result.mod_stat.allowAllCount);
+        $('#ah-blockUserCount').text(result.mod_stat.blockUserCount);
+        $('#ah-blockItemCount').text(result.mod_stat.blockItemCount);
+        $('#ah-rejectItemCount').text(result.mod_stat.rejectItemCount);
+        $('#ah-allowAllCount').text(result.mod_stat.allowAllCount);
     });
 
     chrome.storage.onChanged.addListener(function (result) {
         if ("mod_stat" in result) {
-            $('#blockUserCount').text(result.mod_stat.newValue.blockUserCount);
-            $('#blockItemCount').text(result.mod_stat.newValue.blockItemCount);
-            $('#rejectItemCount').text(result.mod_stat.newValue.rejectItemCount);
-            $('#allowAllCount').text(result.mod_stat.newValue.allowAllCount);
+            $('#ah-blockUserCount').text(result.mod_stat.newValue.blockUserCount);
+            $('#ah-blockItemCount').text(result.mod_stat.newValue.blockItemCount);
+            $('#ah-rejectItemCount').text(result.mod_stat.newValue.rejectItemCount);
+            $('#ah-allowAllCount').text(result.mod_stat.newValue.allowAllCount);
         }
     });
 
