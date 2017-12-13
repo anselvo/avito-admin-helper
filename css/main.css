@@ -1364,6 +1364,12 @@ input[id ^= "sh-quick-theme-btn"]:active {
 	background: #f4f8ff;
 }
 
+#divOptions input[type="checkbox"] {
+    vertical-align: bottom;
+    position: relative;
+    top: -3px;
+}
+
 .ah-highlight-words  {
 	background: #ffaa1a;
 	color:#fff;
