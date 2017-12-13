@@ -1188,18 +1188,19 @@ function getSettings() {
     //RK Неправильная категория
     $('#divOptions').append('<div class="ah-chbx-category mh-options-group" style="display: none; margin: 5px;"></div>');
     $('.ah-chbx-category').append('' +
-        '<span style="color:red; font-size:17px;">Отклонение Неправильная категория с подписями</span>' +
+        '<span style="color:red; font-size:17px;">Отклонение "Неправильная категория с подписями"</span>' +
+        '<label class="mh-default-label" style="float: right; color: #9f0707">Авто кнопки с прогнозами <input class="mh-default-checkbox" type="checkbox" name="other" value="autoProbButtons" style="margin-right: 3px;"></label>' +
         '<div class="ah-chbx-category-body" style="white-space: nowrap; overflow: auto; width: 850px;"></div>');
 
     const jsonOtherReasonsCategoryBox = [
         {
-            name: "Личные вещи", color: '#CCCC00', short_name: 'ЛВ', show: "false",
+            name: "Личные вещи", color: '#f4f400', short_name: 'ЛВ', show: "false",
             reason: [
-                { name: 'Одежда, обувь, аксессуары', color: '#FFFF00', short_name: 'ЛВ_Оде', show: "false" },
-                { name: 'Детская одежда и обувь', color: '#FFFF33', short_name: 'ЛВ_Дет', show: "false"  },
-                { name: 'Товары для детей и игрушки', color: '#FFFF66', short_name: 'ЛВ_Игр', show: "false"  },
-                { name: 'Красота и здоровье', color: '#FFFF99', short_name: 'ЛВ_Крас', show: "false"  },
-                { name: 'Часы и украшения', color: '#FFFFCC', short_name: 'ЛВ_Часы', show: "false"  }
+                { name: 'Одежда, обувь, аксессуары', color: '#dfcc01', short_name: 'ЛВ_Оде', show: "false" },
+                { name: 'Детская одежда и обувь', color: '#dfcf11', short_name: 'ЛВ_Дет', show: "false"  },
+                { name: 'Товары для детей и игрушки', color: '#dfd32f', short_name: 'ЛВ_Игр', show: "false"  },
+                { name: 'Красота и здоровье', color: '#dfd74a', short_name: 'ЛВ_Крас', show: "false"  },
+                { name: 'Часы и украшения', color: '#DFDD61', short_name: 'ЛВ_Часы', show: "false"  }
             ]
         },
         {
@@ -1459,12 +1460,20 @@ function getSettings() {
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
     if (!localStorage.autoCheckOtherReason) localStorage.autoCheckOtherReason = 'false';
+    if (!localStorage.autoProbButtons) localStorage.autoProbButtons = 'false';
 
     if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
     if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
     if (localStorage.autoCheckOtherReason === 'true') $('input[value="autoCheckOtherReason"]').prop('checked', true);
+    if (localStorage.autoProbButtons === 'true') $('input[value="autoProbButtons"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
+        if ($('input[value="autoProbButtons"]').prop('checked')) {
+            localStorage.autoProbButtons = 'true';
+        } else {
+            localStorage.autoProbButtons = 'false';
+        }
+
         if ($('input[value="activeItemsPre"]').prop('checked')) {
             localStorage.addElementsForEachItem = 'true';
         } else {
@@ -1487,8 +1496,9 @@ function getSettings() {
 
     // кнопки
     $('#divOptions').append('<div class="btn-ok-cancel" style="text-align: center; margin-top: 10px;"></div>');
-    $('.btn-ok-cancel').append('<button id="butOkDivSettings" class="divOptions mh-default-btn" style="width:110px; margin-right: 6px;"><span class="mh-button-label mh-green-background">&#10003;</span>Ок</button>');
-    $('.btn-ok-cancel').append('<button id="butCanselDivSettings" class="divOptions mh-default-btn" style="width:110px;"><span class="mh-button-label mh-red-background">&#10007;</span>Отмена</button>');
+    $('.btn-ok-cancel')
+        .append('<button id="butOkDivSettings" class="divOptions mh-default-btn" style="width:110px; margin-right: 6px;"><span class="mh-button-label mh-green-background">&#10003;</span>Ок</button>')
+        .append('<button id="butCanselDivSettings" class="divOptions mh-default-btn" style="width:110px;"><span class="mh-button-label mh-red-background">&#10007;</span>Отмена</button>');
 
     $('#butOkDivSettings').click(function() {
         localStorage.eyeParamList = $('#eyeParamList').val();
