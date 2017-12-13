@@ -66,6 +66,13 @@ function itemsInfoForItems() {
             .find('.description-cell')
             .append('<div class="ah-item-info ah-item-info-main" itemid="' + id + '"></div>');
 
+        $(itemList[i])
+            .find('.item_title')
+            .next()
+            .after('<span class="ah-auto-refund" itemid="' + id + '"></span>');
+
+
+
         loadItemInfo(id);
     }
 }
@@ -87,17 +94,41 @@ function loadItemInfo(id) {
             let historyTable = $(response).find('[data-url*="frst_history"] tbody tr');
             let lastStatus = null;
             let lastTime = null;
-            for (let i = 0, j = 0; i < historyTable.length; ++i) {
-                let tmp = $(historyTable[i]).find('td:eq(2)').text();
-                if (tmp !== '') {
-                    ++j;
-                    if (j === 2) {
-                        lastStatus = tmp;
-                        lastTime = $(historyTable[i]).find('td:eq(0)').text();
-                        break;
-                    }
+
+            let refundWallet = false;
+            let refundWalletTime = null;
+            let refundPackage = false;
+            let refundPackageTime = null;
+
+            for (let i = 0; i < historyTable.length; ++i) {
+                let time = $(historyTable[i]).find('td:eq(0)').text();
+                let status = $(historyTable[i]).find('td:eq(2)').text();
+                let payEvent = $(historyTable[i]).find('td:eq(3)').text();
+
+                if (payEvent === 'Refund to wallet' && !refundWallet) {
+                    refundWallet = true;
+                    refundWalletTime = time;
+                }
+                if (payEvent === 'Refund to package' && !refundPackage) {
+                    refundPackage = true;
+                    refundPackageTime = time;
+                }
+
+                if (status !== '' && !lastStatus) {
+                    lastStatus = status;
+                    lastTime = time;
                 }
             }
+
+            if (refundWallet) $('.ah-auto-refund[itemid="' + id + '"')
+                .append('<div class="ah-auto-refund-label" ' +
+                    'title="Refund to wallet\nLast refund to wallet at ' + refundWalletTime+ '" ' +
+                    'style="background: #ffe168">RW</div>');
+
+            if (refundPackage) $('.ah-auto-refund[itemid="' + id + '"')
+                .append('<div class="ah-auto-refund-label" ' +
+                    'title="Refund to package\nLast refund to package at ' + refundPackageTime + '" ' +
+                    'style="background: #90CAF9; width: 25px">RP</div>');
 
             if (address) $('.ah-item-info-main[itemid="' + id + '"').append(
                 '<hr style="margin: 3px 0 3px">' +
