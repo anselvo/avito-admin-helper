@@ -5513,3 +5513,60 @@ select.ah-form-control:focus {
 .ah-fees-modal-open-search:visited {
     color: #333 !important;
 }
+
+/*shop moderation*/
+.ah-shop-moderation-section .ah-shop-moderation-form-panel {
+    width: 50%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-form-panel h4 {
+    margin: 0;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-form-panel .ah-overlay-text {
+    font-size: 18px;
+}
+
+.ah-shop-moderation-mail-form label {
+    font-weight: normal;
+}
+
+.ah-shop-moderation-mail-form .ah-template-dropdown {
+    display: inline-block;
+}
+
+.ah-shop-moderation-mail-form .ah-message-text-input {
+    min-height: 150px;
+    white-space: pre-wrap;
+    height: auto;
+}
+
+.ah-shop-moderation-mail-form  .ah-template-dropdown ul > li > a {
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-text {
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-image {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    margin: 0;
+    padding-bottom: 4px;
+}
+
+.ah-shop-moderation-label-text input[type=checkbox],
+.ah-shop-moderation-label-image input[type=checkbox] {
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-text input[type=checkbox] {
+    margin: 0 0 1px;
+    vertical-align: middle;
+}

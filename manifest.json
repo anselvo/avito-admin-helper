@@ -51,6 +51,7 @@
 				"scripts/routes/users_search.js",
 				"scripts/routes/users_account_info.js",
 				"scripts/routes/shops_info_view.js",
+				"scripts/routes/shops_moderation.js",
 				"scripts/routes/system_access.js",
 				"scripts/routes/helpdesk.js",
 				"scripts/routes/helpdesk_details.js",

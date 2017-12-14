@@ -114,3 +114,32 @@ function getNegativeUsersRequest() {
         );
     });
 }
+
+function getShopModerationTemplates() {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "GET",
+                url: "http://spring.avitoadm.ru/traffic/template/list"
+            },
+            function (response) {
+                if (response === 'error') {
+                    reject({success: false});
+                }
+
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                if (json.error && json.status !== 200) {
+                    reject(json);
+                }
+
+                resolve(json);
+            }
+        );
+    });
+}
