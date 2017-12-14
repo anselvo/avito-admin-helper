@@ -100,7 +100,7 @@ function loadItemInfo(id) {
             let refundPackage = false;
             let refundPackageTime = null;
 
-            for (let i = 0; i < historyTable.length; ++i) {
+            for (let i = 0, statusCnt = 0; i < historyTable.length; ++i) {
                 let time = $(historyTable[i]).find('td:eq(0)').text();
                 let status = $(historyTable[i]).find('td:eq(2)').text();
                 let payEvent = $(historyTable[i]).find('td:eq(3)').text();
@@ -115,8 +115,11 @@ function loadItemInfo(id) {
                 }
 
                 if (status !== '' && !lastStatus) {
-                    lastStatus = status;
-                    lastTime = time;
+                	++statusCnt;
+                	if (statusCnt === 2) {
+                        lastStatus = status;
+                        lastTime = time;
+                    }
                 }
             }
 
