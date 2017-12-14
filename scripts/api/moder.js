@@ -83,8 +83,7 @@ function autoOtherReasons() {
 }
 
 function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
-    const ahReasonSelector = $('.ah-other-reasons');
-    ahReasonSelector.remove();
+    $('.ah-other-reasons').remove();
 
     const otherReasonsCategory = {
         name: "Неправильная категория",
@@ -120,7 +119,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
             addAutoCheckSuggestReason(block[i], reasonSelector);
     }
 
-    ahReasonSelector.click(function (event) {
+    $('.ah-other-reasons').click(function (event) {
         event.stopPropagation();
     });
 
