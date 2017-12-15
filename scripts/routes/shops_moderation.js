@@ -47,6 +47,9 @@ ShopModeration.prototype.addMailForm = function () {
     section.querySelector('.panel-body').appendChild(form);
     this.mainBlock.appendChild(section);
 
+    this.section = section;
+    this.shopId = shopId;
+
     const messageInput = form.querySelector('.ah-message-text-input');
 
     getShopModerationTemplates()
@@ -303,4 +306,38 @@ ShopModeration.prototype.addCoordinationControls = function () {
             }
         }
     });
+};
+
+ShopModeration.prototype.addShopInfo = function () {
+    const infoPanel = document.createElement('div');
+    const panelBody = document.createElement('div');
+
+    infoPanel.className = 'panel panel-info ah-shop-moderation-info-panel';
+    infoPanel.innerHTML = `<div class="panel-heading"><h4>Магазин</h4></div>`;
+
+    panelBody.className = 'panel-body';
+    panelBody.innerHTML = `<span class="text-muted">Загрузка информации...</span>`;
+
+    infoPanel.appendChild(panelBody);
+    this.section.appendChild(infoPanel);
+
+    getShopInfo(this.shopId)
+        .then(response => {
+            renderShopInfo(getParamsShopInfo($(response)));
+        }, error => {
+            panelBody.innerHTML = `
+                <span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+            `;
+        });
+
+    function renderShopInfo(shop) {
+        panelBody.innerHTML = `
+            <div class="ah-shop-moderation-info-row">
+                <label>Тариф: </label> ${shop.mainInfo.tariff}
+            </div>
+            <div class="ah-shop-moderation-info-row">
+                <label>Персональный менеджер: </label> ${shop.personalManager}
+            </div>
+        `;
+    }
 };

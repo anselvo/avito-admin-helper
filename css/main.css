@@ -5515,18 +5515,29 @@ select.ah-form-control:focus {
 }
 
 /*shop moderation*/
-.ah-shop-moderation-section .ah-shop-moderation-form-panel {
-    width: 50%;
-    margin: 0 auto;
-    position: relative;
+.ah-shop-moderation-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-form-panel h4 {
+.ah-shop-moderation-section .panel h4 {
     margin: 0;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-form-panel {
+    width: 45%;
+    margin: 0 10px 0 0;
+    position: relative;
 }
 
 .ah-shop-moderation-section .ah-shop-moderation-form-panel .ah-overlay-text {
     font-size: 18px;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-info-panel {
+    width: 25%;
+    margin: 0;
 }
 
 .ah-shop-moderation-mail-form label {
@@ -5545,6 +5556,14 @@ select.ah-form-control:focus {
 
 .ah-shop-moderation-mail-form  .ah-template-dropdown ul > li > a {
     cursor: pointer;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-row {
+    padding: 4px 0;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-row label {
+    margin: 0;
 }
 
 .ah-shop-moderation-label-text {
