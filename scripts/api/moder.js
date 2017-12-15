@@ -585,7 +585,7 @@ function usersInfoForManyItems(id) {
         if (request.readyState === 4 && request.status === 200)  {
             let r = request.responseText;
 
-            let userAgent = $(r).find('.help-block:eq(7)').text();
+            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения)').text();
             let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
@@ -602,29 +602,59 @@ function usersInfoForManyItems(id) {
 // ССЫЛКИ НА ПОИСК ПО КАРТИНКЕ
 
 function searchByImageLinks() {
-    $('.js-images-preview').click(function () {
-        var interval = setInterval(function () {
-            let list = $('.images-preview-gallery-item');
+    let target = $('body')[0];
 
-            if (list.length > 0) {
-                clearInterval(interval);
+    let observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            // console.log(mutation);
+            if ($(mutation.addedNodes[0]).hasClass('js-images-preview-gallery')) {
+                watchForGalleryOnPre();
 
-                for (let i = 0; i < list.length; ++i) {
-                    let url = $(list[i]).find('a').attr('href').substr(2);
-                    let existLinks = $(list[i]).find('.searchByImageLinks');
-
-                    if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
-                            '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
-                                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
-                            '</a> ' +
-                            '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
-                                '<span>Y</span><span>andex</span>' +
-                            '</a> ' +
-                        '</div>');
-                }
+                observer.disconnect();
             }
-        }, 200);
+        });
     });
+
+    let config = { childList: true };
+
+    observer.observe(target,  config);
+}
+
+function watchForGalleryOnPre() {
+    let target = $('.js-images-preview-gallery')[0];
+
+    let observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) {
+                searchByImageLinks1();
+            }
+        });
+    });
+
+    let config = { childList: true };
+
+    observer.observe(target,  config);
+}
+
+function searchByImageLinks1() {
+    let list = $('.images-preview-gallery-item');
+
+    if (list.length > 0) {
+
+        for (let i = 0; i < list.length; ++i) {
+            let url = $(list[i]).find('a').attr('href').substr(2);
+            let existLinks = $(list[i]).find('.searchByImageLinks');
+
+            if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
+                '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
+                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
+                '</a> ' +
+                '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
+                '<span>Y</span><span>andex</span>' +
+                '</a> ' +
+                '</div>');
+        }
+    }
 }
 
 // ССЫЛКИ НА ПОИСК ПО КАРТИНКЕ
