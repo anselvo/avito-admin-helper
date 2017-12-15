@@ -4849,6 +4849,26 @@ select.ah-form-control:focus {
     background: #ebd3ff;
 }
 
+.ah-ab-test-photo {
+    display: inline-block;
+    float: right;
+    padding: 0 5px;
+    cursor: pointer;
+    border-left: 1px solid #979797;
+}
+
+.ah-ab-test-photo-ok {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #ccc;
+    margin-left: 5px;
+    padding: 0 5px;
+}
+
+.ah-ab-test-photo-ok:hover {
+    background-color: rgba(230, 230, 230, 0.51);
+    border-color: #adadad;
+}
+
 .ah-other-reasons {
     display: none;
     position: absolute;

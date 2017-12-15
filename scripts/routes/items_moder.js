@@ -80,9 +80,58 @@ function markTestItems(categoryID, locationID, containsOption) {
 }
 
 function abTestHighlight(categoryID, locationID, containsOption) {
-    let items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+    let $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
-    $(items).find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
+    $items.find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
+
+    abTestCheckedPhoto($items);
+}
+
+function abTestCheckedPhoto($items) {
+    for (let i = 0; i < $items.length; ++ i) {
+        const $item = $($items[i]);
+        const $id = $item.data('id');
+
+        getItemInfo($id).then(response => {
+            const $itemHistory = $(response).find('#dataTable tr');
+            let isPhotoChecked = false;
+            let time = '', username = '';
+
+            for (let j = 0; j < $itemHistory.length; ++j) {
+                const $comment = $($itemHistory[j]).find("td:eq(2)").text();
+
+                if ($comment.indexOf('#ab-photos-checked') + 1) {
+                    time = $($itemHistory[j]).find("td:eq(0)").text();
+                    username = $($itemHistory[j]).find("td:eq(1)").text();
+
+                    isPhotoChecked = true;
+                    break;
+                }
+            }
+
+            let photoSpan = '';
+            if (isPhotoChecked) {
+                photoSpan = '<span style="color: #229048" title="Последния проверка: ' + username + ' в ' + time + '">' +
+                    'Фото проверены <i class="glyphicon glyphicon-thumbs-up"></i>' +
+                    '</span>';
+            } else {
+                photoSpan = '<span style="color: #9c2323">Фото не проверены <i class="glyphicon glyphicon-thumbs-down"></i></span>' +
+                    '<input class="ah-ab-test-photo-ok" type="button" value="Проверить" title="Пометить фото как проверенные">';
+            }
+
+            let checkedClass = $('<div class="ah-ab-test-photo"></div>').append(photoSpan);
+
+            $item.find('.ah-ab-test-mark').append(checkedClass);
+
+            checkedClass.find('.ah-ab-test-photo-ok').click(function () {
+                checkedClass.html('<span style="color: #229048" title="Проверенно вами">' +
+                        'Фото проверены <i class="glyphicon glyphicon-thumbs-up"></i>' +
+                    '</span>');
+
+                commentOnItem($id, '#ab-photos-checked');
+            });
+        });
+    }
 }
 
 function hideSubcategory() {
@@ -402,12 +451,14 @@ function addElementsForEachItemNew() {
                 let background = 'white';
                 let probability = 0;
 
-                for (let z = 0; z < prob.length; ++z)
-                    if (prob[z] && prob[z].categoryName === category.name + ' / ' + category.reason[k].name) {
-                        probability = prob[z].prob.toFixed(2) * 100;
+                if (prob) {
+                    for (let z = 0; z < prob.length; ++z)
+                        if (prob[z] && prob[z].categoryName === category.name + ' / ' + category.reason[k].name) {
+                            probability = prob[z].prob.toFixed(2) * 100;
 
-                        background = 'linear-gradient(to right, ' + category.reason[k].color +  '1f ' + probability + '%, #fff ' + probability + '%)';
-                    }
+                            background = 'linear-gradient(to right, ' + category.reason[k].color + '1f ' + probability + '%, #fff ' + probability + '%)';
+                        }
+                }
 
                 if (category.reason[k].show === 'true') {
                     $(trList[i])
