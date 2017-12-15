@@ -4854,6 +4854,7 @@ select.ah-form-control:focus {
     float: right;
     padding: 0 5px;
     cursor: pointer;
+    background: rgb(235, 211, 255);;
     border-left: 1px solid #979797;
 }
 
