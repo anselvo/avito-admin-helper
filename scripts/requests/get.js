@@ -143,3 +143,28 @@ function getShopModerationTemplates() {
         );
     });
 }
+
+function getShopRegexp() {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "GET",
+                url: "http://avitoadm.ru/traffic_helper/getRegExp.php"
+            },
+            function (response) {
+                if (response === 'error') {
+                    reject({success: false});
+                }
+
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                resolve(json);
+            }
+        );
+    });
+}

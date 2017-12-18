@@ -5517,17 +5517,16 @@ select.ah-form-control:focus {
 /*shop moderation*/
 .ah-shop-moderation-section {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: flex-start;
 }
 
-.ah-shop-moderation-section .panel h4 {
+.ah-shop-moderation-section .panel-heading h4 {
     margin: 0;
 }
 
 .ah-shop-moderation-section .ah-shop-moderation-form-panel {
-    width: 45%;
-    margin: 0 10px 0 0;
+    width: 48%;
     position: relative;
 }
 
@@ -5536,8 +5535,7 @@ select.ah-form-control:focus {
 }
 
 .ah-shop-moderation-section .ah-shop-moderation-info-panel {
-    width: 25%;
-    margin: 0;
+    width: 48%;
 }
 
 .ah-shop-moderation-mail-form label {
@@ -5558,12 +5556,21 @@ select.ah-form-control:focus {
     cursor: pointer;
 }
 
-.ah-shop-moderation-info-panel .ah-shop-moderation-info-row {
-    padding: 4px 0;
+.ah-shop-moderation-info-panel .panel-body {
+    padding-top: 0;
 }
 
-.ah-shop-moderation-info-panel .ah-shop-moderation-info-row label {
-    margin: 0;
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
+    width: 100%;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table td {
+    padding: 4px;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table td:first-child {
+    width: 30%;
+    color: rgb(149, 149, 149);
 }
 
 .ah-shop-moderation-label-text {
@@ -5588,4 +5595,18 @@ select.ah-form-control:focus {
 .ah-shop-moderation-label-text input[type=checkbox] {
     margin: 0 0 1px;
     vertical-align: middle;
+}
+
+.ah-shop-moderation-matched-container.alert {
+    padding: 4px 8px;
+    margin: 2px 0 0;
+    font-size: 13px;
+}
+
+.ah-shop-moderation-scrollable-row {
+    cursor: pointer;
+}
+
+.ah-shop-moderation-scrollable-row:hover {
+    background-color: rgb(245, 245, 245);
 }

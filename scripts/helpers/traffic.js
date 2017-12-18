@@ -20,7 +20,7 @@ function startTraffic() {
             if (shopModeration.mainBlock.querySelector('[data-section]')) {
                 shopModeration.addMailForm();
                 shopModeration.addCoordinationControls();
-                shopModeration.addShopInfo();
+                shopModeration.addBrief();
 			}
         }
 		

@@ -1,5 +1,9 @@
 function ShopModeration() {
     this.mainBlock = document.querySelector('.shop-moderation');
+    this.pseudoInputsChanged = this.mainBlock.querySelectorAll('.shop-moderation-list-cell_changes .pseudo-input');
+    this.patterns = {
+        inputChangedValue: /(<del>[\s\S][^>]+>)|(<[^>]+>)/gi
+    };
 }
 
 ShopModeration.prototype.addMailForm = function () {
@@ -182,7 +186,6 @@ ShopModeration.prototype.addMailForm = function () {
 
 ShopModeration.prototype.addCoordinationControls = function () {
     const self = this;
-    const allPseudoInputs = this.mainBlock.querySelectorAll('.shop-moderation-list-cell_changes .pseudo-input');
     const shopSection = this.mainBlock.querySelector('section[data-section="shop"]');
     const shopLabels = shopSection.querySelectorAll('.shop-moderation-list-cell_changes .shop-moderation-list-cell-name');
 
@@ -198,10 +201,10 @@ ShopModeration.prototype.addCoordinationControls = function () {
         (label.textContent === 'Фон' && label.closest('.shop-moderation-list-cell_original'))
     );
 
-    allPseudoInputs.forEach(item => {
+    this.pseudoInputsChanged.forEach(item => {
         const cellName = item.closest('.shop-moderation-list-cell').querySelector('.shop-moderation-list-cell-name');
         const fieldName = (cellName.textContent === 'Information line') ? 'Информационная строка' : cellName.textContent;
-        const fieldValue = item.innerHTML.replace(/(<del>[\s\S][^>]+>)|(<[^>]+>)/gi,'');
+        const fieldValue = item.innerHTML.replace(this.patterns.inputChangedValue,'');
         const sectionName = cellName.closest('.shop-moderation-section').dataset.section;
         const checkboxLabel = document.createElement('label');
         let sectionNameFormatted = '';
@@ -308,36 +311,138 @@ ShopModeration.prototype.addCoordinationControls = function () {
     });
 };
 
-ShopModeration.prototype.addShopInfo = function () {
+ShopModeration.prototype.addBrief = function () {
+    const self = this;
     const infoPanel = document.createElement('div');
     const panelBody = document.createElement('div');
+    const fieldsInfoSection = document.createElement('section');
+    const keyWordsSection = document.createElement('section');
 
     infoPanel.className = 'panel panel-info ah-shop-moderation-info-panel';
-    infoPanel.innerHTML = `<div class="panel-heading"><h4>Магазин</h4></div>`;
+    infoPanel.innerHTML = `<div class="panel-heading"><h4>Сводка</h4></div>`;
 
     panelBody.className = 'panel-body';
-    panelBody.innerHTML = `<span class="text-muted">Загрузка информации...</span>`;
 
+    fieldsInfoSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
+    keyWordsSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
+
+    panelBody.appendChild(fieldsInfoSection);
+    panelBody.appendChild(keyWordsSection);
     infoPanel.appendChild(panelBody);
     this.section.appendChild(infoPanel);
 
     getShopInfo(this.shopId)
         .then(response => {
-            renderShopInfo(getParamsShopInfo($(response)));
+            const info = getParamsShopInfo($(response));
+            renderFieldsInfo(info);
         }, error => {
-            panelBody.innerHTML = `
+            fieldsInfoSection.innerHTML = `
                 <span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
         });
 
-    function renderShopInfo(shop) {
-        panelBody.innerHTML = `
-            <div class="ah-shop-moderation-info-row">
-                <label>Тариф: </label> ${shop.mainInfo.tariff}
-            </div>
-            <div class="ah-shop-moderation-info-row">
-                <label>Персональный менеджер: </label> ${shop.personalManager}
-            </div>
+    getShopRegexp()
+        .then(regs => {
+            renderKeyWords(regs);
+        }, () => {
+            keyWordsSection.innerHTML = `
+                <span class="text-danger">Произошла техническая ошибка</span>
+            `;
+        });
+
+    function renderFieldsInfo(shop) {
+        fieldsInfoSection.innerHTML = `
+            <h4>Поля</h4>
+            <table class="ah-shop-moderation-info-table">
+                <tr>
+                    <td>Тариф</td>
+                    <td>${shop.mainInfo.tariff}</td>
+                </tr>
+                <tr>
+                    <td>Персональный менеджер</td>
+                    <td>${shop.personalManager}</td>
+                </tr>
+            </table>
         `;
     }
+
+    function renderKeyWords(regs) {
+        const table = document.createElement('table');
+
+        table.className = 'ah-shop-moderation-info-table';
+        keyWordsSection.innerHTML = `
+            <h4>Ключевые слова и фразы</h4>
+        `;
+        keyWordsSection.appendChild(table);
+
+        self.pseudoInputsChanged.forEach(item => {
+            const cellName = item.closest('.shop-moderation-list-cell').querySelector('.shop-moderation-list-cell-name');
+            const fieldName = cellName.textContent.trim();
+            const fieldValue = item.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
+            const sectionName = cellName.closest('.shop-moderation-section').dataset.section;
+            let matchArr = [];
+
+            regs.forEach(reg => {
+                const regObj = new RegExp(reg.true_reg, "gi");
+                let result;
+
+                while (result = regObj.exec(fieldValue)) {
+                    matchArr.push({
+                        value: result[0]
+                    });
+                }
+            });
+
+            if (matchArr.length !== 0) {
+                const row = document.createElement('tr');
+                const alert = document.createElement('div');
+                let sectionNameFormatted = '';
+
+                switch (sectionName) {
+                    case 'shop':
+                        sectionNameFormatted = 'магазин';
+                        break;
+                    case 'delivery':
+                        sectionNameFormatted = 'доставка';
+                        break;
+                    case 'payment':
+                        sectionNameFormatted = 'оплата';
+                        break;
+                    case 'url':
+                        sectionNameFormatted = 'URL';
+                        break;
+                }
+
+                row.className = 'ah-shop-moderation-scrollable-row';
+                row.setAttribute('data-section-name', sectionName);
+                row.setAttribute('data-field-name', fieldName);
+                row.innerHTML = `
+                    <td>${fieldName} (${sectionNameFormatted})</td>
+                    <td>${matchArr.map(item => `<span>${item.value}</span>`).join(' | ')}</td>
+                `;
+                table.appendChild(row);
+
+                alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
+                alert.innerHTML = `${matchArr.map(item => `<span>${item.value}</span>`).join(' | ')}`;
+                item.parentNode.appendChild(alert);
+            }
+        });
+    }
+
+    keyWordsSection.addEventListener('click', function(e) {
+        const target = e.target;
+
+        if (target.closest('.ah-shop-moderation-scrollable-row')) {
+            try {
+                const row = target.closest('.ah-shop-moderation-scrollable-row');
+                const section = self.mainBlock.querySelector(`.shop-moderation-section[data-section="${row.dataset.sectionName}"]`);
+                const allLabels = section.querySelectorAll('.shop-moderation-list-cell_changes .shop-moderation-list-cell-name');
+                const targetLabel = [].find.call(allLabels, label => label.textContent.trim() === row.dataset.fieldName);
+                const targetField = targetLabel.closest('.shop-moderation-list-row');
+                scrollToElem(targetField);
+            } catch (e) {
+                alert(`Произошла техническая ошибка`);
+            }
+        }
+    })
 };
