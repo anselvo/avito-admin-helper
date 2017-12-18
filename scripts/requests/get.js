@@ -114,3 +114,14 @@ function getNegativeUsersRequest() {
         );
     });
 }
+
+function getImageByItemId(id) {
+    return fetch(`https://adm.avito.ru/items/moder/images?item_id=${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}

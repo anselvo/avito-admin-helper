@@ -20,8 +20,9 @@ function copyItemIdsComparisonPage() {
 function comparisonInfoOld() {
     var len = $('.item-title').length;
 
-    $('.items-table tr:eq(0)').after('<tr id="itemIP"><th>IP</th></tr>');
-    $('.items-table tr:eq(0)').after('<tr id="startTime"><th>Start time</th></tr>');
+    $('.items-table tr:eq(0)')
+        .after('<tr id="itemIP"><th>IP</th></tr>')
+        .after('<tr id="startTime"><th>Start time</th></tr>');
 
     var currentUserID = $('.user-login-wrap:eq(0) a').attr('href').split('/');
 
@@ -35,7 +36,7 @@ function comparisonInfoOld() {
             $('#startTime').append('<td item="'+item+'"></td>');
             $('.item-sort-time').slice(i,i+1).append('<span item="'+item+'"> </span>');
 
-            if ($('.row-user-block td').slice(i,i+1).text().indexOf('Заблокированных') == -1) {
+            if ($('.row-user-block td').slice(i,i+1).text().indexOf('Заблокированных') === -1) {
                 $('.row-user-block td').slice(i,i+1).append('<div style="margin-top:5px;"><a href="#" class="red moсx" userID="'+userID[4]+'"><i class="glyphicon glyphicon-ban-circle"> </i> Мошенническая схема</a></div>');
                 $('.row-user-block td').slice(i,i+1).append('<div style="margin-top:5px;"><a href="#" class="red padact" userID="'+userID[4]+'"><i class="glyphicon glyphicon-ban-circle"> </i> Подозрительная активность</a></div>');
             }
@@ -80,7 +81,7 @@ function loadItem(i, item) {
     request.open("GET", url, true);
     request.send(null);
     request.onreadystatechange=function() {
-        if (request.readyState == 4 && request.status == 200)  {
+        if (request.readyState === 4 && request.status === 200)  {
             var r = request.responseText;
 
             var sortTime = $(r).find('[title="Sort time"]').text().split(' ');

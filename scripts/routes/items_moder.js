@@ -1,4 +1,3 @@
-
 function premoderationsStartNew() {
     // таймер
     preTimer();
@@ -7,7 +6,7 @@ function premoderationsStartNew() {
     addElementsForEachItemNew();
 
     // Добавляет Info и Abuse и Block user
-    addsomeelementsNew();
+    addSomeElementsNew();
 
     // Сравнение фото
     comparePhotoPreNew();
@@ -35,6 +34,14 @@ function premoderationsStartNew() {
 
     // добавление ссылок для антифрода
     antifraudLinks('pre');
+
+    // убрать "Искать тестовые" объявления из ПРЕ
+    hideTestItemsSearch();
+}
+
+function hideTestItemsSearch() {
+    if (userGlobalInfo.division_name === "Moderator")
+        $('[name="isTest"]').parents('.form-group').hide();
 }
 
 function abTest() {
@@ -43,7 +50,8 @@ function abTest() {
         { categoryID: "10", locationID: "660300" },
         { categoryID: "10", locationID: "628780" },
         { categoryID: "10", locationID: "625670" },
-        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" }
+        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" },
+        { categoryID: "24", locationID: "653240", containsOption: "Квартиры / Сдам  / Посуточно" }
     ];
 
     for (let i = 0; i < abTestInfo.length; ++i) {
@@ -72,11 +80,58 @@ function markTestItems(categoryID, locationID, containsOption) {
 }
 
 function abTestHighlight(categoryID, locationID, containsOption) {
-    let items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+    let $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
-    $(items).find('.item-info-row:eq(1)')
-        .addClass('ah-ab-test-mark')
-        .prepend('<div class="ah-ab-test">A/B TEST</div>');
+    $items.find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
+
+    abTestCheckedPhoto($items);
+}
+
+function abTestCheckedPhoto($items) {
+    for (let i = 0; i < $items.length; ++ i) {
+        const $item = $($items[i]);
+        const $id = $item.data('id');
+
+        getItemInfo($id).then(response => {
+            const $itemHistory = $(response).find('#dataTable tr');
+            let isPhotoChecked = false;
+            let time = '', username = '';
+
+            for (let j = 0; j < $itemHistory.length; ++j) {
+                const $comment = $($itemHistory[j]).find("td:eq(2)").text();
+
+                if ($comment.indexOf('#ab-photos-checked') + 1) {
+                    time = $($itemHistory[j]).find("td:eq(0)").text();
+                    username = $($itemHistory[j]).find("td:eq(1)").text();
+
+                    isPhotoChecked = true;
+                    break;
+                }
+            }
+
+            let photoSpan = '';
+            if (isPhotoChecked) {
+                photoSpan = '<span style="color: #229048" title="Последния проверка: ' + username + ' в ' + time + '">' +
+                    'Фото проверены <i class="glyphicon glyphicon-thumbs-up"></i>' +
+                    '</span>';
+            } else {
+                photoSpan = '<span style="color: #9c2323">Фото не проверены <i class="glyphicon glyphicon-thumbs-down"></i></span>' +
+                    '<input class="ah-ab-test-photo-ok" type="button" value="Проверить" title="Пометить фото как проверенные">';
+            }
+
+            let checkedClass = $('<div class="ah-ab-test-photo"></div>').append(photoSpan);
+
+            $item.find('.ah-ab-test-mark').append(checkedClass);
+
+            checkedClass.find('.ah-ab-test-photo-ok').click(function () {
+                checkedClass.html('<span style="color: #229048" title="Проверенно вами">' +
+                        'Фото проверены <i class="glyphicon glyphicon-thumbs-up"></i>' +
+                    '</span>');
+
+                commentOnItem($id, '#ab-photos-checked');
+            });
+        });
+    }
 }
 
 function hideSubcategory() {
@@ -140,6 +195,8 @@ function comparisonInfo() {
 }
 
 function addComparisonInfo() {
+    $('.modal-content').css('margin-bottom', '25px');
+
     let basedItemID = $('.js-comparison').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
 
@@ -244,20 +301,19 @@ function colorButtons() {
     }
 }
 
-function addsomeelementsNew() {
-    var user = $('.item-info-row_user-actions').length;
+function addSomeElementsNew() {
+    const trList = $('#items').find('tr');
 
-    for(var i=0; i<user; i++){
-        var id = $('#items tr').slice(i,i+1).find('a[href^="/users/user/info/"]').attr("href").split("/")[4];
-        var itemid = $('.item-info').slice(i,i+1).attr("id").replace('desc_', '');
-        var category = $('#items tr').slice(i,i+1).attr("data-category");
-        var params = $('#items tr').slice(i,i+1).attr("data-params-map");
-        params = params ? params.replace(/"/g, "&quot;") : '{}';
-        var cityItem = $('#items tr').slice(i,i+1).attr("data-location");
-        var type = $('#items tr').slice(i,i+1).find('.item-info-row-item-type:contains(Тип)').parent().text();
+    for(let i = 0; i < trList.length; i++){
+        const id = $(trList[i]).find('a[href^="/users/user/info/"]').attr("href").split("/")[4];
+        const itemid = $(trList[i]).attr("id").substring(5);
+        const category = $(trList[i]).attr("data-category");
+        const params = $(trList[i]).attr("data-params-map") ? $(trList[i]).attr("data-params-map").replace(/"/g, "&quot;") : '{}';
+        const cityItem = $(trList[i]).attr("data-location");
+        const type = $(trList[i]).find('.item-info-row-item-type:contains(Тип)').parent().text();
 
         // USER INFO and USER ABUSE
-        $('.item-info-name').slice(i,i+1)
+        $(trList[i]).find('.item-info-name')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'">WL</a></span>')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'">Abuses</a></span>')
             .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;">' +
@@ -266,9 +322,15 @@ function addsomeelementsNew() {
                 '<input type="text" placeholder="Info query" class="infoQuery"></span>');
 
         // кнопки блокировки
-        if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
-        if (localStorage.createdButtons.indexOf('blockUser|&|PA')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="PA" title="Подозрительная активность">');
-        if (localStorage.createdButtons.indexOf('blockUser|&|BN')+1 && type.indexOf('Магазин') === -1) $('.mh_items').slice(i,i+1).append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="BN" title="Несколько учетных записей">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red ah-mh-action-btn" value="MC" title="Нарушение условий пользовательского соглашения" style="margin-left: 4px;">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|PA')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="PA" title="Подозрительная активность">');
+        if (localStorage.createdButtons.indexOf('blockUser|&|BN')+1 && type.indexOf('Магазин') === -1)
+            $(trList[i]).find('#ah-but-block-users')
+                .append('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red ah-mh-action-btn" value="BN" title="Несколько учетных записей">');
     }
 
     usersInfoAction();
@@ -301,7 +363,11 @@ function addsomeelementsNew() {
 
 function addElementsForEachItemNew() {
     // блок для кнопок хелпера
-    $('.item-info-row_user-actions').after('<div class="item-info-row mh_items"></div>');
+    $('.item-info-row_user-actions').after('<div class="item-info-row ah-mh-items">' +
+            '<div id="ah-but-reject-block"></div>' +
+            '<div id="ah-but-reject-with-comment"><span class="ah-but-not-auto-prob"></span><span class="ah-but-auto-prob"></span></div>' +
+            '<div id="ah-but-block-users"></div>' +
+        '</div>');
 
     // для цикла
     let lastReject = '';
@@ -311,6 +377,7 @@ function addElementsForEachItemNew() {
     for (let i = 0; i < trList.length; i++) {
         let value = $(trList[i]).find('.item-info').attr("id");
         let itemVersion = $(trList[i]).find('input[name="version"]').val();
+        let prob = $(trList[i]).data('pathProbs');
 
         let paramId = null;
         let paramsArr = $(trList[i]).data('params');
@@ -349,8 +416,14 @@ function addElementsForEachItemNew() {
                     }
 
                     $(trList[i])
-                        .find('.mh_items')
-                        .append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
+                        .find('#ah-but-reject-block')
+                        .append('<input type="button" ' +
+                            'value="' + name + '" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="' + reason + '" ' +
+                            'data-action="' + action + '" ' +
+                            'data-version="' + itemVersion + '">');
                 }
             }
         }
@@ -362,38 +435,66 @@ function addElementsForEachItemNew() {
             let category = localReasons[j];
 
             if (category.show === 'true') $(trList[i])
-                .find('.mh_items')
+                .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
                 .append('<input type="button" ' +
                     'value="' + category.short_name + '" ' +
-                    'class="btn btn-default btn-sm mh-action-btn" ' +
+                    'class="btn btn-default btn-sm ah-mh-action-btn" ' +
                     'bvalue="' + value + '" ' +
                     'data-reason="178" ' +
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
-                    'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;"' +
-                    'title="' + category.name + '"' +
-                    'style="box-shadow: inset 0 0 10px 0 ' + category.color + '"">');
+                    'data-comment="Пожалуйста, измените на &#34;' + category.name + '&#34;" ' +
+                    'title="' + category.name + '" ' +
+                    'style="box-shadow: inset 0 0 5px 0 ' + category.color + '; background: white">');
 
             for (let k = 0; k < category.reason.length; ++k) {
-                if (category.reason[k].show === 'true') $(trList[i])
-                    .find('.mh_items')
-                    .append('<input type="button" ' +
-                        'value="' + category.reason[k].short_name + '" ' +
-                        'class="btn btn-default btn-sm mh-action-btn" ' +
-                        'bvalue="' + value + '" ' +
-                        'data-reason="178" ' +
-                        'data-action="reject" ' +
-                        'data-version="' + itemVersion + '" ' +
-                        'data-comment="Пожалуйста, измените на &#34;' + category.name + ' -> ' + category.reason[k].name + '&#34;"' +
-                        'title="' + category.name + ' -> ' + category.reason[k].name + '"' +
-                        'style="box-shadow: inset 0 0 10px 0 ' + category.reason[k].color + '">');
+                let background = 'white';
+                let probability = 0;
+
+                if (prob) {
+                    for (let z = 0; z < prob.length; ++z)
+                        if (prob[z] && prob[z].categoryName === category.name + ' / ' + category.reason[k].name) {
+                            probability = prob[z].prob.toFixed(2) * 100;
+
+                            background = 'linear-gradient(to right, ' + category.reason[k].color + '1f ' + probability + '%, #fff ' + probability + '%)';
+                        }
+                }
+
+                if (category.reason[k].show === 'true') {
+                    $(trList[i])
+                        .find('#ah-but-reject-with-comment .ah-but-not-auto-prob')
+                        .append('<input type="button" ' +
+                            'value="' + category.reason[k].short_name + '" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="178" ' +
+                            'data-action="reject" ' +
+                            'data-version="' + itemVersion + '" ' +
+                            'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
+                            'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
+                            'style="box-shadow: inset 0 0 5px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                } else if (probability > 0 && localStorage.autoProbButtons === 'true') {
+                    $(trList[i])
+                        .find('#ah-but-reject-with-comment .ah-but-auto-prob')
+                        .css({ 'border-left': '1px solid black' })
+                        .append('<input type="button" ' +
+                            'value="' + category.reason[k].short_name + '" ' +
+                            'class="btn btn-default btn-sm ah-mh-action-btn" ' +
+                            'bvalue="' + value + '" ' +
+                            'data-reason="178" ' +
+                            'data-action="reject" ' +
+                            'data-version="' + itemVersion + '" ' +
+                            'data-comment="Пожалуйста, измените на &#34;' + category.name + ' / ' + category.reason[k].name + '&#34;" ' +
+                            'title="' + category.name + ' / ' + category.reason[k].name + '\nВероятность: ' + probability + '%" ' +
+                            'style="box-shadow: inset 0 0 5px 0 ' + category.reason[k].color + '; background: ' + background + '">');
+                }
 
             }
         }
     }
 
 
-    $('div.mh_items input.mh-action-btn').click(function() {
+    $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
         let dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
@@ -411,7 +512,7 @@ function addElementsForEachItemNew() {
     });
 
 
-    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.mh-action-btn").click(function(){
+    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function(){
         lastReject += $(this).parents('tr:eq(0)').attr("data-id")+ '|';
     });
 

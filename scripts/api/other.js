@@ -310,24 +310,24 @@ jQuery.extend(
 // jQuery case-insensitive ---
 
 // приклеивает fixed элемент к верхушке футера в БО +++
-function setFixedElemUnderFooter(elem) {
-    checkFooterVisibility(elem);
+function setFixedElemUnderFooter(elem, indent) {
+    checkFooterVisibility(elem, indent);
     $(document).scroll(function () {
-        checkFooterVisibility(elem);
+        checkFooterVisibility(elem, indent);
     });
 }
-function checkFooterVisibility(elem) {
-    var footerHeight = $('footer').outerHeight() + 2;
+function checkFooterVisibility(elem, indent) {
+    var footerHeight = $('footer').outerHeight() + indent;
     var scrollTop = $(window).scrollTop();
     var windowHeight = $(window).height();
     var offset = $('.js-footer-gotop').offset();
-    var bottomValue = (windowHeight + scrollTop + 2) - offset.top;
+    var bottomValue = (windowHeight + scrollTop + indent) - offset.top;
 
     var isFooterVisible = isInWindow('.js-footer-gotop', footerHeight);
     if (isFooterVisible) {
         $(elem).css('bottom', '' + bottomValue + 'px');
     } else {
-        $(elem).css('bottom', '2px');
+        $(elem).css('bottom', indent + 'px');
     }
 }
 // приклеивает fixed элемент к верхушке футера в БО ---
@@ -540,7 +540,7 @@ function addFixedTools(elem, tools) {
 
     $(elem).append('<div id="ah-fixed-tools-holder"></div>');
     let holder = $('#ah-fixed-tools-holder');
-    setFixedElemUnderFooter(holder);
+    setFixedElemUnderFooter(holder, 2);
     
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();
@@ -778,10 +778,19 @@ function getParamsItemInfo(html) {
         microCategoryBlock = $(microCategoryLabel).next(),
         microCategories = [];
 
+    const entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
     $(searchNode).find('.reasons span[data-id]').each(function () {
-        reasons.push($(this).text());
+        reasons.push( $(this).text().replace(/[&<>"'\/]/g, s => entityMap[s]) );
     });
-    $(microCategoryBlock).find('[data-toggle="tooltip"]:not(.icon-category-suggest)').each(function () {
+    $(microCategoryBlock).find('[data-toggle="tooltip"]:not([class*="icon-category-suggest"])').each(function () {
         microCategories.push($(this).text().replace(/\n/g, '').trim());
     });
 
@@ -794,6 +803,9 @@ function getParamsItemInfo(html) {
     res.status = $(statusBlock).find('span:eq(0)').text().trim();
     res.reasons = reasons;
     res.sortTime = $(timeBlock).find('span:eq(0)').text().trim();
+    res.updateTime = $(timeBlock).find('span:eq(1)').text().trim();
+    res.startTime = $(timeBlock).find('span:eq(2)').text().trim();
+    res.finishTime = $(timeBlock).find('span:eq(3)').text().trim();
     res.sellerName = $(searchNode).find('#fld_seller_name').val();
     res.manager = $(searchNode).find('#fld_manager').val();
     res.phone = $(searchNode).find('#fld_phone').val();
@@ -803,6 +815,15 @@ function getParamsItemInfo(html) {
     res.description = $(searchNode).find('#fld_description').text();
     res.price = $(searchNode).find('#fld_price').val();
     res.photos = $(searchNode).find('.js-photo-component').data('json');
+    res.comparisonLink = $(searchNode).find('a[href^="/items/comparison"]').attr('href') || null;
+    res.activeVAS = [].map.call($(searchNode).find('.paid-services .btn-warning'), item => {
+        const res = {};
+        const $item = $(item);
+        res.name = $item.text().trim();
+        res.expires = $item.attr('title') || null;
+        return res;
+    });
+    res.siteLink = $(searchNode).find('a[href^="https://www.avito.ru/"]').attr('href');
 
     return res;
 }

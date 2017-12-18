@@ -2,7 +2,6 @@
 function linksOnComments(tableClass, currentUserID) {
     $(tableClass+' .sh-unicode-links').detach();
 
-    var id = $('span.js-user-id').text();
     var n = $(tableClass).length;
 
     // Patterns
@@ -35,7 +34,14 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            if (ids.length > 4)
+                text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            else {
+                let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+                for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
+
+                text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
+            }
 
             $(commentBlock).html(text);
         }
@@ -46,7 +52,14 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            if (ids.length > 4)
+                text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            else {
+                let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+                for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
+
+                text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
+            }
 
             $(commentBlock).html(text);
         }
@@ -60,7 +73,7 @@ function linksOnComments(tableClass, currentUserID) {
             var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
 
             for (var i = 0; i < links.length; i++){
-                if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) == 0){
+                if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
                     if (~links[i].indexOf('https://adm.avito.ru/users/user/info/') || shortUserLinkReg.test(links[i])) {
                         var userID = links[i].replace(/\D/gi, '');
                         text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</span>)</span>');
