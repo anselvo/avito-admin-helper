@@ -317,6 +317,7 @@ ShopModeration.prototype.addBrief = function () {
     const panelBody = document.createElement('div');
     const fieldsInfoSection = document.createElement('section');
     const keyWordsSection = document.createElement('section');
+    const commentsSection = document.createElement('section');
 
     infoPanel.className = 'panel panel-info ah-shop-moderation-info-panel';
     infoPanel.innerHTML = `<div class="panel-heading"><h4>Сводка</h4></div>`;
@@ -324,10 +325,12 @@ ShopModeration.prototype.addBrief = function () {
     panelBody.className = 'panel-body';
 
     fieldsInfoSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
+    commentsSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
     keyWordsSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
 
     panelBody.appendChild(fieldsInfoSection);
     panelBody.appendChild(keyWordsSection);
+    panelBody.appendChild(commentsSection);
     infoPanel.appendChild(panelBody);
     this.section.appendChild(infoPanel);
 
@@ -335,6 +338,7 @@ ShopModeration.prototype.addBrief = function () {
         .then(response => {
             const info = getParamsShopInfo($(response));
             renderFieldsInfo(info);
+            renderComments(info);
         }, error => {
             fieldsInfoSection.innerHTML = `
                 <span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
@@ -351,6 +355,20 @@ ShopModeration.prototype.addBrief = function () {
         });
 
     function renderFieldsInfo(shop) {
+        const shopSection = self.mainBlock.querySelector('.shop-moderation-section[data-section="shop"]');
+        const shopLabelsOriginal = shopSection.querySelectorAll('.shop-moderation-list-cell_original .shop-moderation-list-cell-name');
+        const shopNameLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Название');
+        const shopNameValue = shopNameLabel.nextElementSibling.textContent;
+        const shopDomainLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Домен');
+        const shopDomainValue = shopDomainLabel.nextElementSibling.textContent;
+        const shopVideoLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Видео URL');
+        const shopVideoValue = shopVideoLabel.nextElementSibling.textContent.trim();
+
+        const urlSection = self.mainBlock.querySelector('.shop-moderation-section[data-section="url"]');
+        const urlLabelsOriginal = urlSection.querySelectorAll('.shop-moderation-list-cell_original .shop-moderation-list-cell-name');
+        const urlSiteLabel = [].find.call(urlLabelsOriginal, label => label.textContent === 'URL');
+        const urlSiteValue = urlSiteLabel.nextElementSibling.textContent;
+
         fieldsInfoSection.innerHTML = `
             <h4>Поля</h4>
             <table class="ah-shop-moderation-info-table">
@@ -362,7 +380,56 @@ ShopModeration.prototype.addBrief = function () {
                     <td>Персональный менеджер</td>
                     <td>${shop.personalManager}</td>
                 </tr>
+                <tr>
+                    <td>Название</td>
+                    <td>${shopNameValue}</td>
+                </tr>
+                <tr>
+                    <td>Домен</td>
+                    <td>${shopDomainValue}</td>
+                </tr>
+                <tr>
+                    <td>Видео URL</td>
+                    <td>${(shopVideoValue) ? 
+                        `<a target="_blank" href="${shopVideoValue}">${shopVideoValue}</a>` 
+                        : '<i class="text-muted">Отсутствует</i>'}</td>
+                </tr>
+                <tr>
+                    <td>Сайт</td>
+                    <td><a target="_blank" href="${urlSiteValue}">${urlSiteValue}</a></td>
+                </tr>
+                <tr>
+                    <td>Пользователь</td>
+                    <td>
+                        <a target="_blank" href="/users/user/info/${shop.mainInfo.userId}">${shop.mainInfo.userId}</a> |
+                        <span>${JSON.parse(self.mainBlock.dataset.emails).user}</span>
+                    </td>
+                </tr>
             </table>
+        `;
+    }
+
+    function renderComments(info) {
+        const table = info.commentsTable;
+
+        table.removeAttribute('id');
+        table.className = 'table table-striped';
+
+        commentsSection.innerHTML = `
+            <h4>Комментарии</h4>
+            <form method="post" action="/comment">
+                <input type="hidden" name="objectTypeId" value="3">
+                <input type="hidden" name="objectId" value="${self.mainBlock.dataset.shopId}">
+                <div class="form-group">
+                    <textarea class="form-control" name="comment" rows="3"></textarea>
+                </div>
+                <div class="form-group text-right"> 
+                    <button type="submit" class="btn btn-success" value="Добавить">
+                        <i class="glyphicon glyphicon-plus"></i> Добавить
+                    </button>      
+                </div>
+            </form>
+            <div class="table-scroll">${table.outerHTML}</div>
         `;
     }
 

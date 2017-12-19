@@ -868,6 +868,13 @@ function getParamsShopInfo(html) {
         if (label && label.textContent === 'Тариф') {
             res.mainInfo.tariff = label.nextElementSibling.textContent.trim();
         }
+
+        if (label && label.textContent === 'Пользователь') {
+            const field = label.nextElementSibling;
+            const userLink = field.querySelector('a[href^="/users/user/info/"]');
+
+            res.mainInfo.userId = userLink.getAttribute('href').replace(/\D/g, '');
+        }
     });
 
     // personal manager
@@ -877,6 +884,9 @@ function getParamsShopInfo(html) {
     } catch (e) {
         res.personalManager = null;
     }
+
+    // comments
+    res.commentsTable = searchNode.find('#dataTable')[0];
 
     // возвращает все .form-groups от startNode и далее, пока не встретит тег с именем breakTagName
     function getFormGroups(startNode, breakTagName) {
