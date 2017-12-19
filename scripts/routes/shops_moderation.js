@@ -124,10 +124,11 @@ ShopModeration.prototype.addMailForm = function () {
                 const checkboxesText = [].filter.call(checkboxes, item => item.dataset.type === 'text' && item.checked);
                 const checkboxesImg = [].filter.call(checkboxes, item => item.dataset.type === 'image' && item.checked);
 
-                messageInput.innerHTML += template.body;
+                messageInput.innerHTML += `<div>${template.body}</div>`;
 
                 checkboxesText.forEach(item => {
-                    messageInput.innerHTML += `<br><div><b>${item.dataset.sectionName}: ${item.dataset.fieldName}</b><br>${item.dataset.fieldValue.trim()}</div>`;
+                    const value = item.dataset.fieldValue.trim().replace(/\n/g, '<br>');
+                    messageInput.innerHTML += `<br><div><b>${item.dataset.sectionName}: ${item.dataset.fieldName}</b><br>${value}</div>`;
                 });
 
                 checkboxesImg.forEach(item => {
@@ -185,7 +186,6 @@ ShopModeration.prototype.addMailForm = function () {
 };
 
 ShopModeration.prototype.addCoordinationControls = function () {
-    const self = this;
     const shopSection = this.mainBlock.querySelector('section[data-section="shop"]');
     const shopLabels = shopSection.querySelectorAll('.shop-moderation-list-cell_changes .shop-moderation-list-cell-name');
 
@@ -201,6 +201,10 @@ ShopModeration.prototype.addCoordinationControls = function () {
         (label.textContent === 'Фон' && label.closest('.shop-moderation-list-cell_original'))
     );
 
+    const passAllBtn = this.mainBlock.querySelector('.js-pass-all');
+    const checkboxGeneralLabel = document.createElement('label');
+
+    // чекбоксы для псевдоинпутов
     this.pseudoInputsChanged.forEach(item => {
         const cellName = item.closest('.shop-moderation-list-cell').querySelector('.shop-moderation-list-cell-name');
         const fieldName = (cellName.textContent === 'Information line') ? 'Информационная строка' : cellName.textContent;
@@ -233,6 +237,7 @@ ShopModeration.prototype.addCoordinationControls = function () {
         cellName.replaceChild(checkboxLabel, cellName.firstChild);
     });
 
+    // чекбоксы для фото
     checkboxPhotoLabel.className = 'ah-shop-moderation-label-text';
     checkboxPhotoLabel.innerHTML = `
         <input type="checkbox" class="ah-shop-moderation-check-all-photos">
@@ -256,6 +261,7 @@ ShopModeration.prototype.addCoordinationControls = function () {
         item.appendChild(checkboxLabel);
     });
 
+    // чекбоксы для одиночных изображений
     singleImagesLabels.forEach(label => {
         const fieldName = label.textContent;
         const fieldParent = label.parentNode;
@@ -276,39 +282,75 @@ ShopModeration.prototype.addCoordinationControls = function () {
         label.replaceChild(checkboxLabel, label.firstChild);
     });
 
+    // общий чекбокс
+    checkboxGeneralLabel.className = 'ah-shop-moderation-label-general';
+    checkboxGeneralLabel.innerHTML = `
+        <input type="checkbox" id="ahCheckboxGeneral">
+        Отметить все
+    `;
+    shopSection.insertBefore(checkboxGeneralLabel, shopSection.querySelector('.shop-moderation-list'));
+
     this.mainBlock.addEventListener('change', function (e) {
         const target = e.target;
-        const allPhotoCheckboxes = document.querySelectorAll('.ah-photo-preview-checkbox');
+        const allCheckboxes = this.querySelectorAll('.ah-shop-moderation-coordination-checkbox');
+        const generalCheckbox = document.getElementById('ahCheckboxGeneral');
+        const allPhotoCheckboxes = this.querySelectorAll('.ah-photo-preview-checkbox');
+        const generalPhotoCheckbox = this.querySelector('.ah-shop-moderation-check-all-photos');
+
+        if (target.getAttribute('id') === 'ahCheckboxGeneral') {
+            handleGeneralCheckbox(target, allCheckboxes);
+        }
+
+        if (target.classList.contains('ah-shop-moderation-coordination-checkbox')) {
+            handleAssociatedCheckboxes(allCheckboxes, generalCheckbox);
+        }
 
         if (target.classList.contains('ah-shop-moderation-check-all-photos')) {
-            if (target.checked) {
-                allPhotoCheckboxes.forEach(item => item.checked = true);
-            } else {
-                allPhotoCheckboxes.forEach(item => item.checked = false);
-            }
+            handleGeneralCheckbox(target, allPhotoCheckboxes);
         }
 
         if (target.classList.contains('ah-photo-preview-checkbox')) {
-            const all = allPhotoCheckboxes;
-            const checked = [].filter.call(allPhotoCheckboxes, item => item.checked);
-            const checkAllCheckbox = self.mainBlock.querySelector('.ah-shop-moderation-check-all-photos');
-
-            if (all.length === checked.length) {
-                checkAllCheckbox.checked = true;
-                checkAllCheckbox.indeterminate = false;
-            }
-
-            if (all.length > checked.length) {
-                checkAllCheckbox.checked = false;
-                checkAllCheckbox.indeterminate = true;
-            }
-
-            if (checked.length === 0) {
-                checkAllCheckbox.checked = false;
-                checkAllCheckbox.indeterminate = false;
-            }
+            handleAssociatedCheckboxes(allPhotoCheckboxes, generalPhotoCheckbox);
         }
+
+        const allCheckboxesChecked = [].filter.call(allCheckboxes, item => item.checked);
+        passAllBtn.disabled = allCheckboxesChecked.length > 0;
     });
+
+    // общие чекбоксы
+    function handleGeneralCheckbox(general, associated) {
+        if (general.checked) {
+            associated.forEach(item => {
+                item.checked = true;
+                item.dispatchEvent(new Event('change', {bubbles: true}));
+            });
+        } else {
+            associated.forEach(item => {
+                item.checked = false;
+                item.dispatchEvent(new Event('change', {bubbles: true}));
+            });
+        }
+    }
+
+    // чекбоксы, связанные с общим
+    function handleAssociatedCheckboxes(associated, general) {
+        const checked = [].filter.call(associated, item => item.checked);
+
+        if (associated.length === checked.length) {
+            general.checked = true;
+            general.indeterminate = false;
+        }
+
+        if (associated.length > checked.length) {
+            general.checked = true;
+            general.indeterminate = true;
+        }
+
+        if (checked.length === 0) {
+            general.checked = false;
+            general.indeterminate = false;
+        }
+    }
 };
 
 ShopModeration.prototype.addBrief = function () {
@@ -324,9 +366,9 @@ ShopModeration.prototype.addBrief = function () {
 
     panelBody.className = 'panel-body';
 
-    fieldsInfoSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
-    commentsSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
-    keyWordsSection.innerHTML = `<span class="text-muted">Загрузка...</span>`;
+    fieldsInfoSection.innerHTML = `<h4>Поля</h4><span class="text-muted">Загрузка...</span>`;
+    commentsSection.innerHTML = `<h4>Комментарии</h4><span class="text-muted">Загрузка...</span>`;
+    keyWordsSection.innerHTML = `<h4>Ключевые слова и фразы</h4><span class="text-muted">Загрузка...</span>`;
 
     panelBody.appendChild(fieldsInfoSection);
     panelBody.appendChild(keyWordsSection);
@@ -341,7 +383,10 @@ ShopModeration.prototype.addBrief = function () {
             renderComments(info);
         }, error => {
             fieldsInfoSection.innerHTML = `
-                <span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+                <h4>Поля</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+            `;
+            commentsSection.innerHTML = `
+                <h4>Комментарии</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
         });
 
@@ -350,7 +395,7 @@ ShopModeration.prototype.addBrief = function () {
             renderKeyWords(regs);
         }, () => {
             keyWordsSection.innerHTML = `
-                <span class="text-danger">Произошла техническая ошибка</span>
+                <h4>Ключевые слова и фразы</h4><span class="text-danger">Произошла техническая ошибка</span>
             `;
         });
 
@@ -435,6 +480,7 @@ ShopModeration.prototype.addBrief = function () {
 
     function renderKeyWords(regs) {
         const table = document.createElement('table');
+        let hasMatches = false;
 
         table.className = 'ah-shop-moderation-info-table';
         keyWordsSection.innerHTML = `
@@ -447,22 +493,28 @@ ShopModeration.prototype.addBrief = function () {
             const fieldName = cellName.textContent.trim();
             const fieldValue = item.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
             const sectionName = cellName.closest('.shop-moderation-section').dataset.section;
-            let matchArr = [];
+            const matched = new Map();
 
             regs.forEach(reg => {
                 const regObj = new RegExp(reg.true_reg, "gi");
                 let result;
 
                 while (result = regObj.exec(fieldValue)) {
-                    matchArr.push({
-                        value: result[0]
-                    });
+                    const resultFormatted = result[0].trim();
+
+                    if (matched.has(resultFormatted)) {
+                        matched.set(resultFormatted, matched.get(resultFormatted) + 1);
+                    } else {
+                        matched.set(resultFormatted, 1);
+                    }
                 }
             });
 
-            if (matchArr.length !== 0) {
+            if (matched.size !== 0) {
+                hasMatches = true;
                 const row = document.createElement('tr');
                 const alert = document.createElement('div');
+                const matchedArr = [];
                 let sectionNameFormatted = '';
 
                 switch (sectionName) {
@@ -480,20 +532,30 @@ ShopModeration.prototype.addBrief = function () {
                         break;
                 }
 
+                matched.forEach((val, key) => {
+                    matchedArr.push(`<span>${key} ${(val > 1) ? `(${val})`: ''}</span>`);
+                });
+
                 row.className = 'ah-shop-moderation-scrollable-row';
                 row.setAttribute('data-section-name', sectionName);
                 row.setAttribute('data-field-name', fieldName);
                 row.innerHTML = `
                     <td>${fieldName} (${sectionNameFormatted})</td>
-                    <td>${matchArr.map(item => `<span>${item.value}</span>`).join(' | ')}</td>
+                    <td>${matchedArr.join(' | ')}</td>
                 `;
                 table.appendChild(row);
 
                 alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
-                alert.innerHTML = `${matchArr.map(item => `<span>${item.value}</span>`).join(' | ')}`;
+                alert.innerHTML = `${matchedArr.join(' | ')}`;
                 item.parentNode.appendChild(alert);
             }
         });
+
+        if (!hasMatches) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td class="text-muted">Ничего не найдено</td>`;
+            table.appendChild(row);
+        }
     }
 
     keyWordsSection.addEventListener('click', function(e) {

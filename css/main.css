@@ -5526,7 +5526,7 @@ select.ah-form-control:focus {
 }
 
 .ah-shop-moderation-section .ah-shop-moderation-form-panel {
-    width: 48%;
+    width: 59%;
     position: relative;
 }
 
@@ -5535,7 +5535,7 @@ select.ah-form-control:focus {
 }
 
 .ah-shop-moderation-section .ah-shop-moderation-info-panel {
-    width: 48%;
+    width: 39%;
 }
 
 .ah-shop-moderation-mail-form label {
@@ -5547,7 +5547,7 @@ select.ah-form-control:focus {
 }
 
 .ah-shop-moderation-mail-form .ah-message-text-input {
-    min-height: 150px;
+    min-height: 250px;
     white-space: pre-wrap;
     height: auto;
 }
@@ -5562,6 +5562,7 @@ select.ah-form-control:focus {
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
     width: 100%;
+    margin-bottom: 15px;
 }
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table td {
@@ -5587,12 +5588,19 @@ select.ah-form-control:focus {
     padding-bottom: 4px;
 }
 
-.ah-shop-moderation-label-text input[type=checkbox],
-.ah-shop-moderation-label-image input[type=checkbox] {
+.ah-shop-moderation-label-general {
+    font-size: 14px;
     cursor: pointer;
 }
 
-.ah-shop-moderation-label-text input[type=checkbox] {
+.ah-shop-moderation-label-text input[type=checkbox],
+.ah-shop-moderation-label-image input[type=checkbox],
+.ah-shop-moderation-label-general input[type=checkbox]{
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-text input[type=checkbox],
+.ah-shop-moderation-label-general input[type=checkbox] {
     margin: 0 0 1px;
     vertical-align: middle;
 }
