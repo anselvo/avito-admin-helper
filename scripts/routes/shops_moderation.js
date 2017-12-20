@@ -326,7 +326,10 @@ ShopModeration.prototype.addCoordinationControls = function () {
         }
 
         const allCheckboxesChecked = [].filter.call(allCheckboxes, item => item.checked);
-        passAllBtn.disabled = allCheckboxesChecked.length > 0;
+        const iconsUnlocked = this.querySelectorAll('.icon-locked_unlocked');
+        if (iconsUnlocked.length === 0) {
+            passAllBtn.disabled = allCheckboxesChecked.length > 0;
+        }
     });
 
     // общие чекбоксы
