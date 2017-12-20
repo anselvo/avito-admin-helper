@@ -78,13 +78,15 @@ ShopModeration.prototype.addMailForm = function () {
         const data = new FormData(this);
         const shopId = this.elements.shop_id.value;
         const overlay = this.closest('.ah-shop-moderation-form-panel').querySelector('.ah-overlay');
+        const textWrapperStyle = `font-size: 14px; line-height: 20px; font-family: Arial,Helvetica,sans-serif;`;
 
         if (messageInput.innerText.replace(/\s/g, '') === '') {
             alert('Введите текст сообщения');
             return;
         }
 
-        data.append('text', messageInput.innerHTML);
+        data.append('text', `<hr><div style="${textWrapperStyle}">${messageInput.innerHTML}</div>`);
+
         overlay.style.display = 'block';
         overlay.focus();
 
@@ -95,8 +97,10 @@ ShopModeration.prototype.addMailForm = function () {
             })
             .then(response => {
                 if (!response.ok) {
-                    overlay.style.display = 'none';
-                    return Promise.reject(response);
+                    return Promise.reject(`Произошла ошибка:\n${response.status}\n${response.statusText}`);
+                }
+                if (response.redirected) {
+                    return Promise.reject(`Произошла техническая ошибка`);
                 }
 
                 form.reset();
@@ -104,7 +108,10 @@ ShopModeration.prototype.addMailForm = function () {
                 outTextFrame('Письмо успешно отправлено');
                 overlay.style.display = 'none';
             }).
-            catch(error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`));
+            catch(error => {
+                overlay.style.display = 'none';
+                alert(error);
+            });
     });
 
     messageInput.addEventListener('paste', function(e) {
@@ -124,7 +131,7 @@ ShopModeration.prototype.addMailForm = function () {
                 const checkboxesText = [].filter.call(checkboxes, item => item.dataset.type === 'text' && item.checked);
                 const checkboxesImg = [].filter.call(checkboxes, item => item.dataset.type === 'image' && item.checked);
 
-                messageInput.innerHTML += `<div>${template.body}</div>`;
+                messageInput.innerHTML += template.body;
 
                 checkboxesText.forEach(item => {
                     const value = item.dataset.fieldValue.trim().replace(/\n/g, '<br>');
@@ -142,11 +149,12 @@ ShopModeration.prototype.addMailForm = function () {
                     const href = item.dataset.href;
                     const sizePatterns = {
                         logo_photo: /(640x480)|(175x105)/,
-                        bg: /1350x3880/
+                        bg: /1350x3880/,
+                        plank: /984x120/
                     };
                     const thumbnail = {
                         href: href,
-                        maxWidth: '100px'
+                        style: 'max-width: 100px;'
                     };
 
                     if (sizePatterns.logo_photo.test(href)) {
@@ -154,7 +162,11 @@ ShopModeration.prototype.addMailForm = function () {
                     }
                     if (sizePatterns.bg.test(href)) {
                         thumbnail.href = href.replace(sizePatterns.bg, '140x105');
-                        thumbnail.maxWidth = '140px';
+                        thumbnail.style = 'max-width: 140px;';
+                    }
+
+                    if (sizePatterns.plank.test(href)) {
+                        thumbnail.style = 'width: 100px;';
                     }
 
                     imgWrapper.cellSpacing = 0;
@@ -162,15 +174,15 @@ ShopModeration.prototype.addMailForm = function () {
                     imgWrapper.width = '100%';
                     imgWrapper.border = 0;
                     imgWrapper.style.cssText = `
-                        border-collapse:collapse; 
-                        text-align:left;
+                        border-collapse: collapse; 
+                        text-align: left;
                     `;
                     imgWrapper.innerHTML = `
                         <tr>
                             <td valign="middle" align="center" width="100" height="75" style="${cellStyle}">
                                 <a href="https:${href}" target="_blank" 
                                 style="display: block;">
-                                    <img style="max-width: ${thumbnail.maxWidth};" alt="Изображение" border="0" src="https:${thumbnail.href}">
+                                    <img style="${thumbnail.style};" alt="Изображение" border="0" src="https:${thumbnail.href}">
                                 </a>
                             </td>
                             <td></td>
