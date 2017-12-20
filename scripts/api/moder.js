@@ -69,19 +69,23 @@ function antifraudLinks(page) {
 // Авто добавление причине в поле "Другая причина"
 function autoOtherReasons() {
     $('button[name="reject"], button[name="activate"], input.internReject').click(function () {
+        let buttonSelector = $(this);
         let findReason = setInterval(function () {
             let box = $('.moderate-modal');
 
             if ($(box).length > 0) {
                 clearInterval(findReason);
-                optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]');
+                let prob = buttonSelector.parents('tr').data('pathProbs');
+                optionOtherReasons('.moderate-modal', '.moderateBox_item', '[name="reason_other"]', prob);
             }
         }, 100);
     });
 }
 
-function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
-    let otherReasonsCategory = {
+function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
+    $('.ah-other-reasons').remove();
+
+    const otherReasonsCategory = {
         name: "Неправильная категория",
         reason: [
             {name: "Личные вещи", reason: ['Одежда, обувь, аксессуары', 'Детская одежда и обувь', 'Товары для детей и игрушки', 'Красота и здоровье', 'Часы и украшения']},
@@ -97,7 +101,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         ]
     };
 
-    let otherReasonsService = {
+    const otherReasonsService = {
         name: "Вид услуги",
         reason: ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
             'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
@@ -105,11 +109,11 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
             'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
     };
 
-    let block = $(blockSelector);
+    const block = $(blockSelector);
 
     for (let i = 0; i < block.length; ++i) {
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory);
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService);
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory, prob);
+        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService, prob);
 
         if (localStorage.autoCheckOtherReason === 'true')
             addAutoCheckSuggestReason(block[i], reasonSelector);
@@ -119,9 +123,36 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector) {
         event.stopPropagation();
     });
 
-
 }
 
+function addOtherReasonProb(name, prob) {
+    let progress = '';
+    let probability = 0;
+
+    for (let i = 0; i < prob.length; ++i) {
+        if (prob[i]) {
+            const categoryName = prob[i].categoryName;
+            const tmp = categoryName.split(" / ");
+            const currentProbability = prob[i].prob.toFixed(2) * 100;
+
+            if ((name === tmp[0] || name === tmp[1]) && probability < currentProbability) {
+                probability = currentProbability;
+
+                let color = '#2f8b55';
+
+                if (probability > 70) color = '#f75a20';
+                else if (probability > 30) color = '#fc7b23';
+                else if (probability > 0) color = '#96873c';
+
+                progress = '<div class="progress-line" style="display: block; margin-left: 20px; border: 1px solid ' + color + ';">' +
+                    '<div class="progress-bar" style="background-color: ' + color + '; width: ' + probability + 'px;"></div>' +
+                    '</div>';
+            }
+        }
+    }
+
+    return progress;
+}
 
 function addAutoCheckSuggestReason(block, reasonSelector) {
     let suggestReason = $(block).find(reasonSelector+':contains(Неправильная категория) .description').text().toLowerCase();
@@ -132,92 +163,102 @@ function addAutoCheckSuggestReason(block, reasonSelector) {
     }
 }
 
-function addOtherReasons(block, reasonSelector, textSelector, otherReasons) {
-    let name = otherReasons.name;
-    let reasons = otherReasons.reason;
+function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob) {
+    const name = otherReasons.name;
+    const reasons = otherReasons.reason;
 
-    let reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
+    const reasonSelectorContain = $(block).find(reasonSelector+':contains('+name+')');
 
     let content = '';
     let inReasons = [];
+
     for (let i = 0; i < reasons.length; ++i) {
+        let progress = '';
         if (typeof reasons[i] === "object") {
-            content += '<div class="ah-other-reason-block ah-has-children"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i].name + '</label></div>';
+            if (prob) progress = addOtherReasonProb(reasons[i].name, prob);
+
+            content += '<div class="ah-other-reason-block ah-has-children">' +
+                    '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i].name + progress + '</span></label>' +
+                '</div>';
+
             inReasons.push(reasons[i]);
-        } else content += '<div class="ah-other-reason-block"><label><input type="checkbox" name="ah-other-reasons"/>' + reasons[i] + '</label></div>';
+        } else {
+            if (prob) progress = addOtherReasonProb(reasons[i], prob);
+
+            content += '<div class="ah-other-reason-block">' +
+                    '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i] + progress + '</span></label>' +
+                '</div>';
+        }
     }
 
-    let template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
+    const template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
 
-    if ($(reasonSelectorContain).find('.ah-other-reasons').length === 0) {
+    $(reasonSelectorContain)
+        .append(template)
+        .mouseenter(function () {
+            let blockItem = $(this).find('>.ah-other-reasons');
 
-        $(reasonSelectorContain)
-            .append(template)
-            .mouseenter(function () {
-                let blockItem = $(this).find('>.ah-other-reasons');
+            $(blockItem).show();
 
-                $(blockItem).show();
+            const width = $(blockItem).width();
+            const offset = $(blockItem).offset();
 
-                let width = $(blockItem).width();
-                let offset = $(blockItem).offset();
+            const rightPoint = offset.left + width;
+            if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
+        })
+        .mouseleave(function () {
+            const blockItem = $(this).find('>.ah-other-reasons');
 
-                let rightPoint = offset.left + width;
-                if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
-            })
-            .mouseleave(function () {
-                let blockItem = $(this).find('>.ah-other-reasons');
+            $(blockItem).hide();
+        });
 
-                $(blockItem).hide();
-            });
+    $(reasonSelectorContain)
+        .find('[type="checkbox"]')
+        .change(function () {
+            // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
+            const difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
-        $(reasonSelectorContain)
-            .find('[type="checkbox"]')
-            .change(function () {
-                // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
-                let difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
+            if ($(this).prop('checked')) {
+                // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
 
-                if ($(this).prop('checked')) {
-                    // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
+                $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
+            } else {
+                $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
 
-                    $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
-                } else {
-                    $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
+                let notCheckedReasons = $(this).parents(difParent);
 
-                    let notCheckedReasons = $(this).parents(difParent);
-
-                    for (let i = 0; i < notCheckedReasons.length; ++i) {
-                        if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
-                    }
+                for (let i = 0; i < notCheckedReasons.length; ++i) {
+                    if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
                 }
+            }
 
-                let text = '';
+            let text = '';
 
-                // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
-                let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
+            // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
+            const checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
-                if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
+            if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
-                for (let i = 0; i < checkedReasons.length; ++i) {
-                    if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
-                        let texReason = $(checkedReasons[i]).parent().text();
-                        let textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
-                        let textChildren = '';
+            for (let i = 0; i < checkedReasons.length; ++i) {
+                if ($(checkedReasons[i]).closest(difParent).find('[type="checkbox"]:checked').length <= 1) {
+                    const texReason = $(checkedReasons[i]).parent().text();
+                    const textChildrenSelector = $(checkedReasons[i]).parents('.ah-other-reason-block').parents('.ah-has-children').find('>label');
+                    let textChildren = '';
 
-                        for (let j = 0; j < textChildrenSelector.length; ++j) {
-                            textChildren += $(textChildrenSelector[j]).text() + ' -> ';
-                        }
-
-                        if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
-                        else text += ' или "' + textChildren + texReason + '"';
+                    for (let j = 0; j < textChildrenSelector.length; ++j) {
+                        textChildren += $(textChildrenSelector[j]).text() + ' -> ';
                     }
+
+                    if (text === 'Пожалуйста, измените на ') text += '"' + textChildren + texReason + '"';
+                    else text += ' или "' + textChildren + texReason + '"';
                 }
+            }
 
-                $(block).find(textSelector).val(text);
-            });
+            $(block).find(textSelector).val(text);
+        });
 
-        for (let i = 0; i < inReasons.length; ++i)
-            addOtherReasons(block, '.ah-other-reason-block', textSelector, inReasons[i]);
-    }
+    for (let i = 0; i < inReasons.length; ++i)
+        addOtherReasons(block, '.ah-other-reason-block', textSelector, inReasons[i], prob);
 }
 
 // ФООРМИРОВАНИЕ ССЫЛКИ ПО ПАРАМЕТРАМ
@@ -275,7 +316,7 @@ function eyeLinks(list) {
 
 function addInfoToItems() {
     $('form.form-inline').next().append('<div id="ah-user-info-show" class="dropdown" style="float: right">' +
-        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Показать' +
+        '  <button class="btn btn-info dropdown-toggle btn-xs" type="button" data-toggle="dropdown" style="padding: 1px 9px">Показать' +
         '  <span class="caret"></span></button>' +
         '  <ul class="dropdown-menu dropdown-menu-right"></ul>' +
         '</div>');
@@ -353,12 +394,12 @@ function clickActionButton() {
     let showUserInfo = false;
 
     function clickPostUserAgent() {
-        let selector = $('.ah-postUserAgent');
-
         if (!showUserInfo) {
             showUserInfo = true;
             usersInfoForItems();
         }
+
+        let selector = $('.ah-postUserAgent');
 
         if ($(selector).find('span.ah-menu-name').hasClass('showUserAgent')) {
             $('.ah-post-userAgent').hide();
@@ -371,6 +412,15 @@ function clickActionButton() {
     }
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
+
+    if (userGlobalInfo.subdivision === 'DJB' ||
+        userGlobalInfo.subdivision === 'DSR' ||
+        userGlobalInfo.subdivision === 'D3D' ||
+        userGlobalInfo.subdivision === 'DBH' ||
+        userGlobalInfo.subdivision === 'DRE' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision === 'SD') clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
@@ -534,7 +584,7 @@ function usersInfoForManyItems(id) {
         if (request.readyState === 4 && request.status === 200)  {
             let r = request.responseText;
 
-            let userAgent = $(r).find('.help-block:eq(7)').text();
+            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения)').text();
             let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
@@ -551,29 +601,59 @@ function usersInfoForManyItems(id) {
 // ССЫЛКИ НА ПОИСК ПО КАРТИНКЕ
 
 function searchByImageLinks() {
-    $('.js-images-preview').click(function () {
-        var interval = setInterval(function () {
-            let list = $('.images-preview-gallery-item');
+    let target = $('body')[0];
 
-            if (list.length > 0) {
-                clearInterval(interval);
+    let observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            // console.log(mutation);
+            if ($(mutation.addedNodes[0]).hasClass('js-images-preview-gallery')) {
+                watchForGalleryOnPre();
 
-                for (let i = 0; i < list.length; ++i) {
-                    let url = $(list[i]).find('a').attr('href').substr(2);
-                    let existLinks = $(list[i]).find('.searchByImageLinks');
-
-                    if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
-                            '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
-                                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
-                            '</a> ' +
-                            '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
-                                '<span>Y</span><span>andex</span>' +
-                            '</a> ' +
-                        '</div>');
-                }
+                observer.disconnect();
             }
-        }, 200);
+        });
     });
+
+    let config = { childList: true };
+
+    observer.observe(target,  config);
+}
+
+function watchForGalleryOnPre() {
+    let target = $('.js-images-preview-gallery')[0];
+
+    let observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) {
+                searchByImageLinks1();
+            }
+        });
+    });
+
+    let config = { childList: true };
+
+    observer.observe(target,  config);
+}
+
+function searchByImageLinks1() {
+    let list = $('.images-preview-gallery-item');
+
+    if (list.length > 0) {
+
+        for (let i = 0; i < list.length; ++i) {
+            let url = $(list[i]).find('a').attr('href').substr(2);
+            let existLinks = $(list[i]).find('.searchByImageLinks');
+
+            if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
+                '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
+                '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
+                '</a> ' +
+                '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
+                '<span>Y</span><span>andex</span>' +
+                '</a> ' +
+                '</div>');
+        }
+    }
 }
 
 // ССЫЛКИ НА ПОИСК ПО КАРТИНКЕ
@@ -1146,18 +1226,19 @@ function getSettings() {
     //RK Неправильная категория
     $('#divOptions').append('<div class="ah-chbx-category mh-options-group" style="display: none; margin: 5px;"></div>');
     $('.ah-chbx-category').append('' +
-        '<span style="color:red; font-size:17px;">Отклонение Неправильная категория с подписями</span>' +
+        '<span style="color:red; font-size:17px;">Отклонение "Неправильная категория с подписями"</span>' +
+        '<label class="mh-default-label" style="float: right; color: #9f0707">Авто кнопки с прогнозами <input class="mh-default-checkbox" type="checkbox" name="other" value="autoProbButtons" style="margin-right: 3px;"></label>' +
         '<div class="ah-chbx-category-body" style="white-space: nowrap; overflow: auto; width: 850px;"></div>');
 
     const jsonOtherReasonsCategoryBox = [
         {
-            name: "Личные вещи", color: '#CCCC00', short_name: 'ЛВ', show: "false",
+            name: "Личные вещи", color: '#f4f400', short_name: 'ЛВ', show: "false",
             reason: [
-                { name: 'Одежда, обувь, аксессуары', color: '#FFFF00', short_name: 'ЛВ_Оде', show: "false" },
-                { name: 'Детская одежда и обувь', color: '#FFFF33', short_name: 'ЛВ_Дет', show: "false"  },
-                { name: 'Товары для детей и игрушки', color: '#FFFF66', short_name: 'ЛВ_Игр', show: "false"  },
-                { name: 'Красота и здоровье', color: '#FFFF99', short_name: 'ЛВ_Крас', show: "false"  },
-                { name: 'Часы и украшения', color: '#FFFFCC', short_name: 'ЛВ_Часы', show: "false"  }
+                { name: 'Одежда, обувь, аксессуары', color: '#dfcc01', short_name: 'ЛВ_Оде', show: "false" },
+                { name: 'Детская одежда и обувь', color: '#dfcf11', short_name: 'ЛВ_Дет', show: "false"  },
+                { name: 'Товары для детей и игрушки', color: '#dfd32f', short_name: 'ЛВ_Игр', show: "false"  },
+                { name: 'Красота и здоровье', color: '#dfd74a', short_name: 'ЛВ_Крас', show: "false"  },
+                { name: 'Часы и украшения', color: '#DFDD61', short_name: 'ЛВ_Часы', show: "false"  }
             ]
         },
         {
@@ -1417,12 +1498,20 @@ function getSettings() {
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
     if (!localStorage.autoCheckOtherReason) localStorage.autoCheckOtherReason = 'false';
+    if (!localStorage.autoProbButtons) localStorage.autoProbButtons = 'false';
 
     if (localStorage.addElementsForEachItem === 'true') $('input[value="activeItemsPre"]').prop('checked', true);
     if (localStorage.imageSearchComparison === 'true') $('input[value="imageSearchComparison"]').prop('checked', true);
     if (localStorage.autoCheckOtherReason === 'true') $('input[value="autoCheckOtherReason"]').prop('checked', true);
+    if (localStorage.autoProbButtons === 'true') $('input[value="autoProbButtons"]').prop('checked', true);
 
     $('[name="other"]:checkbox').change(function () {
+        if ($('input[value="autoProbButtons"]').prop('checked')) {
+            localStorage.autoProbButtons = 'true';
+        } else {
+            localStorage.autoProbButtons = 'false';
+        }
+
         if ($('input[value="activeItemsPre"]').prop('checked')) {
             localStorage.addElementsForEachItem = 'true';
         } else {
@@ -1445,8 +1534,9 @@ function getSettings() {
 
     // кнопки
     $('#divOptions').append('<div class="btn-ok-cancel" style="text-align: center; margin-top: 10px;"></div>');
-    $('.btn-ok-cancel').append('<button id="butOkDivSettings" class="divOptions mh-default-btn" style="width:110px; margin-right: 6px;"><span class="mh-button-label mh-green-background">&#10003;</span>Ок</button>');
-    $('.btn-ok-cancel').append('<button id="butCanselDivSettings" class="divOptions mh-default-btn" style="width:110px;"><span class="mh-button-label mh-red-background">&#10007;</span>Отмена</button>');
+    $('.btn-ok-cancel')
+        .append('<button id="butOkDivSettings" class="divOptions mh-default-btn" style="width:110px; margin-right: 6px;"><span class="mh-button-label mh-green-background">&#10003;</span>Ок</button>')
+        .append('<button id="butCanselDivSettings" class="divOptions mh-default-btn" style="width:110px;"><span class="mh-button-label mh-red-background">&#10007;</span>Отмена</button>');
 
     $('#butOkDivSettings').click(function() {
         localStorage.eyeParamList = $('#eyeParamList').val();

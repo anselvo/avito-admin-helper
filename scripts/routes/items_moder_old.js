@@ -1,31 +1,34 @@
 
 function personalStatistics() {
-    $('body').append('<div id="rightShotBar"></div>');
-    $('#rightShotBar').append('<div id="personalStatistics"></div>');
-    $('#personalStatistics').append('<div class="statHide">Statistics</div>');
-    $('#personalStatistics').append('<div class="statShow" style="display:none;"></div>');
-    $('.statShow').append('<div>Users is blocked: <span id="blockUserCount">0</span></div>');
-    $('.statShow').append('<div>Items is blocked: <span id="blockItemCount">0</span></div>');
-    $('.statShow').append('<div>Items is rejected: <span id="rejectItemCount">0</span></div>');
-    $('.statShow').append('<div>Items is allowed: <span id="allowAllCount">0</span></div>');
+    if (window.location.href.indexOf("helpdesk") + 1) return;
+
+    $('body').append('<div id="ah-rightShotBar"></div>');
+    $('#ah-rightShotBar').append('<div id="ah-personalStatistics"></div>');
+    $('#ah-personalStatistics').append('<div class="ah-statHide">Statistics</div>')
+        .append('<div class="ah-statShow" style="display:none;"></div>');
+    $('.ah-statShow')
+        .append('<div class="ah-stat-block" style="color: #b62029">Users is blocked: <span id="ah-blockUserCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #c83daf">Items is blocked: <span id="ah-blockItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #e97899">Items is rejected: <span id="ah-rejectItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #4c8b46">Items is allowed: <span id="ah-allowAllCount">0</span></div>');
 
     chrome.storage.local.get(['mod_stat', 'currentDay'], function (result) {
-        $('#blockUserCount').text(result.mod_stat.blockUserCount);
-        $('#blockItemCount').text(result.mod_stat.blockItemCount);
-        $('#rejectItemCount').text(result.mod_stat.rejectItemCount);
-        $('#allowAllCount').text(result.mod_stat.allowAllCount);
+        $('#ah-blockUserCount').text(result.mod_stat.blockUserCount);
+        $('#ah-blockItemCount').text(result.mod_stat.blockItemCount);
+        $('#ah-rejectItemCount').text(result.mod_stat.rejectItemCount);
+        $('#ah-allowAllCount').text(result.mod_stat.allowAllCount);
     });
 
     chrome.storage.onChanged.addListener(function (result) {
         if ("mod_stat" in result) {
-            $('#blockUserCount').text(result.mod_stat.newValue.blockUserCount);
-            $('#blockItemCount').text(result.mod_stat.newValue.blockItemCount);
-            $('#rejectItemCount').text(result.mod_stat.newValue.rejectItemCount);
-            $('#allowAllCount').text(result.mod_stat.newValue.allowAllCount);
+            $('#ah-blockUserCount').text(result.mod_stat.newValue.blockUserCount);
+            $('#ah-blockItemCount').text(result.mod_stat.newValue.blockItemCount);
+            $('#ah-rejectItemCount').text(result.mod_stat.newValue.rejectItemCount);
+            $('#ah-allowAllCount').text(result.mod_stat.newValue.allowAllCount);
         }
     });
 
-    $('#personalStatistics').click(function () {
+    $('#ah-personalStatistics').click(function () {
         if (!localStorage.personalStatistics || localStorage.personalStatistics === 'false') {
             localStorage.personalStatistics = true;
             personalStatisticsMouse();
@@ -36,27 +39,26 @@ function personalStatistics() {
     });
 
     personalStatisticsMouse();
-    setFixedElemUnderFooter($('#rightShotBar'));
 }
 
 function personalStatisticsMouse() {
     if (!localStorage.personalStatistics || localStorage.personalStatistics === 'false') {
-        $('.statShow').hide();
-        $('.statHide').show();
-        $('.statHide').mouseenter(function(){
-            $('.statHide').hide();
-            $('.statShow').show();
+        $('.ah-statShow').hide();
+        $('.ah-statHide').show();
+        $('.ah-statHide').mouseenter(function(){
+            $('.ah-statHide').hide();
+            $('.ah-statShow').show();
         });
 
-        $('.statShow').mouseleave(function(){
-            $('.statShow').hide();
-            $('.statHide').show();
+        $('.ah-statShow').mouseleave(function(){
+            $('.ah-statShow').hide();
+            $('.ah-statHide').show();
         });
     } else {
-        $('.statHide').unbind();
-        $('.statShow').unbind();
-        $('.statHide').hide();
-        $('.statShow').show();
+        $('.ah-statHide').unbind();
+        $('.ah-statShow').unbind();
+        $('.ah-statHide').hide();
+        $('.ah-statShow').show();
     }
 }
 
@@ -630,28 +632,28 @@ function addElementsForEachItem() {
                     var action = tmpKey[j].split('|&|')[1];
                     var reason = tmpKey[j].split('|&|')[2];
 
-                    if (name == '') continue;
+                    if (name === '') continue;
 
-                    if (name == reason) { // для отклонений за "параметр" Адрес
+                    if (name === reason) { // для отклонений за "параметр" Адрес
                         reason = '175_' + paramId;
                     }
 
                     // console.log(reason);
 
-                    $('div.it_tiles').slice(i,i+1).append('<input type="button" value="' + name + '" class="btn btn-default btn-sm mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
+                    $('div.it_tiles').slice(i,i+1).append('<input type="button" value="' + name + '" class="btn btn-default btn-sm ah-mh-action-btn" bvalue="' + value + '" data-reason="' + reason + '" data-action="' + action + '" data-version="' + itemVersion + '">');
                 }
             }
         }
     }
 
 
-    $('div.it_tiles input.mh-action-btn').click(function() {
+    $('div.it_tiles input.ah-mh-action-btn').click(function() {
         var dataObj = {
             itemId: $(this).attr('bvalue'),
             version: $(this).data('version'),
             action: $(this).data('action'),
             reason: String($(this).data('reason'))
-        }
+        };
 
 
         if (~dataObj.reason.indexOf('_')) {
@@ -663,7 +665,7 @@ function addElementsForEachItem() {
     });
 
 
-    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.mh-action-btn").click(function(){
+    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function(){
         lastReject += $(this).parents('tr:eq(0)').attr("data-id")+ '|';
     });
 
