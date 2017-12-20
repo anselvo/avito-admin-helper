@@ -1,40 +1,47 @@
-var userGlobalInfo;
-var scriptGlobal;
+let userGlobalInfo;
+let scriptGlobal;
+let currentUrl;
 
-chrome.storage.local.get(function (result) {
-    userGlobalInfo = result.user;
-    scriptGlobal = result.script;
-    
-    if (result.script === 'infoDoc') {
-        startInfoDoc();
-    }
+$(function () {
+    currentUrl = location.href;
 
-    if (result.script === 'intern') {
-        startIntern();
-        startModerator();
-    }
+    chrome.storage.local.get(function (result) {
+        userGlobalInfo = result.user;
+        scriptGlobal = result.script;
 
-    if (result.script === 'moderator') {
-        startModerator();
-    }
-    
-    if (result.script === 'smm') {
-        startSmm();
-    }
-    
-    if (result.script === 'support') {
-        startSupport();
-    }
+        startNotification(result.notifications);
 
-    if (result.script === 'traffic') {
-        startTraffic();
-    }
-});
+        if (result.script === 'infoDoc') {
+            startInfoDoc();
+        }
 
-$(document).mouseup(function (e) {
-    let destroyOutclickingPopovers = $('.ah-popover-destroy-outclicking');
-    if (!destroyOutclickingPopovers.is(e.target)
-        && destroyOutclickingPopovers.has(e.target).length === 0) {
-        $(destroyOutclickingPopovers).popover('destroy');
-    }
+        if (result.script === 'intern') {
+            startIntern();
+            startModerator();
+        }
+
+        if (result.script === 'moderator') {
+            startModerator();
+        }
+
+        if (result.script === 'smm') {
+            startSmm();
+        }
+
+        if (result.script === 'support') {
+            startSupport();
+        }
+
+        if (result.script === 'traffic') {
+            startTraffic();
+        }
+    });
+
+    $(document).mouseup(function (e) {
+        let destroyOutclickingPopovers = $('.ah-popover-destroy-outclicking');
+        if (!destroyOutclickingPopovers.is(e.target)
+            && destroyOutclickingPopovers.has(e.target).length === 0) {
+            $(destroyOutclickingPopovers).popover('destroy');
+        }
+    });
 });

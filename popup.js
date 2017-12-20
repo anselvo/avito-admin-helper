@@ -1,9 +1,9 @@
-var version = chrome.runtime.getManifest().version;
-var scriptList = [];
-var userGlobalInfo;
-var page = 'error';
+let version = chrome.runtime.getManifest().version;
+let scriptList = [];
+let userGlobalInfo;
+let page = 'error';
 
-$(document).ready(function() {
+$(function() {
     cookieInfo();
     loadingBar();
 });
@@ -24,20 +24,20 @@ function cookieInfo() {
 
 
 function userInfo(username) {
-    var table = {
+    let table = {
         username: username
     };
 
-    var jsonTable = JSON.stringify(table);
+    let jsonTable = JSON.stringify(table);
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://avitoadm.ru/journal/include/php/loginCheckExt.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send("param="+jsonTable);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
 			if (xhr.status === 200) {
-				var json = JSON.parse(xhr.responseText);
+                let json = JSON.parse(xhr.responseText);
 
                 console.log(json);
 
@@ -134,12 +134,12 @@ function mainPage() {
 
 
 function mainButtonGenerator() {
-    var html = '';
+    let html = '';
 
-    var script = localStorage.script;
+    let script = localStorage.script;
 
-    var name = script.charAt(0).toUpperCase() + script.substr(1);
-    var chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
+    let name = script.charAt(0).toUpperCase() + script.substr(1);
+    let chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
 
     html += '<span class="avito-logo script-group horizontal">' +
                 '<img id="avitoLogo" src="image/logo_white.png" style="">' +
@@ -160,37 +160,37 @@ function errorPage(error, xhrStatus) {
     localStorage.scriptStatus = 'off';
     chrome.storage.local.set({'script': 'none'});
 
-    var logo = '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">';
+    let logo = '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">';
 
-    if (error == 'logout') {
+    if (error === 'logout') {
         pageGenerator(
             'Admin.Helper',
             'Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru',
             logo,
             ''
         );
-    } else if (error == 'user does not exist') {
+    } else if (error === 'user does not exist') {
         pageGenerator(
             'Admin.Helper',
             'К сожалению, вы отсутсутствуете в списке пользователей Admin.Helper. Обратитесь к вашему тимлидеру для решения данной проблемы.',
             logo,
             ''
         );
-    } else if (error == '403') {
+    } else if (error === '403') {
         pageGenerator(
             'Admin.Helper',
             'К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса.',
             logo,
             ''
         );
-    } else if (error == '500') {
+    } else if (error === '500') {
         pageGenerator(
             'Admin.Helper',
             'К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново.',
             logo,
             ''
         );
-    } else if (error == '>=400') {
+    } else if (error === '>=400') {
         pageGenerator(
             'Admin.Helper',
             'К сожалению, произошла техническая ошибка. Код ошибки: '+ xhrStatus +'.',
@@ -210,11 +210,11 @@ function errorPage(error, xhrStatus) {
 }
 
 function logoChange() {
-	var countClick = 0;
+	let countClick = 0;
 	
-	$('#avitoLogo').click(function () {
+	$('#avitoLogo').click(() => {
 		countClick++;
-		if (countClick == 6) {
+		if (countClick === 6) {
 			countClick = 0;
 			
 			authorizationPage();
@@ -232,9 +232,9 @@ function authorizationPage() {
 		'<input class="btn" type="submit" id="submit" value="Sign in">'
 	);
 			
-	$('#submit').click(function () {
-		var username = $('#username').val();
-		var password = $('#password').val();
+	$('#submit').click(() => {
+		const username = $('#username').val();
+        const password = $('#password').val();
 		
 		login(username, password);
 	});
@@ -243,14 +243,14 @@ function authorizationPage() {
 function login(username, password) {
     loadingBar();
 
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/login.php', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.send("user="+username+"&pass="+password);
 	xhr.onreadystatechange = function () {
 	    if (xhr.readyState === 4) {
             if(xhr.status === 200) {
-                if (xhr.responseText == 'username or password correct') {
+                if (xhr.responseText === 'username or password correct') {
                     cookieInfo();
                 } else {
                     authorizationPage();
@@ -281,7 +281,7 @@ function login(username, password) {
 // СТРАНИЦА ВЫБОРА СКРИПТА
 
 function chooseScriptPage() {
-    $('#choose-scripts').click(function() {
+    $('#choose-scripts').click(() => {
         pageGenerator(
             'Admin.Helper',
             '',
@@ -295,11 +295,11 @@ function chooseScriptPage() {
 
 
 function chooseButtonGenerator(buttons) {
-    var html = '';
+    let html = '';
 
     buttons.forEach(function(btn) {
-        var id = btn;
-        var name = btn.charAt(0).toUpperCase() + btn.substr(1);
+        let id = btn;
+        let name = btn.charAt(0).toUpperCase() + btn.substr(1);
 
         html += '<input type="radio" class="radioLabel" name="option" id="'+id+'" />' +
             '<label class="script-name script-group vertical" for="'+id+'" title="'+name+' Helper">'+name+'</label>';
@@ -309,8 +309,8 @@ function chooseButtonGenerator(buttons) {
 }
 
 function chooseScript() {
-    $('label[for]').click(function () {
-        var clickScript = $(this).attr('for');
+    $('label[for]').click(event => {
+        let clickScript = $(event.currentTarget).attr('for');
         $('#'+clickScript).prop('checked', true);
 
         localStorage.script = clickScript;
@@ -339,11 +339,11 @@ function loginPage() {
 		'<input class="btn" type="submit" id="logout" value="Sign out">'
 	);
 	
-	$('#logout').click(function (){
+	$('#logout').click(() => {
 		logout();
 	});
 	
-	$('#sendNotification').click(function () {
+	$('#sendNotification').click(() => {
         sendNotificationPage(userGlobalInfo);
     });
 	
@@ -353,9 +353,9 @@ function loginPage() {
 	});
 }
 
-function sendNotificationPage(username) {
+function sendNotificationPage(user) {
     pageGenerator(
-        username,
+        user.username,
         mainButtonGenerator(),
         '<dl id="to_type" class="dropdown">'+
 			'<dt>'+
@@ -404,72 +404,72 @@ function sendNotificationPage(username) {
         '</dl>'+
 		'<input id="to_username" type="text" name="notification" placeholder="usernames" title="Вводите логины через запятую!" style="display: none;">'+
         '<input id="headNotification" type="text" name="notification" placeholder="Notification Head" title="Введите заголовок уведомления">'+
-        '<textarea id="bodyNotification" type="text" name="notification" placeholder="Notification Body" title="Введите уведомление"></textarea>',
+        '<textarea id="bodyNotification" name="notification" placeholder="Notification Body" title="Введите уведомление"></textarea>',
         '<input class="btn" type="submit" id="sendNotificationToBD" value="Send Notification">'
     );
 
 
-    $(".dropdown dt a").click(function() {
+    $(".dropdown dt a").click(() => {
         $(this).parents('.dropdown').find("dd ul").slideToggle('fast');
     });
 
-    $(".dropdown dd ul li a").click(function() {
+    $(".dropdown dd ul li a").click(() => {
         $(this).parents('.dropdown').find("dd ul").hide();
     });
 
-    $(document).bind('click', function(e) {
-        var $clicked = $(e.target);
+    $(document).on('click', (e) => {
+        let $clicked = $(e.target);
         if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
     });
 
     $('.mutliSelect input[type="checkbox"]').on('click', function() {
 
-        var title = $(this).val();
+        let title = $(this).val();
 
         if ($(this).is(':checked')) {
-            var html = '<span title="'+title+'">'+title+'</span>';
+            let html = '<span title="'+title+'">'+title+'</span>';
             $(this).parents('.dropdown').find('.multiSel').append(html);
             $(this).parents('.dropdown').find(".hida").hide();
-            if ($(this).val() == 'Subdivision') $('#to_category').show();
-			if ($(this).val() == 'Username') $('#to_username').show();
+            if ($(this).val() === 'Subdivision') $('#to_category').show();
+			if ($(this).val() === 'Username') $('#to_username').show();
         } else {
             $(this).parents('.dropdown').find('span[title="' + title + '"]').remove();
-            if ($(this).parents('.dropdown').find('.multiSel span').length == 0) $(this).parents('.dropdown').find(".hida").show();
-            if ($(this).val() == 'Subdivision') $('#to_category').hide();
-            if ($(this).val() == 'Username') $('#to_username').hide();
+            if ($(this).parents('.dropdown').find('.multiSel span').length === 0) $(this).parents('.dropdown').find(".hida").show();
+            if ($(this).val() === 'Subdivision') $('#to_category').hide();
+            if ($(this).val() === 'Username') $('#to_username').hide();
         }
     });
 
-    $(document).mouseup(function(e) {
-        var div = $('.dropdown dd ul');
+    $(document).mouseup((e) => {
+        let div = $('.dropdown dd ul');
         if (!div.is(e.target) && div.has(e.target).length === 0) {
             div.hide();
         }
     });
 
-    $('#sendNotificationToBD').click(function () {
-        sendNotificationToBD(username);
+    $('#sendNotificationToBD').click(() => {
+        sendNotificationToBD(user);
         choosePage();
     });
 }
 
-function sendNotificationToBD(username) {
+function sendNotificationToBD(user) {
     chrome.runtime.sendMessage({
         action: 'sendNotification',
-        username: username,
+        username: user.username,
         head: $('#headNotification').val(),
         body: $('#bodyNotification').val(),
-        to_type: '|'+makestring($('#to_type .multiSel span'))+'|',
-        to_name: '|'+makestring($('#to_category .multiSel span'))+'|'+$('#to_username').val().replace(' ', '').replace(',', '|')+'|'
+        to_type: '|'+makeString($('#to_type').find('.multiSel span'))+'|',
+        to_name: '|'+makeString($('#to_category').find('.multiSel span'))+'|'+$('#to_username').val().replace(' ', '').replace(',', '|')+'|'
     }, function(response) {
         console.log(response);
     });
 }
 
-function makestring(obj) {
-	var array = [];
+function makeString(obj) {
+	let array = [];
 
-	for (var i = 0; i < obj.length; ++i) {
+	for (let i = 0; i < obj.length; ++i) {
 		array.push(obj.slice(i, i+1).text());
 	}
 
@@ -479,7 +479,7 @@ function makestring(obj) {
 function logout() {
     loadingBar();
 
-	var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
 	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/logout.php', true);
 	xhr.send();
 
@@ -489,65 +489,68 @@ function logout() {
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
 
 function pageGenerator(head, scripts, body, end) {
-	$('body').empty();
-	$('body').append('<div id="background-body"><img id="avitoBackground" src="image/popup_background.jpg"></div>');
+    let $body = $('body');
+
+    $body.empty()
+        .append('<div id="background-body"><img id="avitoBackground" src="image/popup_background.jpg"></div>');
 	
-	if (head != '') {
-		$('body').append('<div id="head" class="line"></div>');
+	if (head !== '') {
+        $body.append('<div id="head" class="line"></div>');
 		$('#head').html(head);
 	}
 
-	if (scripts != '' && scripts.indexOf('mainScript')+1) {
-		$('body').append('<div id="scripts" class="radio_buttons"></div>');
+	if (scripts !== '' && scripts.indexOf('mainScript')+1) {
+        $body.append('<div id="scripts" class="radio_buttons"></div>');
 		$('#scripts').html(scripts);
 
         turnScript();
         chooseScriptPage();
-	} else if (scripts != '') {
-		$('body').append('<div id="error"></div>');
+	} else if (scripts !== '') {
+        $body.append('<div id="error"></div>');
 		$('#error').html(scripts);
 	}
 	
-	if (body != '') {
-		$('body').append('<div id="body" class="line"></div>');
+	if (body !== '') {
+        $body.append('<div id="body" class="line"></div>');
 		
 		$('#body').html(body);
 	} else {
 		$('#scripts').css('margin', '35px 0');
 	}
 	
-	if (end != '') {
-		$('body').append('<div id="end" class="line"></div>');
+	if (end !== '') {
+        $body.append('<div id="end" class="line"></div>');
 		$('#end').html(end);
 	}
-	
-	$('body').append('<div id="version"></div>');
+
+    $body.append('<div id="version"></div>');
 	$('#version').html('<span title="Версия расширения">v'+version+'</span>');
 
     logoChange();
 }
 
 function turnScript() {
-    var scriptStatus = localStorage.scriptStatus;
+    let scriptStatus = localStorage.scriptStatus;
+    let $mainScript = $('#mainScript');
 	
     if (scriptStatus === 'off') {
-        $('#mainScript').removeClass('active');
+        $mainScript.removeClass('active');
     }
     if (scriptStatus === 'on') {
-        $('#mainScript').addClass('active');
+        $mainScript.addClass('active');
     }
 
-    $('#mainScript').click(function () {
+    $mainScript.click(() => {
         scriptStatus = localStorage.scriptStatus;
 
         if (scriptStatus === 'off') {
-            $('#mainScript').addClass('active');
+            $mainScript.addClass('active');
             localStorage.scriptStatus = 'on';
             chrome.storage.local.set({'script': localStorage.script});
         }
 
         if (scriptStatus === 'on') {
-            $('#mainScript').removeClass('active');
+            $mainScript.removeClass('active');
             localStorage.scriptStatus = 'off';
             chrome.storage.local.set({'script': 'none'});
         }
@@ -555,9 +558,10 @@ function turnScript() {
 }
 
 function loadingBar() {
-    $('body').empty();
-	$('body').append('<div id="body" class="line"><img id="avitoBackground" src="image/popup_background.jpg"></div>');
-    $('body').append('<div class="cssload-loader">'+
+    $('body')
+        .empty()
+        .append('<div id="body" class="line"><img id="avitoBackground" src="image/popup_background.jpg"></div>')
+        .append('<div class="cssload-loader">'+
             '<div class="cssload-inner cssload-one"></div>'+
             '<div class="cssload-inner cssload-two"></div>'+
             '<div class="cssload-inner cssload-three"></div>'+

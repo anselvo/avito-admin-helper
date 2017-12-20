@@ -1,7 +1,7 @@
 function startInfoDoc() {
     console.log('infoDoc script start');
 
-    chrome.runtime.onMessage.addListener(function (request, sender, callback) {
+    chrome.runtime.onMessage.addListener(function (request) {
         if (request.onUpdated === 'ticketUser')
             setTimeout(infoDocTicketUser, 200);
 
@@ -12,123 +12,119 @@ function startInfoDoc() {
             setTimeout(infoDocTicketQueue, 100);
     });
 
-    $(document).ready(function () {
-        // загрузка
-        $('body').append(''+
-        '<div id="sh-loading-layer">'+
-            '<div class="sh-cssload-container">'+
-                '<div class="sh-cssload-whirlpool"></div>'+
-            '</div>'+
-        '</div>');
+    // загрузка
+    $('body').append(''+
+    '<div id="sh-loading-layer">'+
+        '<div class="sh-cssload-container">'+
+            '<div class="sh-cssload-whirlpool"></div>'+
+        '</div>'+
+    '</div>');
 
-        var currentUrl = window.location.href;
+    // User info
+    var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
+    if (~currentUrl.indexOf('https://adm.avito.ru/users/user/info/')
+            || shortUserLinkReg.test(currentUrl)
+            || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
-        // User info
-        var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
-        if (~currentUrl.indexOf('https://adm.avito.ru/users/user/info/') 
-                || shortUserLinkReg.test(currentUrl)
-                || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
+        // сопоставления логинов с категорией
+        adminTableCategory();
 
-            // сопоставления логинов с категорией
-            adminTableCategory();
+        // парсер комментов
+        linksOnComments('td.is-break', currentUrl);
 
-            // парсер комментов
-            linksOnComments('td.is-break', currentUrl);
-            
-            // индикаторы
-            addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'subscriptionIndividual',
-                'persManager', 'onlyBankTransfer', 'REPremium', 'extension']);
+        // индикаторы
+        addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'subscriptionIndividual',
+            'persManager', 'onlyBankTransfer', 'REPremium', 'extension']);
 
-            // переход в HD
-            linkToHDOnUser();
+        // переход в HD
+        linkToHDOnUser();
 
-            copyDataToClipboard(['e-mail', 'phones', 'companyE-mail', 'inn']);
-            
-            addFixedTools($('body'), ['scroll-top']);
+        copyDataToClipboard(['e-mail', 'phones', 'companyE-mail', 'inn']);
 
-            addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
-        }
+        addFixedTools($('body'), ['scroll-top']);
 
-        // users/search
-        if (currentUrl.indexOf('https://adm.avito.ru/users/search') + 1
-            || currentUrl.indexOf('https://adm.avito.ru/adm/users/search') + 1) {
-            addInfoDocQueueLink($('.header__title'));
-        }
-        // Account info
-        if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1 
-                || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
-            // парсер комментов
-            linksOnComments('td.is-break', currentUrl);
+        addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+    }
 
-            // добавление кнопок подсчета в Account info
-            countMoneyAccount();
+    // users/search
+    if (currentUrl.indexOf('https://adm.avito.ru/users/search') + 1
+        || currentUrl.indexOf('https://adm.avito.ru/adm/users/search') + 1) {
+        addInfoDocQueueLink($('.header__title'));
+    }
+    // Account info
+    if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1
+            || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
+        // парсер комментов
+        linksOnComments('td.is-break', currentUrl);
 
-            // дополнения к операциям резервирования
-            reservedOperation('/users/account/info');
-            userViewOperations();
+        // добавление кнопок подсчета в Account info
+        countMoneyAccount();
 
-            // addWLLinkForDocumentsAccountInfo();
-            addWlLinkAccountInfo(getWlLinkForDocuments, {
-                linkName: 'Сумма закрывающих'
-            });
+        // дополнения к операциям резервирования
+        reservedOperation('/users/account/info');
+        userViewOperations();
 
-            addPackageInfoAccountInfo();
-        }
+        // addWLLinkForDocumentsAccountInfo();
+        addWlLinkAccountInfo(getWlLinkForDocuments, {
+            linkName: 'Сумма закрывающих'
+        });
 
-        // walletlog
-        if (currentUrl.indexOf('https://adm.avito.ru/adm/billing/walletlog') + 1 
-                || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
-            // дополнения к операциям резервирования
-            reservedOperation('/billing/walletlog');
+        addPackageInfoAccountInfo();
+    }
 
-            countMoneyWalletlog();
+    // walletlog
+    if (currentUrl.indexOf('https://adm.avito.ru/adm/billing/walletlog') + 1
+            || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
+        // дополнения к операциям резервирования
+        reservedOperation('/billing/walletlog');
 
-            addPackageInfoWalletlog();
-        }
+        countMoneyWalletlog();
 
-        // helpdesk
-        if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
+        addPackageInfoWalletlog();
+    }
 
-            const app = document.getElementById('app');
-            const observer = new MutationObserver(function (mutations) {
-                mutations.forEach(mutation => {
-                    mutation.addedNodes.forEach(node => {
-                        if (node.nodeType === 1
-                            && node.classList.contains('helpdesk-tab-pane')
-                            && [].find.call(node.querySelectorAll('h4'),
-                                item => ~item.className.indexOf('details-left-panel-title'))) {
+    // helpdesk
+    if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
 
-                            infoDocTicketInfo();
-                        }
-                    });
+        const app = document.getElementById('app');
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1
+                        && node.classList.contains('helpdesk-tab-pane')
+                        && [].find.call(node.querySelectorAll('h4'),
+                            item => ~item.className.indexOf('details-left-panel-title'))) {
+
+                        infoDocTicketInfo();
+                    }
                 });
             });
+        });
 
-            const config = {childList: true, subtree: true};
-            observer.observe(app, config);
+        const config = {childList: true, subtree: true};
+        observer.observe(app, config);
 
-            findAgentID(); // ID агента
-            
-            getAllUsers(); // инфа обо всех пользователях
-        }
+        findAgentID(); // ID агента
 
-        // billing/invoices
-        if (~currentUrl.indexOf('https://adm.avito.ru/billing/invoices')
-            || ~currentUrl.indexOf('https://adm.avito.ru/adm/billing/invoices')) {
-            showUsersIdsBillingInvoices();
-        }
+        getAllUsers(); // инфа обо всех пользователях
+    }
 
-        // root
-        let mainPageReg = /adm\.avito\.ru\/$/i;
-        if (mainPageReg.test(currentUrl)) {
-            $('section.content').prepend(`
-                <div class="ah-infodoc-queue-link-holder"></div>
-                <div class="ah-clearfix"></div>
-            `);
+    // billing/invoices
+    if (~currentUrl.indexOf('https://adm.avito.ru/billing/invoices')
+        || ~currentUrl.indexOf('https://adm.avito.ru/adm/billing/invoices')) {
+        showUsersIdsBillingInvoices();
+    }
 
-            addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
-        }
-    });
+    // root
+    let mainPageReg = /adm\.avito\.ru\/$/i;
+    if (mainPageReg.test(currentUrl)) {
+        $('section.content').prepend(`
+            <div class="ah-infodoc-queue-link-holder"></div>
+            <div class="ah-clearfix"></div>
+        `);
+
+        addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
+    }
 }
 
 function infoDocTicketInfo() {

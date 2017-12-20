@@ -1,42 +1,57 @@
-var userGlobalInfo;
 
-chrome.storage.local.get(function (result) {
-	userGlobalInfo = result.user;
-});
+function startNotification(notifications) {
+    notificationBar();
+    notificationOld();
 
-chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-	if (request.notification) {
-		var compactName = request.notification.name.toLowerCase().replace(' ', '');
-		var id = compactName+request.notification.id;
-		if ($('#'+id).length == 0) {
-			notificationBarAdd(id, request.notification.name+'Header', request.notification.head, compactName+'Body', request.notification.body);
-			$('#'+id).attr('time', request.notification.time);
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for (let key in changes) {
+            let storageChange = changes[key];
+            console.log('Storage key "%s" in namespace "%s" changed. ' +
+                'Old value was "%s", new value is "%s".',
+                key,
+                namespace,
+                storageChange.oldValue,
+                storageChange.newValue);
+        }
+    });
 
-			notificationBarStatus('on');
-		}
-	}
-});
 
-// запуск чекера для notification bar
-setInterval(agentcheck, 180000);
+}
 
-// Notification Bar Start
-$(document).ready(function () {
-	notificationBar();
-});
+
+function notificationOld() {
+    // запуск листнера для php скриптов
+    chrome.runtime.onMessage.addListener(function(request) {
+        if (request.notification) {
+            let compactName = request.notification.name;
+            let id = compactName+request.notification.id;
+            let $id = $('#'+id);
+
+            if ($id.length === 0) {
+                notificationBarAdd(id, request.notification.name + 'Header', request.notification.head, compactName + 'Body', request.notification.body);
+                $id.attr('time', request.notification.time);
+
+                notificationBarStatus('on');
+            }
+        }
+    });
+
+    // запуск чекера для notification bar
+    setInterval(agentCheck, 180000);
+}
 	
-//---------- Allow List Chaker ----------//
+//---------- Allow List Checker ----------//
 
-function agentcheck() {
+function agentCheck() {
 	allowListCheck(userGlobalInfo.subdivision, userGlobalInfo.username);
 }
 
 function allowListCheck(agentLine, agentlogin) {
-	if (agentLine == 'S1' || agentLine == 'SD') {
+	if (agentLine === 'S1' || agentLine === 'SD') {
 		
 		findItemsFromAllowList(agentlogin);
 	}
-	if (agentLine == 'S2' || agentLine == 'SD') {
+	if (agentLine === 'S2' || agentLine === 'SD') {
 		
 		parseAllowListCheckingItems(agentlogin);
 	}
@@ -48,10 +63,10 @@ function findItemsFromAllowList(agentlogin) {
 		
 		for (var i = 0; i < len; ++i) {
 			var itemChecked = $('.allowListItemHeaderChecked span').slice(i, i+1).attr('id').replace('checked', '');
-			if (localStorage.allowList.indexOf(itemChecked) == -1) $('#checked'+itemChecked).click();
+			if (localStorage.allowList.indexOf(itemChecked) === -1) $('#checked'+itemChecked).click();
 		}
 		
-		if (localStorage.allowList != '') {
+		if (localStorage.allowList !== '') {
 			var myItems = localStorage.allowList.split('|');
 			var myItemsLen = myItems.length;
 			
@@ -60,7 +75,7 @@ function findItemsFromAllowList(agentlogin) {
 				var item = tmp[0];
 				var time = tmp[1];
 				
-				if ($('#checked'+item).length == 0) isItemChecked('status', 'checked', item, time);
+				if ($('#checked'+item).length === 0) isItemChecked('status', 'checked', item, time);
 			}
 		}
 	}

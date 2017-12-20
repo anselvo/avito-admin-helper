@@ -82,6 +82,7 @@
 		"alarms",
 		"notifications",
         "contextMenus",
+		"contentSettings",
         "https://*.avito.ru/*",
 		"http://*.avitoadm.ru/*",
 		"https://br-analytics.ru/*",

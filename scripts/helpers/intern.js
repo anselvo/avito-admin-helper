@@ -1,33 +1,29 @@
 function startIntern() {
 	console.log('intern script start');
 
-    $(document).ready(function () {
-        let location1 = location.href;
+	//ИНТЕРН ЛОГ
+	if (userGlobalInfo.subdivision === 'TL' || userGlobalInfo.subdivision === 'SD' || userGlobalInfo.subdivision === 'SO') {
+		$('.dropdown-menu:contains(Выход) li').before('</li><li><a href="http://avitoadm.ru/intern_helper/internlog/" target = "_blank">Intern log</a><li><li class="divider" role="separator">');
+	}
 
-        //ИНТЕРН ЛОГ
-        if (userGlobalInfo.subdivision === 'TL' || userGlobalInfo.subdivision === 'SD' || userGlobalInfo.subdivision === 'SO') {
-            $('.dropdown-menu:contains(Выход) li').before('</li><li><a href="http://avitoadm.ru/intern_helper/internlog/" target = "_blank">Intern log</a><li><li class="divider" role="separator">');
-        }
-        
-        if (location1.indexOf('https://adm.avito.ru/items/search') + 1 || location1.indexOf('https://adm.avito.ru/adm/items/search') + 1) {
-            searchInform(); // поиск информ агентств
-            addButtonsIntern();
-            premoderationInternNew(userGlobalInfo.username, 'post');
-        }
-        
-        if (location1.indexOf("https://adm.avito.ru/items/comparison/") > -1) {
-            premoderationInternComparison(userGlobalInfo.username, location1);
-        }
-        if (location1.indexOf("https://adm.avito.ru/items/moder") + 1) {
-            addButtonsIntern();
-            premoderationInternNew(userGlobalInfo.username, 'pre');
-            premoderationInternComparisonNew();
-        }
+	if (currentUrl.indexOf('https://adm.avito.ru/items/search') + 1 || currentUrl.indexOf('https://adm.avito.ru/adm/items/search') + 1) {
+		searchInform(); // поиск информ агентств
+		addButtonsIntern();
+		premoderationInternNew(userGlobalInfo.username, 'post');
+	}
 
-        if (location1.indexOf("http://avitoadm.ru/intern_helper/") > -1) {
-            eg();
-        }
-    });
+	if (currentUrl.indexOf("https://adm.avito.ru/items/comparison/") > -1) {
+		premoderationInternComparison(userGlobalInfo.username, currentUrl);
+	}
+	if (currentUrl.indexOf("https://adm.avito.ru/items/moder") + 1) {
+		addButtonsIntern();
+		premoderationInternNew(userGlobalInfo.username, 'pre');
+		premoderationInternComparisonNew();
+	}
+
+	if (currentUrl.indexOf("http://avitoadm.ru/intern_helper/") > -1) {
+		eg();
+	}
 }
 
 function premoderationInternComparisonNew() {

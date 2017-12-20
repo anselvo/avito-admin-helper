@@ -1,10 +1,11 @@
 let SCRIPT, USER;
+let stompClient = null;
 
 chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
     USER = result.user;
 
-    testWebSocket(USER);
+    testWebSocket(USER, '0000');
     setBadgetIcon(SCRIPT);
 });
 
@@ -663,27 +664,20 @@ function notificationCheck() {
 }
 
 
-function testWebSocket(user) {
-
+function testWebSocket(user, password) {
     $.ajax({
         url: "http://spring.avitoadm.ru/login",
         type: 'POST',
-        data: 'username=asergeev&password=0000',
+        data: 'username=' + user.username + '&password=' + password,
         headers: { "X-Ajax-call": 'true' },
-        success: function(data, textStatus, xhr) {
-            console.log(xhr.status);
-
-            let stompClient = null;
-
+        success: function() {
             let socket = new SockJS('http://spring.avitoadm.ru/ws');
             stompClient = Stomp.over(socket);
-            // stompClient.debug = null;
-            stompClient.connect({}, function (frame) {
-                stompClient.subscribe('/user/queue/error', function (e) {
-                });
+            stompClient.debug = null;
+            stompClient.connect({}, () => {
+                stompClient.subscribe('/user/queue/error', e => console.log(e));
 
-                stompClient.subscribe('/user/queue/notification.new', function (e) {
-                });
+                stompClient.subscribe('/user/queue/notification.new', sendNotificationMessage);
 
                 stompClient.subscribe('/user/queue/notification.update', function (e) {
                 });
@@ -696,7 +690,36 @@ function testWebSocket(user) {
             });
         },
         error: function (result) {
-            console.log(result);
+            if (result.status === 401) testWebSocket(user, '0000');
         }
     });
+
+
+    function sendNotificationMessage(e) {
+        let notification = JSON.parse(e.body);
+
+        chrome.tabs.query( { url: 'https://adm.avito.ru/*' }, tabs => {
+            chrome.storage.local.get('notifications', result => {
+                // let notifications = result.push(notification);
+
+                console.log(result);
+
+                chrome.storage.local.set({ notifications: result });
+            });
+
+
+
+
+            // if (notification.length !== 0) {
+            //     for (let i = 0; i < notification.length; ++i) {
+            //
+            //         for (let j = 0; j < tabs.length; ++j) {
+            //             chrome.tabs.sendMessage(tabs[j].id, { notification: notification[i] });
+            //         }
+            //
+            //         console.log(notification[i]);
+            //     }
+            // }
+        });
+    }
 }
