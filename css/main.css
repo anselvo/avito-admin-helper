@@ -5745,3 +5745,108 @@ select.ah-form-control:focus {
     text-align: center;
     vertical-align: middle;
 }
+
+/*shop moderation*/
+.ah-shop-moderation-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.ah-shop-moderation-section .panel-heading h4 {
+    margin: 0;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-form-panel {
+    width: 59%;
+    position: relative;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-form-panel .ah-overlay-text {
+    font-size: 18px;
+}
+
+.ah-shop-moderation-section .ah-shop-moderation-info-panel {
+    width: 39%;
+}
+
+.ah-shop-moderation-mail-form label {
+    font-weight: normal;
+}
+
+.ah-shop-moderation-mail-form .ah-template-dropdown {
+    display: inline-block;
+}
+
+.ah-shop-moderation-mail-form .ah-message-text-input {
+    min-height: 250px;
+    white-space: pre-wrap;
+    height: auto;
+}
+
+.ah-shop-moderation-mail-form  .ah-template-dropdown ul > li > a {
+    cursor: pointer;
+}
+
+.ah-shop-moderation-info-panel .panel-body {
+    padding-top: 0;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table td {
+    padding: 4px;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table td:first-child {
+    width: 30%;
+    color: rgb(149, 149, 149);
+}
+
+.ah-shop-moderation-label-text {
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-image {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    margin: 0;
+    padding-bottom: 4px;
+}
+
+.ah-shop-moderation-label-general {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-text input[type=checkbox],
+.ah-shop-moderation-label-image input[type=checkbox],
+.ah-shop-moderation-label-general input[type=checkbox]{
+    cursor: pointer;
+}
+
+.ah-shop-moderation-label-text input[type=checkbox],
+.ah-shop-moderation-label-general input[type=checkbox] {
+    margin: 0 0 1px;
+    vertical-align: middle;
+}
+
+.ah-shop-moderation-matched-container.alert {
+    padding: 4px 8px;
+    margin: 2px 0 0;
+    font-size: 13px;
+}
+
+.ah-shop-moderation-scrollable-row {
+    cursor: pointer;
+}
+
+.ah-shop-moderation-scrollable-row:hover {
+    background-color: rgb(245, 245, 245);
+}

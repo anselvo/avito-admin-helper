@@ -836,17 +836,20 @@ function getParamsShopInfo(html) {
     res.extensions = [];
     res.subscription = {};
 
-    let allHeaders = searchNode.find('h4');
+    const allHeaders = searchNode.find('h4');
+    const allFormGroups = searchNode.find('.form-group');
+    const allLabels = searchNode.find('.control-label');
 
-    let extensionsHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Расширения');
-    let subscriptionHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Тариф подписки');
+    const extensionsHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Расширения');
+    const subscriptionHeader = [].find.call(allHeaders, singleItem => singleItem.textContent === 'Тариф подписки');
+
 
     // extensions
-    let allExtensionsGroups = getFormGroups(extensionsHeader, 'H4');
-    let extensions = [];
+    const allExtensionsGroups = getFormGroups(extensionsHeader, 'H4');
+    const extensions = [];
     allExtensionsGroups.forEach((item) => {
-        let allLabels = item.querySelectorAll('.control-label');
-        let nameLabel = [].find.call(allLabels, single => single.textContent === 'Название');
+        const allLabels = item.querySelectorAll('.control-label');
+        const nameLabel = [].find.call(allLabels, single => single.textContent === 'Название');
         if (!nameLabel) return;
 
         extensions.push({
@@ -856,15 +859,15 @@ function getParamsShopInfo(html) {
     res.extensions = extensions;
 
     // subscription tariff
-    let allSubscriptionGroups = getFormGroups(subscriptionHeader, 'H4');
+    const allSubscriptionGroups = getFormGroups(subscriptionHeader, 'H4');
     if (!allSubscriptionGroups.length) {
         res.subscription = null;
     } else {
         allSubscriptionGroups.forEach((item) => {
-            let label = item.querySelector('.control-label');
+            const label = item.querySelector('.control-label');
             if (!label) return;
 
-            let labelName = label.textContent;
+            const labelName = label.textContent;
             if (labelName === 'Статус') {
                 res.subscription.status = label.nextElementSibling.textContent.trim();
             }
@@ -877,9 +880,38 @@ function getParamsShopInfo(html) {
         });
     }
 
+    // main (top) info
+    res.mainInfo = {};
+    const allMainGroups = getFormGroups(allFormGroups[0], 'H4');
+    allMainGroups.forEach(item => {
+        const label = item.querySelector('.control-label');
+
+        if (label && label.textContent === 'Тариф') {
+            res.mainInfo.tariff = label.nextElementSibling.textContent.trim();
+        }
+
+        if (label && label.textContent === 'Пользователь') {
+            const field = label.nextElementSibling;
+            const userLink = field.querySelector('a[href^="/users/user/info/"]');
+
+            res.mainInfo.userId = userLink.getAttribute('href').replace(/\D/g, '');
+        }
+    });
+
+    // personal manager
+    const personalManagerLabel = [].find.call(allLabels, label => label.textContent === 'Personal manager');
+    try {
+        res.personalManager = personalManagerLabel.nextElementSibling.textContent.trim();
+    } catch (e) {
+        res.personalManager = null;
+    }
+
+    // comments
+    res.commentsTable = searchNode.find('#dataTable')[0];
+
     // возвращает все .form-groups от startNode и далее, пока не встретит тег с именем breakTagName
     function getFormGroups(startNode, breakTagName) {
-        let groups = [];
+        const groups = [];
 
         do {
             if (!startNode) break;
