@@ -1,6 +1,6 @@
 // КОНТЕКСТНОЕ МЕНЮ
 // Create contextMenu for open info
-let contextSearchAdm = ["selection"];
+const contextSearchAdm = ["selection"];
 
 function goToTicket(info) {
     let newURL = 'https://adm.avito.ru/helpdesk/details/' + info.selectionText;
@@ -31,7 +31,7 @@ function goToMoney(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-var openLink = chrome.contextMenus.create({title: "Открыть по ID", contexts: contextSearchAdm});
+const openLink = chrome.contextMenus.create({title: "Открыть по ID", contexts: contextSearchAdm});
 chrome.contextMenus.create({title: "тикет", contexts: contextSearchAdm, parentId: openLink, onclick: goToTicket});
 chrome.contextMenus.create({title: "объявление", contexts: contextSearchAdm, parentId: openLink, onclick: goToItem});
 chrome.contextMenus.create({title: "комперисон", contexts: contextSearchAdm, parentId: openLink, onclick: goToComparison});
@@ -62,7 +62,7 @@ function searchInItemByIP(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-var itemSearch = chrome.contextMenus.create({title: "Искать в items/search", contexts: contextSearchAdm});
+const itemSearch = chrome.contextMenus.create({title: "Искать в items/search", contexts: contextSearchAdm});
 chrome.contextMenus.create({title: "по тексту", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByQuery});
 chrome.contextMenus.create({title: "по телефону", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByPhone});
 chrome.contextMenus.create({title: "по IP", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByIP});
@@ -89,7 +89,7 @@ function searchInUserByEmail(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-var userSearch = chrome.contextMenus.create({title: "Искать в users/search", contexts: contextSearchAdm});
+const userSearch = chrome.contextMenus.create({title: "Искать в users/search", contexts: contextSearchAdm});
 chrome.contextMenus.create({title: "по email", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByEmail});
 chrome.contextMenus.create({title: "по имени", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByName});
 chrome.contextMenus.create({title: "по телефону", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByPhone});
@@ -122,12 +122,12 @@ function searchInCfSup2(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-var userSearch = chrome.contextMenus.create({title: "Искать в Confluence", contexts: contextSearchAdm});
-chrome.contextMenus.create({title: "Везде", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInCfAll});
-chrome.contextMenus.create({title: "в Правилах", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInCfRules});
-chrome.contextMenus.create({title: "в Модерации", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInCfMod});
-chrome.contextMenus.create({title: "в Support 1st line", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInCfSup1});
-chrome.contextMenus.create({title: "в Support 2nd line", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInCfSup2});
+const confluence = chrome.contextMenus.create({title: "Искать в Confluence", contexts: contextSearchAdm});
+chrome.contextMenus.create({title: "Везде", contexts: contextSearchAdm, parentId: confluence, onclick: searchInCfAll});
+chrome.contextMenus.create({title: "в Правилах", contexts: contextSearchAdm, parentId: confluence, onclick: searchInCfRules});
+chrome.contextMenus.create({title: "в Модерации", contexts: contextSearchAdm, parentId: confluence, onclick: searchInCfMod});
+chrome.contextMenus.create({title: "в Support 1st line", contexts: contextSearchAdm, parentId: confluence, onclick: searchInCfSup1});
+chrome.contextMenus.create({title: "в Support 2nd line", contexts: contextSearchAdm, parentId: confluence, onclick: searchInCfSup2});
 
 
 // Create contextMenu image Google, Yandex search
@@ -149,6 +149,6 @@ function yandexImageSearch(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-let contextImage = ["image", "link"];
+const contextImage = ["image", "link"];
 chrome.contextMenus.create({title: "Поиск картинки в Google", contexts: contextImage, onclick: googleImageSearch});
 chrome.contextMenus.create({title: "Поиск картинки в Yandex", contexts: contextImage, onclick: yandexImageSearch});
