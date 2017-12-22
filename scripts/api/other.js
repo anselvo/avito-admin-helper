@@ -907,7 +907,7 @@ function getParamsShopInfo(html) {
     }
 
     // comments
-    res.commentsTable = searchNode.find('#dataTable')[0];
+    res.commentsTable = searchNode.find('#dataTable')[0] || null;
 
     // возвращает все .form-groups от startNode и далее, пока не встретит тег с именем breakTagName
     function getFormGroups(startNode, breakTagName) {

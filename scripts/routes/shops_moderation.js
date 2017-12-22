@@ -4,6 +4,7 @@ function ShopModeration() {
     this.patterns = {
         inputChangedValue: /(<del>[\s\S][^>]+>)|(<[^>]+>)/gi
     };
+    this.shopId = this.mainBlock.dataset.shopId;
 }
 
 ShopModeration.prototype.addMailForm = function () {
@@ -11,7 +12,6 @@ ShopModeration.prototype.addMailForm = function () {
     const section = document.createElement('section');
     const form = document.createElement('form');
     const managerEmail = JSON.parse(this.mainBlock.dataset.emails).manager;
-    const shopId = this.mainBlock.dataset.shopId;
     let templates = {};
 
     section.className = 'ah-shop-moderation-section';
@@ -27,7 +27,6 @@ ShopModeration.prototype.addMailForm = function () {
 
     form.className = 'ah-shop-moderation-mail-form';
     form.innerHTML = `
-        <input type="hidden" disabled value="${shopId}" name="shop_id">
         ${(!managerEmail) ? `
             <div class="form-group">
                 <label for="ahManagerEmail">Почта персонального менеджера</label>
@@ -52,7 +51,6 @@ ShopModeration.prototype.addMailForm = function () {
     this.mainBlock.appendChild(section);
 
     this.section = section;
-    this.shopId = shopId;
 
     const messageInput = form.querySelector('.ah-message-text-input');
 
@@ -76,7 +74,6 @@ ShopModeration.prototype.addMailForm = function () {
         e.preventDefault();
 
         const data = new FormData(this);
-        const shopId = this.elements.shop_id.value;
         const overlay = this.closest('.ah-shop-moderation-form-panel').querySelector('.ah-overlay');
         const textWrapperStyle = `font-size: 14px; line-height: 20px; font-family: Arial,Helvetica,sans-serif;`;
 
@@ -90,7 +87,7 @@ ShopModeration.prototype.addMailForm = function () {
         overlay.style.display = 'block';
         overlay.focus();
 
-        fetch(`/shops/moderation/send/email/${shopId}`, {
+        fetch(`/shops/moderation/send/email/${self.shopId}`, {
                 method: 'post',
                 credentials: 'include',
                 body: data
@@ -476,16 +473,24 @@ ShopModeration.prototype.addBrief = function () {
     }
 
     function renderComments(info) {
-        const table = info.commentsTable;
+        let comments;
 
-        table.removeAttribute('id');
-        table.className = 'table table-striped';
+        if (info.commentsTable) {
+            comments = document.createElement('div');
+            comments.className = 'table-scroll';
+            info.commentsTable.removeAttribute('id');
+            info.commentsTable.className = 'table table-striped';
+            comments.appendChild(info.commentsTable);
+        } else {
+            comments = document.createElement('div');
+            comments.innerHTML = `<span class="text-muted">Комментарии отсутствуют</span>`;
+        }
 
         commentsSection.innerHTML = `
             <h4>Комментарии</h4>
             <form method="post" action="/comment">
                 <input type="hidden" name="objectTypeId" value="3">
-                <input type="hidden" name="objectId" value="${self.mainBlock.dataset.shopId}">
+                <input type="hidden" name="objectId" value="${self.shopId}">
                 <div class="form-group">
                     <textarea class="form-control" name="comment" rows="3"></textarea>
                 </div>
@@ -495,7 +500,7 @@ ShopModeration.prototype.addBrief = function () {
                     </button>      
                 </div>
             </form>
-            <div class="table-scroll">${table.outerHTML}</div>
+            ${comments.outerHTML}
         `;
     }
 
