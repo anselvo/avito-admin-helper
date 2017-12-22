@@ -621,6 +621,7 @@ function testWebSocket(user, password) {
 
 		chrome.storage.local.get('notifications', result => {
             let notifications = result.notifications;
+            notifications.old = null;
 
             if (notifications.all) {
                 notifications.all = notifications.all.concat(newNotifications);
@@ -637,6 +638,7 @@ function testWebSocket(user, password) {
 
         chrome.storage.local.get('notifications', result => {
             let notifications = result.notifications;
+            notifications.new = null;
 
             for (let i = 0; i < notifications.all.length; ++i)
                 if (notifications.all[i].notification.uuid === oldNotifications.notification.uuid)

@@ -36,14 +36,12 @@ function notificationAddWS(notifications) {
             name + 'Body',
             notifications.notification.body);
     }
-
-    notificationBarStatus('on');
 }
 
 function notificationRemoveWS(notifications) {
     $('#' + notifications.notification.uuid).parents('.notificationBarItem').remove();
 
-    notificationBarStatus('');
+    notificationBarStatus();
 }
 
 //---------- Allow List Checker ----------//
@@ -109,8 +107,6 @@ function isItemChecked(reason, reasonText, item, time) {
 				$('#checked'+itemID).click(function () {
 					localStorage.allowList = localStorage.allowList.replace('|'+item+'&'+time,'');
 				});
-				
-				notificationBarStatus('on');
 			}
 		}
 	);
@@ -236,10 +232,9 @@ function notificationBar() {
 
     $('#notificationBarCloseAll').click(() => {
         $('.notificationBarCloseAll').hide();
-        $('.notificationBarItem').remove();
+        $('.notificationBarItem span').click();
 
-
-        notificationBarStatus('off');
+        notificationBarStatus()
     });
 }
 
@@ -264,22 +259,19 @@ function notificationBarAdd(idRemove, classHeader, header, classBody, body) {
         );
 	});
 
-
+    notificationBarStatus();
 }
 
-function notificationBarStatus(status) {
+function notificationBarStatus() {
     let $wheel = $('.nb-wheel');
+    let $notifications = $('.notificationBarItem');
 
-    $wheel.text($('.notificationBarItem').length);
-
-	if (status === 'on') {
-        $wheel.addClass('barOn');
-		$('#noNotifications').hide();
-	}
-	if (status === 'off') {
-        $wheel.removeClass('barOn');
-        $wheel.text('');
-		$('#noNotifications').show();
-	}
+    if ($notifications.length > 0) {
+        $wheel.addClass('barOn').text($notifications.length);
+        $('#noNotifications').hide();
+    } else {
+        $wheel.removeClass('barOn').text('');
+        $('#noNotifications').show();
+    }
 }
 //++++++++++ Notification Bar ++++++++++//
