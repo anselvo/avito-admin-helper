@@ -611,3 +611,75 @@ ShopModeration.prototype.addBrief = function () {
         }
     });
 };
+
+ShopModeration.prototype.addPageNavigation = function() {
+    const navigation = document.createElement('div');
+    navigation.className = 'ah-shop-moderation-navigation-container';
+    navigation.innerHTML = `
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-lg ah-scroll-btn ah-scroll-top">
+                <span class="glyphicon glyphicon-arrow-up"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-lg ah-scroll-btn ah-scroll-bottom">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(navigation);
+
+    navigation.addEventListener('click', function(e) {
+        let target = e.target;
+
+        while (target !== this) {
+            if (target.classList.contains('ah-scroll-top') && !target.disabled) {
+                scrollTop();
+            }
+            if (target.classList.contains('ah-scroll-bottom') && !target.disabled) {
+                scrollBottom();
+            }
+
+            target = target.parentNode;
+        }
+    });
+
+    let timerTop;
+    function scrollTop() {
+        const  top = window.pageYOffset;
+        if (top > 0) {
+            disableButtons();
+            window.scrollBy(0, -150);
+            timerTop = setTimeout(scrollTop, 10);
+        } else {
+            clearTimeout(timerTop);
+            enableButtons();
+        }
+    }
+
+    let timerBottom;
+    function scrollBottom() {
+        const top = window.pageYOffset;
+        const scrollHeight = Math.max(
+            document.body.scrollHeight, document.documentElement.scrollHeight,
+            document.body.offsetHeight, document.documentElement.offsetHeight,
+            document.body.clientHeight, document.documentElement.clientHeight
+        );
+
+        if ((scrollHeight - document.documentElement.clientHeight) > top) {
+            disableButtons();
+            window.scrollBy(0, 150);
+            timerBottom = setTimeout(scrollBottom, 10);
+        } else {
+            clearTimeout(timerBottom);
+            enableButtons();
+        }
+    }
+
+    const buttons = navigation.querySelectorAll('.ah-scroll-btn');
+    function disableButtons() {
+        buttons.forEach(button => button.disabled = true);
+    }
+
+    function enableButtons() {
+        buttons.forEach(button => button.disabled = false);
+    }
+};

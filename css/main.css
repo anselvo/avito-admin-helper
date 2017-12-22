@@ -5864,3 +5864,10 @@ select.ah-form-control:focus {
 .ah-shop-moderation-scrollable-row:hover {
     background-color: rgb(245, 245, 245);
 }
+
+.ah-shop-moderation-navigation-container {
+    position: fixed;
+    bottom: 4px;
+    right: 4px;
+    z-index: 100;
+}
