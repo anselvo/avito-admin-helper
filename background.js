@@ -5,7 +5,7 @@ chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
     USER = result.user;
 
-    startWebSocket(USER, '0000');
+    startWebSocket(USER, null);
     setBudgetIcon(SCRIPT);
 });
 
@@ -600,9 +600,7 @@ function startWebSocket(user, password) {
                 stompClient.send('/app/notification/unread', {});
             });
         },
-        error: result => {
-            console.log(result);
-        }
+        error: result => console.log(result.responseJSON.message)
     });
 
 
