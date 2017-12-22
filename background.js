@@ -5,15 +5,14 @@ chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
     USER = result.user;
 
-    testWebSocket(USER, '0000');
-    setBadgetIcon(SCRIPT);
+    startWebSocket(USER, '0000');
+    setBudgetIcon(SCRIPT);
 });
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
-chrome.runtime.onUpdateAvailable.addListener(function(details) {
+chrome.runtime.onUpdateAvailable.addListener(function() {
     // принудительное обновление расширения
     chrome.runtime.reload();
-
 });
 
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
@@ -22,12 +21,13 @@ chrome.runtime.onInstalled.addListener(function(details) {
     let message;
     let version = chrome.runtime.getManifest().version;
 
-    if (details.reason === 'update') message = "Avito Helper is updated\nPrevious version is "+details.previousVersion+"\nNew version is "+version;
-    if (details.reason === 'install')  message = "Thanks you for installing Avito Helper\nCurrent version is "+version;
+    if (details.reason === 'update') message = "Updated (new version "+ version + ")\n\n" +
+        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works";
+    if (details.reason === 'install') message = "Installed (current version " + version + ")";
 
     let options = {
         type: "basic",
-        title: "Avito Helper",
+        title: "Admin.Helper",
         message: message,
         iconUrl: "image/notificationLogo.png",
     };
@@ -83,7 +83,7 @@ chrome.webRequest.onCompleted.addListener(function (detailsURL) {
 chrome.storage.onChanged.addListener(function (result) {
 	if ("script" in result) {
 	    SCRIPT = result.script.newValue;
-	    setBadgetIcon(SCRIPT);
+	    setBudgetIcon(SCRIPT);
 
     }
     if ("user" in result) {
@@ -94,25 +94,19 @@ chrome.storage.onChanged.addListener(function (result) {
 // ЛОВИТ СООБЩЕНИЯ
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if (request.action === "XMLHttpRequest") {
-        let xhttp = new XMLHttpRequest();
-        let method = request.method ? request.method.toUpperCase() : 'GET';	
-		
-		xhttp.open(method, request.url, true);
-		
-        if (method === 'POST') {
-            let contentType = request.contentType ? request.contentType : 'application/x-www-form-urlencoded';
-            xhttp.setRequestHeader('Content-Type', contentType);
-        }
+        let xhr = new XMLHttpRequest();
+        let method = request.method ? request.method.toUpperCase() : 'GET';
+        let contentType = request.contentType;
 
-        xhttp.send(request.data);
+        if (method === 'POST') contentType = request.contentType ? request.contentType : 'application/x-www-form-urlencoded';
 
-        xhttp.onload = function() {
-            callback(xhttp.responseText);
-        };
-        xhttp.onerror = function() {
-            callback('error');
-        };
-        
+        xhr.open(method, request.url, true);
+        if (contentType) xhr.setRequestHeader('Content-Type', contentType);
+        xhr.send(request.data);
+
+        xhr.onload = () => callback(xhr.responseText);
+        xhr.onerror = () => callback('error');
+
         return true;
     }
 
@@ -196,7 +190,7 @@ function smmListener(details) {
         let requestBody = decodeURIComponent(String.fromCharCode.apply(null,
             new Uint8Array(details.requestBody.raw[0].bytes)));
 
-        let json = JSON.parse(requestBody)
+        let json = JSON.parse(requestBody);
 
         let messageId = json.filter.fmessage[0];
         let tagString = json.changes.tags.tag_string;
@@ -441,7 +435,7 @@ function sendLogToStorage(type, count) {
 }
 
 function clearDayInfo() {
-	if (newday(localStorage.currentDay)) {
+	if (newDay(localStorage.currentDay)) {
 		let mod_stat = {
 			'mod_stat': {
 				'blockUserCount': 0,
@@ -455,7 +449,7 @@ function clearDayInfo() {
 	}
 }
 
-function newday(currentDay) {
+function newDay(currentDay) {
 	let date = new Date();
     let day = date.getDate();
     let month = date.getMonth()+1;
@@ -570,7 +564,7 @@ function iconEnable(tabId) {
     chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
 }
 
-function setBadgetIcon(script) {
+function setBudgetIcon(script) {
     if (script !== 'none' && script) {
 		let logo = script.charAt(0).toUpperCase();
 		chrome.browserAction.setBadgeText({text: logo});
@@ -584,7 +578,7 @@ function setBadgetIcon(script) {
 	}
 }
 
-function testWebSocket(user, password) {
+function startWebSocket(user, password) {
     $.ajax({
         url: "http://spring.avitoadm.ru/login",
         type: 'POST',
@@ -603,11 +597,7 @@ function testWebSocket(user, password) {
 
                 stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
-                // get unread notification for login user
                 stompClient.send('/app/notification/unread', {});
-
-                // make notification as read
-                // stompClient.send('/app/notification/update/read', {}, '66032c75-f287-42b2-9051-fd24a1da624a');
             });
         },
         error: result => {
