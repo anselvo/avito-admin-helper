@@ -1,48 +1,54 @@
 
 function startNotification(notifications) {
     notificationBar();
-    notificationOld();
-
-    chrome.storage.onChanged.addListener(function(changes, namespace) {
-        for (let key in changes) {
-            let storageChange = changes[key];
-            console.log('Storage key "%s" in namespace "%s" changed. ' +
-                'Old value was "%s", new value is "%s".',
-                key,
-                namespace,
-                storageChange.oldValue,
-                storageChange.newValue);
-        }
-    });
-
-
+    notificationsWS(notifications);
+    setInterval(startAllowList, 180000);
 }
 
+function notificationsWS(notifications) {
+    notificationAddWS(notifications.all);
 
-function notificationOld() {
-    // запуск листнера для php скриптов
-    chrome.runtime.onMessage.addListener(function(request) {
-        if (request.notification) {
-            let compactName = request.notification.name;
-            let id = compactName+request.notification.id;
-            let $id = $('#'+id);
+    chrome.storage.onChanged.addListener(changes => {
+        if (changes.notifications) {
+            notifications = changes.notifications;
 
-            if ($id.length === 0) {
-                notificationBarAdd(id, request.notification.name + 'Header', request.notification.head, compactName + 'Body', request.notification.body);
-                $id.attr('time', request.notification.time);
-
-                notificationBarStatus('on');
-            }
+            if (notifications.newValue.new) notificationAddWS(notifications.newValue.new);
+            if (notifications.newValue.old) notificationRemoveWS(notifications.newValue.old);
         }
     });
-
-    // запуск чекера для notification bar
-    setInterval(agentCheck, 180000);
 }
-	
+
+function notificationAddWS(notifications) {
+    if (Array.isArray(notifications)) {
+        for (let i = 0; i < notifications.length; ++i) {
+            let name = notifications[i].notification.head.replace(' ', '').toLowerCase();
+
+            notificationBarAdd(notifications[i].notification.uuid,
+                name + 'Header',
+                notifications[i].notification.head,
+                name + 'Body',
+                notifications[i].notification.body);
+        }
+    } else {
+        notificationBarAdd(notifications.notification.uuid,
+            name + 'Header',
+            notifications.notification.head,
+            name + 'Body',
+            notifications.notification.body);
+    }
+
+    notificationBarStatus('on');
+}
+
+function notificationRemoveWS(notifications) {
+    $('#' + notifications.notification.uuid).parents('.notificationBarItem').remove();
+
+    notificationBarStatus('');
+}
+
 //---------- Allow List Checker ----------//
 
-function agentCheck() {
+function startAllowList() {
 	allowListCheck(userGlobalInfo.subdivision, userGlobalInfo.username);
 }
 
@@ -169,7 +175,6 @@ function allowListButtonListener(currentItem, agentlogin) {
 function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 	var data = reason+'&'+reasonText+'&'+item+'&'+time;
 
-	var json;
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
@@ -213,57 +218,67 @@ function changeAllowListItem(item, time, reason, reasonText) {
 //---------- Notification Bar ----------//
 function notificationBar() {
 	$('div.navbar-fixed-top ul.navbar-nav:last').append('<div class="nb-wheel"></div>');
-	$('body').append('<div id="notifications"></div>');
-	$('#notifications').append('<div class="notificationArrow notificationArrowBorder" style="right:10px;"></div>');
-	$('#notifications').append('<div class="notificationArrow" style="right:10px;"></div>');
-	$('#notifications').append('<div id="notificationBar"></div>');
-	$('#notificationBar').append('<div id="noNotifications" style="text-align:center;weight:100%;">no notifications</div>');
-    $('#notificationBar').append('<div class="notificationBarCloseAll"><a id="notificationBarCloseAll">close all</a></div>')
-	
-	$('.nb-wheel').click(function () {
-		$('#notifications').toggle();
-	});
 
-    $('#notificationBarCloseAll').click(function () {
+	$('body').append('<div id="notifications"></div>');
+
+	const $notification = $('#notifications');
+
+    $notification
+        .append('<div class="notificationArrow notificationArrowBorder" style="right:10px;"></div>')
+        .append('<div class="notificationArrow" style="right:10px;"></div>')
+        .append('<div id="notificationBar"></div>');
+
+	$('#notificationBar')
+        .append('<div id="noNotifications" style="text-align: center; width: 100%">no notifications</div>')
+        .append('<div class="notificationBarCloseAll"><a id="notificationBarCloseAll">close all</a></div>');
+	
+	$('.nb-wheel').click(() => $notification.toggle());
+
+    $('#notificationBarCloseAll').click(() => {
         $('.notificationBarCloseAll').hide();
         $('.notificationBarItem').remove();
+
+
         notificationBarStatus('off');
-
-        var date = new Date();
-
-        chrome.storage.local.set({'lastNotificationTime': date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()});
     });
-
-    // hideElementOutClicking('#notifications');
 }
 
 function notificationBarAdd(idRemove, classHeader, header, classBody, body) {
-	$('#notificationBar').append('<div class="notificationBarItem"><div class="notificationBarHeader '+classHeader+'" style="font-weight:bold;">'+header+'<span id="'+idRemove+'" class="notificationRemove">&#10060</span></div><div class="notificationBarBody '+classBody+'">'+body+'</div></div>');
+	$('#notificationBar').append('<div class="notificationBarItem">' +
+            '<div class="notificationBarHeader ' + classHeader + '" style="font-weight:bold;">' + header +
+                '<span id="' + idRemove + '" class="notificationRemove">&#10060</span>' +
+            '</div>' +
+            '<div class="notificationBarBody '+classBody+'">'+body+'</div>' +
+        '</div>');
 
     if ($('.notificationBarItem').length > 5) $('.notificationBarCloseAll').show();
 
-	$('.notificationRemove').click(function () {
-		$(this).parents('.notificationBarItem').detach();
-		if ($(this).attr('time')) chrome.storage.local.set({'lastNotificationTime': $(this).attr('time')});
-
-        if ($('.notificationBarItem').length <= 5) $('.notificationBarCloseAll').hide();
-
-		if ($('.notificationBarItem').length == 0) notificationBarStatus('off');
-		else notificationBarStatus('');
+	document.getElementById(idRemove).addEventListener('click', () => {
+        chrome.runtime.sendMessage({
+                action: 'ws',
+                notification: {
+                    status: 'read',
+                    uuid: idRemove
+                }
+            }
+        );
 	});
 
 
 }
 
 function notificationBarStatus(status) {
-	$('.nb-wheel').text($('.notificationBarItem').length);
-	if (status == 'on') {
-		$('.nb-wheel').addClass('barOn');
+    let $wheel = $('.nb-wheel');
+
+    $wheel.text($('.notificationBarItem').length);
+
+	if (status === 'on') {
+        $wheel.addClass('barOn');
 		$('#noNotifications').hide();
 	}
-	if (status == 'off') {
-		$('.nb-wheel').removeClass('barOn');
-		$('.nb-wheel').text('');
+	if (status === 'off') {
+        $wheel.removeClass('barOn');
+        $wheel.text('');
 		$('#noNotifications').show();
 	}
 }

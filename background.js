@@ -36,16 +36,12 @@ chrome.runtime.onInstalled.addListener(function(details) {
 	// определяем кто залогинен в админку
 	cookieInfo();
 
-	// запускаем чекер натификайшенов
-	chrome.alarms.create('notification', {delayInMinutes: 1, periodInMinutes: 5});
-
 	// запускаем чекер дня
     chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
 });
 
 // ЛОВИТ БУДИЛЬНИК
 chrome.alarms.onAlarm.addListener(function(alarm) {
-	if (alarm.name === 'notification') notificationCheck();
     if (alarm.name === 'day') clearDayInfo();
 });
 
@@ -131,29 +127,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 		document.body.removeChild(textarea);
 	}
 
-	if (request.action === "sendNotification") {
-        let row = {
-            username: request.username,
-            head: request.head,
-            body: request.body,
-            to_type: request.to_type,
-            to_name: request.to_name
-        };
-
-        let jsonRow = JSON.stringify(row);
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://avitoadm.ru/journal/include/php/notification/add.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send("param="+jsonRow);
-        xhr.onload = function() {
-            callback(xhr.responseText);
-        };
-        xhr.onerror = function() {
-            callback('error');
-        };
-
-        return true;
+    if (request.action === 'ws') {
+        if (request.notification.status === 'read') {
+            stompClient.send('/app/notification/update/read', {}, request.notification.uuid);
+        }
     }
 });
 
@@ -256,6 +233,8 @@ function moderationListener(details, user) {
 	let count = 0, ids, reason = '', items_id = '';
 
 	let formData = details.requestBody.formData;
+
+    if (!formData) return;
 
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
 	
@@ -605,82 +584,24 @@ function setBadgetIcon(script) {
 	}
 }
 
-function notificationCheck() {
-	chrome.storage.local.get(function (result) {
-		if (result.user.username) {
-            let notification;
-			if (!result.lastNotificationTime) {
-                notification = {
-                    subdivision: result.user.subdivision,
-                    username: result.user.username,
-                }
-			} else {
-                let lastNotificationTime = result.lastNotificationTime;
-
-                notification = {
-                    lastNotificationTime: lastNotificationTime,
-                    subdivision: result.user.subdivision,
-                    username: result.user.username
-                }
-            }
-
-			let jsonNotification = JSON.stringify(notification);
-			
-			let xhr = new XMLHttpRequest();
-			xhr.open('POST', 'http://avitoadm.ru/journal/include/php/notification/list.php', true);
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xhr.send("param="+jsonNotification);
-			xhr.onreadystatechange = function () {
-				if(xhr.readyState === 4 && xhr.status === 200) {
-                    chrome.tabs.query({url: 'https://adm.avito.ru/*'}, function(tabs) {
-						let json = JSON.parse(xhr.responseText);
-						let len = json.table.length;
-
-						if (len !== 0) {
-							for (let i = 0; i < len; ++i) {
-								for (let j = 0; j < tabs.length; ++j) {
-									let notificationMessage = {
-										notification: {
-											id: json.table[i].id,
-											username: json.table[i].username,
-											head: json.table[i].head,
-											name: json.table[i].head.replace(' ', '').toLowerCase(),
-											body: json.table[i].body,
-											time: json.table[i].time_f,
-											to_type: json.table[i].to_type,
-											to_name: json.table[i].to_name
-										}
-									};
-
-									chrome.tabs.sendMessage(tabs[j].id, notificationMessage);
-								}
-							}
-						}
-                    });
-				}
-			};
-		}
-	});
-}
-
-
 function testWebSocket(user, password) {
     $.ajax({
         url: "http://spring.avitoadm.ru/login",
         type: 'POST',
         data: 'username=' + user.username + '&password=' + password,
         headers: { "X-Ajax-call": 'true' },
-        success: function() {
+        success: () => {
             let socket = new SockJS('http://spring.avitoadm.ru/ws');
             stompClient = Stomp.over(socket);
             stompClient.debug = null;
             stompClient.connect({}, () => {
+                chrome.storage.local.set({ notifications: {} });
+
                 stompClient.subscribe('/user/queue/error', e => console.log(e));
 
-                stompClient.subscribe('/user/queue/notification.new', sendNotificationMessage);
+                stompClient.subscribe('/user/queue/notification.new', addNotificationToStorage);
 
-                stompClient.subscribe('/user/queue/notification.update', function (e) {
-                });
+                stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
                 // get unread notification for login user
                 stompClient.send('/app/notification/unread', {});
@@ -689,37 +610,43 @@ function testWebSocket(user, password) {
                 // stompClient.send('/app/notification/update/read', {}, '66032c75-f287-42b2-9051-fd24a1da624a');
             });
         },
-        error: function (result) {
-            if (result.status === 401) testWebSocket(user, '0000');
+        error: result => {
+            console.log(result);
         }
     });
 
 
-    function sendNotificationMessage(e) {
-        let notification = JSON.parse(e.body);
+    function addNotificationToStorage(response) {
+        let newNotifications = JSON.parse(response.body);
 
-        chrome.tabs.query( { url: 'https://adm.avito.ru/*' }, tabs => {
-            chrome.storage.local.get('notifications', result => {
-                // let notifications = result.push(notification);
+		chrome.storage.local.get('notifications', result => {
+            let notifications = result.notifications;
 
-                console.log(result);
+            if (notifications.all) {
+                notifications.all = notifications.all.concat(newNotifications);
+                notifications.new = newNotifications
+            } else notifications.all = newNotifications;
 
-                chrome.storage.local.set({ notifications: result });
-            });
+            result.notifications = notifications;
+            chrome.storage.local.set(result);
+		});
+    }
 
+    function removeNotificationFromStorage(response) {
+        let oldNotifications = JSON.parse(response.body);
 
+        chrome.storage.local.get('notifications', result => {
+            let notifications = result.notifications;
 
+            for (let i = 0; i < notifications.all.length; ++i)
+                if (notifications.all[i].notification.uuid === oldNotifications.notification.uuid)
+                    notifications.all.splice(i, 1);
 
-            // if (notification.length !== 0) {
-            //     for (let i = 0; i < notification.length; ++i) {
-            //
-            //         for (let j = 0; j < tabs.length; ++j) {
-            //             chrome.tabs.sendMessage(tabs[j].id, { notification: notification[i] });
-            //         }
-            //
-            //         console.log(notification[i]);
-            //     }
-            // }
+            notifications.old = oldNotifications;
+
+            result.notifications = notifications;
+            chrome.storage.local.set(result);
         });
     }
+
 }

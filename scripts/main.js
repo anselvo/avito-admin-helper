@@ -5,7 +5,7 @@ let currentUrl;
 $(function () {
     currentUrl = location.href;
 
-    chrome.storage.local.get(function (result) {
+    chrome.storage.local.get(result => {
         userGlobalInfo = result.user;
         scriptGlobal = result.script;
 
@@ -37,7 +37,7 @@ $(function () {
         }
     });
 
-    $(document).mouseup(function (e) {
+    $(document).mouseup(e => {
         let destroyOutclickingPopovers = $('.ah-popover-destroy-outclicking');
         if (!destroyOutclickingPopovers.is(e.target)
             && destroyOutclickingPopovers.has(e.target).length === 0) {
