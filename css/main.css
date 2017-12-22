@@ -5806,6 +5806,20 @@ select.ah-form-control:focus {
     color: rgb(149, 149, 149);
 }
 
+.ah-shop-moderation-info-panel .ah-copy-btn {
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.25s, color 0.15s;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover {
+    opacity: 1;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover:active {
+    color: #844613;
+}
+
 .ah-shop-moderation-label-text {
     display: block;
     margin: 0;

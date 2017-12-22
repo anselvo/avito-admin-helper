@@ -429,6 +429,8 @@ ShopModeration.prototype.addBrief = function () {
         const urlSiteLabel = [].find.call(urlLabelsOriginal, label => label.textContent === 'URL');
         const urlSiteValue = urlSiteLabel.nextElementSibling.textContent;
 
+        const userEmail = JSON.parse(self.mainBlock.dataset.emails).user;
+
         fieldsInfoSection.innerHTML = `
             <h4>Поля</h4>
             <table class="ah-shop-moderation-info-table">
@@ -461,8 +463,12 @@ ShopModeration.prototype.addBrief = function () {
                 <tr>
                     <td>Пользователь</td>
                     <td>
-                        <a target="_blank" href="/users/user/info/${shop.mainInfo.userId}">${shop.mainInfo.userId}</a> |
-                        <span>${JSON.parse(self.mainBlock.dataset.emails).user}</span>
+                        <a target="_blank" href="/users/user/info/${shop.mainInfo.userId}">${shop.mainInfo.userId}</a>
+                        <span class="glyphicon glyphicon-copy ah-copy-btn" data-copy="${shop.mainInfo.userId}" 
+                            title="Скопировать ID пользователя"></span> |
+                        <span>${userEmail}</span>
+                        <span class="glyphicon glyphicon-copy ah-copy-btn" data-copy="${userEmail}" 
+                            title="Скопировать E-mail пользователя"></span>
                     </td>
                 </tr>
             </table>
@@ -573,6 +579,16 @@ ShopModeration.prototype.addBrief = function () {
         }
     }
 
+    fieldsInfoSection.addEventListener('click', function (e) {
+        const target = e.target;
+
+        if (target.classList.contains('ah-copy-btn')) {
+            const text = target.dataset.copy;
+            chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
+            outTextFrame(`Скопировано: ${text}`);
+        }
+    });
+
     keyWordsSection.addEventListener('click', function(e) {
         const target = e.target;
 
@@ -588,5 +604,5 @@ ShopModeration.prototype.addBrief = function () {
                 alert(`Произошла техническая ошибка`);
             }
         }
-    })
+    });
 };
