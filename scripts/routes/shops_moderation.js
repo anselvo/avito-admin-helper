@@ -560,67 +560,86 @@ ShopModeration.prototype.addBrief = function () {
         `;
         keyWordsSection.appendChild(table);
 
-        self.pseudoInputsChanged.forEach(item => {
-            const cellName = item.closest('.shop-moderation-list-cell').querySelector('.shop-moderation-list-cell-name');
-            const fieldName = cellName.textContent.trim();
-            const fieldValue = item.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
-            const sectionName = cellName.closest('.shop-moderation-section').dataset.section;
-            const matched = new Map();
+        const allRows = self.mainBlock.querySelectorAll('.js-shop-moderation-row');
 
-            regs.forEach(reg => {
-                const regObj = new RegExp(reg.true_reg, "gi");
-                let result;
+        allRows.forEach(singleRow => {
+            const cells = singleRow.querySelectorAll('.shop-moderation-list-cell');
+            const sectionName = singleRow.closest('.shop-moderation-section').dataset.section;
+            const fieldName = cells[0].querySelector('.shop-moderation-list-cell-name').textContent.trim();
 
-                while (result = regObj.exec(fieldValue)) {
-                    const resultFormatted = result[0].trim();
+            cells.forEach(cell => {
+                let value;
+                const input = cell.querySelector('.pseudo-input');
+                const matched = new Map();
 
-                    if (matched.has(resultFormatted)) {
-                        matched.set(resultFormatted, matched.get(resultFormatted) + 1);
-                    } else {
-                        matched.set(resultFormatted, 1);
+                if (cell.classList.contains('shop-moderation-list-cell_original')) {
+                    value = input.innerHTML.trim();
+                } else {
+                    value = input.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
+                }
+
+                regs.forEach(reg => {
+                    const regObj = new RegExp(reg.true_reg, "gi");
+                    let result;
+
+                    while (result = regObj.exec(value)) {
+                        const resultFormatted = result[0].trim();
+
+                        if (matched.has(resultFormatted)) {
+                            matched.set(resultFormatted, matched.get(resultFormatted) + 1);
+                        } else {
+                            matched.set(resultFormatted, 1);
+                        }
                     }
-                }
-            });
-
-            if (matched.size !== 0) {
-                hasMatches = true;
-                const row = document.createElement('tr');
-                const alert = document.createElement('div');
-                const matchedArr = [];
-                let sectionNameFormatted = '';
-
-                switch (sectionName) {
-                    case 'shop':
-                        sectionNameFormatted = 'магазин';
-                        break;
-                    case 'delivery':
-                        sectionNameFormatted = 'доставка';
-                        break;
-                    case 'payment':
-                        sectionNameFormatted = 'оплата';
-                        break;
-                    case 'url':
-                        sectionNameFormatted = 'URL';
-                        break;
-                }
-
-                matched.forEach((val, key) => {
-                    matchedArr.push(`<span>${key} ${(val > 1) ? `(${val})`: ''}</span>`);
                 });
 
-                row.className = 'ah-shop-moderation-scrollable-row';
-                row.setAttribute('data-section-name', sectionName);
-                row.setAttribute('data-field-name', fieldName);
-                row.innerHTML = `
-                    <td>${fieldName} (${sectionNameFormatted})</td>
-                    <td>${matchedArr.join(' | ')}</td>
-                `;
-                table.appendChild(row);
+                if (matched.size !== 0) {
+                    hasMatches = true;
+                    const matchedArr = [];
+                    const rowExisting = table.querySelector(`.ah-shop-moderation-scrollable-row[data-section-name="${sectionName}"][data-field-name="${fieldName}"]`);
+                    const matchedClassName = (rowExisting) ? 'text-danger' : '';
 
-                alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
-                alert.innerHTML = `${matchedArr.join(' | ')}`;
-                item.parentNode.appendChild(alert);
-            }
+                    matched.forEach((val, key) => {
+                        matchedArr.push(`<span class="${matchedClassName}">${key} ${(val > 1) ? `(${val})`: ''}</span>`);
+                    });
+
+                    let sectionNameFormatted = '';
+                    switch (sectionName) {
+                        case 'shop':
+                            sectionNameFormatted = 'магазин';
+                            break;
+                        case 'delivery':
+                            sectionNameFormatted = 'доставка';
+                            break;
+                        case 'payment':
+                            sectionNameFormatted = 'оплата';
+                            break;
+                        case 'url':
+                            sectionNameFormatted = 'URL';
+                            break;
+                    }
+
+                    if (rowExisting) {
+                        const cell = rowExisting.querySelector('.ah-shop-moderation-matched-cell');
+                        cell.innerHTML += ` | ${matchedArr.join(' | ')}`;
+                    } else {
+                        const row = document.createElement('tr');
+                        row.className = 'ah-shop-moderation-scrollable-row';
+                        row.setAttribute('data-section-name', sectionName);
+                        row.setAttribute('data-field-name', fieldName);
+                        row.innerHTML = `
+                            <td>${fieldName} (${sectionNameFormatted})</td>
+                            <td class="ah-shop-moderation-matched-cell">${matchedArr.join(' | ')}</td>
+                        `;
+                        table.appendChild(row);
+                    }
+
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
+                    alert.innerHTML = `${matchedArr.join(' | ')}`;
+                    input.parentNode.appendChild(alert);
+                }
+            });
         });
 
         if (!hasMatches) {
@@ -647,7 +666,7 @@ ShopModeration.prototype.addBrief = function () {
             try {
                 const row = target.closest('.ah-shop-moderation-scrollable-row');
                 const section = self.mainBlock.querySelector(`.shop-moderation-section[data-section="${row.dataset.sectionName}"]`);
-                const allLabels = section.querySelectorAll('.shop-moderation-list-cell_changes .shop-moderation-list-cell-name');
+                const allLabels = section.querySelectorAll('.shop-moderation-list-cell .shop-moderation-list-cell-name');
                 const targetLabel = [].find.call(allLabels, label => label.textContent.trim() === row.dataset.fieldName);
                 const targetField = targetLabel.closest('.shop-moderation-list-row');
                 scrollToElem(targetField);

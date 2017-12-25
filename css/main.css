@@ -5857,6 +5857,10 @@ select.ah-form-control:focus {
     font-size: 13px;
 }
 
+.ah-shop-moderation-matched-container span {
+    color: inherit;
+}
+
 .ah-shop-moderation-scrollable-row {
     cursor: pointer;
 }
