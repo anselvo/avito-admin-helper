@@ -198,11 +198,6 @@ ShopModeration.prototype.addCoordinationControls = function () {
     const shopSection = this.mainBlock.querySelector('section[data-section="shop"]');
     const shopLabels = shopSection.querySelectorAll('.shop-moderation-list-cell_changes .shop-moderation-list-cell-name');
 
-    const photoLabel = [].find.call(shopLabels, label => label.textContent === 'Фотографии');
-    const photoField = photoLabel.nextElementSibling;
-    const photoPreviews = photoField.querySelectorAll('.images-preview-gallery-item');
-    const checkboxPhotoLabel = document.createElement('label');
-
     const allLabels = this.mainBlock.querySelectorAll('.shop-moderation-list-cell-name');
     const singleImagesLabels = [].filter.call(allLabels, label =>
         (label.textContent === 'Плашка' && label.closest('.shop-moderation-list-cell_changes')) ||
@@ -247,28 +242,35 @@ ShopModeration.prototype.addCoordinationControls = function () {
     });
 
     // чекбоксы для фото
-    checkboxPhotoLabel.className = 'ah-shop-moderation-label-text';
-    checkboxPhotoLabel.innerHTML = `
-        <input type="checkbox" class="ah-shop-moderation-check-all-photos">
-        ${photoLabel.firstChild.textContent}
-    `;
-    photoLabel.replaceChild(checkboxPhotoLabel, photoLabel.firstChild);
+    try {
+        const photoLabel = [].find.call(shopLabels, label => label.textContent === 'Фотографии');
+        const photoField = photoLabel.nextElementSibling;
+        const photoPreviews = photoField.querySelectorAll('.images-preview-gallery-item');
+        const checkboxPhotoLabel = document.createElement('label');
 
-    photoPreviews.forEach(item => {
-        const imgLink = item.querySelector('.images-preview-gallery-item-image');
-
-        if (!imgLink) return;
-
-        const imgHref = imgLink.getAttribute('href');
-        const checkboxLabel = document.createElement('label');
-
-        checkboxLabel.className = 'ah-shop-moderation-label-image';
-        checkboxLabel.innerHTML = `
-            <input data-href="${imgHref}" data-field-name="Фотография" data-type="image"
-                type="checkbox" class="ah-shop-moderation-coordination-checkbox ah-photo-preview-checkbox">
+        checkboxPhotoLabel.className = 'ah-shop-moderation-label-text';
+        checkboxPhotoLabel.innerHTML = `
+            <input type="checkbox" class="ah-shop-moderation-check-all-photos">
+            ${photoLabel.firstChild.textContent}
         `;
-        item.appendChild(checkboxLabel);
-    });
+        photoLabel.replaceChild(checkboxPhotoLabel, photoLabel.firstChild);
+
+        photoPreviews.forEach(item => {
+            const imgLink = item.querySelector('.images-preview-gallery-item-image');
+
+            if (!imgLink) return;
+
+            const imgHref = imgLink.getAttribute('href');
+            const checkboxLabel = document.createElement('label');
+
+            checkboxLabel.className = 'ah-shop-moderation-label-image';
+            checkboxLabel.innerHTML = `
+                <input data-href="${imgHref}" data-field-name="Фотография" data-type="image"
+                    type="checkbox" class="ah-shop-moderation-coordination-checkbox ah-photo-preview-checkbox">
+            `;
+            item.appendChild(checkboxLabel);
+        });
+    } catch (e){}
 
     // чекбоксы для одиночных изображений
     singleImagesLabels.forEach(label => {
