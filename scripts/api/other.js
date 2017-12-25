@@ -901,7 +901,7 @@ function getParamsShopInfo(html) {
     // personal manager
     const personalManagerLabel = [].find.call(allLabels, label => label.textContent === 'Personal manager');
     try {
-        res.personalManager = personalManagerLabel.nextElementSibling.textContent.trim();
+        res.personalManager = personalManagerLabel.nextElementSibling.querySelector('.help-block').firstChild.textContent.trim();
     } catch (e) {
         res.personalManager = null;
     }
@@ -938,11 +938,30 @@ function getParamsUserInfo(html) {
     let activeCVPackagesTable = searchNode.find('h4:contains(Купленные и активные пакеты просмотров)').next();
     let expiredCVPackagesTable = searchNode.find('h4:contains(Истёкшие, завершённые и отменённые пакеты просмотров)')
         .next().find('.table');
+    const $companyInfoForm = searchNode.find('#company-info');
 
     res.activeLFPackagesTableHtml = (activeLFPackagesTable.length) ? activeLFPackagesTable[0].outerHTML : null;
     res.expiredLFPackagesTableHtml = (expiredLFPackagesTable.length) ? expiredLFPackagesTable[0].outerHTML : null;
     res.activeCVPackagesTableHtml = (activeCVPackagesTable.length) ? activeCVPackagesTable[0].outerHTML : null;
     res.expiredCVPackagesTableHtml = (expiredCVPackagesTable.length) ? expiredCVPackagesTable[0].outerHTML : null;
+
+    res.companyInfo = ($companyInfoForm.length) ? {} : null;
+    if (res.companyInfo) {
+        const $labels = $companyInfoForm.find('.control-label');
+        const $nameLabel = $labels.filter(function(){
+            return this.textContent === 'Название компании';
+        });
+        const $innLabel = $labels.filter(function(){
+            return this.textContent === 'ИНН';
+        });
+        const $legalAddressLabel = $labels.filter(function(){
+            return this.textContent === 'Юридический адрес';
+        });
+
+        res.companyInfo.name = $nameLabel.next().find('[name="companyName"]').val() || null;
+        res.companyInfo.inn = $innLabel.next().find('[name="inn"]').val() || null;
+        res.companyInfo.legaAddress = $legalAddressLabel.next().find('[name="legalAddress"]').val() || null;
+    }
 
     return res;
 }

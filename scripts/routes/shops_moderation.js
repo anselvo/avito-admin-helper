@@ -371,6 +371,7 @@ ShopModeration.prototype.addBrief = function () {
     const panelBody = document.createElement('div');
     const fieldsInfoSection = document.createElement('section');
     const keyWordsSection = document.createElement('section');
+    const companyInfoSection = document.createElement('section');
     const commentsSection = document.createElement('section');
 
     infoPanel.className = 'panel panel-info ah-shop-moderation-info-panel';
@@ -381,10 +382,13 @@ ShopModeration.prototype.addBrief = function () {
     fieldsInfoSection.innerHTML = `<h4>Поля</h4><span class="text-muted">Загрузка...</span>`;
     commentsSection.innerHTML = `<h4>Комментарии</h4><span class="text-muted">Загрузка...</span>`;
     keyWordsSection.innerHTML = `<h4>Ключевые слова и фразы</h4><span class="text-muted">Загрузка...</span>`;
+    companyInfoSection.innerHTML = `<h4>Информация о компании</h4><span class="text-muted">Загрузка...</span>`;
 
     panelBody.appendChild(fieldsInfoSection);
     panelBody.appendChild(keyWordsSection);
+    panelBody.appendChild(companyInfoSection);
     panelBody.appendChild(commentsSection);
+
     infoPanel.appendChild(panelBody);
     this.section.appendChild(infoPanel);
 
@@ -393,12 +397,28 @@ ShopModeration.prototype.addBrief = function () {
             const info = getParamsShopInfo($(response));
             renderFieldsInfo(info);
             renderComments(info);
+            return info;
         }, error => {
             fieldsInfoSection.innerHTML = `
                 <h4>Поля</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
             commentsSection.innerHTML = `
                 <h4>Комментарии</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+            `;
+            companyInfoSection.innerHTML = `
+                <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+            `;
+            return Promise.reject(error);
+        })
+        .then(shopInfo => {
+            return getUserInfo(shopInfo.mainInfo.userId);
+        })
+        .then(response => {
+            const userInfo = getParamsUserInfo($(response));
+            renderCompanyInfo(userInfo);
+        }, error => {
+            companyInfoSection.innerHTML = `
+                <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
         });
 
@@ -501,6 +521,30 @@ ShopModeration.prototype.addBrief = function () {
                 </div>
             </form>
             ${comments.outerHTML}
+        `;
+    }
+
+    function renderCompanyInfo(user) {
+        const result = (user.companyInfo) ? `
+            <table class="ah-shop-moderation-info-table">
+                <tr>
+                    <td>Название компании</td>
+                    <td>${(user.companyInfo.name) ? user.companyInfo.name : `<i class="text-muted">Отсутствует</i>`}</td>
+                </tr>
+                <tr>
+                    <td>ИНН</td>
+                    <td>${(user.companyInfo.inn) ? user.companyInfo.inn : `<i class="text-muted">Отсутствует</i>`}</td>
+                </tr>
+                <tr>
+                    <td>Юридический адрес</td>
+                    <td>${(user.companyInfo.legaAddress) ? user.companyInfo.legaAddress : `<i class="text-muted">Отсутствует</i>`}</td>
+                </tr>
+            </table>
+        ` : `<span class="text-muted">Информация отсутствует</span>`;
+
+        companyInfoSection.innerHTML = `
+            <h4>Информация о компании</h4>
+            ${result}
         `;
     }
 
