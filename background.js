@@ -5,7 +5,7 @@ chrome.storage.local.get(function (result) {
     SCRIPT = result.script;
     USER = result.user;
 
-    startWebSocket(USER, null);
+    springConnect(USER, null);
     setBudgetIcon(SCRIPT);
 });
 
@@ -578,34 +578,66 @@ function setBudgetIcon(script) {
 	}
 }
 
-function startWebSocket(user, password) {
+function springConnect(user, password) {
+    checkAuthentication().then(auth => {
+        console.log(auth);
+
+        if (auth) {
+            startWebSocket();
+        } else {
+            authentication(user.username, password);
+        }
+    });
+}
+
+function checkAuthentication() {
+    return fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include' }).then(response => response.text().toString() === "");
+}
+
+function authentication(username, password) {
+    const data = 'username=' + username + '&password=' + password;
+
     $.ajax({
         url: "http://spring.avitoadm.ru/login",
         type: 'POST',
-        data: 'username=' + user.username + '&password=' + password,
+        data: data,
         headers: { "X-Ajax-call": 'true' },
         success: () => {
-            let socket = new SockJS('http://spring.avitoadm.ru/ws');
-            stompClient = Stomp.over(socket);
-            stompClient.debug = null;
-            stompClient.connect({}, () => {
-                chrome.storage.local.set({ notifications: {} });
-
-                stompClient.subscribe('/user/queue/error', e => console.log(e));
-
-                stompClient.subscribe('/user/queue/notification.new', addNotificationToStorage);
-
-                stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
-
-                stompClient.send('/app/notification/unread', {});
-            });
+            startWebSocket();
         },
-        error: result => console.log(result.responseJSON.message)
+        error: result => {
+            if (result.responseJSON.message === 'Authentication with ajax is failure') {
+                chrome.notifications.create({
+                    type: "basic",
+                    title: "Admin.Helper",
+                    message: "У вас установлен персональный пароль\n\nДля доступа к полному функционалу расширения, укажите пароль в Popup меню",
+                    iconUrl: "image/notificationLogo.png",
+                });
+            } else {
+                console.log(result.responseJSON);
+            }
+        }
+    });
+}
+
+function startWebSocket() {
+    const socket = new SockJS('http://spring.avitoadm.ru/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+    stompClient.connect({}, () => {
+        chrome.storage.local.set({ notifications: {} });
+
+        stompClient.subscribe('/user/queue/error', e => console.log(e));
+
+        stompClient.subscribe('/user/queue/notification.new', addNotificationToStorage);
+
+        stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
+
+        stompClient.send('/app/notification/unread', {});
     });
 
-
     function addNotificationToStorage(response) {
-        let newNotifications = JSON.parse(response.body);
+        const newNotifications = JSON.parse(response.body);
 
 		chrome.storage.local.get('notifications', result => {
             let notifications = result.notifications;
@@ -622,7 +654,7 @@ function startWebSocket(user, password) {
     }
 
     function removeNotificationFromStorage(response) {
-        let oldNotifications = JSON.parse(response.body);
+        const oldNotifications = JSON.parse(response.body);
 
         chrome.storage.local.get('notifications', result => {
             let notifications = result.notifications;
@@ -638,5 +670,4 @@ function startWebSocket(user, password) {
             chrome.storage.local.set(result);
         });
     }
-
 }
