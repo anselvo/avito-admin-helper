@@ -6,12 +6,17 @@ let page = 'error';
 $(function() {
     cookieInfo();
     loadingBar();
+
+
+    chrome.storage.local.get(result => {
+        console.log(result);
+    });
 });
 
 function cookieInfo() {
     chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
         if (cookie) {
-            console.log('You login to adm.avito.ru as '+cookie.value);
+            console.log('You login to adm.avito.ru as ' + cookie.value);
 
             userInfo(cookie.value);
         } else {

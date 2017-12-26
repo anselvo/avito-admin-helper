@@ -1,12 +1,12 @@
-let SCRIPT, USER;
+let script, USER;
+let auth_adm = false;
+let auth_adm_username = false;
 let stompClient = null;
 
 chrome.storage.local.get(function (result) {
-    SCRIPT = result.script;
-    USER = result.user;
+    script = result.script;
 
-    springConnect(USER, null);
-    setBudgetIcon(SCRIPT);
+    setBudgetIcon(script);
 });
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -49,10 +49,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
 chrome.webRequest.onBeforeRequest.addListener(
 	function (details) {
-        //console.log(details);
         if (details.method === 'POST' && details.requestBody) {
-            if (SCRIPT === 'moderator') moderationListener(details, USER);
-            if (SCRIPT === 'smm') smmListener(details);
+            if (script === 'moderator') moderationListener(details, USER);
+            if (script === 'smm') smmListener(details);
 		}
     },
     {urls: ["https://adm.avito.ru/*", "https://br-analytics.ru/*"]},
@@ -69,8 +68,8 @@ chrome.webRequest.onCompleted.addListener(function (detailsURL) {
 // ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
 chrome.storage.onChanged.addListener(function (result) {
 	if ("script" in result) {
-	    SCRIPT = result.script.newValue;
-	    setBudgetIcon(SCRIPT);
+	    script = result.script.newValue;
+	    setBudgetIcon(script);
 
     }
     if ("user" in result) {
@@ -113,6 +112,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             stompClient.send('/app/notification/update/read', {}, request.notification.uuid);
         }
     }
+
+    if (request.action === 'authentication') {
+        checkAuthentication().catch(() => authentication(USER.username));
+    }
 });
 
 function addNotificationAboutExtension(reason) {
@@ -135,8 +138,8 @@ function addNotificationAboutExtension(reason) {
 function cookieInfo() {
 	chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
 		if (cookie) {
-			console.log('You login to adm.avito.ru as '+cookie.value);
-			userInfo(cookie.value);
+			console.log('You login to adm.avito.ru as ' + cookie.value);
+			authentication(cookie.value);
 		} else {
 			console.log('You not login in adm.avito.ru');
 
@@ -149,7 +152,7 @@ function cookieInfo() {
 	chrome.cookies.onChanged.addListener(function (changeInfo){
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as '+changeInfo.cookie.value);
-			userInfo(changeInfo.cookie.value);
+			authentication(changeInfo.cookie.value);
 		}
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
             console.log('You logout from adm.avito.ru as '+changeInfo.cookie.value);
@@ -161,32 +164,120 @@ function cookieInfo() {
 	});
 }
 
-function userInfo(username) {
-	let table = { 
-		username: username,
-	};
-	
-	let jsonTable = JSON.stringify(table);
-	
-	let xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/user/getByName.php', true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.send("param="+jsonTable);
-	xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            let json = JSON.parse(xhr.responseText);
-			if (json.table.length === 0) {
-				chrome.storage.local.set({'user': 'user does not exist'});
+function authentication(username, password) {
+    password = password ? password : null;
 
-                localStorage.scriptStatus = 'off';
-                chrome.storage.local.set({'script': 'none'});
+    let formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
 
-                console.log('user does not exist');
-			} else {
-				chrome.storage.local.set({'user': json.table[0]});
-			}
+    const headers = {
+        method: 'POST',
+        credentials: 'include',
+        headers: { "X-Ajax-call": 'true' },
+        body: formData
+    };
+
+    fetch(`http://spring.avitoadm.ru/login`, headers)
+        .then(response => {
+            if (response.status === 200) checkAuthentication();
+            else return response.json();
+        })
+        .then(error => {
+            if (error) {
+                if (error.message === 'Authentication with ajax is failure') {
+                    setAuthenticationStorageInfo("auth", false);
+
+                    chrome.notifications.create({
+                        type: "basic",
+                        title: "Admin.Helper",
+                        message: "У вас установлен персональный пароль\n\nДля доступа к функционалу расширения, укажите пароль в Popup меню",
+                        iconUrl: "image/notificationLogo.png",
+                    });
+                } else {
+                    console.log(error);
+                }
+            }
+        });
+}
+
+function checkAuthentication() {
+    return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
+        .then(response => response.json())
+        .then(json => {
+            setAuthenticationStorageInfo(auth_adm, auth_adm_username, true, json);
+            startWebSocket();
+        });
+}
+
+function setAuthenticationStorageInfo(auth_adm, auth_adm_username, auth, principal) {
+    auth = auth ? auth : null;
+    auth_adm_username = auth_adm_username ? auth_adm_username : null;
+    auth_adm = auth_adm ? auth_adm : null;
+    principal = principal ? principal : null;
+
+    const authInfo = {
+        authInfo: {
+            auth: auth,
+            auth_adm: auth_adm,
+            auth_adm_username: auth_adm_username,
+            principal: principal
         }
     };
+
+    chrome.storage.local.set(authInfo);
+}
+
+function startWebSocket() {
+    const socket = new SockJS('http://spring.avitoadm.ru/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+    stompClient.connect({}, () => {
+        chrome.storage.local.set({ notifications: {} });
+
+        stompClient.subscribe('/user/queue/error', e => console.log(e));
+
+        stompClient.subscribe('/user/queue/notification.new', addNotificationToStorage);
+
+        stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
+
+        stompClient.send('/app/notification/unread', {});
+    });
+
+    function addNotificationToStorage(response) {
+        const newNotifications = JSON.parse(response.body);
+
+        chrome.storage.local.get('notifications', result => {
+            let notifications = result.notifications;
+            notifications.old = null;
+
+            if (notifications.all) {
+                notifications.all = notifications.all.concat(newNotifications);
+                notifications.new = newNotifications
+            } else notifications.all = newNotifications;
+
+            result.notifications = notifications;
+            chrome.storage.local.set(result);
+        });
+    }
+
+    function removeNotificationFromStorage(response) {
+        const oldNotifications = JSON.parse(response.body);
+
+        chrome.storage.local.get('notifications', result => {
+            let notifications = result.notifications;
+            notifications.new = null;
+
+            for (let i = 0; i < notifications.all.length; ++i)
+                if (notifications.all[i].notification.uuid === oldNotifications.notification.uuid)
+                    notifications.all.splice(i, 1);
+
+            notifications.old = oldNotifications;
+
+            result.notifications = notifications;
+            chrome.storage.local.set(result);
+        });
+    }
 }
 
 function smmListener(details) {
@@ -574,122 +665,10 @@ function setBudgetIcon(script) {
 		chrome.browserAction.setBadgeText({text: logo});
 		chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
 
-        console.log('Включен скрип: ' + SCRIPT);
+        console.log('Включен скрип: ' + script);
 	} else {
 		chrome.browserAction.setBadgeText({text: ""});
 
         console.log('Скрипты выключены');
 	}
-}
-
-function springConnect(user, password) {
-    checkAuthentication().catch(() => authentication(user.username, password));
-}
-
-function checkAuthentication() {
-    return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
-		.then(response => response.json())
-        .then(json => {
-            setAuthenticationStorageInfo("login", json);
-            startWebSocket();
-        });
-}
-
-function authentication(username, password) {
-    let formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
-
-    const headers = {
-        method: 'POST',
-        credentials: 'include',
-        headers: { "X-Ajax-call": 'true' },
-        body: formData
-    };
-
-    fetch(`http://spring.avitoadm.ru/login`, headers)
-        .then(response => {
-            if (response.status === 200) checkAuthentication();
-            else return response.json();
-        })
-        .then(error => {
-            if (error.message === 'Authentication with ajax is failure') {
-                setAuthenticationStorageInfo("password");
-
-                chrome.notifications.create({
-                    type: "basic",
-                    title: "Admin.Helper",
-                    message: "У вас установлен персональный пароль\n\nДля доступа к функционалу расширения, укажите пароль в Popup меню",
-                    iconUrl: "image/notificationLogo.png",
-                });
-            } else {
-                console.log(error);
-            }
-        });
-}
-
-function setAuthenticationStorageInfo(status, principal) {
-    status = status ? status : null;
-    principal = principal ? principal : null;
-
-    const authInfo = {
-        authInfo: {
-            status: status,
-            principal: principal
-        }
-    };
-
-    chrome.storage.local.set(authInfo);
-}
-
-function startWebSocket() {
-    const socket = new SockJS('http://spring.avitoadm.ru/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.debug = null;
-    stompClient.connect({}, () => {
-        chrome.storage.local.set({ notifications: {} });
-
-        stompClient.subscribe('/user/queue/error', e => console.log(e));
-
-        stompClient.subscribe('/user/queue/notification.new', addNotificationToStorage);
-
-        stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
-
-        stompClient.send('/app/notification/unread', {});
-    });
-
-    function addNotificationToStorage(response) {
-        const newNotifications = JSON.parse(response.body);
-
-		chrome.storage.local.get('notifications', result => {
-            let notifications = result.notifications;
-            notifications.old = null;
-
-            if (notifications.all) {
-                notifications.all = notifications.all.concat(newNotifications);
-                notifications.new = newNotifications
-            } else notifications.all = newNotifications;
-
-            result.notifications = notifications;
-            chrome.storage.local.set(result);
-		});
-    }
-
-    function removeNotificationFromStorage(response) {
-        const oldNotifications = JSON.parse(response.body);
-
-        chrome.storage.local.get('notifications', result => {
-            let notifications = result.notifications;
-            notifications.new = null;
-
-            for (let i = 0; i < notifications.all.length; ++i)
-                if (notifications.all[i].notification.uuid === oldNotifications.notification.uuid)
-                    notifications.all.splice(i, 1);
-
-            notifications.old = oldNotifications;
-
-            result.notifications = notifications;
-            chrome.storage.local.set(result);
-        });
-    }
 }
