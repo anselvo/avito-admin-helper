@@ -18,7 +18,7 @@ ShopModeration.prototype.addMailForm = function () {
     fixedContainer.className = 'ah-shop-moderation-mail-controls';
     fixedContainer.innerHTML = `
         <div class="btn-group">
-            <button class="btn btn-default ah-shop-moderation-mail-btn">
+            <button class="btn btn-default ah-shop-moderation-mail-btn" data-toggle="tooltip" title="Alt+E">
                 <span class="glyphicon glyphicon-envelope"></span>
             </button>
             <div class="btn-group dropup ah-template-dropdown">
@@ -133,6 +133,8 @@ ShopModeration.prototype.addMailForm = function () {
         window.document.execCommand('insertText', false, text);
     });
 
+    $(fixedContainer.querySelector('.ah-shop-moderation-mail-btn')).tooltip();
+
     fixedContainer.addEventListener('click', function (e) {
         const target = e.target;
 
@@ -209,6 +211,17 @@ ShopModeration.prototype.addMailForm = function () {
                     imgWrapper.setAttribute('contenteditable', 'false');
                     messageInput.innerHTML += `<br><div><b>${item.dataset.fieldName}</b><br>${imgWrapper.outerHTML}</div><br>`;
                 });
+            }
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.altKey && e.keyCode === 'E'.charCodeAt(0)) {
+            e.preventDefault();
+            if (modal.classList.contains('in')) {
+                $(modal).modal('hide');
+            } else {
+                $(modal).modal('show');
             }
         }
     });
