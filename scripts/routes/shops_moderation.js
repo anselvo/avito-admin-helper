@@ -299,7 +299,7 @@ ShopModeration.prototype.addCoordinationControls = function () {
         <input type="checkbox" id="ahCheckboxGeneral">
         Отметить все
     `;
-    shopSection.insertBefore(checkboxGeneralLabel, shopSection.querySelector('.shop-moderation-list'));
+    this.mainBlock.insertBefore(checkboxGeneralLabel, shopSection);
 
     this.mainBlock.addEventListener('change', function (e) {
         const target = e.target;
@@ -369,30 +369,59 @@ ShopModeration.prototype.addCoordinationControls = function () {
 
 ShopModeration.prototype.addBrief = function () {
     const self = this;
+    const shopSection = this.mainBlock.querySelector('.shop-moderation-section[data-section="shop"]');
+
+    const section = document.createElement('section');
     const infoPanel = document.createElement('div');
     const panelBody = document.createElement('div');
-    const fieldsInfoSection = document.createElement('section');
-    const keyWordsSection = document.createElement('section');
-    const companyInfoSection = document.createElement('section');
-    const commentsSection = document.createElement('section');
+
+    const leftColumn = document.createElement('div');
+    const middleColumn = document.createElement('div');
+    const rightColumn = document.createElement('div');
+
+    const fieldsInfo = document.createElement('div');
+    const keyWords = document.createElement('div');
+    const companyInfo = document.createElement('div');
+    const commentsInfo = document.createElement('div');
+
+    // фикс верстки админки
+    if (shopSection) {
+        const stickyHolder = shopSection.querySelector('.shop-moderation-buttons-holder_sticky');
+        const list = shopSection.querySelector('.shop-moderation-list');
+        if (stickyHolder && list) {
+            stickyHolder.style.cssText = `margin: 0 auto`;
+            list.style.cssText = `margin-top: -90px`;
+        }
+    }
+
+    section.className = 'ah-shop-moderation-section';
 
     infoPanel.className = 'panel panel-info ah-shop-moderation-info-panel';
     infoPanel.innerHTML = `<div class="panel-heading"><h4>Сводка</h4></div>`;
 
-    panelBody.className = 'panel-body';
+    panelBody.className = 'ah-panel-body';
 
-    fieldsInfoSection.innerHTML = `<h4>Поля</h4><span class="text-muted">Загрузка...</span>`;
-    commentsSection.innerHTML = `<h4>Комментарии</h4><span class="text-muted">Загрузка...</span>`;
-    keyWordsSection.innerHTML = `<h4>Ключевые слова и фразы</h4><span class="text-muted">Загрузка...</span>`;
-    companyInfoSection.innerHTML = `<h4>Информация о компании</h4><span class="text-muted">Загрузка...</span>`;
+    leftColumn.className = 'ah-column';
+    middleColumn.className = 'ah-column';
+    rightColumn.className = 'ah-column';
 
-    panelBody.appendChild(fieldsInfoSection);
-    panelBody.appendChild(keyWordsSection);
-    panelBody.appendChild(companyInfoSection);
-    panelBody.appendChild(commentsSection);
+    fieldsInfo.innerHTML = `<h4>Поля</h4><span class="text-muted">Загрузка...</span>`;
+    commentsInfo.innerHTML = `<h4>Комментарии</h4><span class="text-muted">Загрузка...</span>`;
+    keyWords.innerHTML = `<h4>Ключевые слова и фразы</h4><span class="text-muted">Загрузка...</span>`;
+    companyInfo.innerHTML = `<h4>Информация о компании</h4><span class="text-muted">Загрузка...</span>`;
+
+    leftColumn.appendChild(fieldsInfo);
+    leftColumn.appendChild(companyInfo);
+    middleColumn.appendChild(keyWords);
+    rightColumn.appendChild(commentsInfo);
+
+    panelBody.appendChild(leftColumn);
+    panelBody.appendChild(middleColumn);
+    panelBody.appendChild(rightColumn);
 
     infoPanel.appendChild(panelBody);
-    this.section.appendChild(infoPanel);
+    section.appendChild(infoPanel);
+    this.mainBlock.insertBefore(section, this.mainBlock.firstChild);
 
     getShopInfo(this.shopId)
         .then(response => {
@@ -401,13 +430,13 @@ ShopModeration.prototype.addBrief = function () {
             renderComments(info);
             return info;
         }, error => {
-            fieldsInfoSection.innerHTML = `
+            fieldsInfo.innerHTML = `
                 <h4>Поля</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
-            commentsSection.innerHTML = `
+            commentsInfo.innerHTML = `
                 <h4>Комментарии</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
-            companyInfoSection.innerHTML = `
+            companyInfo.innerHTML = `
                 <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
             return Promise.reject(error);
@@ -419,7 +448,7 @@ ShopModeration.prototype.addBrief = function () {
             const userInfo = getParamsUserInfo($(response));
             renderCompanyInfo(userInfo);
         }, error => {
-            companyInfoSection.innerHTML = `
+            companyInfo.innerHTML = `
                 <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
         });
@@ -428,7 +457,7 @@ ShopModeration.prototype.addBrief = function () {
         .then(regs => {
             renderKeyWords(regs);
         }, () => {
-            keyWordsSection.innerHTML = `
+            keyWords.innerHTML = `
                 <h4>Ключевые слова и фразы</h4><span class="text-danger">Произошла техническая ошибка</span>
             `;
         });
@@ -437,20 +466,20 @@ ShopModeration.prototype.addBrief = function () {
         const shopSection = self.mainBlock.querySelector('.shop-moderation-section[data-section="shop"]');
         const shopLabelsOriginal = shopSection.querySelectorAll('.shop-moderation-list-cell_original .shop-moderation-list-cell-name');
         const shopNameLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Название');
-        const shopNameValue = shopNameLabel.nextElementSibling.textContent;
+        const shopNameValue = shopNameLabel.nextElementSibling.querySelector('.pseudo-input').textContent;
         const shopDomainLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Домен');
-        const shopDomainValue = shopDomainLabel.nextElementSibling.textContent;
+        const shopDomainValue = shopDomainLabel.nextElementSibling.querySelector('.pseudo-input').textContent;
         const shopVideoLabel = [].find.call(shopLabelsOriginal, label => label.textContent === 'Видео URL');
-        const shopVideoValue = shopVideoLabel.nextElementSibling.textContent.trim();
+        const shopVideoValue = shopVideoLabel.nextElementSibling.querySelector('.pseudo-input').textContent.trim();
 
         const urlSection = self.mainBlock.querySelector('.shop-moderation-section[data-section="url"]');
         const urlLabelsOriginal = urlSection.querySelectorAll('.shop-moderation-list-cell_original .shop-moderation-list-cell-name');
         const urlSiteLabel = [].find.call(urlLabelsOriginal, label => label.textContent === 'URL');
-        const urlSiteValue = urlSiteLabel.nextElementSibling.textContent;
+        const urlSiteValue = urlSiteLabel.nextElementSibling.querySelector('.pseudo-input').textContent;
 
         const userEmail = JSON.parse(self.mainBlock.dataset.emails).user;
 
-        fieldsInfoSection.innerHTML = `
+        fieldsInfo.innerHTML = `
             <h4>Поля</h4>
             <table class="ah-shop-moderation-info-table">
                 <tr>
@@ -508,13 +537,13 @@ ShopModeration.prototype.addBrief = function () {
             comments.innerHTML = `<span class="text-muted">Комментарии отсутствуют</span>`;
         }
 
-        commentsSection.innerHTML = `
+        commentsInfo.innerHTML = `
             <h4>Комментарии</h4>
             <form method="post" action="/comment">
                 <input type="hidden" name="objectTypeId" value="3">
                 <input type="hidden" name="objectId" value="${self.shopId}">
                 <div class="form-group">
-                    <textarea class="form-control" name="comment" rows="3"></textarea>
+                    <textarea class="form-control ah-shop-comment-field" name="comment" rows="3"></textarea>
                 </div>
                 <div class="form-group text-right"> 
                     <button type="submit" class="btn btn-success" value="Добавить">
@@ -544,7 +573,7 @@ ShopModeration.prototype.addBrief = function () {
             </table>
         ` : `<span class="text-muted">Информация отсутствует</span>`;
 
-        companyInfoSection.innerHTML = `
+        companyInfo.innerHTML = `
             <h4>Информация о компании</h4>
             ${result}
         `;
@@ -555,10 +584,10 @@ ShopModeration.prototype.addBrief = function () {
         let hasMatches = false;
 
         table.className = 'ah-shop-moderation-info-table';
-        keyWordsSection.innerHTML = `
+        keyWords.innerHTML = `
             <h4>Ключевые слова и фразы</h4>
         `;
-        keyWordsSection.appendChild(table);
+        keyWords.appendChild(table);
 
         const allRows = self.mainBlock.querySelectorAll('.js-shop-moderation-row');
 
@@ -649,7 +678,7 @@ ShopModeration.prototype.addBrief = function () {
         }
     }
 
-    fieldsInfoSection.addEventListener('click', function (e) {
+    fieldsInfo.addEventListener('click', function (e) {
         const target = e.target;
 
         if (target.classList.contains('ah-copy-btn')) {
@@ -659,7 +688,7 @@ ShopModeration.prototype.addBrief = function () {
         }
     });
 
-    keyWordsSection.addEventListener('click', function(e) {
+    keyWords.addEventListener('click', function(e) {
         const target = e.target;
 
         if (target.closest('.ah-shop-moderation-scrollable-row')) {
