@@ -5757,13 +5757,19 @@ select.ah-form-control:focus {
 
 .ah-shop-moderation-mail-controls {
     position: fixed;
-    bottom: 4px;
-    right: 4px;
+    bottom: 0;
+    right: 0;
     z-index: 100;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8);
+}
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu {
+    max-height: calc(100vh - 150px);
+    overflow: auto;
 }
 
-.ah-shop-moderation-form-content {
-    /*position: relative;*/
+.ah-shop-moderation-mail-controls  .ah-template-dropdown ul > li > a {
+    cursor: pointer;
 }
 
 .ah-shop-moderation-form-content .ah-overlay-text {
@@ -5774,18 +5780,10 @@ select.ah-form-control:focus {
     font-weight: normal;
 }
 
-.ah-shop-moderation-mail-form .ah-template-dropdown {
-    display: inline-block;
-}
-
 .ah-shop-moderation-mail-form .ah-message-text-input {
     min-height: 250px;
     white-space: pre-wrap;
     height: auto;
-}
-
-.ah-shop-moderation-mail-form  .ah-template-dropdown ul > li > a {
-    cursor: pointer;
 }
 
 .ah-shop-moderation-info-panel .ah-panel-body {

@@ -17,7 +17,16 @@ ShopModeration.prototype.addMailForm = function () {
 
     fixedContainer.className = 'ah-shop-moderation-mail-controls';
     fixedContainer.innerHTML = `
-        <button class="btn btn-default ah-shop-moderation-mail-btn"><span class="glyphicon glyphicon-envelope"></span></button>
+        <div class="btn-group">
+            <button class="btn btn-default ah-shop-moderation-mail-btn">
+                <span class="glyphicon glyphicon-envelope"></span>
+            </button>
+            <div class="btn-group dropup ah-template-dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Использовать шаблон
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right"><li><a>Загрузка...</a></li></ul>
+            </div>
+        </div>
     `;
 
     modal.className = 'modal fade';
@@ -50,11 +59,6 @@ ShopModeration.prototype.addMailForm = function () {
             <div contenteditable="true" class="form-control ah-message-text-input"></div>
         </div>
         <div class="clearfix">
-            <div class="dropup ah-template-dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Использовать шаблон
-                <span class="caret"></span></button>
-                <ul class="dropdown-menu"><li><a>Загрузка...</a></li></ul>
-            </div>
             <button type="submit" class="btn btn-primary pull-right">Отправить</button>
         </div>
     `;
@@ -62,7 +66,7 @@ ShopModeration.prototype.addMailForm = function () {
     modal.querySelector('.modal-body').appendChild(form);
     this.mainBlock.appendChild(modal);
     document.body.appendChild(fixedContainer);
-    setFixedElemUnderFooter(fixedContainer, 4);
+    setFixedElemUnderFooter(fixedContainer, 0);
 
     const messageInput = form.querySelector('.ah-message-text-input');
 
@@ -70,14 +74,14 @@ ShopModeration.prototype.addMailForm = function () {
         .then(response => {
             templates = response;
 
-            const menu = form.querySelector('.ah-template-dropdown .dropdown-menu');
+            const menu = fixedContainer.querySelector('.ah-template-dropdown .dropdown-menu');
             menu.innerHTML = `
                 ${templates.map(
                     item => `<li><a class="ah-template-item" data-id="${item.id}">${item.name}</a></li>`).join('')
                 }
             `;
         }, () => {
-                const dropdown = form.querySelector('.ah-template-dropdown');
+                const dropdown = fixedContainer.querySelector('.ah-template-dropdown');
                 dropdown.innerHTML = `<span class="text-danger">Произошла техническая ошибка</span>`;
         });
 
@@ -86,7 +90,7 @@ ShopModeration.prototype.addMailForm = function () {
         e.preventDefault();
 
         const data = new FormData(this);
-        const overlay = this.closest('.ah-shop-moderation-form-panel').querySelector('.ah-overlay');
+        const overlay = this.closest('.ah-shop-moderation-form-content').querySelector('.ah-overlay');
         const textWrapperStyle = `font-size: 14px; line-height: 20px; font-family: Arial,Helvetica,sans-serif;`;
 
         if (messageInput.innerText.replace(/\s/g, '') === '') {
@@ -129,8 +133,12 @@ ShopModeration.prototype.addMailForm = function () {
         window.document.execCommand('insertText', false, text);
     });
 
-    form.addEventListener('click', function (e) {
+    fixedContainer.addEventListener('click', function (e) {
         const target = e.target;
+
+        if (target.closest('.ah-shop-moderation-mail-btn')) {
+            $(modal).modal('show');
+        }
 
         if (target.classList.contains('ah-template-item')) {
             const id = target.dataset.id;
@@ -202,14 +210,6 @@ ShopModeration.prototype.addMailForm = function () {
                     messageInput.innerHTML += `<br><div><b>${item.dataset.fieldName}</b><br>${imgWrapper.outerHTML}</div><br>`;
                 });
             }
-        }
-    });
-
-    fixedContainer.addEventListener('click', function (e) {
-        const target = e.target;
-
-        if (target.closest('.ah-shop-moderation-mail-btn')) {
-            $(modal).modal('show');
         }
     });
 };
