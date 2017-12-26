@@ -18,7 +18,7 @@ ShopModeration.prototype.addMailForm = function () {
     fixedContainer.className = 'ah-shop-moderation-mail-controls';
     fixedContainer.innerHTML = `
         <div class="btn-group">
-            <button class="btn btn-default ah-shop-moderation-mail-btn" data-toggle="tooltip" title="Alt+E">
+            <button class="btn btn-default ah-shop-moderation-mail-btn" data-toggle="tooltip" title="Alt+E" data-container="body">
                 <span class="glyphicon glyphicon-envelope"></span>
             </button>
             <div class="btn-group dropup ah-template-dropdown">
@@ -417,6 +417,8 @@ ShopModeration.prototype.addBrief = function () {
     const companyInfo = document.createElement('div');
     const commentsInfo = document.createElement('div');
 
+    const parsedInfo = {};
+
     // фикс верстки админки
     if (shopSection) {
         const stickyHolder = shopSection.querySelector('.shop-moderation-buttons-holder_sticky');
@@ -461,6 +463,7 @@ ShopModeration.prototype.addBrief = function () {
             const info = getParamsShopInfo($(response));
             renderFieldsInfo(info);
             renderComments(info);
+            parsedInfo.shop = info;
             return info;
         }, error => {
             fieldsInfo.innerHTML = `
@@ -480,6 +483,7 @@ ShopModeration.prototype.addBrief = function () {
         .then(response => {
             const userInfo = getParamsUserInfo($(response));
             renderCompanyInfo(userInfo);
+            renderPersonalManagerEdit(userInfo);
         }, error => {
             companyInfo.innerHTML = `
                 <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
@@ -521,7 +525,7 @@ ShopModeration.prototype.addBrief = function () {
                 </tr>
                 <tr>
                     <td>Персональный менеджер</td>
-                    <td>${shop.personalManager}</td>
+                    <td class="ah-personal-manager-cell">${shop.personalManager}</td>
                 </tr>
                 <tr>
                     <td>Название</td>
@@ -609,6 +613,28 @@ ShopModeration.prototype.addBrief = function () {
         companyInfo.innerHTML = `
             <h4>Информация о компании</h4>
             ${result}
+        `;
+    }
+
+    function renderPersonalManagerEdit(user) {
+        if (!user.personalManager) return;
+
+        const selectedVal = user.personalManager.selected.value;
+        const cell = fieldsInfo.querySelector('.ah-personal-manager-cell');
+        cell.innerHTML = `
+            <div class="input-group">
+                <select class="form-control input-sm" name="managerId">
+                    ${user.personalManager.options.map(item => 
+                        `<option value="${item.value}" ${(item.value === selectedVal) ? 'selected' : ''}>${item.name}</option>`)
+                    .join('')}
+                </select>
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-sm ah-edit-personal-manager" title="Сохранить" 
+                        data-user-id="${parsedInfo.shop.mainInfo.userId}">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                    </button>
+                </span>
+            </div>
         `;
     }
 
@@ -718,6 +744,22 @@ ShopModeration.prototype.addBrief = function () {
             const text = target.dataset.copy;
             chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
             outTextFrame(`Скопировано: ${text}`);
+        }
+
+        if (target.closest('.ah-edit-personal-manager')) {
+            const btn = target.closest('.ah-edit-personal-manager');
+            const cell = target.closest('.ah-personal-manager-cell');
+            const select = cell.querySelector('[name="managerId"]');
+            const userId = btn.dataset.userId;
+            const managerId = select.value;
+
+            btnLoaderOn(btn);
+            editPersonalManager(userId, +managerId).then(() => {
+                    alert(`Операция прошла успешно. Пользователь: ${userId}`);
+                }, error => {
+                    alert(`Произошла ошибка\n${error.status || ''}\n${error.statusText || ''}`);
+                })
+                .then(() => btnLoaderOff(btn));
         }
     });
 

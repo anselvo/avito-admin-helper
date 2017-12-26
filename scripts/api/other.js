@@ -939,6 +939,7 @@ function getParamsUserInfo(html) {
     let expiredCVPackagesTable = searchNode.find('h4:contains(Истёкшие, завершённые и отменённые пакеты просмотров)')
         .next().find('.table');
     const $companyInfoForm = searchNode.find('#company-info');
+    const $persManagerSelect = searchNode.find('.js-user-info-personal-manager-select');
 
     res.activeLFPackagesTableHtml = (activeLFPackagesTable.length) ? activeLFPackagesTable[0].outerHTML : null;
     res.expiredLFPackagesTableHtml = (expiredLFPackagesTable.length) ? expiredLFPackagesTable[0].outerHTML : null;
@@ -961,6 +962,23 @@ function getParamsUserInfo(html) {
         res.companyInfo.name = $nameLabel.next().find('[name="companyName"]').val() || null;
         res.companyInfo.inn = $innLabel.next().find('[name="inn"]').val() || null;
         res.companyInfo.legaAddress = $legalAddressLabel.next().find('[name="legalAddress"]').val() || null;
+    }
+
+    res.personalManager = ($persManagerSelect.length) ? {} : null;
+    if (res.personalManager) {
+        const $selected = $persManagerSelect.find('option:selected');
+        res.personalManager.selected = {
+            value: $selected.val(),
+            name: $selected.text().trim()
+        };
+        res.personalManager.options = [];
+
+        $persManagerSelect.find('option').each(function() {
+            res.personalManager.options.push({
+                value: this.value,
+                name: this.textContent
+            })
+        });
     }
 
     return res;

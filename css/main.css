@@ -5751,6 +5751,10 @@ select.ah-form-control:focus {
     margin-bottom: 10px;
 }
 
+.ah-shop-moderation-section .panel-heading {
+    padding: 10px;
+}
+
 .ah-shop-moderation-section .panel-heading h4 {
     margin: 0;
 }
@@ -5763,6 +5767,7 @@ select.ah-form-control:focus {
     padding: 8px;
     background: rgba(255, 255, 255, 0.8);
 }
+
 .ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu {
     max-height: calc(100vh - 150px);
     overflow: auto;
@@ -5804,6 +5809,20 @@ select.ah-form-control:focus {
     max-height: 200px;
 }
 
+.ah-shop-moderation-info-panel .ah-copy-btn {
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.25s, color 0.15s;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover {
+    opacity: 1;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover:active {
+    color: #844613;
+}
+
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
     width: 100%;
     margin-bottom: 15px;
@@ -5818,18 +5837,8 @@ select.ah-form-control:focus {
     color: rgb(149, 149, 149);
 }
 
-.ah-shop-moderation-info-panel .ah-copy-btn {
-    opacity: 0.5;
-    cursor: pointer;
-    transition: opacity 0.25s, color 0.15s;
-}
-
-.ah-shop-moderation-info-panel .ah-copy-btn:hover {
-    opacity: 1;
-}
-
-.ah-shop-moderation-info-panel .ah-copy-btn:hover:active {
-    color: #844613;
+.ah-shop-moderation-info-table .ah-personal-manager-cell .input-group {
+    margin-left: -1px;
 }
 
 .ah-shop-moderation-label-text {
@@ -5881,9 +5890,9 @@ select.ah-form-control:focus {
     background-color: rgb(245, 245, 245);
 }
 
-.ah-shop-moderation-navigation-container {
-    position: fixed;
-    bottom: 4px;
-    right: 4px;
-    z-index: 100;
-}
+/*.ah-shop-moderation-navigation-container {*/
+    /*position: fixed;*/
+    /*bottom: 4px;*/
+    /*right: 4px;*/
+    /*z-index: 100;*/
+/*}*/
