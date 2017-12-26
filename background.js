@@ -17,21 +17,8 @@ chrome.runtime.onUpdateAvailable.addListener(function() {
 
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
 chrome.runtime.onInstalled.addListener(function(details) {
-	//нотификация об апдейте расширения
-    let message;
-    let version = chrome.runtime.getManifest().version;
-
-    if (details.reason === 'update') message = "Updated (new version "+ version + ")\n\n" +
-        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works";
-    if (details.reason === 'install') message = "Installed (current version " + version + ")";
-
-    let options = {
-        type: "basic",
-        title: "Admin.Helper",
-        message: message,
-        iconUrl: "image/notificationLogo.png",
-    };
-    chrome.notifications.create(options);
+	// нотификация об апдейте расширения
+    addNotificationAboutExtension(details.reason);
 
 	// определяем кто залогинен в админку
 	cookieInfo();
@@ -127,6 +114,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         }
     }
 });
+
+function addNotificationAboutExtension(reason) {
+    const version = chrome.runtime.getManifest().version;
+
+    let message;
+    if (reason === 'update') message = "Updated (new version "+ version + ")\n\n" +
+        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works";
+    if (reason === 'install') message = "Installed (current version " + version + ")";
+
+    const options = {
+        type: "basic",
+        title: "Admin.Helper",
+        message: message,
+        iconUrl: "image/notificationLogo.png",
+    };
+    chrome.notifications.create(options);
+}
 
 function cookieInfo() {
 	chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
@@ -579,45 +583,63 @@ function setBudgetIcon(script) {
 }
 
 function springConnect(user, password) {
-    checkAuthentication().then(auth => {
-        console.log(auth);
-
-        if (auth) {
-            startWebSocket();
-        } else {
-            authentication(user.username, password);
-        }
-    });
+    checkAuthentication().catch(() => authentication(user.username, password));
 }
 
 function checkAuthentication() {
-    return fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include' }).then(response => response.text().toString() === "");
+    return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
+		.then(response => response.json())
+        .then(json => {
+            setAuthenticationStorageInfo("login", json);
+            startWebSocket();
+        });
 }
 
 function authentication(username, password) {
-    const data = 'username=' + username + '&password=' + password;
+    let formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
 
-    $.ajax({
-        url: "http://spring.avitoadm.ru/login",
-        type: 'POST',
-        data: data,
+    const headers = {
+        method: 'POST',
+        credentials: 'include',
         headers: { "X-Ajax-call": 'true' },
-        success: () => {
-            startWebSocket();
-        },
-        error: result => {
-            if (result.responseJSON.message === 'Authentication with ajax is failure') {
+        body: formData
+    };
+
+    fetch(`http://spring.avitoadm.ru/login`, headers)
+        .then(response => {
+            if (response.status === 200) checkAuthentication();
+            else return response.json();
+        })
+        .then(error => {
+            if (error.message === 'Authentication with ajax is failure') {
+                setAuthenticationStorageInfo("password");
+
                 chrome.notifications.create({
                     type: "basic",
                     title: "Admin.Helper",
-                    message: "У вас установлен персональный пароль\n\nДля доступа к полному функционалу расширения, укажите пароль в Popup меню",
+                    message: "У вас установлен персональный пароль\n\nДля доступа к функционалу расширения, укажите пароль в Popup меню",
                     iconUrl: "image/notificationLogo.png",
                 });
             } else {
-                console.log(result.responseJSON);
+                console.log(error);
             }
+        });
+}
+
+function setAuthenticationStorageInfo(status, principal) {
+    status = status ? status : null;
+    principal = principal ? principal : null;
+
+    const authInfo = {
+        authInfo: {
+            status: status,
+            principal: principal
         }
-    });
+    };
+
+    chrome.storage.local.set(authInfo);
 }
 
 function startWebSocket() {
