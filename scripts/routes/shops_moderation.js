@@ -9,19 +9,31 @@ function ShopModeration() {
 
 ShopModeration.prototype.addMailForm = function () {
     const self = this;
-    const section = document.createElement('section');
+    const fixedContainer = document.createElement('div');
+    const modal = document.createElement('div');
     const form = document.createElement('form');
     const managerEmail = JSON.parse(this.mainBlock.dataset.emails).manager;
     let templates = {};
 
-    section.className = 'ah-shop-moderation-section';
-    section.innerHTML = `
-        <div class="panel panel-default ah-shop-moderation-form-panel">
-            <div class="panel-heading"><h4>Отправка письма</h4></div>
-            <div class="panel-body"></div>
-            <div class="ah-overlay dark" tabindex="1">
-                <span class="ah-overlay-text">Выполняется отправка...</span>
-            </div>
+    fixedContainer.className = 'ah-shop-moderation-mail-controls';
+    fixedContainer.innerHTML = `
+        <button class="btn btn-default ah-shop-moderation-mail-btn"><span class="glyphicon glyphicon-envelope"></span></button>
+    `;
+
+    modal.className = 'modal fade';
+    modal.setAttribute('tabindex', '-1');
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ah-shop-moderation-form-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Отправка письма</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="ah-overlay dark" tabindex="1">
+                    <span class="ah-overlay-text">Выполняется отправка...</span>
+                </div>
+          </div>
         </div>
     `;
 
@@ -47,10 +59,10 @@ ShopModeration.prototype.addMailForm = function () {
         </div>
     `;
 
-    section.querySelector('.panel-body').appendChild(form);
-    this.mainBlock.appendChild(section);
-
-    this.section = section;
+    modal.querySelector('.modal-body').appendChild(form);
+    this.mainBlock.appendChild(modal);
+    document.body.appendChild(fixedContainer);
+    setFixedElemUnderFooter(fixedContainer, 4);
 
     const messageInput = form.querySelector('.ah-message-text-input');
 
@@ -190,6 +202,14 @@ ShopModeration.prototype.addMailForm = function () {
                     messageInput.innerHTML += `<br><div><b>${item.dataset.fieldName}</b><br>${imgWrapper.outerHTML}</div><br>`;
                 });
             }
+        }
+    });
+
+    fixedContainer.addEventListener('click', function (e) {
+        const target = e.target;
+
+        if (target.closest('.ah-shop-moderation-mail-btn')) {
+            $(modal).modal('show');
         }
     });
 };

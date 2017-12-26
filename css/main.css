@@ -5755,12 +5755,18 @@ select.ah-form-control:focus {
     margin: 0;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-form-panel {
-    /*width: 59%;*/
-    position: relative;
+.ah-shop-moderation-mail-controls {
+    position: fixed;
+    bottom: 4px;
+    right: 4px;
+    z-index: 100;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-form-panel .ah-overlay-text {
+.ah-shop-moderation-form-content {
+    /*position: relative;*/
+}
+
+.ah-shop-moderation-form-content .ah-overlay-text {
     font-size: 18px;
 }
 
