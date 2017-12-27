@@ -79,42 +79,47 @@ chrome.storage.onChanged.addListener(function (result) {
 
 // ЛОВИТ СООБЩЕНИЯ
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-    if (request.action === "XMLHttpRequest") {
-        let xhr = new XMLHttpRequest();
-        let method = request.method ? request.method.toUpperCase() : 'GET';
-        let contentType = request.contentType;
+    switch (request.action) {
+        case "XMLHttpRequest":
+            let xhr = new XMLHttpRequest();
+            let method = request.method ? request.method.toUpperCase() : 'GET';
+            let contentType = request.contentType;
 
-        if (method === 'POST') contentType = request.contentType ? request.contentType : 'application/x-www-form-urlencoded';
+            if (method === 'POST') contentType = request.contentType ? request.contentType : 'application/x-www-form-urlencoded';
 
-        xhr.open(method, request.url, true);
-        if (contentType) xhr.setRequestHeader('Content-Type', contentType);
-        xhr.send(request.data);
+            xhr.open(method, request.url, true);
+            if (contentType) xhr.setRequestHeader('Content-Type', contentType);
+            xhr.send(request.data);
 
-        xhr.onload = () => callback(xhr.responseText);
-        xhr.onerror = () => callback('error');
+            xhr.onload = () => callback(xhr.responseText);
+            xhr.onerror = () => callback('error');
 
-        return true;
-    }
+            return true;
 
-	if (request.action === "copyToClipboard") {
-		const textarea = document.createElement('textarea');
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = 0;
-        textarea.value = request.text;
-		document.body.appendChild(textarea);
-        textarea.select();
-		document.execCommand('Copy');
-		document.body.removeChild(textarea);
-	}
+        case "copyToClipboard":
+            const textarea = document.createElement('textarea');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = 0;
+            textarea.value = request.text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('Copy');
+            document.body.removeChild(textarea);
+            return false;
 
-    if (request.action === 'ws') {
-        if (request.notification.status === 'read') {
-            stompClient.send('/app/notification/update/read', {}, request.notification.uuid);
-        }
-    }
+        case "ws":
+            if (request.notification.status === 'read') {
+                stompClient.send('/app/notification/update/read', {}, request.notification.uuid);
+            }
+            return false;
 
-    if (request.action === 'authentication') {
-        connect(request.password);
+        case "authentication":
+            connect(request.password);
+            return false;
+
+        case "principal":
+            getPrincipal(request.password).then(() => setAuthenticationStorageInfo());
+            return false;
     }
 });
 
