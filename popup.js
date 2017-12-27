@@ -17,14 +17,14 @@ $(function() {
 function pageListener(authInfo) {
     console.log(authInfo);
 
-    if (!authInfo.auth_adm) errorPage('logout');
+    if (!authInfo.adm) errorPage('logout');
     else if (!authInfo.auth) authorizationPage();
     else if (authInfo.auth) {
         userGlobalInfo = authInfo.user.principal;
         createScriptList();
         mainPage();
-    } else if (authInfo.auth_status >= 400) {
-        switch (authInfo.auth_status) {
+    } else if (authInfo.status >= 400) {
+        switch (authInfo.status) {
             case 403:
                 errorPage('403');
                 break;

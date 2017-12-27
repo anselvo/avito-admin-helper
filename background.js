@@ -1,5 +1,5 @@
-let script, USER;
-let authInfo = { auth: false, auth_adm: false, auth_username: null, auth_status: null, user: null };
+let script;
+let authInfo = { auth: false, adm: false, username: null, status: null, user: null };
 let stompClient = null;
 
 chrome.storage.local.get(function (result) {
@@ -53,7 +53,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 chrome.webRequest.onBeforeRequest.addListener(
 	function (details) {
         if (details.method === 'POST' && details.requestBody) {
-            if (script === 'moderator') moderationListener(details, USER);
+            if (script === 'moderator') moderationListener(details);
             if (script === 'smm') smmListener(details);
 		}
     },
@@ -75,9 +75,6 @@ chrome.storage.onChanged.addListener(function (result) {
 	    setBudgetIcon(script);
 
     }
-    if ("user" in result) {
-        USER = result.user.newValue;
-	}
 });
 
 // ЛОВИТ СООБЩЕНИЯ
@@ -136,16 +133,16 @@ function cookieInfo() {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
-            authInfo.auth_adm = true;
-            authInfo.auth_username = cookie.value;
+            authInfo.adm = true;
+            authInfo.username = cookie.value;
 
             connect();
 		} else {
 			console.log('You not login in adm.avito.ru');
 
-            authInfo.auth_adm = false;
-            authInfo.auth_username = null;
-            authInfo.auth_status = null;
+            authInfo.adm = false;
+            authInfo.username = null;
+            authInfo.status = null;
             authInfo.user = null;
 
             connect();
@@ -156,17 +153,17 @@ function cookieInfo() {
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
 
-            authInfo.auth_adm = true;
-            authInfo.auth_username = changeInfo.cookie.value;
+            authInfo.adm = true;
+            authInfo.username = changeInfo.cookie.value;
 
             connect();
 		}
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
             console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
 
-            authInfo.auth_adm = false;
-            authInfo.auth_username = null;
-            authInfo.auth_status = null;
+            authInfo.adm = false;
+            authInfo.username = null;
+            authInfo.status = null;
             authInfo.user = null;
 
             connect();
@@ -177,8 +174,8 @@ function cookieInfo() {
 function connect(password) {
     password = password ? password : null;
 
-    if (authInfo.auth_adm) {
-        authentication(authInfo.auth_username, password)
+    if (authInfo.adm) {
+        authentication(authInfo.username, password)
             .then(() => {
                     authInfo.auth = true;
                     startWebSocket();
@@ -218,7 +215,7 @@ function authentication(username, password) {
 
     return fetch(`http://spring.avitoadm.ru/login`, headers)
         .then(response => {
-            authInfo.auth_status = response.status;
+            authInfo.status = response.status;
 
             if (response.status !== 200) {
                 return response.json().then(Promise.reject.bind(Promise));
@@ -315,7 +312,7 @@ function smmLogToDB(messageId, tagString) {
     let log = {
         messageId: messageId,
         tagString: tagString,
-        usernameId: USER.id
+        usernameId: authInfo.user.principal.id
     };
 
     let json = JSON.stringify(log);
@@ -332,7 +329,7 @@ function smmLogToDB(messageId, tagString) {
     });
 }
 
-function moderationListener(details, user) {
+function moderationListener(details) {
 	let count = 0, ids, reason = '', items_id = '';
 
 	let formData = details.requestBody.formData;
@@ -368,8 +365,8 @@ function moderationListener(details, user) {
 
         console.log(formData['action']);
 
-        if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, user, items_id);
-		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, user, items_id);
+        if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, items_id);
+		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, items_id);
 	}
 	
 	//post
@@ -384,7 +381,7 @@ function moderationListener(details, user) {
             items_id = ids.join();
 		}
 		
-		sendLogToDB('reject item', reason, count, user, items_id);
+		sendLogToDB('reject item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
 	if (details.url === 'https://adm.avito.ru/items/item/block') {
@@ -398,7 +395,7 @@ function moderationListener(details, user) {
             items_id = ids.join();
 		}
 	
-		sendLogToDB('block item', reason, count, user, items_id);
+		sendLogToDB('block item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
 	
@@ -413,7 +410,7 @@ function moderationListener(details, user) {
 		
 		ids.splice(del, 1);
 		
-		sendLogToDB('block item', '20', count, user, items_id);
+		sendLogToDB('block item', '20', count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
 	if (details.url.indexOf('https://adm.avito.ru/items/comparison/')+1 && details.url.indexOf('block')+1) {
@@ -422,7 +419,7 @@ function moderationListener(details, user) {
 		let blockItem = details.url.split('/');
 		ids = [blockItem[7]];
 		
-		sendLogToDB('block item', '20', 1, user, items_id);
+		sendLogToDB('block item', '20', 1, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
 
@@ -456,9 +453,9 @@ function moderationListener(details, user) {
             }
         }
 
-        if (countAllow) sendLogToDB('allow all', reason, 1, user, items_id);
-        if (countBlock > 0) sendLogToDB('block item', '20', countBlock, user, items_id);
-        if (countReject > 0) sendLogToDB('reject item', reason, countReject, user, items_id);
+        if (countAllow) sendLogToDB('allow all', reason, 1, items_id);
+        if (countBlock > 0) sendLogToDB('block item', '20', countBlock, items_id);
+        if (countReject > 0) sendLogToDB('reject item', reason, countReject, items_id);
         addBlockedItemsIDtoStorage(baseItemID);
     }
 	
@@ -467,12 +464,12 @@ function moderationListener(details, user) {
 		count = formData['id'].length;
         items_id = formData['id'].join();
 		
-		sendLogToDB('block user', reason, count, user, items_id);
+		sendLogToDB('block user', reason, count, items_id);
 	}
 
 	if (details.url === 'https://adm.avito.ru/detectives/queue/add') {
         items_id = formData['itemId'].join();
-        sendLogToDB('detectives', reason, 1, user, items_id);
+        sendLogToDB('detectives', reason, 1, items_id);
     }
 }
 
@@ -488,9 +485,9 @@ function addBlockedItemsIDtoStorage(ids) {
 	});
 }
 
-function sendLogToDB(type, reason, count, user, items_id) {
+function sendLogToDB(type, reason, count, items_id) {
 	let row = {
-        username_id: user.id,
+        username_id: authInfo.user.principal.id,
         type: type,
         items_id: items_id,
         reason: reason,

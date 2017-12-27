@@ -6,7 +6,7 @@ $(function () {
     currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-        userGlobalInfo = result.user;
+        userGlobalInfo = result.authInfo.user.principal;
         scriptGlobal = result.script;
 
         startNotification(result.notifications);
