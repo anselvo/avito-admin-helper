@@ -29,12 +29,12 @@ function startInfoDoc() {
         // сопоставления логинов с категорией
         adminTableCategory();
 
-        // парсер комментов
-        linksOnComments('td.is-break', currentUrl);
-
-        // индикаторы
-        addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'subscriptionIndividual',
-            'persManager', 'onlyBankTransfer', 'REPremium', 'extension']);
+            // парсер комментов
+            linksOnComments('td.is-break', currentUrl);
+            
+            // индикаторы
+            addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager',
+                'onlyBankTransfer', 'REPremium', 'extension']);
 
         // переход в HD
         linkToHDOnUser();

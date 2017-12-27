@@ -552,7 +552,7 @@ function getHDTemplates() {
                     return;
                 }
 
-                settingsGlobal.helpdeskTemplatesJSON = response;
+                settingsGlobal.helpdeskTemplatesJSON = response.result;
                 settingsGlobal.helpdeskTemplatesJSON.sort(compareTemplatesNames);
 
                 var templatesAll = settingsGlobal.helpdeskTemplatesJSON;

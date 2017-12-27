@@ -18,6 +18,7 @@ function startTraffic() {
             shopModeration.addMailForm();
             shopModeration.addCoordinationControls();
             shopModeration.addBrief();
+            // shopModeration.addPageNavigation();
         }
     }
 }
