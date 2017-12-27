@@ -164,9 +164,8 @@ function errorPage(error, xhrStatus) {
 function authorizationPage() {
 	pageGenerator(
 		'Авторизация',
-		'',
-		'<input id="password" type="password" name="pass" placeholder="password" required>' +
-        '<div id="error">Вас нету в списке пользователей Admin.Helper или у вас установлен персональный пароль</div>',
+		'Вас нету в списке пользователей Admin.Helper или у вас установлен персональный пароль',
+		'<input id="password" type="password" name="pass" placeholder="password" required>',
 		'<input class="btn" type="submit" id="submit" value="SIGN IN">'
 	);
 			
@@ -246,7 +245,7 @@ function authPage() {
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
 
 function pageGenerator(head, scripts, body, end) {
-    let $body = $('body');
+    const $body = $('body');
 
     $body.empty()
         .append('<div id="background-body"><img id="avitoBackground" src="image/popup_background.jpg"></div>');
@@ -263,7 +262,7 @@ function pageGenerator(head, scripts, body, end) {
         turnScript();
         chooseScriptPage();
 	} else if (scripts !== '') {
-        $body.append('<div id="error"></div>');
+        $body.append('<div id="error" class="line"></div>');
 		$('#error').html(scripts);
 	}
 	

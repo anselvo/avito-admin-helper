@@ -19,15 +19,15 @@ body {
 
 #version  {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     right: 3px;
 	font-size: 15px;
     color: #828080;
 }
 
 .line {
-	text-align:center;
-	font-weight: 700;
+	text-align: center;
+	font-weight: 600;
 	margin: 5px 0;
     font-size: 18px;
 	text-shadow: 0 0 1px #999, 0 0 1px #999, 0 0 1px #999, 0 0 1px #999, 0 0 1px #999, 0 0 1px #999, 0 0 1px #999, 0 0 1px #999;
@@ -208,8 +208,8 @@ body {
 }
 
 #error {
-	color: #000000;
-    background: rgba(255, 255, 255, 0.4);
+	color: #ad4b4b;
+    background: #ead6d6a6;
     font-size:16px;
 	text-align:center;
 	padding: 10px;
