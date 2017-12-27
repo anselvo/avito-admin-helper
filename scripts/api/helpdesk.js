@@ -982,7 +982,7 @@ function substituteCreateTicketValues() {
         79, // 1st line - voice support	Вероника Чалова
         80, // 1st line - voice support	Елизавета Шульгина
     ];
-    if (~voiceSupSubstituteSubdivisions.indexOf(+userGlobalInfo.subdivision_id)) {
+    if (~voiceSupSubstituteSubdivisions.indexOf(+userGlobalInfo.subdivision.id)) {
         // tag callcenter
         $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
         $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
@@ -994,7 +994,7 @@ function substituteCreateTicketValues() {
         'C2C', // C2C	Доставка и Контекст	Игорь Югай
         'SD' // Developers
     ];
-    if (~c2cSubstituteSubdivisions.indexOf(userGlobalInfo.subdivision)) {
+    if (~c2cSubstituteSubdivisions.indexOf(userGlobalInfo.subdivision.subdivision)) {
         // tag delivery_call
         $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1549">');
         $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');

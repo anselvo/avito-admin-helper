@@ -37,16 +37,14 @@ function showItemsInfoForItems() {
 
     $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
 
-    console.log(userGlobalInfo.subdivision);
-
-    if (userGlobalInfo.subdivision === 'DJB' ||
-        userGlobalInfo.subdivision === 'DSR' ||
-        userGlobalInfo.subdivision === 'D3D' ||
-        userGlobalInfo.subdivision === 'DBH' ||
-        userGlobalInfo.subdivision === 'DRE' ||
-        userGlobalInfo.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision === 'SD') clickPostShowItemInfo();
+    if (userGlobalInfo.subdivision.subdivision === 'DJB' ||
+        userGlobalInfo.subdivision.subdivision === 'DSR' ||
+        userGlobalInfo.subdivision.subdivision === 'D3D' ||
+        userGlobalInfo.subdivision.subdivision === 'DBH' ||
+        userGlobalInfo.subdivision.subdivision === 'DRE' ||
+        userGlobalInfo.subdivision.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision.subdivision === 'SD') clickPostShowItemInfo();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'I'.charCodeAt(0))

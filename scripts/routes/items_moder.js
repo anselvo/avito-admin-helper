@@ -137,7 +137,7 @@ function abTestCheckedPhoto($items) {
 function hideSubcategory() {
     let goodCategory = ['1', '4', '110', '111', '112', '113', '5', '2', '6', '7', '35', '8'];
 
-    if (userGlobalInfo.subdivision !== 'TL' && userGlobalInfo.subdivision !== 'SD'  && userGlobalInfo.subdivision !== 'ME') {
+    if (userGlobalInfo.subdivision.subdivision !== 'TL' && userGlobalInfo.subdivision.subdivision !== 'SD'  && userGlobalInfo.subdivision.subdivision !== 'ME') {
         $('.subcategory:not(:contains(Вакансии), :contains(Резюме))').hide();
         $('.js-multiselect-reasons').hide();
 

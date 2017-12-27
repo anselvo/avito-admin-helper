@@ -47,7 +47,7 @@ function notificationRemoveWS(notifications) {
 //---------- Allow List Checker ----------//
 
 function startAllowList() {
-	allowListCheck(userGlobalInfo.subdivision, userGlobalInfo.username);
+	allowListCheck(userGlobalInfo.subdivision.subdivision, userGlobalInfo.username);
 }
 
 function allowListCheck(agentLine, agentlogin) {

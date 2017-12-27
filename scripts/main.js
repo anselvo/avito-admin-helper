@@ -9,6 +9,8 @@ $(function () {
         userGlobalInfo = result.authInfo.user.principal;
         scriptGlobal = result.script;
 
+        console.log(userGlobalInfo);
+
         startNotification(result.notifications);
 
         if (result.script === 'infoDoc') {

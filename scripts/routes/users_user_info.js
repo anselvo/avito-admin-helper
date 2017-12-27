@@ -712,7 +712,7 @@ function addIPSystemAccessLink() {
 
 //----- логирование отвязанных номеров  -----//
 function logUnferifiedPhone() {
-    var subdivision = userGlobalInfo.subdivision.toLowerCase();
+    var subdivision = userGlobalInfo.subdivision.subdivision.toLowerCase();
     var allowedSubdivisions = ['s1', 'sa', 'sd', 'tl'];
 
     if (allowedSubdivisions.indexOf(subdivision) == -1)

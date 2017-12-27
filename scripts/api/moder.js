@@ -413,14 +413,14 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (userGlobalInfo.subdivision === 'DJB' ||
-        userGlobalInfo.subdivision === 'DSR' ||
-        userGlobalInfo.subdivision === 'D3D' ||
-        userGlobalInfo.subdivision === 'DBH' ||
-        userGlobalInfo.subdivision === 'DRE' ||
-        userGlobalInfo.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision === 'SD') clickPostUserAgent();
+    if (userGlobalInfo.subdivision.subdivision === 'DJB' ||
+        userGlobalInfo.subdivision.subdivision === 'DSR' ||
+        userGlobalInfo.subdivision.subdivision === 'D3D' ||
+        userGlobalInfo.subdivision.subdivision === 'DBH' ||
+        userGlobalInfo.subdivision.subdivision === 'DRE' ||
+        userGlobalInfo.subdivision.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision.subdivision === 'DTR' ||
+        userGlobalInfo.subdivision.subdivision === 'SD') clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
