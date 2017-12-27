@@ -117,7 +117,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             return false;
 
         case "principal":
-            getPrincipal(request.password).then(() => setAuthenticationStorageInfo());
+            getPrincipal(request.password)
+                .then(() => setAuthenticationStorageInfo())
+                .catch(error => console.log(error + " (you not authenticated)"));
             return false;
     }
 });
@@ -201,7 +203,11 @@ function connect(password) {
             .then(() => setAuthenticationStorageInfo());
 
     } else {
-        logout().then(() => setAuthenticationStorageInfo());
+        logout().then(() => {
+            authInfo.auth = false;
+
+            setAuthenticationStorageInfo();
+        });
     }
 }
 

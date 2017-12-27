@@ -12,10 +12,6 @@ $(function() {
     chrome.storage.onChanged.addListener(changes => {
         if (changes.authInfo) pageListener(changes.authInfo.newValue);
     });
-
-    // update info about user
-    // TODO think how to change this to WebSocket
-    chrome.runtime.sendMessage({ action: 'principal' });
 });
 
 function pageListener(authInfo) {
@@ -27,6 +23,10 @@ function pageListener(authInfo) {
         userGlobalInfo = authInfo.user.principal;
         createScriptList();
         mainPage();
+
+        // update info about user
+        // TODO think how to change this to WebSocket
+        chrome.runtime.sendMessage({ action: 'principal' });
     } else if (authInfo.status >= 400) {
         switch (authInfo.status) {
             case 403:
