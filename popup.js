@@ -12,6 +12,10 @@ $(function() {
     chrome.storage.onChanged.addListener(changes => {
         if (changes.authInfo) pageListener(changes.authInfo.newValue);
     });
+
+    // update info about user
+    // TODO think how to change this to WebSocket
+    chrome.runtime.sendMessage({ action: 'principal' });
 });
 
 function pageListener(authInfo) {
