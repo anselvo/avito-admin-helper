@@ -130,6 +130,7 @@ ShopModeration.prototype.addMailForm = function () {
                     return Promise.reject(`Произошла техническая ошибка`);
                 }
 
+                $(modal).modal('hide');
                 form.reset();
                 messageInput.innerHTML = '';
                 outTextFrame('Письмо успешно отправлено');
@@ -490,13 +491,18 @@ ShopModeration.prototype.addBrief = function () {
     panelBody.className = 'ah-panel-body';
 
     leftColumn.className = 'ah-column';
-    middleColumn.className = 'ah-column';
+    middleColumn.className = 'ah-column ah-column-middle';
     rightColumn.className = 'ah-column';
 
     fieldsInfo.innerHTML = `<h4>Поля</h4><span class="text-muted">Загрузка...</span>`;
     commentsInfo.innerHTML = `<h4>Комментарии</h4><span class="text-muted">Загрузка...</span>`;
     keyWords.innerHTML = `<h4>Ключевые слова и фразы</h4><span class="text-muted">Загрузка...</span>`;
-    companyInfo.innerHTML = `<h4>Информация о компании</h4><span class="text-muted">Загрузка...</span>`;
+    companyInfo.innerHTML = `
+        <table class="ah-shop-moderation-info-table">
+        <caption>Информация о компании</caption>
+            <tr><td class="text-muted">Загрузка...</td></tr>
+        </table>
+    `;
 
     leftColumn.appendChild(fieldsInfo);
     leftColumn.appendChild(companyInfo);
@@ -526,7 +532,10 @@ ShopModeration.prototype.addBrief = function () {
                 <h4>Комментарии</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
             companyInfo.innerHTML = `
-                <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+                <table class="ah-shop-moderation-info-table">
+                <caption>Информация о компании</caption>
+                    <tr><td class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</td></tr>
+                </table>
             `;
             return Promise.reject(error);
         })
@@ -539,7 +548,10 @@ ShopModeration.prototype.addBrief = function () {
             renderPersonalManagerEdit(userInfo);
         }, error => {
             companyInfo.innerHTML = `
-                <h4>Информация о компании</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
+                <table class="ah-shop-moderation-info-table">
+                <caption>Информация о компании</caption>
+                    <tr><td class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</td></tr>
+                </table>
             `;
         });
 
@@ -646,8 +658,9 @@ ShopModeration.prototype.addBrief = function () {
     }
 
     function renderCompanyInfo(user) {
-        const result = (user.companyInfo) ? `
+        companyInfo.innerHTML = (user.companyInfo) ? `
             <table class="ah-shop-moderation-info-table">
+            <caption>Информация о компании</caption>
                 <tr>
                     <td>Название компании</td>
                     <td>${(user.companyInfo.name) ? user.companyInfo.name : `<i class="text-muted">Отсутствует</i>`}</td>
@@ -661,11 +674,10 @@ ShopModeration.prototype.addBrief = function () {
                     <td>${(user.companyInfo.legaAddress) ? user.companyInfo.legaAddress : `<i class="text-muted">Отсутствует</i>`}</td>
                 </tr>
             </table>
-        ` : `<span class="text-muted">Информация отсутствует</span>`;
-
-        companyInfo.innerHTML = `
-            <h4>Информация о компании</h4>
-            ${result}
+        ` : `<table class="ah-shop-moderation-info-table">
+            <caption>Информация о компании</caption>
+                <tr><td class="text-muted">Отсутствует</td></tr>
+            </table>
         `;
     }
 
@@ -692,101 +704,119 @@ ShopModeration.prototype.addBrief = function () {
     }
 
     function renderKeyWords(regs) {
-        const table = document.createElement('table');
-        let hasMatches = false;
+        const allSections = self.mainBlock.querySelectorAll('.shop-moderation-section');
+        const result = document.createElement('div');
+        let hasResults = false;
 
-        table.className = 'ah-shop-moderation-info-table';
         keyWords.innerHTML = `
             <h4>Ключевые слова и фразы</h4>
         `;
-        keyWords.appendChild(table);
+        keyWords.appendChild(result);
 
-        const allRows = self.mainBlock.querySelectorAll('.js-shop-moderation-row');
-
-        allRows.forEach(singleRow => {
-            const cells = singleRow.querySelectorAll('.shop-moderation-list-cell');
-            const sectionName = singleRow.closest('.shop-moderation-section').dataset.section;
-            const fieldName = cells[0].querySelector('.shop-moderation-list-cell-name').textContent.trim();
-
-            cells.forEach(cell => {
-                let value;
-                const input = cell.querySelector('.pseudo-input');
-                const matched = new Map();
-
-                if (cell.classList.contains('shop-moderation-list-cell_original')) {
-                    value = input.innerHTML.trim();
-                } else {
-                    value = input.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
-                }
-
-                regs.forEach(reg => {
-                    const regObj = new RegExp(reg.true_reg, "gi");
-                    let result;
-
-                    while (result = regObj.exec(value)) {
-                        const resultFormatted = result[0].trim();
-
-                        if (matched.has(resultFormatted)) {
-                            matched.set(resultFormatted, matched.get(resultFormatted) + 1);
-                        } else {
-                            matched.set(resultFormatted, 1);
-                        }
-                    }
-                });
-
-                if (matched.size !== 0) {
-                    hasMatches = true;
-                    const matchedArr = [];
-                    const rowExisting = table.querySelector(`.ah-shop-moderation-scrollable-row[data-section-name="${sectionName}"][data-field-name="${fieldName}"]`);
-                    const matchedClassName = (rowExisting) ? 'text-danger' : '';
-
-                    matched.forEach((val, key) => {
-                        matchedArr.push(`<span class="${matchedClassName}">${key} ${(val > 1) ? `(${val})`: ''}</span>`);
-                    });
-
-                    let sectionNameFormatted = '';
-                    switch (sectionName) {
-                        case 'shop':
-                            sectionNameFormatted = 'магазин';
-                            break;
-                        case 'delivery':
-                            sectionNameFormatted = 'доставка';
-                            break;
-                        case 'payment':
-                            sectionNameFormatted = 'оплата';
-                            break;
-                        case 'url':
-                            sectionNameFormatted = 'URL';
-                            break;
-                    }
-
-                    if (rowExisting) {
-                        const cell = rowExisting.querySelector('.ah-shop-moderation-matched-cell');
-                        cell.innerHTML += ` | ${matchedArr.join(' | ')}`;
-                    } else {
-                        const row = document.createElement('tr');
-                        row.className = 'ah-shop-moderation-scrollable-row';
-                        row.setAttribute('data-section-name', sectionName);
-                        row.setAttribute('data-field-name', fieldName);
-                        row.innerHTML = `
-                            <td>${fieldName} (${sectionNameFormatted})</td>
-                            <td class="ah-shop-moderation-matched-cell">${matchedArr.join(' | ')}</td>
-                        `;
-                        table.appendChild(row);
-                    }
-
-                    const alert = document.createElement('div');
-                    alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
-                    alert.innerHTML = `${matchedArr.join(' | ')}`;
-                    input.parentNode.appendChild(alert);
-                }
-            });
+        allSections.forEach(section => {
+            renderForSection(section, regs);
         });
 
-        if (!hasMatches) {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td class="text-muted">Ничего не найдено</td>`;
-            table.appendChild(row);
+        function renderForSection(section, regs) {
+            const allRows = section.querySelectorAll('.js-shop-moderation-row');
+            const sectionName = section.dataset.section;
+            const table = document.createElement('table');
+            let sectionNameFormatted = sectionName;
+            let hasMatches = false;
+
+            switch (sectionName) {
+                case 'shop':
+                    sectionNameFormatted = 'Магазин';
+                    break;
+                case 'delivery':
+                    sectionNameFormatted = 'Доставка';
+                    break;
+                case 'payment':
+                    sectionNameFormatted = 'Оплата';
+                    break;
+                case 'url':
+                    sectionNameFormatted = 'URL';
+                    break;
+            }
+
+            table.className = 'ah-shop-moderation-info-table';
+            table.innerHTML = `<caption>${sectionNameFormatted}</caption>`;
+
+            allRows.forEach(singleRow => {
+                const cells = singleRow.querySelectorAll('.shop-moderation-list-cell');
+                const fieldName = cells[0].querySelector('.shop-moderation-list-cell-name').textContent.trim();
+
+                cells.forEach(cell => {
+                    const input = cell.querySelector('.pseudo-input');
+                    const matched = new Map();
+                    let value;
+                    let matchedClassName;
+
+                    if (cell.classList.contains('shop-moderation-list-cell_original')) {
+                        value = input.innerHTML.trim();
+                        matchedClassName = 'text-primary';
+                    } else {
+                        value = input.innerHTML.replace(self.patterns.inputChangedValue,'').trim();
+                        matchedClassName = 'text-danger';
+                    }
+
+                    regs.forEach(reg => {
+                        const regObj = new RegExp(reg.true_reg, "gi");
+                        let result;
+
+                        while (result = regObj.exec(value)) {
+                            const resultFormatted = result[0].trim();
+
+                            if (matched.has(resultFormatted)) {
+                                matched.set(resultFormatted, matched.get(resultFormatted) + 1);
+                            } else {
+                                matched.set(resultFormatted, 1);
+                            }
+                        }
+                    });
+
+                    if (matched.size !== 0) {
+                        hasMatches = true;
+                        const matchedArr = [];
+                        const rowExisting = table.querySelector(`.ah-shop-moderation-scrollable-row[data-section-name="${sectionName}"][data-field-name="${fieldName}"]`);
+
+                        matched.forEach((val, key) => {
+                            matchedArr.push(`<span class="${matchedClassName}">${key} ${(val > 1) ? `(${val})`: ''}</span>`);
+                        });
+
+                        if (rowExisting) {
+                            const cell = rowExisting.querySelector('.ah-shop-moderation-matched-cell');
+                            cell.innerHTML += ` | ${matchedArr.join(' | ')}`;
+                        } else {
+                            const row = document.createElement('tr');
+                            row.className = 'ah-shop-moderation-scrollable-row';
+                            row.setAttribute('data-section-name', sectionName);
+                            row.setAttribute('data-field-name', fieldName);
+                            row.innerHTML = `
+                                <td>${fieldName}</td>
+                                <td class="ah-shop-moderation-matched-cell">${matchedArr.join(' | ')}</td>
+                            `;
+                            table.appendChild(row);
+                        }
+
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-warning ah-shop-moderation-matched-container';
+                        alert.innerHTML = `${matchedArr.join(' | ')}`;
+                        input.parentNode.appendChild(alert);
+                    }
+                });
+            });
+
+            if (hasMatches) {
+                hasResults = true;
+                result.appendChild(table);
+            }
+        }
+
+        if (!hasResults) {
+            const message = document.createElement('div');
+            message.innerHTML = `<span class="text-muted">Ничего не найдено</span>`;
+            result.appendChild(message);
         }
     }
 

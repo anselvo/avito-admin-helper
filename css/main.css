@@ -5841,6 +5841,10 @@ select.ah-form-control:focus {
     width: 33%;
 }
 
+.ah-shop-moderation-info-panel .ah-panel-body .ah-column-middle {
+    box-shadow: 0 0 20px 2px rgba(238, 238, 238, 0.5);
+}
+
 .ah-shop-moderation-info-panel .ah-panel-body .ah-shop-comment-field {
     resize: vertical;
 }
@@ -5865,7 +5869,13 @@ select.ah-form-control:focus {
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table caption {
+    font-size: 14px;
+    border-bottom: 1px dashed #cccccc;
+    padding: 4px 0;
 }
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table td {
@@ -5918,10 +5928,6 @@ select.ah-form-control:focus {
     font-size: 13px;
 }
 
-.ah-shop-moderation-matched-container span {
-    color: inherit;
-}
-
 .ah-shop-moderation-scrollable-row {
     cursor: pointer;
 }
@@ -5929,10 +5935,3 @@ select.ah-form-control:focus {
 .ah-shop-moderation-scrollable-row:hover {
     background-color: rgb(245, 245, 245);
 }
-
-/*.ah-shop-moderation-navigation-container {*/
-    /*position: fixed;*/
-    /*bottom: 4px;*/
-    /*right: 4px;*/
-    /*z-index: 100;*/
-/*}*/
