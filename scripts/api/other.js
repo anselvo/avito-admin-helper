@@ -901,13 +901,13 @@ function getParamsShopInfo(html) {
     // personal manager
     const personalManagerLabel = [].find.call(allLabels, label => label.textContent === 'Personal manager');
     try {
-        res.personalManager = personalManagerLabel.nextElementSibling.textContent.trim();
+        res.personalManager = personalManagerLabel.nextElementSibling.querySelector('.help-block').firstChild.textContent.trim();
     } catch (e) {
         res.personalManager = null;
     }
 
     // comments
-    res.commentsTable = searchNode.find('#dataTable')[0];
+    res.commentsTable = searchNode.find('#dataTable')[0] || null;
 
     // возвращает все .form-groups от startNode и далее, пока не встретит тег с именем breakTagName
     function getFormGroups(startNode, breakTagName) {
@@ -938,11 +938,48 @@ function getParamsUserInfo(html) {
     let activeCVPackagesTable = searchNode.find('h4:contains(Купленные и активные пакеты просмотров)').next();
     let expiredCVPackagesTable = searchNode.find('h4:contains(Истёкшие, завершённые и отменённые пакеты просмотров)')
         .next().find('.table');
+    const $companyInfoForm = searchNode.find('#company-info');
+    const $persManagerSelect = searchNode.find('.js-user-info-personal-manager-select');
 
     res.activeLFPackagesTableHtml = (activeLFPackagesTable.length) ? activeLFPackagesTable[0].outerHTML : null;
     res.expiredLFPackagesTableHtml = (expiredLFPackagesTable.length) ? expiredLFPackagesTable[0].outerHTML : null;
     res.activeCVPackagesTableHtml = (activeCVPackagesTable.length) ? activeCVPackagesTable[0].outerHTML : null;
     res.expiredCVPackagesTableHtml = (expiredCVPackagesTable.length) ? expiredCVPackagesTable[0].outerHTML : null;
+
+    res.companyInfo = ($companyInfoForm.length) ? {} : null;
+    if (res.companyInfo) {
+        const $labels = $companyInfoForm.find('.control-label');
+        const $nameLabel = $labels.filter(function(){
+            return this.textContent === 'Название компании';
+        });
+        const $innLabel = $labels.filter(function(){
+            return this.textContent === 'ИНН';
+        });
+        const $legalAddressLabel = $labels.filter(function(){
+            return this.textContent === 'Юридический адрес';
+        });
+
+        res.companyInfo.name = $nameLabel.next().find('[name="companyName"]').val() || null;
+        res.companyInfo.inn = $innLabel.next().find('[name="inn"]').val() || null;
+        res.companyInfo.legaAddress = $legalAddressLabel.next().find('[name="legalAddress"]').val() || null;
+    }
+
+    res.personalManager = ($persManagerSelect.length) ? {} : null;
+    if (res.personalManager) {
+        const $selected = $persManagerSelect.find('option:selected');
+        res.personalManager.selected = {
+            value: $selected.val(),
+            name: $selected.text().trim()
+        };
+        res.personalManager.options = [];
+
+        $persManagerSelect.find('option').each(function() {
+            res.personalManager.options.push({
+                value: this.value,
+                name: this.textContent
+            })
+        });
+    }
 
     return res;
 }

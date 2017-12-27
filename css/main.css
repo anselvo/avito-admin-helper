@@ -5748,34 +5748,81 @@ select.ah-form-control:focus {
 
 /*shop moderation*/
 .ah-shop-moderation-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.ah-shop-moderation-section .panel-heading {
+    padding: 10px;
 }
 
 .ah-shop-moderation-section .panel-heading h4 {
     margin: 0;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-form-panel {
-    width: 59%;
+.ah-shop-moderation-mail-controls {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu {
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu > li > a {
+    cursor: pointer;
+    margin-left: 40px;
+    padding-left: 5px;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu > li {
     position: relative;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-form-panel .ah-overlay-text {
-    font-size: 18px;
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-list-row:hover {
+    background-color: #eeeeee;
 }
 
-.ah-shop-moderation-section .ah-shop-moderation-info-panel {
-    width: 39%;
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-controls {
+    padding: 6px 10px 1px;
+    text-align: center;
+    border-top: 1px solid #eeeeee;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label {
+    position: absolute;
+    width: 40px;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid transparent;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-list-row:hover .ah-template-label {
+    border-right-color: #cccccc;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label:hover {
+    background-color: #f5f5f5;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label input[type=checkbox] {
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-form-content .ah-overlay-text {
+    font-size: 18px;
 }
 
 .ah-shop-moderation-mail-form label {
     font-weight: normal;
-}
-
-.ah-shop-moderation-mail-form .ah-template-dropdown {
-    display: inline-block;
 }
 
 .ah-shop-moderation-mail-form .ah-message-text-input {
@@ -5784,17 +5831,51 @@ select.ah-form-control:focus {
     height: auto;
 }
 
-.ah-shop-moderation-mail-form  .ah-template-dropdown ul > li > a {
-    cursor: pointer;
+.ah-shop-moderation-info-panel .ah-panel-body {
+    display: flex;
+    justify-content: space-between;
 }
 
-.ah-shop-moderation-info-panel .panel-body {
-    padding-top: 0;
+.ah-shop-moderation-info-panel .ah-panel-body .ah-column {
+    padding: 0 10px;
+    width: 33%;
+}
+
+.ah-shop-moderation-info-panel .ah-panel-body .ah-column-middle {
+    box-shadow: 0 0 20px 2px rgba(238, 238, 238, 0.5);
+}
+
+.ah-shop-moderation-info-panel .ah-panel-body .ah-shop-comment-field {
+    resize: vertical;
+}
+
+.ah-shop-moderation-info-panel .ah-panel-body .table-scroll {
+    max-height: 200px;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn {
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.25s, color 0.15s;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover {
+    opacity: 1;
+}
+
+.ah-shop-moderation-info-panel .ah-copy-btn:hover:active {
+    color: #844613;
 }
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.ah-shop-moderation-info-panel .ah-shop-moderation-info-table caption {
+    font-size: 14px;
+    border-bottom: 1px dashed #cccccc;
+    padding: 4px 0;
 }
 
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table td {
@@ -5804,6 +5885,10 @@ select.ah-form-control:focus {
 .ah-shop-moderation-info-panel .ah-shop-moderation-info-table td:first-child {
     width: 30%;
     color: rgb(149, 149, 149);
+}
+
+.ah-shop-moderation-info-table .ah-personal-manager-cell .input-group {
+    margin-left: -1px;
 }
 
 .ah-shop-moderation-label-text {

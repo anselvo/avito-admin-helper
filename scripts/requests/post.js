@@ -65,3 +65,21 @@ function getAdmWithSuperAcc(url) {
         );
     });
 }
+
+function editPersonalManager(userId, managerId) {
+    const headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    });
+    return fetch(`/users/user/edit/manager/${userId}`, {
+        method: 'post',
+        credentials: 'include',
+        headers: headers,
+        body: `managerId=${managerId}`,
+        redirect: 'error'
+    }).then(response =>  {
+        if (!response.ok) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
