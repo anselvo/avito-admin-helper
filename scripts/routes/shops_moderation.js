@@ -77,9 +77,23 @@ ShopModeration.prototype.addMailForm = function () {
             const menu = fixedContainer.querySelector('.ah-template-dropdown .dropdown-menu');
             menu.innerHTML = `
                 ${templates.map(
-                    item => `<li><a class="ah-template-item" data-id="${item.id}">${item.name}</a></li>`).join('')
+                    item => `
+                        <li class="ah-template-list-row">
+                            <label class="ah-template-label"><input type="checkbox" data-id="${item.id}"></label>
+                            <a class="ah-template-item" data-id="${item.id}">${item.name}</a>
+                        </li>
+                    `)
+                    .join('')
                 }
             `;
+
+            const controls = document.createElement('li');
+            controls.className = 'ah-template-controls';
+            controls.innerHTML = `
+                <button class="btn btn-primary ah-template-accept-btn">Применить</button>
+            `;
+            menu.appendChild(controls);
+
         }, () => {
                 const dropdown = fixedContainer.querySelector('.ah-template-dropdown');
                 dropdown.innerHTML = `<span class="text-danger">Произошла техническая ошибка</span>`;
@@ -146,57 +160,95 @@ ShopModeration.prototype.addMailForm = function () {
             const id = target.dataset.id;
             const template = templates.find(item => item.id === id);
             if (template) {
-                const checkboxes = self.mainBlock.querySelectorAll('.ah-shop-moderation-coordination-checkbox');
-                const checkboxesText = [].filter.call(checkboxes, item => item.dataset.type === 'text' && item.checked);
-                const checkboxesImg = [].filter.call(checkboxes, item => item.dataset.type === 'image' && item.checked);
-
                 messageInput.innerHTML += template.body;
+                handelTemplateInsert();
+                outTextFrame('Шаблон применен');
+            }
+        }
 
-                checkboxesText.forEach(item => {
-                    const value = item.dataset.fieldValue.trim().replace(/\n/g, '<br>');
-                    messageInput.innerHTML += `<br><div><b>${item.dataset.sectionName}: ${item.dataset.fieldName}</b><br>${value}</div>`;
-                });
+        if (target.closest('.ah-template-label') || target.closest('.ah-template-controls')) {
+            e.stopPropagation();
+        }
 
-                checkboxesImg.forEach(item => {
-                    const imgWrapper = document.createElement('table');
-                    const cellStyle = `
+        if (target.closest('.ah-template-accept-btn')) {
+            const dropdown = target.closest('.ah-template-dropdown');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            const templateCheckboxes = menu.querySelectorAll('.ah-template-label input[type="checkbox"]');
+            const templateCheckboxesChecked = [].filter.call(templateCheckboxes, item => item.checked);
+
+            if (templateCheckboxesChecked.length === 0) {
+                alert('Ни одного шаблона не выбрано');
+                return;
+            }
+
+            templateCheckboxesChecked.forEach(item => {
+                const id = item.dataset.id;
+                const template = templates.find(item => item.id === id);
+                if (template) {
+                    messageInput.innerHTML += template.body;
+                }
+                item.checked = false;
+            });
+
+            handelTemplateInsert();
+            dropdown.classList.remove('open');
+            outTextFrame('Шаблоны применены');
+        }
+    });
+
+    function handelTemplateInsert() {
+        const checkboxes = self.mainBlock.querySelectorAll('.ah-shop-moderation-coordination-checkbox');
+        const checkboxesText = [].filter.call(checkboxes, item => item.dataset.type === 'text' && item.checked);
+        const checkboxesImg = [].filter.call(checkboxes, item => item.dataset.type === 'image' && item.checked);
+
+        checkboxesText.forEach(item => {
+            const value = item.dataset.fieldValue.trim().replace(/\n/g, '<br>');
+            messageInput.innerHTML += `<div><b>${item.dataset.sectionName}: ${item.dataset.fieldName}</b><br>${value}</div><br>`;
+
+            item.checked = false;
+            item.dispatchEvent(new Event('change', {bubbles: true}));
+        });
+
+        checkboxesImg.forEach(item => {
+            const imgWrapper = document.createElement('table');
+            const cellStyle = `
                         font-size:0; 
                         line-height:0; 
                         background-color: #ffffff; 
                         border: 1px solid silver;
                     `;
-                    const href = item.dataset.href;
-                    const sizePatterns = {
-                        logo_photo: /(640x480)|(175x105)/,
-                        bg: /1350x3880/,
-                        plank: /984x120/
-                    };
-                    const thumbnail = {
-                        href: href,
-                        style: 'max-width: 100px;'
-                    };
+            const href = item.dataset.href;
+            const sizePatterns = {
+                logo_photo: /(640x480)|(175x105)/,
+                bg: /1350x3880/,
+                plank: /984x120/
+            };
+            const thumbnail = {
+                href: href,
+                style: 'max-width: 100px;'
+            };
 
-                    if (sizePatterns.logo_photo.test(href)) {
-                        thumbnail.href = href.replace(sizePatterns.logo_photo, '100x75');
-                    }
-                    if (sizePatterns.bg.test(href)) {
-                        thumbnail.href = href.replace(sizePatterns.bg, '140x105');
-                        thumbnail.style = 'max-width: 140px;';
-                    }
+            if (sizePatterns.logo_photo.test(href)) {
+                thumbnail.href = href.replace(sizePatterns.logo_photo, '100x75');
+            }
+            if (sizePatterns.bg.test(href)) {
+                thumbnail.href = href.replace(sizePatterns.bg, '140x105');
+                thumbnail.style = 'max-width: 140px;';
+            }
 
-                    if (sizePatterns.plank.test(href)) {
-                        thumbnail.style = 'width: 100px;';
-                    }
+            if (sizePatterns.plank.test(href)) {
+                thumbnail.style = 'width: 100px;';
+            }
 
-                    imgWrapper.cellSpacing = 0;
-                    imgWrapper.cellPadding = 0;
-                    imgWrapper.width = '100%';
-                    imgWrapper.border = 0;
-                    imgWrapper.style.cssText = `
+            imgWrapper.cellSpacing = 0;
+            imgWrapper.cellPadding = 0;
+            imgWrapper.width = '100%';
+            imgWrapper.border = 0;
+            imgWrapper.style.cssText = `
                         border-collapse: collapse; 
                         text-align: left;
                     `;
-                    imgWrapper.innerHTML = `
+            imgWrapper.innerHTML = `
                         <tr>
                             <td valign="middle" align="center" width="100" height="75" style="${cellStyle}">
                                 <a href="https:${href}" target="_blank" 
@@ -208,12 +260,13 @@ ShopModeration.prototype.addMailForm = function () {
                         </tr>
                     `;
 
-                    imgWrapper.setAttribute('contenteditable', 'false');
-                    messageInput.innerHTML += `<br><div><b>${item.dataset.fieldName}</b><br>${imgWrapper.outerHTML}</div><br>`;
-                });
-            }
-        }
-    });
+            imgWrapper.setAttribute('contenteditable', 'false');
+            messageInput.innerHTML += `<div><b>${item.dataset.fieldName}</b><br>${imgWrapper.outerHTML}</div><br><br>`;
+
+            item.checked = false;
+            item.dispatchEvent(new Event('change', {bubbles: true}));
+        });
+    }
 
     document.addEventListener('keydown', function (e) {
         if (e.altKey && e.keyCode === 'E'.charCodeAt(0)) {

@@ -5773,7 +5773,47 @@ select.ah-form-control:focus {
     overflow: auto;
 }
 
-.ah-shop-moderation-mail-controls  .ah-template-dropdown ul > li > a {
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu > li > a {
+    cursor: pointer;
+    margin-left: 40px;
+    padding-left: 5px;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .dropdown-menu > li {
+    position: relative;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-list-row:hover {
+    background-color: #eeeeee;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-controls {
+    padding: 6px 10px 1px;
+    text-align: center;
+    border-top: 1px solid #eeeeee;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label {
+    position: absolute;
+    width: 40px;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid transparent;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-list-row:hover .ah-template-label {
+    border-right-color: #cccccc;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label:hover {
+    background-color: #f5f5f5;
+}
+
+.ah-shop-moderation-mail-controls  .ah-template-dropdown .ah-template-label input[type=checkbox] {
+    margin-top: 6px;
     cursor: pointer;
 }
 
