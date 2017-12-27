@@ -1,6 +1,5 @@
 let script, USER;
-let auth_adm = false;
-let auth_adm_username = false;
+let authInfo = { auth: false, auth_adm: false, auth_username: null, user: null };
 let stompClient = null;
 
 chrome.storage.local.get(function (result) {
@@ -18,7 +17,11 @@ chrome.runtime.onUpdateAvailable.addListener(function() {
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
 chrome.runtime.onInstalled.addListener(function(details) {
 	// нотификация об апдейте расширения
-    addNotificationAboutExtension(details.reason);
+    const version = chrome.runtime.getManifest().version;
+
+    if (details.reason === 'update') addChromeNotification("Updated (new version "+ version + ")\n\n" +
+        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works");
+    if (details.reason === 'install') addChromeNotification("Installed (current version " + version + ")");
 
 	// определяем кто залогинен в админку
 	cookieInfo();
@@ -114,18 +117,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     }
 
     if (request.action === 'authentication') {
-        checkAuthentication().catch(() => authentication(USER.username));
+        connect(request.password);
     }
 });
 
-function addNotificationAboutExtension(reason) {
-    const version = chrome.runtime.getManifest().version;
-
-    let message;
-    if (reason === 'update') message = "Updated (new version "+ version + ")\n\n" +
-        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works";
-    if (reason === 'install') message = "Installed (current version " + version + ")";
-
+function addChromeNotification(message) {
     const options = {
         type: "basic",
         title: "Admin.Helper",
@@ -139,34 +135,60 @@ function cookieInfo() {
 	chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
-			authentication(cookie.value);
+
+            authInfo.auth_adm = true;
+            authInfo.auth_username = cookie.value;
+
+            connect();
 		} else {
 			console.log('You not login in adm.avito.ru');
 
+            authInfo.auth_adm = false;
+            authInfo.auth_username = null;
+
             localStorage.scriptStatus = 'off';
             chrome.storage.local.set({'script': 'none'});
-            chrome.storage.local.set({'user': 'none'});
+
+            connect();
 		}
 	});
 
 	chrome.cookies.onChanged.addListener(function (changeInfo){
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
-			console.log('You login to adm.avito.ru as '+changeInfo.cookie.value);
-			authentication(changeInfo.cookie.value);
+			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
+
+            authInfo.auth_adm = true;
+            authInfo.auth_username = changeInfo.cookie.value;
+
+            connect();
 		}
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
-            console.log('You logout from adm.avito.ru as '+changeInfo.cookie.value);
+            console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
+
+            authInfo.auth_adm = false;
+            authInfo.auth_username = null;
 
             localStorage.scriptStatus = 'off';
             chrome.storage.local.set({'script': 'none'});
-            chrome.storage.local.set({'user': 'none'});
+
+            connect();
         }
 	});
 }
 
-function authentication(username, password) {
+function connect(password) {
     password = password ? password : null;
 
+    if (authInfo.auth_adm) {
+        authentication(authInfo.auth_username, password)
+            .then(() => setAuthenticationStorageInfo())
+            .catch(error => console.log(error));
+    } else {
+        setAuthenticationStorageInfo()
+    }
+}
+
+function authentication(username, password) {
     let formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -178,54 +200,38 @@ function authentication(username, password) {
         body: formData
     };
 
-    fetch(`http://spring.avitoadm.ru/login`, headers)
+    return fetch(`http://spring.avitoadm.ru/login`, headers)
         .then(response => {
-            if (response.status === 200) checkAuthentication();
-            else return response.json();
+            if (response.status === 200) return Promise.resolve();
+            else return response.json().then(Promise.reject.bind(Promise));
         })
-        .then(error => {
-            if (error) {
+        .then(
+            () => getPrincipal(),
+            error => {
+                authInfo.auth = false;
                 if (error.message === 'Authentication with ajax is failure') {
-                    setAuthenticationStorageInfo("auth", false);
-
-                    chrome.notifications.create({
-                        type: "basic",
-                        title: "Admin.Helper",
-                        message: "У вас установлен персональный пароль\n\nДля доступа к функционалу расширения, укажите пароль в Popup меню",
-                        iconUrl: "image/notificationLogo.png",
-                    });
+                    addChromeNotification("Вас нету в списке пользователей или у вас установлен персональный пароль\n\n" +
+                        "Персональный пароль вы можете указать в Popup меню");
                 } else {
                     console.log(error);
                 }
-            }
-        });
+            });
 }
 
-function checkAuthentication() {
+function getPrincipal() {
     return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
         .then(response => response.json())
         .then(json => {
-            setAuthenticationStorageInfo(auth_adm, auth_adm_username, true, json);
+            authInfo.user = json;
+            authInfo.auth = true;
+
             startWebSocket();
         });
 }
 
-function setAuthenticationStorageInfo(auth_adm, auth_adm_username, auth, principal) {
-    auth = auth ? auth : null;
-    auth_adm_username = auth_adm_username ? auth_adm_username : null;
-    auth_adm = auth_adm ? auth_adm : null;
-    principal = principal ? principal : null;
-
-    const authInfo = {
-        authInfo: {
-            auth: auth,
-            auth_adm: auth_adm,
-            auth_adm_username: auth_adm_username,
-            principal: principal
-        }
-    };
-
-    chrome.storage.local.set(authInfo);
+function setAuthenticationStorageInfo() {
+    console.log({ authInfo: authInfo });
+    chrome.storage.local.set({ authInfo: authInfo });
 }
 
 function startWebSocket() {
