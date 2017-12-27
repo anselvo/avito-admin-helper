@@ -99,7 +99,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         case "copyToClipboard":
             const textarea = document.createElement('textarea');
             textarea.style.position = 'fixed';
-            textarea.style.opacity = 0;
             textarea.value = request.text;
             document.body.appendChild(textarea);
             textarea.select();
@@ -358,7 +357,7 @@ function moderationListener(details) {
 				}
 			}
 			
-			sendLogToDB('allow all', reason, count, user, items_id);
+			sendLogToDB('allow all', reason, count, items_id);
 			chrome.storage.local.set({'blockedItemsID': []});
 		});
 	}
