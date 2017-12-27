@@ -1,5 +1,5 @@
 let script, USER;
-let authInfo = { auth: false, auth_adm: false, auth_username: null, user: null };
+let authInfo = { auth: false, auth_adm: false, auth_username: null, auth_status: null, user: null };
 let stompClient = null;
 
 chrome.storage.local.get(function (result) {
@@ -145,9 +145,8 @@ function cookieInfo() {
 
             authInfo.auth_adm = false;
             authInfo.auth_username = null;
-
-            localStorage.scriptStatus = 'off';
-            chrome.storage.local.set({'script': 'none'});
+            authInfo.auth_status = null;
+            authInfo.user = null;
 
             connect();
 		}
@@ -167,9 +166,8 @@ function cookieInfo() {
 
             authInfo.auth_adm = false;
             authInfo.auth_username = null;
-
-            localStorage.scriptStatus = 'off';
-            chrome.storage.local.set({'script': 'none'});
+            authInfo.auth_status = null;
+            authInfo.user = null;
 
             connect();
         }
@@ -181,10 +179,28 @@ function connect(password) {
 
     if (authInfo.auth_adm) {
         authentication(authInfo.auth_username, password)
-            .then(() => setAuthenticationStorageInfo())
-            .catch(error => console.log(error));
+            .then(() => {
+                    authInfo.auth = true;
+                    startWebSocket();
+                    return getPrincipal();
+                },
+                error => {
+                    authInfo.auth = false;
+
+                    localStorage.scriptStatus = 'off';
+                    chrome.storage.local.set({'script': 'none'});
+
+                    if (error.message === 'Authentication with ajax is failure') {
+                        addChromeNotification("Вас нету в списке пользователей или у вас установлен персональный пароль\n\n" +
+                            "Персональный пароль вы можете указать в Popup меню");
+                    } else {
+                        console.log(error);
+                    }
+                })
+            .then(() => setAuthenticationStorageInfo());
+
     } else {
-        setAuthenticationStorageInfo()
+        logout().then(() => setAuthenticationStorageInfo());
     }
 }
 
@@ -202,30 +218,23 @@ function authentication(username, password) {
 
     return fetch(`http://spring.avitoadm.ru/login`, headers)
         .then(response => {
-            if (response.status === 200) return Promise.resolve();
-            else return response.json().then(Promise.reject.bind(Promise));
-        })
-        .then(
-            () => {
-                authInfo.auth = true;
-                getPrincipal();
-                startWebSocket();
-            },
-            error => {
-                authInfo.auth = false;
-                if (error.message === 'Authentication with ajax is failure') {
-                    addChromeNotification("Вас нету в списке пользователей или у вас установлен персональный пароль\n\n" +
-                        "Персональный пароль вы можете указать в Popup меню");
-                } else {
-                    console.log(error);
-                }
-            });
+            authInfo.auth_status = response.status;
+
+            if (response.status !== 200) {
+                return response.json().then(Promise.reject.bind(Promise));
+            }
+            return Promise.resolve();
+        });
 }
 
 function getPrincipal() {
-    return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
+    return fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => response.json())
         .then(json => authInfo.user = json);
+}
+
+function logout() {
+    return fetch(`http://spring.avitoadm.ru/logout`, { credentials: 'include' });
 }
 
 function setAuthenticationStorageInfo() {

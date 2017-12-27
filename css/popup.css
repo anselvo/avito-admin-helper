@@ -189,12 +189,11 @@ body {
 
 #username, #password, [name="notification"], .dropdown dt a, .dropdown dd ul {
 	font-size: 15px;
-	background: #f1f1f1;
+	background: rgba(241, 241, 241, 0.7);
     padding: 7px;
     width: 160px;
-    border: 1px solid #ccc;
+    border: 1px solid #aaaaaa;
     border-radius: 5px;
-    box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
 }
 
 #username, #password {
@@ -203,23 +202,13 @@ body {
 }
 
 #username:focus, #password:focus, [name="notification"]:focus, .dropdown dt a:focus, .dropdown dd ul:focus {
-    background-color: #fff;
-    border-color: #90CAF9;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color: #3c5d8c;
     outline: none;
-    box-shadow: 0 0 0 1px #90CAF9 inset;
-}
-
-#username, [name="notification"] {
-    background-position: 5px -2px !important;
-	margin: 0 0 10px 0;
-}
-
-#password {
-    background-position: 5px -52px !important;
 }
 
 #error {
-	color:red;
+	color: #000000;
     background: rgba(255, 255, 255, 0.4);
     font-size:16px;
 	text-align:center;
@@ -228,75 +217,28 @@ body {
 	text-shadow: none;
 }
 
-/* .btn {	
-	font-family: arial, sans-serif;
-    font-size: 11px;
-	font-weight:bold;
-	outline: none;	
-	padding: 5px 15px;
-	border: 1px solid rgba(0,0,0,.1);
-	border-radius:3px;
-	transition: all .218s ease 0s;
-	background: rgb(245,245,245) linear-gradient(#BBDEFB, #90CAF9);
-	cursor: pointer;
-}
-
-.btn:hover,.btn:focus {		
-    background: rgb(245,245,245) linear-gradient(#90CAF9, #BBDEFB);
-}	
-
-.btn:active {		
-	background: #E3F2FD !important;
-	box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;	
-} */
 
 .btn {
-  display: inline-block;
-  font-family: arial,sans-serif;
-  font-size: 13px;
-  color: rgb(205,216,228);
-  text-shadow: 0 -1px rgb(46,53,58);
-  text-decoration: none;
-  user-select: none;
-  line-height: 2em;
-  padding: 1px 1.2em;
-  outline: none;
-  border: 1px solid rgba(33,43,52,1);
-  border-radius: 3px;
-  background: rgb(81,92,102) linear-gradient(rgb(81,92,102), rgb(69,78,87));
-  box-shadow:
-   inset 0 1px rgba(101,114,126,1),
-   inset 0 0 1px rgba(140,150,170,.8),
-   0 1px rgb(83,94,104),
-   0 0 1px rgb(86,96,106);
-   cursor: pointer;
-}
-/* .btn:active {
-  box-shadow:
-   inset 0 1px 3px rgba(0,10,20,.5),
-   0 1px rgb(83,94,104),
-   0 0 1px rgb(86,96,106);
-} */
-.btn:hover {
-  border: 1px solid rgb(22,32,43);
-  border-bottom: 1px solid rgb(25,34,45);
-  background: rgb(53,61,71);
-  box-shadow:
-   inset 0 1px 3px rgba(0,10,20,.5),
-   0 1px rgb(83,94,104),
-   0 0 1px rgb(86,96,106);
+    display: inline-block;
+    font-family: arial,sans-serif;
+    font-size: 13px;
+    color: rgb(232, 243, 255);
+    text-shadow: 0 -1px rgb(46,53,58);
+    text-decoration: none;
+    user-select: none;
+    line-height: 2em;
+    padding: 1px 1.2em;
+    outline: none;
+    border: 1px solid rgba(33,43,52,1);
+    border-radius: 3px;
+    background: rgba(53, 61, 71, 0.6);
+	cursor: pointer;
+    box-shadow: inset 0 1px rgba(101,114,126,1), inset 0 0 1px rgba(140,150,170,.8), 0 1px rgb(83,94,104), 0 0 1px rgb(86,96,106);
 }
 
-/* .btn:focus:not(:active) {
-  border: 1px solid rgb(22,32,43);
-  border-bottom: 1px solid rgb(25,34,45);
-  background: rgb(53,61,71);
-  box-shadow:
-   inset 0 1px 3px rgba(0,10,20,.5),
-   0 1px rgb(83,94,104),
-   0 0 1px rgb(86,96,106);
-  pointer-events: none;
-} */
+.btn:hover {
+    box-shadow: inset 0 1px 3px rgba(0,10,20,.5), 0 1px rgb(83,94,104), 0 0 1px rgb(86,96,106);
+}
 
 .click {
 	cursor: pointer;

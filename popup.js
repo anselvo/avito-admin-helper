@@ -1,111 +1,61 @@
 let version = chrome.runtime.getManifest().version;
 let scriptList = [];
 let userGlobalInfo;
-let page = 'error';
 
 $(function() {
-    cookieInfo();
     loadingBar();
 
+    chrome.storage.local.get("authInfo", result  => {
+        pageListener(result.authInfo);
+    });
 
-    chrome.storage.local.get(result => {
-        console.log(result);
+    chrome.storage.onChanged.addListener(changes => {
+        if (changes.authInfo) pageListener(changes.authInfo.newValue);
     });
 });
 
-function cookieInfo() {
-    chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
-        if (cookie) {
-            console.log('You login to adm.avito.ru as ' + cookie.value);
+function pageListener(authInfo) {
+    console.log(authInfo);
 
-            userInfo(cookie.value);
-        } else {
-            console.log('You not login in adm.avito.ru');
+    if (!authInfo.auth_adm) errorPage('logout');
+    else if (!authInfo.auth) authorizationPage();
+    else if (authInfo.auth) {
+        userGlobalInfo = authInfo.user.principal;
+        createScriptList();
+        mainPage();
+    } else if (authInfo.auth_status >= 400) {
+        switch (authInfo.auth_status) {
+            case 403:
+                errorPage('403');
+                break;
 
-            userInfo('');
+            case 500:
+                errorPage('500');
+                break;
+
+            default:
+                errorPage('>=400', authInfo.status);
         }
-    });
-}
-
-
-function userInfo(username) {
-    let table = {
-        username: username
-    };
-
-    let jsonTable = JSON.stringify(table);
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://avitoadm.ru/journal/include/php/loginCheckExt.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send("param="+jsonTable);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-			if (xhr.status === 200) {
-                let json = JSON.parse(xhr.responseText);
-
-                console.log(json);
-
-                if (json.adm_login === false && json.login === false) {
-                    errorPage('logout');
-                    chrome.storage.local.set({'user': 'none'});
-                } else {
-                    if (json.login === true) {
-                        page = 'login';
-                    } else {
-                        page = 'main';
-                    }
-
-                    if (json.user === false) {
-                        chrome.storage.local.set({'user': 'user does not exist'});
-
-                        errorPage('user does not exist');
-                    } else {
-                        userGlobalInfo = json.user;
-
-                        chrome.storage.local.set({'user': json.user});
-
-                        createScriptList();
-                        choosePage();
-                    }
-                }
-			}
-			
-			if (xhr.status >= 400) {
-				switch (xhr.status) {
-					case 403: 
-						errorPage('403');
-						break;
-					
-					case 500: 
-						errorPage('500');
-						break;
-					
-					default: 
-						errorPage('>=400', xhr.status);
-				}
-			}
-		}
-    };
+    }
 }
 
 function createScriptList() {
-	if (userGlobalInfo.division_name === 'Moderator') {
+	if (userGlobalInfo.subdivision.divisionName === 'Moderator') {
 		
 		scriptList = ['moderator'];
-	} else if (userGlobalInfo.division_name === 'Support') {
+	} else if (userGlobalInfo.subdivision.divisionName === 'Support') {
 		
 		scriptList = ['support', 'moderator'];
-	} else if (userGlobalInfo.division_name === 'Intern') {
+	} else if (userGlobalInfo.subdivision.divisionName === 'Intern') {
 		
 		scriptList = ['support', 'moderator', 'intern'];
-	} else if (userGlobalInfo.division_name === 'Traffic') {
+	} else if (userGlobalInfo.subdivision.divisionName === 'Traffic') {
 		
 		scriptList = ['traffic'];
-	} else if (userGlobalInfo.division_name === 'SMM') {
+	} else if (userGlobalInfo.subdivision.divisionName === 'SMM') {
 
         scriptList = ['smm'];
-    } else if (userGlobalInfo.division_name === 'InfoDoc') {
+    } else if (userGlobalInfo.subdivision.divisionName === 'InfoDoc') {
 
         scriptList = ['infoDoc'];
     } else {
@@ -120,12 +70,6 @@ function createScriptList() {
     }
 }
 
-
-function choosePage() {
-    if (page === 'main') mainPage();
-    if (page === 'login') loginPage();
-}
-
 // ОСНОВНАЯ СТРАНИЦА
 
 function mainPage() {
@@ -133,7 +77,7 @@ function mainPage() {
 		'Admin.Helper',
 		mainButtonGenerator(),
 		'',
-		'Удачного рабочего дня, '+userGlobalInfo.name+'!'
+		'Удачного рабочего дня, ' + userGlobalInfo.name + '!'
 	);
 }
 
@@ -161,7 +105,6 @@ function mainButtonGenerator() {
 // СТРАНИЦА ОШИБОК
 
 function errorPage(error, xhrStatus) {
-    //page = 'error';
     localStorage.scriptStatus = 'off';
     chrome.storage.local.set({'script': 'none'});
 
@@ -210,21 +153,6 @@ function errorPage(error, xhrStatus) {
             ''
         );
     }
-
-    logoChange();
-}
-
-function logoChange() {
-	let countClick = 0;
-	
-	$('#avitoLogo').click(() => {
-		countClick++;
-		if (countClick === 6) {
-			countClick = 0;
-			
-			authorizationPage();
-		}
-	});
 }
 
 // СТРАНИЦА АВТОРИЗАЦИИ
@@ -233,58 +161,21 @@ function authorizationPage() {
 	pageGenerator(
 		'Авторизация',
 		'',
-		'<input id="username" type="text" name="user" placeholder="username" autofocus required><input id="password" type="password" name="pass" placeholder="password" required><div id="error"></div>',
-		'<input class="btn" type="submit" id="submit" value="Sign in">'
+		'<input id="password" type="password" name="pass" placeholder="password" required>' +
+        '<div id="error">Вас нету в списке пользователей Admin.Helper или у вас установлен персональный пароль</div>',
+		'<input class="btn" type="submit" id="submit" value="SIGN IN">'
 	);
 			
 	$('#submit').click(() => {
-		const username = $('#username').val();
-        const password = $('#password').val();
-		
-		login(username, password);
+	    const password = $('#password').val();
+
+        loadingBar();
+        chrome.runtime.sendMessage({ action: 'authentication', password: password });
 	});
-}
-
-function login(username, password) {
-    loadingBar();
-
-	let xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/login.php', true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.send("user="+username+"&pass="+password);
-	xhr.onreadystatechange = function () {
-	    if (xhr.readyState === 4) {
-            if(xhr.status === 200) {
-                if (xhr.responseText === 'username or password correct') {
-                    cookieInfo();
-                } else {
-                    authorizationPage();
-                    $('#error').text(xhr.responseText);
-                    console.log(xhr.responseText);
-                }
-            }
-
-            if (xhr.status >= 400) {
-                switch (xhr.status) {
-                    case 403:
-                        errorPage('403');
-                        break;
-
-                    case 500:
-                        errorPage('500');
-                        break;
-
-                    default:
-                        errorPage('>=400', xhr.status);
-                }
-            }
-        }
-    };
 }
 
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
-
 function chooseScriptPage() {
     $('#choose-scripts').click(() => {
         pageGenerator(
@@ -322,13 +213,12 @@ function chooseScript() {
         localStorage.scriptStatus = 'on';
         chrome.storage.local.set({'script': clickScript});
 
-        choosePage('main');
+        mainPage();
     });
 }
 
 // СТРАНИЦА ПРИ ЛОГИНЕ
-
-function loginPage() {
+function authPage() {
 	pageGenerator(
         userGlobalInfo.username,
         mainButtonGenerator(),
@@ -341,154 +231,12 @@ function loginPage() {
 			'<li><a href="http://avitoadm.ru/intern_helper/internlog/">Intern log</a></li>'+
 			'<li><span id="sendNotification" class="click">Отправить уведомление</span></li>'+
 		'</ul>',
-		'<input class="btn" type="submit" id="logout" value="Sign out">'
 	);
-	
-	$('#logout').click(() => {
-		logout();
-	});
-	
-	$('#sendNotification').click(() => {
-        sendNotificationPage(userGlobalInfo);
-    });
-	
-	$('.journal').on('click', 'a', function(){
-		chrome.tabs.create({url: $(this).attr('href')});
+
+	$('.journal').on('click', 'a', function() {
+		chrome.tabs.create({ url: $(this).attr('href') });
 		return false;
 	});
-}
-
-function sendNotificationPage(user) {
-    pageGenerator(
-        user.username,
-        mainButtonGenerator(),
-        '<dl id="to_type" class="dropdown">'+
-			'<dt>'+
-				'<a href="#">'+
-					'<div class="hida">Select type</div>'+
-					'<div class="multiSel"></div>'+
-				'</a>'+
-			'</dt>'+
-			'<dd>'+
-				'<div class="mutliSelect">'+
-					'<ul>'+
-						'<li><label><input type="checkbox" value="Subdivision" />Subdivision</label></li>'+
-						'<li><label><input type="checkbox" value="Username" />Username</label></li>'+
-					'</ul>'+
-				'</div>'+
-			'</dd>'+
-        '</dl>'+
-		'<dl id="to_category" class="dropdown" style="display: none;">'+
-			'<dt>'+
-				'<a href="#">'+
-					'<div class="hida">Select Subdivision</div>'+
-					'<div class="multiSel"></div>'+
-				'</a>'+
-			'</dt>'+
-			'<dd>'+
-				'<div class="mutliSelect">'+
-					'<ul>'+
-						'<li><label><input type="checkbox" value="SD" />SD (Script Developer)</label></li>'+
-						'<li><label><input type="checkbox" value="TL" />TL (Teamlead)</label></li>'+
-						'<li><label><input type="checkbox" value="KK" />KK (Контроль Кач)</label></li>'+
-						'<li><label><input type="checkbox" value="SP" />SP (ProSupport)</label></li>'+
-        				'<li><label><input type="checkbox" value="S2" />SA (Жалобы)</label></li>'+
-						'<li><label><input type="checkbox" value="S1" />S1 (Первая линия)</label></li>'+
-						'<li><label><input type="checkbox" value="S2" />S2 (Вторая линия)</label></li>'+
-       					'<li><label><input type="checkbox" value="TR" />TR (Транспорт)</label></li>'+
-						'<li><label><input type="checkbox" value="RE" />RE (Недвижимость)</label></li>'+
-						'<li><label><input type="checkbox" value="JB" />JB (Работа)</label></li>'+
-						'<li><label><input type="checkbox" value="SR" />SR (Услуги)</label></li>'+
-        				'<li><label><input type="checkbox" value="LV" />LV (Личные вещи)</label></li>'+
-						'<li><label><input type="checkbox" value="BH" />BH (БЭХО)</label></li>'+
-						'<li><label><input type="checkbox" value="3D" />3D (ДДД)</label></li>'+
-						'<li><label><input type="checkbox" value="TM" />TM (Траффики)</label></li>'+
-					'</ul>'+
-				'</div>'+
-			'</dd>'+
-        '</dl>'+
-		'<input id="to_username" type="text" name="notification" placeholder="usernames" title="Вводите логины через запятую!" style="display: none;">'+
-        '<input id="headNotification" type="text" name="notification" placeholder="Notification Head" title="Введите заголовок уведомления">'+
-        '<textarea id="bodyNotification" name="notification" placeholder="Notification Body" title="Введите уведомление"></textarea>',
-        '<input class="btn" type="submit" id="sendNotificationToBD" value="Send Notification">'
-    );
-
-
-    $(".dropdown dt a").click(() => {
-        $(this).parents('.dropdown').find("dd ul").slideToggle('fast');
-    });
-
-    $(".dropdown dd ul li a").click(() => {
-        $(this).parents('.dropdown').find("dd ul").hide();
-    });
-
-    $(document).on('click', (e) => {
-        let $clicked = $(e.target);
-        if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
-    });
-
-    $('.mutliSelect input[type="checkbox"]').on('click', function() {
-
-        let title = $(this).val();
-
-        if ($(this).is(':checked')) {
-            let html = '<span title="'+title+'">'+title+'</span>';
-            $(this).parents('.dropdown').find('.multiSel').append(html);
-            $(this).parents('.dropdown').find(".hida").hide();
-            if ($(this).val() === 'Subdivision') $('#to_category').show();
-			if ($(this).val() === 'Username') $('#to_username').show();
-        } else {
-            $(this).parents('.dropdown').find('span[title="' + title + '"]').remove();
-            if ($(this).parents('.dropdown').find('.multiSel span').length === 0) $(this).parents('.dropdown').find(".hida").show();
-            if ($(this).val() === 'Subdivision') $('#to_category').hide();
-            if ($(this).val() === 'Username') $('#to_username').hide();
-        }
-    });
-
-    $(document).mouseup((e) => {
-        let div = $('.dropdown dd ul');
-        if (!div.is(e.target) && div.has(e.target).length === 0) {
-            div.hide();
-        }
-    });
-
-    $('#sendNotificationToBD').click(() => {
-        sendNotificationToBD(user);
-        choosePage();
-    });
-}
-
-function sendNotificationToBD(user) {
-    chrome.runtime.sendMessage({
-        action: 'sendNotification',
-        username: user.username,
-        head: $('#headNotification').val(),
-        body: $('#bodyNotification').val(),
-        to_type: '|'+makeString($('#to_type').find('.multiSel span'))+'|',
-        to_name: '|'+makeString($('#to_category').find('.multiSel span'))+'|'+$('#to_username').val().replace(' ', '').replace(',', '|')+'|'
-    }, function(response) {
-        console.log(response);
-    });
-}
-
-function makeString(obj) {
-	let array = [];
-
-	for (let i = 0; i < obj.length; ++i) {
-		array.push(obj.slice(i, i+1).text());
-	}
-
-	return array.join('|');
-}
-
-function logout() {
-    loadingBar();
-
-    let xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/logout.php', true);
-	xhr.send();
-
-    cookieInfo();
 }
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
@@ -530,8 +278,6 @@ function pageGenerator(head, scripts, body, end) {
 
     $body.append('<div id="version"></div>');
 	$('#version').html('<span title="Версия расширения">v'+version+'</span>');
-
-    logoChange();
 }
 
 function turnScript() {
