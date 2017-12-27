@@ -206,7 +206,11 @@ function authentication(username, password) {
             else return response.json().then(Promise.reject.bind(Promise));
         })
         .then(
-            () => getPrincipal(),
+            () => {
+                authInfo.auth = true;
+                getPrincipal();
+                startWebSocket();
+            },
             error => {
                 authInfo.auth = false;
                 if (error.message === 'Authentication with ajax is failure') {
@@ -221,12 +225,7 @@ function authentication(username, password) {
 function getPrincipal() {
     return fetch(`http://spring.avitoadm.ru/auth/principal`, { method: 'GET', credentials: 'include', redirect: 'error' })
         .then(response => response.json())
-        .then(json => {
-            authInfo.user = json;
-            authInfo.auth = true;
-
-            startWebSocket();
-        });
+        .then(json => authInfo.user = json);
 }
 
 function setAuthenticationStorageInfo() {
