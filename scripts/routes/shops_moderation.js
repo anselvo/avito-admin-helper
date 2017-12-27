@@ -18,7 +18,7 @@ ShopModeration.prototype.addMailForm = function () {
     fixedContainer.className = 'ah-shop-moderation-mail-controls';
     fixedContainer.innerHTML = `
         <div class="btn-group">
-            <button class="btn btn-default ah-shop-moderation-mail-btn" data-toggle="tooltip" title="Alt+E" data-container="body">
+            <button class="btn btn-default ah-shop-moderation-mail-btn" data-toggle="tooltip" title="Alt+Q" data-container="body">
                 <span class="glyphicon glyphicon-envelope"></span>
             </button>
             <div class="btn-group dropup ah-template-dropdown">
@@ -270,7 +270,7 @@ ShopModeration.prototype.addMailForm = function () {
     }
 
     document.addEventListener('keydown', function (e) {
-        if (e.altKey && e.keyCode === 'E'.charCodeAt(0)) {
+        if (e.altKey && e.keyCode === 'Q'.charCodeAt(0)) {
             e.preventDefault();
             if (modal.classList.contains('in')) {
                 $(modal).modal('hide');
