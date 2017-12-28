@@ -112,7 +112,20 @@ ShopModeration.prototype.addMailForm = function () {
             return;
         }
 
-        data.append('text', `<hr><div style="${textWrapperStyle}">${messageInput.innerHTML}</div>`);
+        if (!self.parsedInfo.shop) {
+            alert('Не удалось определить ID пользователя. Возможно, информация еще не загрузилась или произошла ошибка. Проверьте Сводку');
+            return;
+        }
+
+        let userId;
+        try {
+            userId = self.parsedInfo.shop.mainInfo.userId;
+        } catch (e) {
+            alert('Не удалось определить ID пользователя');
+            return;
+        }
+
+        data.append('text', `<hr><div style="${textWrapperStyle}"><div style="color: #8c8c8c">ID Пользователя: ${userId}</div><br>${messageInput.innerHTML}</div>`);
 
         overlay.style.display = 'block';
         overlay.focus();
@@ -472,7 +485,7 @@ ShopModeration.prototype.addBrief = function () {
     const commentsInfo = document.createElement('div');
 
     const parsedInfo = {};
-
+    this.parsedInfo = parsedInfo;
     // фикс верстки админки
     if (shopSection) {
         const stickyHolder = shopSection.querySelector('.shop-moderation-buttons-holder_sticky');
@@ -525,6 +538,7 @@ ShopModeration.prototype.addBrief = function () {
             parsedInfo.shop = info;
             return info;
         }, error => {
+            alert('Произошла ошибка при загрузке информации о магазине. Функционал отправки письма будет работать некорректно. Пожалуйста, перезагрузите страницу');
             fieldsInfo.innerHTML = `
                 <h4>Поля</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
