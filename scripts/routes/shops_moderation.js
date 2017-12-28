@@ -112,16 +112,11 @@ ShopModeration.prototype.addMailForm = function () {
             return;
         }
 
-        if (!self.parsedInfo.shop) {
-            alert('Не удалось определить ID пользователя. Возможно, информация еще не загрузилась или произошла ошибка. Проверьте Сводку');
-            return;
-        }
-
         let userId;
         try {
             userId = self.parsedInfo.shop.mainInfo.userId;
         } catch (e) {
-            alert('Не удалось определить ID пользователя');
+            alert('Не удалось определить ID пользователя. Возможно, информация еще не загрузилась или произошла ошибка. Проверьте Сводку.\nВ случае ошибки, перезагрузите страницу');
             return;
         }
 
@@ -538,7 +533,6 @@ ShopModeration.prototype.addBrief = function () {
             parsedInfo.shop = info;
             return info;
         }, error => {
-            alert('Произошла ошибка при загрузке информации о магазине. Функционал отправки письма будет работать некорректно. Пожалуйста, перезагрузите страницу');
             fieldsInfo.innerHTML = `
                 <h4>Поля</h4><span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
