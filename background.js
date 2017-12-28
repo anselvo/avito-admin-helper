@@ -1,12 +1,6 @@
-let script;
-let authInfo = { auth: false, adm: false, username: null, status: null, user: null };
+let script = null, password = null;
+let authInfo = { auth: false, adm: false, username: null, status: null, user: null, error: null, count: 0 };
 let stompClient = null;
-
-chrome.storage.local.get(function (result) {
-    script = result.script;
-
-    setBudgetIcon(script);
-});
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
 chrome.runtime.onUpdateAvailable.addListener(function() {
@@ -23,8 +17,11 @@ chrome.runtime.onInstalled.addListener(function(details) {
         "Recommendation: for the extension to work correctly, please reload all pages on which the extension works");
     if (details.reason === 'install') addChromeNotification("Installed (current version " + version + ")");
 
+    // забираем необходимую инфу со стореджа для старта расширения
+    getStorageInfo();
+
 	// определяем кто залогинен в админку
-	cookieInfo();
+	getCookieInfo();
 
 	// запускаем чекер дня
     chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
@@ -93,7 +90,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 
             xhr.onload = () => callback(xhr.responseText);
             xhr.onerror = () => callback('error');
-
             return true;
 
         case "copyToClipboard":
@@ -113,13 +109,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             return false;
 
         case "authentication":
-            connect(request.password);
+            chrome.storage.local.set({ password: request.password });
+            password = request.password;
+            connect();
             return false;
 
         case "principal":
-            getPrincipal(request.password)
+            getPrincipal()
                 .then(() => setAuthenticationStorageInfo())
-                .catch(error => console.log(error + " (you not authenticated)"));
+                .catch(error => {
+                    console.log(error + " (you not authenticated)");
+
+                    authInfo.auth = false;
+                    authInfo.user = null;
+                    authInfo.status = null;
+                    authInfo.error = "Вас разлогинило. Введите свой пароль, если у вас его нету вы можете Авторизоваться без него";
+
+                    setAuthenticationStorageInfo();
+                });
             return false;
     }
 });
@@ -134,7 +141,16 @@ function addChromeNotification(message) {
     chrome.notifications.create(options);
 }
 
-function cookieInfo() {
+function getStorageInfo() {
+    chrome.storage.local.get(function (result) {
+        script = result.script;
+        password = result.password;
+
+        setBudgetIcon(script);
+    });
+}
+
+function getCookieInfo() {
 	chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
@@ -146,10 +162,7 @@ function cookieInfo() {
 		} else {
 			console.log('You not login in adm.avito.ru');
 
-            authInfo.adm = false;
-            authInfo.username = null;
-            authInfo.status = null;
-            authInfo.user = null;
+            initialCondition();
 
             connect();
 		}
@@ -167,37 +180,36 @@ function cookieInfo() {
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
             console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
 
-            authInfo.adm = false;
-            authInfo.username = null;
-            authInfo.status = null;
-            authInfo.user = null;
+            initialCondition();
 
             connect();
         }
 	});
 }
 
-function connect(password) {
-    password = password ? password : null;
-
+function connect() {
     if (authInfo.adm) {
         authentication(authInfo.username, password)
             .then(() => {
                     authInfo.auth = true;
+                    authInfo.error = null;
+
                     startWebSocket();
                     return getPrincipal();
                 },
                 error => {
                     authInfo.auth = false;
 
-                    localStorage.scriptStatus = 'off';
-                    chrome.storage.local.set({'script': 'none'});
-
-                    if (error.message === 'Authentication with ajax is failure') {
-                        addChromeNotification("Вас нету в списке пользователей или у вас установлен персональный пароль\n\n" +
-                            "Персональный пароль вы можете указать в Popup меню");
+                    if (password) {
+                        authInfo.error = "Вы ввели неправильный пароль";
                     } else {
-                        console.log(error);
+                        if (error.message === 'Authentication with ajax is failure') {
+                            authInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
+
+                            addChromeNotification(authInfo.error + "\n\nПерсональный пароль вы можете указать в Popup меню");
+                        } else {
+                            authInfo.error = error.message;
+                        }
                     }
                 })
             .then(() => setAuthenticationStorageInfo());
@@ -226,6 +238,7 @@ function authentication(username, password) {
     return fetch(`http://spring.avitoadm.ru/login`, headers)
         .then(response => {
             authInfo.status = response.status;
+            authInfo.count++;
 
             if (response.status !== 200) {
                 return response.json().then(Promise.reject.bind(Promise));
@@ -247,6 +260,16 @@ function logout() {
 function setAuthenticationStorageInfo() {
     console.log({ authInfo: authInfo });
     chrome.storage.local.set({ authInfo: authInfo });
+}
+
+function initialCondition() {
+    authInfo.adm = false;
+    authInfo.username = null;
+    authInfo.status = null;
+    authInfo.user = null;
+
+    localStorage.scriptStatus = 'off';
+    chrome.storage.local.set({'script': 'none'});
 }
 
 function startWebSocket() {

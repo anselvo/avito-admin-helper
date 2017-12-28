@@ -18,14 +18,13 @@ function pageListener(authInfo) {
     console.log(authInfo);
 
     if (!authInfo.adm) errorPage('logout');
-    else if (!authInfo.auth) authorizationPage();
+    else if (!authInfo.auth) authorizationPage(authInfo.error);
     else if (authInfo.auth) {
         userGlobalInfo = authInfo.user.principal;
         createScriptList();
         mainPage();
 
         // update info about user
-        // TODO think how to change this to WebSocket
         chrome.runtime.sendMessage({ action: 'principal' });
     } else if (authInfo.status >= 400) {
         switch (authInfo.status) {
@@ -161,10 +160,10 @@ function errorPage(error, xhrStatus) {
 
 // СТРАНИЦА АВТОРИЗАЦИИ
 
-function authorizationPage() {
+function authorizationPage(error) {
 	pageGenerator(
 		'Авторизация',
-		'Вас нету в списке пользователей Admin.Helper или у вас установлен персональный пароль',
+		error,
 		'<input id="password" type="password" name="pass" placeholder="password" required>',
 		'<input class="btn" type="submit" id="submit" value="SIGN IN">'
 	);
