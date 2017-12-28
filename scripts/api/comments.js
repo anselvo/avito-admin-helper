@@ -34,14 +34,14 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            if (ids.length > 4)
-                text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
-            else {
+            if (ids.length <= 4) {
                 let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
                 for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
 
-                text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
+                text += ` <a class="glyphicon glyphicon-new-window" href="${link}"  style="margin-right: 4px;" target="_blank"></a>`;
             }
+
+            text += ' <a class="glyphicon glyphicon-search" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
 
             $(commentBlock).html(text);
         }
@@ -52,14 +52,14 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
 
-            if (ids.length > 4)
-                text += '<a class="glyphicon glyphicon-new-window" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
-            else {
+            if (ids.length <= 4) {
                 let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
                 for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
 
-                text += '<a class="glyphicon glyphicon-new-window" href="' + link + '" target="_blank"></a>';
+                text += ` <a class="glyphicon glyphicon-new-window" href="${link}" style="margin-right: 4px;" target="_blank"></a>`;
             }
+
+            text += ' <a class="glyphicon glyphicon-search" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
 
             $(commentBlock).html(text);
         }
