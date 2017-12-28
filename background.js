@@ -208,7 +208,7 @@ function connect() {
 
                             addChromeNotification(authInfo.error + "\n\nПерсональный пароль вы можете указать в Popup меню");
                         } else {
-                            authInfo.error = error.message;
+                            authInfo.error = error.status + " " + error.error;
                         }
                     }
                 })
