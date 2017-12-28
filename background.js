@@ -1,5 +1,5 @@
 let script = null, password = null;
-let authInfo = { auth: false, adm: false, username: null, status: null, user: null, error: null, count: 0 };
+let connectInfo = { auth: false, adm: false, adm_username: null, status: null, user: null, error: null, auth_count: 0 };
 let stompClient = null;
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -115,18 +115,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             return false;
 
         case "principal":
-            getPrincipal()
-                .then(() => setAuthenticationStorageInfo())
-                .catch(error => {
-                    console.log(error + " (you not authenticated)");
-
-                    authInfo.auth = false;
-                    authInfo.user = null;
-                    authInfo.status = null;
-                    authInfo.error = "Вас разлогинило. Введите свой пароль, если у вас его нету вы можете Авторизоваться без него";
-
-                    setAuthenticationStorageInfo();
-                });
+            getPrincipal();
             return false;
     }
 });
@@ -155,8 +144,8 @@ function getCookieInfo() {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
-            authInfo.adm = true;
-            authInfo.username = cookie.value;
+            connectInfo.adm = true;
+            connectInfo.adm_username = cookie.value;
 
             connect();
 		} else {
@@ -172,8 +161,8 @@ function getCookieInfo() {
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
 
-            authInfo.adm = true;
-            authInfo.username = changeInfo.cookie.value;
+            connectInfo.adm = true;
+            connectInfo.adm_username = changeInfo.cookie.value;
 
             connect();
 		}
@@ -188,35 +177,30 @@ function getCookieInfo() {
 }
 
 function connect() {
-    if (authInfo.adm) {
-        authentication(authInfo.username, password)
+    if (connectInfo.adm) {
+        authentication(connectInfo.adm_username, password)
             .then(() => {
-                    authInfo.auth = true;
-                    authInfo.error = null;
+                    connectInfo.auth = true;
+                    connectInfo.error = null;
 
                     startWebSocket();
-                    return getPrincipal();
+                    getPrincipal();
                 },
                 error => {
-                    authInfo.auth = false;
+                    connectInfo.auth = false;
 
-                    if (password) {
-                        authInfo.error = "Вы ввели неправильный пароль";
-                    } else {
-                        if (error.message === 'Authentication with ajax is failure') {
-                            authInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
-
-                            addChromeNotification(authInfo.error + "\n\nПерсональный пароль вы можете указать в Popup меню");
-                        } else {
-                            authInfo.error = error.status + " " + error.error;
-                        }
+                    if (error.message === 'Authentication with ajax is failure') {
+                        if (password) error.status = 4012;
+                        else error.status = 4011;
                     }
+
+                    errorMessage(error.status, error.error);
                 })
             .then(() => setAuthenticationStorageInfo());
 
     } else {
         logout().then(() => {
-            authInfo.auth = false;
+            connectInfo.auth = false;
 
             setAuthenticationStorageInfo();
         });
@@ -237,8 +221,8 @@ function authentication(username, password) {
 
     return fetch(`http://spring.avitoadm.ru/login`, headers)
         .then(response => {
-            authInfo.status = response.status;
-            authInfo.count++;
+            connectInfo.status = response.status;
+            connectInfo.auth_count++;
 
             if (response.status !== 200) {
                 return response.json().then(Promise.reject.bind(Promise));
@@ -248,9 +232,44 @@ function authentication(username, password) {
 }
 
 function getPrincipal() {
-    return fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include', redirect: 'error' })
-        .then(response => response.json())
-        .then(json => authInfo.user = json);
+    fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include', redirect: 'error' })
+        .then(response => {
+            connectInfo.status = response.status;
+
+            if (response.status !== 200) {
+                return response.json().then(Promise.reject.bind(Promise));
+            }
+            return response.json();
+        })
+        .then(json => connectInfo.user = json, error => errorMessage(error.status, error.error))
+        .then(() => setAuthenticationStorageInfo());
+}
+
+function errorMessage(status, error) {
+    switch (status) {
+        case 4012:
+            connectInfo.error = "Вы ввели неправильный пароль";
+            break;
+        case 4011:
+            connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
+            break;
+        case 401:
+            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
+            break;
+        case 404:
+            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
+            break;
+        case 403:
+            connectInfo.error = "К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            break;
+        case 500:
+            connectInfo.error = "К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
+            break;
+        default:
+            connectInfo.error = "К сожалению, возникла ошибка. Обратитесь к тимлидеру";
+    }
+
+    addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
 function logout() {
@@ -258,15 +277,15 @@ function logout() {
 }
 
 function setAuthenticationStorageInfo() {
-    console.log({ authInfo: authInfo });
-    chrome.storage.local.set({ authInfo: authInfo });
+    console.log({ connectInfo: connectInfo });
+    chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
 function initialCondition() {
-    authInfo.adm = false;
-    authInfo.username = null;
-    authInfo.status = null;
-    authInfo.user = null;
+    connectInfo.adm = false;
+    connectInfo.username = null;
+    connectInfo.status = null;
+    connectInfo.user = null;
 
     localStorage.scriptStatus = 'off';
     chrome.storage.local.set({'script': 'none'});
@@ -345,7 +364,7 @@ function smmLogToDB(messageId, tagString) {
     let log = {
         messageId: messageId,
         tagString: tagString,
-        usernameId: authInfo.user.principal.id
+        usernameId: connectInfo.user.principal.id
     };
 
     let json = JSON.stringify(log);
@@ -520,7 +539,7 @@ function addBlockedItemsIDtoStorage(ids) {
 
 function sendLogToDB(type, reason, count, items_id) {
 	let row = {
-        username_id: authInfo.user.principal.id,
+        username_id: connectInfo.user.principal.id,
         type: type,
         items_id: items_id,
         reason: reason,

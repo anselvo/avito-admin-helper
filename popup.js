@@ -5,39 +5,30 @@ let userGlobalInfo;
 $(function() {
     loadingBar();
 
-    chrome.storage.local.get("authInfo", result  => {
-        pageListener(result.authInfo);
+    chrome.storage.local.get("connectInfo", result  => {
+        pageListener(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
-        if (changes.authInfo) pageListener(changes.authInfo.newValue);
+        if (changes.connectInfo) pageListener(changes.connectInfo.newValue);
     });
 });
 
-function pageListener(authInfo) {
-    console.log(authInfo);
+function pageListener(connectInfo) {
+    console.log(connectInfo);
 
-    if (!authInfo.adm) errorPage('logout');
-    else if (!authInfo.auth) authorizationPage(authInfo.error);
-    else if (authInfo.auth) {
-        userGlobalInfo = authInfo.user.principal;
-        createScriptList();
-        mainPage();
+    if (!connectInfo.adm) errorPage('logout');
+    else {
+        if (connectInfo.auth && connectInfo.user) {
+            userGlobalInfo = connectInfo.user.principal;
+            createScriptList();
+            mainPage();
 
-        // update info about user
-        chrome.runtime.sendMessage({ action: 'principal' });
-    } else if (authInfo.status >= 400) {
-        switch (authInfo.status) {
-            case 403:
-                errorPage('403');
-                break;
-
-            case 500:
-                errorPage('500');
-                break;
-
-            default:
-                errorPage('>=400', authInfo.status);
+            // update info about user
+            chrome.runtime.sendMessage({ action: 'principal' });
+        } else {
+            if (connectInfo.status === 401) authorizationPage(connectInfo.error);
+            else errorPage(connectInfo.error);
         }
     }
 }
@@ -107,55 +98,17 @@ function mainButtonGenerator() {
 
 // СТРАНИЦА ОШИБОК
 
-function errorPage(error, xhrStatus) {
+function errorPage(error) {
     localStorage.scriptStatus = 'off';
     chrome.storage.local.set({'script': 'none'});
 
-    let logo = '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">';
-
-    if (error === 'logout') {
-        pageGenerator(
-            'Admin.Helper',
-            'Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru',
-            logo,
-            ''
-        );
-    } else if (error === 'user does not exist') {
-        pageGenerator(
-            'Admin.Helper',
-            'К сожалению, вы отсутсутствуете в списке пользователей Admin.Helper. Обратитесь к вашему тимлидеру для решения данной проблемы.',
-            logo,
-            ''
-        );
-    } else if (error === '403') {
-        pageGenerator(
-            'Admin.Helper',
-            'К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса.',
-            logo,
-            ''
-        );
-    } else if (error === '500') {
-        pageGenerator(
-            'Admin.Helper',
-            'К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново.',
-            logo,
-            ''
-        );
-    } else if (error === '>=400') {
-        pageGenerator(
-            'Admin.Helper',
-            'К сожалению, произошла техническая ошибка. Код ошибки: '+ xhrStatus +'.',
-            logo,
-            ''
-        );
-    } else {
-        pageGenerator(
-            'Admin.Helper',
-            'К сожалению, возникла ошибка. Обратитесь к тимлидеру.',
-            logo,
-            ''
-        );
-    }
+    pageGenerator(
+        'Admin.Helper',
+        error,
+        '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">',
+        '',
+        true
+    );
 }
 
 // СТРАНИЦА АВТОРИЗАЦИИ
@@ -165,7 +118,8 @@ function authorizationPage(error) {
 		'Авторизация',
 		error,
 		'<input id="password" type="password" name="pass" placeholder="password" required>',
-		'<input class="btn" type="submit" id="submit" value="SIGN IN">'
+		'<input class="btn" type="submit" id="submit" value="SIGN IN">',
+        true
 	);
 			
 	$('#submit').click(() => {
@@ -243,7 +197,7 @@ function authPage() {
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
 
-function pageGenerator(head, scripts, body, end) {
+function pageGenerator(head, scripts, body, end, error) {
     const $body = $('body');
 
     $body.empty()
@@ -254,16 +208,18 @@ function pageGenerator(head, scripts, body, end) {
 		$('#head').html(head);
 	}
 
-	if (scripts !== '' && scripts.indexOf('mainScript')+1) {
-        $body.append('<div id="scripts" class="radio_buttons"></div>');
-		$('#scripts').html(scripts);
+	if (scripts !== '') {
+        if (!error) {
+            $body.append('<div id="scripts" class="radio_buttons"></div>');
+            $('#scripts').html(scripts);
 
-        turnScript();
-        chooseScriptPage();
-	} else if (scripts !== '') {
-        $body.append('<div id="error" class="line"></div>');
-		$('#error').html(scripts);
-	}
+            turnScript();
+            chooseScriptPage();
+        } else {
+            $body.append('<div id="error" class="line"></div>');
+            $('#error').html(scripts);
+        }
+    }
 	
 	if (body !== '') {
         $body.append('<div id="body" class="line"></div>');
