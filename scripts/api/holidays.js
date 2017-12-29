@@ -1,5 +1,3 @@
-holidays();
-
 function holidays() {
     var date = new Date();
 
@@ -8,7 +6,7 @@ function holidays() {
 
     if (day == 31 && month == 10) {
         // halloween();
-    } else if (day == 1 && month == 1) {
+    } else if (day == 29 && month == 12) {
         newyear();
     } else if (day == 7 && month == 1) {
         christmas();

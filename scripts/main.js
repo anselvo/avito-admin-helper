@@ -5,6 +5,8 @@ let currentUrl;
 $(function () {
     currentUrl = location.href;
 
+    holidays();
+
     chrome.storage.local.get(result => {
         if (result.authInfo.user) userGlobalInfo = result.authInfo.user.principal;
 
