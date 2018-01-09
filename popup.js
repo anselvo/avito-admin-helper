@@ -17,15 +17,12 @@ $(function() {
 function pageListener(connectInfo) {
     console.log(connectInfo);
 
-    if (!connectInfo.adm) errorPage('logout');
+    if (!connectInfo.adm) errorPage(connectInfo.error);
     else {
         if (connectInfo.auth && connectInfo.user) {
             userGlobalInfo = connectInfo.user.principal;
             createScriptList();
             mainPage();
-
-            // update info about user
-            chrome.runtime.sendMessage({ action: 'principal' });
         } else {
             if (connectInfo.status === 401) authorizationPage(connectInfo.error);
             else errorPage(connectInfo.error);
