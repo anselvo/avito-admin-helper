@@ -304,10 +304,7 @@ function startWebSocket() {
 
         stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
-        stompClient.subscribe('/user/queue/user.update', (response) => {
-            connectInfo.user.principal = response.body;
-            setAuthenticationStorageInfo();
-        });
+        stompClient.subscribe('/user/queue/user.update', updateUserInfoToStorage);
 
         stompClient.send('/app/notification/unread', {});
     });
@@ -345,6 +342,13 @@ function startWebSocket() {
             result.notifications = notifications;
             chrome.storage.local.set(result);
         });
+    }
+
+    function updateUserInfoToStorage(response) {
+        console.log(response.body);
+
+        connectInfo.user.principal = JSON.parse(response.body);
+        setAuthenticationStorageInfo();
     }
 }
 
