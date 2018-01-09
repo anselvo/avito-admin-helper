@@ -305,7 +305,7 @@ function startWebSocket() {
         stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
         stompClient.subscribe('/user/queue/user.update', (response) => {
-            connectInfo.user.principal = response;
+            connectInfo.user.principal = response.body;
             setAuthenticationStorageInfo();
         });
 
