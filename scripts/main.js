@@ -8,7 +8,7 @@ $(function () {
     holidays();
 
     chrome.storage.local.get(result => {
-        if (result.authInfo.user) userGlobalInfo = result.authInfo.user.principal;
+        if (result.connectInfo.user) userGlobalInfo = result.connectInfo.user.principal;
 
         scriptGlobal = result.script;
 
