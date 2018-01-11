@@ -1,7 +1,16 @@
 let script = null, password = null;
-let connectInfo = { auth: false, adm: false, adm_username: null, status: null, user: null, error: null, auth_count: 0 };
 let stompClient = null;
-const springUrl = "http://spring.avitoadm.ru";
+let connectInfo = {
+    auth: false,
+    adm: false,
+    adm_username: null,
+    status: null,
+    user: null,
+    error: null,
+    auth_count: 0,
+    springUrl: "http://spring.avitoadm.ru",
+    admUrl: "http://spring.avitoadm.ru"
+};
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
 chrome.runtime.onUpdateAvailable.addListener(function() {
@@ -220,7 +229,7 @@ function authentication(username, password) {
         body: formData
     };
 
-    return fetch(`${springUrl}/login`, headers)
+    return fetch(`${connectInfo.springUrl}/login`, headers)
         .then(response => {
             connectInfo.status = response.status;
             connectInfo.auth_count++;
@@ -233,11 +242,11 @@ function authentication(username, password) {
 }
 
 function logout() {
-    return fetch(`${springUrl}/logout`, { credentials: 'include' });
+    return fetch(`${connectInfo.springUrl}/logout`, { credentials: 'include' });
 }
 
 function getPrincipal() {
-    fetch(`${springUrl}/auth/principal`, { credentials: 'include', redirect: 'error' })
+    fetch(`${connectInfo.springUrl}/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
@@ -293,7 +302,7 @@ function initialCondition() {
 }
 
 function startWebSocket() {
-    const socket = new SockJS(`${springUrl}/ws`);
+    const socket = new SockJS(`${connectInfo.springUrl}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
     stompClient.connect({}, () => {
