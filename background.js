@@ -1,6 +1,7 @@
 let script = null, password = null;
 let connectInfo = { auth: false, adm: false, adm_username: null, status: null, user: null, error: null, auth_count: 0 };
 let stompClient = null;
+const springUrl = "http://spring.avitoadm.ru";
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
 chrome.runtime.onUpdateAvailable.addListener(function() {
@@ -219,7 +220,7 @@ function authentication(username, password) {
         body: formData
     };
 
-    return fetch(`http://spring.avitoadm.ru/login`, headers)
+    return fetch(`${springUrl}/login`, headers)
         .then(response => {
             connectInfo.status = response.status;
             connectInfo.auth_count++;
@@ -231,8 +232,12 @@ function authentication(username, password) {
         });
 }
 
+function logout() {
+    return fetch(`${springUrl}/logout`, { credentials: 'include' });
+}
+
 function getPrincipal() {
-    fetch(`http://spring.avitoadm.ru/auth/principal`, { credentials: 'include', redirect: 'error' })
+    fetch(`${springUrl}/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
@@ -272,10 +277,6 @@ function errorMessage(status, error) {
     addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
-function logout() {
-    return fetch(`http://spring.avitoadm.ru/logout`, { credentials: 'include' });
-}
-
 function setAuthenticationStorageInfo() {
     console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
@@ -292,7 +293,7 @@ function initialCondition() {
 }
 
 function startWebSocket() {
-    const socket = new SockJS('http://spring.avitoadm.ru/ws');
+    const socket = new SockJS(`${springUrl}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
     stompClient.connect({}, () => {
@@ -346,9 +347,10 @@ function startWebSocket() {
 
     function updateUserInfoToStorage(response) {
         console.log(response.body);
+        getPrincipal();
 
-        connectInfo.user.principal = JSON.parse(response.body);
-        setAuthenticationStorageInfo();
+        // connectInfo.user = JSON.parse(response.body);
+        // setAuthenticationStorageInfo();
     }
 }
 
