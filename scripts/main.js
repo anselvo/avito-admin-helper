@@ -7,8 +7,6 @@ let admUrl;
 $(function () {
     currentUrl = location.href;
 
-    holidays();
-
     chrome.storage.local.get(result => {
         if (result.connectInfo) {
             springUrl = result.connectInfo.springUrl;
@@ -19,6 +17,8 @@ $(function () {
         scriptGlobal = result.script;
 
         startNotification(result.notifications);
+
+        holidays();
 
         if (result.script === 'infoDoc') {
             startInfoDoc();
