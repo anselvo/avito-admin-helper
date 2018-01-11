@@ -112,7 +112,15 @@ ShopModeration.prototype.addMailForm = function () {
             return;
         }
 
-        data.append('text', `<hr><div style="${textWrapperStyle}">${messageInput.innerHTML}</div>`);
+        let userId;
+        try {
+            userId = self.parsedInfo.shop.mainInfo.userId;
+        } catch (e) {
+            alert('Не удалось определить ID пользователя. Возможно, информация еще не загрузилась или произошла ошибка. Проверьте Сводку.\nВ случае ошибки, перезагрузите страницу');
+            return;
+        }
+
+        data.append('text', `<hr><div style="${textWrapperStyle}"><div style="color: #8c8c8c">ID Пользователя: ${userId}</div><br>${messageInput.innerHTML}</div>`);
 
         overlay.style.display = 'block';
         overlay.focus();
@@ -472,7 +480,7 @@ ShopModeration.prototype.addBrief = function () {
     const commentsInfo = document.createElement('div');
 
     const parsedInfo = {};
-
+    this.parsedInfo = parsedInfo;
     // фикс верстки админки
     if (shopSection) {
         const stickyHolder = shopSection.querySelector('.shop-moderation-buttons-holder_sticky');
