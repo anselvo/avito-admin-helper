@@ -64,7 +64,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             if (script === 'smm') smmListener(details);
 		}
     },
-    {urls: ["https://adm.avito.ru/*", "https://br-analytics.ru/*"]},
+    {urls: [`${connectInfo.admUrl}/*`, "https://br-analytics.ru/*"]},
     ['blocking', 'requestBody']
 );
 
@@ -72,7 +72,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 chrome.webRequest.onCompleted.addListener(function (detailsURL) {
         requestListener(detailsURL.tabId, detailsURL.url);
 	}, 
-	{ urls: ["https://adm.avito.ru/*"] }
+	{ urls: [`${connectInfo.admUrl}/*`] }
 );
 
 // ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
@@ -150,7 +150,7 @@ function getStorageInfo() {
 }
 
 function getCookieInfo() {
-	chrome.cookies.get({'url': 'https://adm.avito.ru/', 'name': 'adm_username'}, function(cookie) {
+	chrome.cookies.get({'url': `${connectInfo.admUrl}`, 'name': 'adm_username'}, function(cookie) {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
@@ -388,7 +388,7 @@ function smmLogToDB(messageId, tagString) {
     };
 
     let json = JSON.stringify(log);
-    let url = 'http://spring.avitoadm.ru/smmstat/update';
+    let url = `${connectInfo.springUrl}/smmstat/update`;
 
     $.ajax({
         url: url,
@@ -411,7 +411,7 @@ function moderationListener(details) {
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
 	
 	//pre
-	if (details.url === 'https://adm.avito.ru/items/moder/submit/all') {
+	if (details.url === `${connectInfo.admUrl}/items/moder/submit/all`) {
 		chrome.storage.local.get(function (result) {
             let blockedItemsID;
 			if (!result.blockedItemsID) blockedItemsID = [];
@@ -430,7 +430,7 @@ function moderationListener(details) {
 		});
 	}
 	
-	if (details.url === 'https://adm.avito.ru/items/moder/submit') {
+	if (details.url === `${connectInfo.admUrl}/items/moder/submit`) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 
@@ -442,7 +442,7 @@ function moderationListener(details) {
 	}
 	
 	//post
-	if (details.url === 'https://adm.avito.ru/items/item/reject') {
+	if (details.url === `${connectInfo.admUrl}/items/item/reject`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -456,7 +456,7 @@ function moderationListener(details) {
 		sendLogToDB('reject item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url === 'https://adm.avito.ru/items/item/block') {
+	if (details.url === `${connectInfo.admUrl}/items/item/block`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -472,7 +472,7 @@ function moderationListener(details) {
 	}
 	
 	//comparison
-	if (details.url.indexOf('https://adm.avito.ru/items/comparison/')+1 && details.url.indexOf('alive')+1) {
+	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
 		let alive = details.url.split('/');
 		count = formData['ids[]'].length-1;
 		ids = formData['ids[]'];
@@ -485,7 +485,7 @@ function moderationListener(details) {
 		sendLogToDB('block item', '20', count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url.indexOf('https://adm.avito.ru/items/comparison/')+1 && details.url.indexOf('block')+1) {
+	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('block')+1) {
 		count = formData['ids[]'].length;
         items_id = formData['ids[]'].join();
 		let blockItem = details.url.split('/');
@@ -496,7 +496,7 @@ function moderationListener(details) {
 	}
 
 	//comparison 3.0
-    if (details.url.indexOf('https://adm.avito.ru/items/comparison/moderate')+1) {
+    if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/moderate`)+1) {
         let comment = formData['comment'];
         let items = comment[0].split(', ');
         let tmp = items[0].split(':');
@@ -532,14 +532,14 @@ function moderationListener(details) {
     }
 	
 	//users
-	if (details.url === 'https://adm.avito.ru/users/user/block') {
+	if (details.url === `${connectInfo.admUrl}/users/user/block`) {
 		count = formData['id'].length;
         items_id = formData['id'].join();
 		
 		sendLogToDB('block user', reason, count, items_id);
 	}
 
-	if (details.url === 'https://adm.avito.ru/detectives/queue/add') {
+	if (details.url === `${connectInfo.admUrl}/detectives/queue/add`) {
         items_id = formData['itemId'].join();
         sendLogToDB('detectives', reason, 1, items_id);
     }
@@ -656,28 +656,28 @@ function newDay(currentDay) {
 function requestListener(tabId, url) {
 
 	// helpdesk
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/edit/') ) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/edit/`) ) {
 		sendMessage(tabId, 'ticketEdit');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/comment\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
 		sendMessage(tabId, 'ticketComment');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/pending\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
 		sendMessage(tabId, 'ticketPending');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/solve\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
 		sendMessage(tabId, 'ticketSolve');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/onHold\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
 		sendMessage(tabId, 'ticketOnHold');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/spam\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
 		sendMessage(tabId, 'ticketSpam');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/duplicate\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
 		sendMessage(tabId, 'ticketDuplicate');
 	}
-	if ( ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/take\b/)) {
+	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
 		sendMessage(tabId, 'ticketTake');
 	}
 
@@ -686,18 +686,18 @@ function requestListener(tabId, url) {
         sendMessage(tabId, 'ticketUser');
     }
 
-	if (url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/search')+1) {	
+	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/search`)+1) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
-	if (url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/')+1 && url.indexOf('/logs') === -1) {
+	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
 		sendMessage(tabId, 'ticketInfo');
 	}
-	if ((~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/list\b/)) || ~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/next')) {
+	if ((~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/next`)) {
 		sendMessage(tabId, 'ticketEnter');
 	}
 	
-	if (~url.indexOf('https://adm.avito.ru/helpdesk/api/1/ticket/') && ~url.search(/\/comments\b/)) {
+	if (~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
 		sendMessage(tabId, 'ticketComments');
 	}
 

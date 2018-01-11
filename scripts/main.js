@@ -1,6 +1,8 @@
 let userGlobalInfo;
 let scriptGlobal;
 let currentUrl;
+let springUrl;
+let admUrl;
 
 $(function () {
     currentUrl = location.href;
@@ -8,6 +10,10 @@ $(function () {
     holidays();
 
     chrome.storage.local.get(result => {
+        if (result.connectInfo) {
+            springUrl = result.connectInfo.springUrl;
+            admUrl = result.connectInfo.admUrl;
+        }
         if (result.connectInfo.user) userGlobalInfo = result.connectInfo.user.principal;
 
         scriptGlobal = result.script;
