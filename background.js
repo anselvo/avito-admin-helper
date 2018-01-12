@@ -286,7 +286,7 @@ function errorMessage(status, error) {
             connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = status + " Forbidden\nОтсутствует доступ к функционалу расширения\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " Forbidden\nОтсутствует доступ к расширению\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
             connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
