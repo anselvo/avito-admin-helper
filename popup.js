@@ -103,6 +103,8 @@ function errorPage(error) {
         '',
         true
     );
+
+    chrome.runtime.sendMessage({ action: 'connect' });
 }
 
 // СТРАНИЦА ОШИБКИ АВТОРИЗАЦИИ
@@ -120,7 +122,7 @@ function errorAuthPage(error) {
 	    const password = $('#password').val();
 
         loadingBar();
-        chrome.runtime.sendMessage({ action: 'authentication', password: password });
+        chrome.runtime.sendMessage({ action: 'connect', password: password });
 	});
 }
 

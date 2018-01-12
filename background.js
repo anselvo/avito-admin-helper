@@ -1,15 +1,15 @@
 let script = null, password = null;
 let stompClient = null;
 let connectInfo = {
-    spring_auth: false,
     adm_auth: false,
     adm_username: null,
     adm_url: "https://adm.avito.ru",
-    status: null,
+    spring_auth: false,
     spring_user: null,
-    error: null,
-    spring_auth_count: 0,
     spring_url: "http://spring.avitoadm.ru",
+    status: null,
+    error: null,
+    error_count: 0
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -118,9 +118,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             }
             return false;
 
-        case "authentication":
-            chrome.storage.local.set({ password: request.password });
-            password = request.password;
+        case "connect":
+            if (request.password) {
+                chrome.storage.local.set({password: request.password});
+                password = request.password;
+            }
+
             connect();
             return false;
     }
@@ -202,7 +205,12 @@ function connect() {
                         else error.status = 4011;
                     }
 
-                    errorMessage(error.status, error.error);
+                    if (error.message === 'Failed to fetch') {
+                        error.status = "(failed)";
+                        connectInfo.status = "(failed)";
+                    }
+
+                    errorMessage(error.status, error.message);
                 })
             .then(() => setConnectInfoToStorage());
 }
@@ -239,7 +247,6 @@ function login(username, password) {
     return fetch(`${connectInfo.spring_url}/login`, headers)
         .then(response => {
             connectInfo.status = response.status;
-            connectInfo.spring_auth_count++;
 
             if (response.status !== 200) {
                 return response.json().then(Promise.reject.bind(Promise));
@@ -266,9 +273,14 @@ function getPrincipal() {
 }
 
 function errorMessage(status, error) {
+    connectInfo.error_count++;
+
     switch (status) {
         case null:
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
+            break;
+        case "(failed)":
+            connectInfo.error = "Отсутствует соединение с сервером. Сообщите о проблеме тимлидеру";
             break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
@@ -277,13 +289,10 @@ function errorMessage(status, error) {
             connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
             break;
         case 401:
-            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
-            break;
-        case 404:
-            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
+            connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией. Сообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = status + " " + error + "\nОтсутствует доступ к функционалу расширения. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " Forbidden\nОтсутствует доступ к функционалу расширения. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
             connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
