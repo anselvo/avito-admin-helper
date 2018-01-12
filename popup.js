@@ -10,7 +10,6 @@ $(function() {
     });
 
     chrome.storage.onChanged.addListener(changes => {
-        console.log(changes);
         if (changes.connectInfo) pageListener(changes.connectInfo.newValue);
     });
 });
