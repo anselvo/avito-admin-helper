@@ -9,7 +9,7 @@ let connectInfo = {
     error: null,
     auth_count: 0,
     springUrl: "http://spring.avitoadm.ru",
-    admUrl: "https://adm.avito.ru/"
+    admUrl: "https://adm.avito.ru"
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
