@@ -17,26 +17,14 @@ $(function() {
 function pageListener(connectInfo) {
     console.log(connectInfo);
 
-    if (!connectInfo.adm) errorPage(connectInfo.error);
-    else {
-        if (connectInfo.auth && connectInfo.user) {
-            userGlobalInfo = connectInfo.user.principal;
-            createScriptList();
-            mainPage();
-        } else {
-            if (connectInfo.status === 401) authorizationPage(connectInfo.error);
-            else errorPage(connectInfo.error);
-        }
+    if (!connectInfo.error) {
+        userGlobalInfo = connectInfo.spring_user.principal;
+        createScriptList();
+        mainPage();
+    } else {
+        if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
+        else errorPage(connectInfo.error);
     }
-
-    // if (!connectInfo.error) {
-    //     userGlobalInfo = connectInfo.user.principal;
-    //     createScriptList();
-    //     mainPage();
-    // } else {
-    //     if (connectInfo.status === 401) authorizationPage(connectInfo.error);
-    //     else errorPage(connectInfo.error);
-    // }
 }
 
 function createScriptList() {
@@ -109,7 +97,7 @@ function errorPage(error) {
     chrome.storage.local.set({'script': 'none'});
 
     pageGenerator(
-        'Admin.Helper',
+        'Ошибка',
         error,
         '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">',
         '',
@@ -117,9 +105,9 @@ function errorPage(error) {
     );
 }
 
-// СТРАНИЦА АВТОРИЗАЦИИ
+// СТРАНИЦА ОШИБКИ АВТОРИЗАЦИИ
 
-function authorizationPage(error) {
+function errorAuthPage(error) {
 	pageGenerator(
 		'Авторизация',
 		error,

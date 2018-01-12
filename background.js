@@ -1,15 +1,15 @@
 let script = null, password = null;
 let stompClient = null;
 let connectInfo = {
-    auth: false,
-    adm: false,
+    spring_auth: false,
+    adm_auth: false,
     adm_username: null,
+    adm_url: "https://adm.avito.ru",
     status: null,
-    user: null,
+    spring_user: null,
     error: null,
-    auth_count: 0,
-    springUrl: "http://spring.avitoadm.ru",
-    admUrl: "https://adm.avito.ru"
+    spring_auth_count: 0,
+    spring_url: "http://spring.avitoadm.ru",
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -64,7 +64,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             if (script === 'smm') smmListener(details);
 		}
     },
-    {urls: [`${connectInfo.admUrl}/*`, "https://br-analytics.ru/*"]},
+    {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
     ['blocking', 'requestBody']
 );
 
@@ -72,7 +72,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 chrome.webRequest.onCompleted.addListener(function (detailsURL) {
         requestListener(detailsURL.tabId, detailsURL.url);
 	}, 
-	{ urls: [`${connectInfo.admUrl}/*`] }
+	{ urls: [`${connectInfo.adm_url}/*`] }
 );
 
 // ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
@@ -123,10 +123,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             password = request.password;
             connect();
             return false;
-
-        case "principal":
-            getPrincipal();
-            return false;
     }
 });
 
@@ -150,20 +146,21 @@ function getStorageInfo() {
 }
 
 function getCookieInfo() {
-	chrome.cookies.get({'url': `${connectInfo.admUrl}`, 'name': 'adm_username'}, function(cookie) {
+	chrome.cookies.get({'url': `${connectInfo.adm_url}`, 'name': 'adm_username'}, function(cookie) {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
-            connectInfo.adm = true;
+            connectInfo.adm_auth = true;
             connectInfo.adm_username = cookie.value;
 
             connect();
 		} else {
 			console.log('You not login in adm.avito.ru');
 
-            initialCondition();
+            connectInfo.adm_auth = false;
+            connectInfo.adm_username = null;
 
-            connect();
+            disconnect();
 		}
 	});
 
@@ -171,7 +168,7 @@ function getCookieInfo() {
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
 
-            connectInfo.adm = true;
+            connectInfo.adm_auth = true;
             connectInfo.adm_username = changeInfo.cookie.value;
 
             connect();
@@ -179,25 +176,26 @@ function getCookieInfo() {
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
             console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
 
-            initialCondition();
+            connectInfo.adm_auth = false;
+            connectInfo.adm_username = null;
 
-            connect();
+            disconnect();
         }
 	});
 }
 
 function connect() {
-    if (connectInfo.adm) {
-        authentication(connectInfo.adm_username, password)
+    if (connectInfo.adm_auth)
+        login(connectInfo.adm_username, password)
             .then(() => {
-                    connectInfo.auth = true;
+                    connectInfo.spring_auth = true;
                     connectInfo.error = null;
 
                     startWebSocket();
-                    getPrincipal();
+                    return getPrincipal();
                 },
                 error => {
-                    connectInfo.auth = false;
+                    connectInfo.spring_auth = false;
 
                     if (error.message === 'Authentication with ajax is failure') {
                         if (password) error.status = 4012;
@@ -206,18 +204,27 @@ function connect() {
 
                     errorMessage(error.status, error.error);
                 })
-            .then(() => setAuthenticationStorageInfo());
-
-    } else {
-        logout().then(() => {
-            connectInfo.auth = false;
-
-            setAuthenticationStorageInfo();
-        });
-    }
+            .then(() => setConnectInfoToStorage());
 }
 
-function authentication(username, password) {
+function disconnect() {
+    if (!connectInfo.adm_auth)
+        logout()
+            .then(() => {
+                connectInfo.spring_auth = false;
+                connectInfo.spring_user = null;
+
+                connectInfo.status = null;
+
+                localStorage.scriptStatus = 'off';
+                chrome.storage.local.set({'script': 'none'});
+
+                errorMessage(connectInfo.status);
+            })
+            .then(() => setConnectInfoToStorage());
+}
+
+function login(username, password) {
     let formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -229,10 +236,10 @@ function authentication(username, password) {
         body: formData
     };
 
-    return fetch(`${connectInfo.springUrl}/login`, headers)
+    return fetch(`${connectInfo.spring_url}/login`, headers)
         .then(response => {
             connectInfo.status = response.status;
-            connectInfo.auth_count++;
+            connectInfo.spring_auth_count++;
 
             if (response.status !== 200) {
                 return response.json().then(Promise.reject.bind(Promise));
@@ -242,11 +249,11 @@ function authentication(username, password) {
 }
 
 function logout() {
-    return fetch(`${connectInfo.springUrl}/logout`, { credentials: 'include' });
+    return fetch(`${connectInfo.spring_url}/logout`, { credentials: 'include' });
 }
 
 function getPrincipal() {
-    fetch(`${connectInfo.springUrl}/auth/principal`, { credentials: 'include', redirect: 'error' })
+    return fetch(`${connectInfo.spring_url}/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
@@ -255,13 +262,12 @@ function getPrincipal() {
             }
             return response.json();
         })
-        .then(json => connectInfo.user = json, error => errorMessage(error.status, error.error))
-        .then(() => setAuthenticationStorageInfo());
+        .then(json => connectInfo.spring_user = json, error => errorMessage(error.status, error.error));
 }
 
 function errorMessage(status, error) {
     switch (status) {
-        case 9000:
+        case null:
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
             break;
         case 4012:
@@ -289,31 +295,19 @@ function errorMessage(status, error) {
     addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
-function setAuthenticationStorageInfo() {
+function setConnectInfoToStorage() {
     console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
-function initialCondition() {
-    connectInfo.adm = false;
-    connectInfo.username = null;
-    connectInfo.status = null;
-    connectInfo.user = null;
-
-    localStorage.scriptStatus = 'off';
-    chrome.storage.local.set({'script': 'none'});
-
-    errorMessage(9000, "Logout adm.avito.ru");
-}
-
 function startWebSocket() {
-    const socket = new SockJS(`${connectInfo.springUrl}/ws`);
+    const socket = new SockJS(`${connectInfo.spring_url}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
     function stompSuccessCallback() {
-        chrome.storage.local.set({ notifications: {} });
+        chrome.storage.local.set({notifications: {}});
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -362,14 +356,6 @@ function startWebSocket() {
             chrome.storage.local.set(result);
         });
     }
-
-    function updateUserInfoToStorage(response) {
-        console.log(response.body);
-        getPrincipal();
-
-        // connectInfo.user = JSON.parse(response.body);
-        // setAuthenticationStorageInfo();
-    }
 }
 
 function smmListener(details) {
@@ -393,11 +379,11 @@ function smmLogToDB(messageId, tagString) {
     let log = {
         messageId: messageId,
         tagString: tagString,
-        usernameId: connectInfo.user.principal.id
+        usernameId: connectInfo.spring_user.principal.id
     };
 
     let json = JSON.stringify(log);
-    let url = `${connectInfo.springUrl}/smmstat/update`;
+    let url = `${connectInfo.spring_url}/smmstat/update`;
 
     $.ajax({
         url: url,
@@ -420,7 +406,7 @@ function moderationListener(details) {
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
 	
 	//pre
-	if (details.url === `${connectInfo.admUrl}/items/moder/submit/all`) {
+	if (details.url === `${connectInfo.adm_url}/items/moder/submit/all`) {
 		chrome.storage.local.get(function (result) {
             let blockedItemsID;
 			if (!result.blockedItemsID) blockedItemsID = [];
@@ -439,7 +425,7 @@ function moderationListener(details) {
 		});
 	}
 	
-	if (details.url === `${connectInfo.admUrl}/items/moder/submit`) {
+	if (details.url === `${connectInfo.adm_url}/items/moder/submit`) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 
@@ -451,7 +437,7 @@ function moderationListener(details) {
 	}
 	
 	//post
-	if (details.url === `${connectInfo.admUrl}/items/item/reject`) {
+	if (details.url === `${connectInfo.adm_url}/items/item/reject`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -465,7 +451,7 @@ function moderationListener(details) {
 		sendLogToDB('reject item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url === `${connectInfo.admUrl}/items/item/block`) {
+	if (details.url === `${connectInfo.adm_url}/items/item/block`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -481,7 +467,7 @@ function moderationListener(details) {
 	}
 	
 	//comparison
-	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
+	if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
 		let alive = details.url.split('/');
 		count = formData['ids[]'].length-1;
 		ids = formData['ids[]'];
@@ -494,7 +480,7 @@ function moderationListener(details) {
 		sendLogToDB('block item', '20', count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('block')+1) {
+	if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/`)+1 && details.url.indexOf('block')+1) {
 		count = formData['ids[]'].length;
         items_id = formData['ids[]'].join();
 		let blockItem = details.url.split('/');
@@ -505,7 +491,7 @@ function moderationListener(details) {
 	}
 
 	//comparison 3.0
-    if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/moderate`)+1) {
+    if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/moderate`)+1) {
         let comment = formData['comment'];
         let items = comment[0].split(', ');
         let tmp = items[0].split(':');
@@ -541,14 +527,14 @@ function moderationListener(details) {
     }
 	
 	//users
-	if (details.url === `${connectInfo.admUrl}/users/user/block`) {
+	if (details.url === `${connectInfo.adm_url}/users/user/block`) {
 		count = formData['id'].length;
         items_id = formData['id'].join();
 		
 		sendLogToDB('block user', reason, count, items_id);
 	}
 
-	if (details.url === `${connectInfo.admUrl}/detectives/queue/add`) {
+	if (details.url === `${connectInfo.adm_url}/detectives/queue/add`) {
         items_id = formData['itemId'].join();
         sendLogToDB('detectives', reason, 1, items_id);
     }
@@ -568,7 +554,7 @@ function addBlockedItemsIDtoStorage(ids) {
 
 function sendLogToDB(type, reason, count, items_id) {
 	let row = {
-        username_id: connectInfo.user.principal.id,
+        username_id: connectInfo.spring_user.principal.id,
         type: type,
         items_id: items_id,
         reason: reason,
@@ -665,28 +651,28 @@ function newDay(currentDay) {
 function requestListener(tabId, url) {
 
 	// helpdesk
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/edit/`) ) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/edit/`) ) {
 		sendMessage(tabId, 'ticketEdit');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
 		sendMessage(tabId, 'ticketComment');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
 		sendMessage(tabId, 'ticketPending');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
 		sendMessage(tabId, 'ticketSolve');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
 		sendMessage(tabId, 'ticketOnHold');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
 		sendMessage(tabId, 'ticketSpam');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
 		sendMessage(tabId, 'ticketDuplicate');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
 		sendMessage(tabId, 'ticketTake');
 	}
 
@@ -695,18 +681,18 @@ function requestListener(tabId, url) {
         sendMessage(tabId, 'ticketUser');
     }
 
-	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/search`)+1) {
+	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/search`)+1) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
-	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
+	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
 		sendMessage(tabId, 'ticketInfo');
 	}
-	if ((~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/next`)) {
+	if ((~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/next`)) {
 		sendMessage(tabId, 'ticketEnter');
 	}
 	
-	if (~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
+	if (~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
 		sendMessage(tabId, 'ticketComments');
 	}
 

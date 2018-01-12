@@ -9,10 +9,10 @@ $(function () {
 
     chrome.storage.local.get(result => {
         if (result.connectInfo) {
-            springUrl = result.connectInfo.springUrl;
-            admUrl = result.connectInfo.admUrl;
+            springUrl = result.connectInfo.spring_url;
+            admUrl = result.connectInfo.adm_url;
         }
-        if (result.connectInfo.user) userGlobalInfo = result.connectInfo.user.principal;
+        if (result.connectInfo.spring_user) userGlobalInfo = result.connectInfo.spring_user.principal;
 
         scriptGlobal = result.script;
 
