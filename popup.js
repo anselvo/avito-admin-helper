@@ -21,7 +21,7 @@ function pageListener(connectInfo) {
         createScriptList();
         mainPage();
     } else {
-        if (connectInfo.status === 401 || connectInfo.status === 4011  || connectInfo.status === 4012) errorAuthPage(connectInfo.error);
+        if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
         else errorPage(connectInfo.error);
     }
 }
