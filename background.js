@@ -9,7 +9,7 @@ let connectInfo = {
     error: null,
     auth_count: 0,
     springUrl: "http://spring.avitoadm.ru",
-    admUrl: "https://adm.avito.ru/"
+    admUrl: "https://adm.avito.ru"
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -305,7 +305,9 @@ function startWebSocket() {
     const socket = new SockJS(`${connectInfo.springUrl}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
-    stompClient.connect({}, () => {
+    stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
+
+    function stompSuccessCallback() {
         chrome.storage.local.set({ notifications: {} });
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
@@ -314,10 +316,12 @@ function startWebSocket() {
 
         stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
-        stompClient.subscribe('/user/queue/user.update', updateUserInfoToStorage);
-
         stompClient.send('/app/notification/unread', {});
-    });
+    }
+
+    function stompFailureCallback() {
+        connect();
+    }
 
     function addNotificationToStorage(response) {
         const newNotifications = JSON.parse(response.body);
