@@ -262,7 +262,7 @@ function getPrincipal() {
 function errorMessage(status, error) {
     switch (status) {
         case 9000:
-            connectInfo.error = "test";
+            connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
             break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
