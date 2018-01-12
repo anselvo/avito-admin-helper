@@ -283,13 +283,13 @@ function errorMessage(status, error) {
             connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
             break;
         case 401:
-            connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией. Сообщите о проблеме тимлидеру";
+            connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = status + " Forbidden\nОтсутствует доступ к функционалу расширения. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " Forbidden\nОтсутствует доступ к функционалу расширения\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
-            connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
+            connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
             break;
         default:
             connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
