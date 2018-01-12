@@ -140,8 +140,8 @@ function addChromeNotification(message) {
 
 function getStorageInfo() {
     chrome.storage.local.get(function (result) {
-        script = result.script;
-        password = result.password;
+        script = result.script ? result.script : null;
+        password = result.password ? result.password : null;
 
         setBudgetIcon(script);
     });
@@ -300,7 +300,7 @@ function errorMessage(status, error) {
 }
 
 function setConnectInfoToStorage() {
-    console.log({ connectInfo: connectInfo });
+    // console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
