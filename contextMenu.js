@@ -98,27 +98,27 @@ chrome.contextMenus.create({title: "по IP", contexts: contextSearchAdm, parent
 
 // Create contextMenu for search in CF
 function searchInCfAll(info) {
-    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?queryString=' + info.selectionText;
+    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=siteSearch ~ "' + info.selectionText + '"&queryString=' + info.selectionText;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInCfRules(info) {
-    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=space+%3D+%22coaching%22&queryString=' + info.selectionText;
+    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=siteSearch ~ "' + info.selectionText + '" and space = "coaching"&queryString=' + info.selectionText;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInCfMod(info) {
-    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=space+%3D+%22moderation%22&queryString=' + info.selectionText;
+    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=siteSearch ~ "' + info.selectionText + '" and space = "moderation"&queryString=' + info.selectionText;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInCfSup1(info) {
-    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=space+%3D+%221stLine%22&queryString=' + info.selectionText;
+    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=siteSearch ~ "' + info.selectionText + '" and space = "1stLine"&queryString=' + info.selectionText;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInCfSup2(info) {
-    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=space+%3D+%22SUP%22&queryString=' + info.selectionText;
+    let newURL = 'https://mus.avito.ru/cf/dosearchsite.action?cql=siteSearch ~ "' + info.selectionText + '" and space = "SUP"&queryString=' + info.selectionText;
     chrome.tabs.create({ url: newURL });
 }
 
