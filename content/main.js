@@ -16,7 +16,7 @@ const admUrlPatterns = {
     billing_walletlog: /https:\/\/adm\.avito\.ru\/(?:adm\/)?billing\/walletlog/,
     billing_invoices: /https:\/\/adm\.avito\.ru\/(?:adm\/)?billing\/invoices/,
     shops_info_view: /https:\/\/adm\.avito\.ru\/(?:adm\/)?shops\/info\/view/,
-    shops_moderation: /https:\/\/adm\.avito\.ru\/(?:adm\/)?shops\/moderation/
+    shops_moderation: /https:\/\/adm\.avito\.ru\/(?:adm\/)?shops\/moderation/,
     helpdesk: /https:\/\/adm\.avito\.ru\/helpdesk/,
     system_access: /https:\/\/adm\.avito\.ru\/(?:adm\/)?system\/access/,
     detectives_queue_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search/,
