@@ -197,16 +197,17 @@ function connect() {
                     return getPrincipal();
                 },
                 error => {
+                    console.log(error);
                     connectInfo.spring_auth = false;
 
                     if (error.message === 'No message available') error.message = error.error;
-                    if (error.message === 'Failed to fetch') connectInfo.status = "(failed)";
+                    if (error.message === 'Failed to fetch') error.status = "(failed)";
                     if (error.message === 'Authentication with ajax is failure') {
-                        if (password) connectInfo.status = 4012;
-                        else connectInfo.status = 4011;
+                        if (password) error.status = 4012;
+                        else error.status = 4011;
                     }
 
-                    errorMessage(connectInfo.status, error.message);
+                    errorMessage(error.status, error.message);
                 })
             .then(() => setConnectInfoToStorage());
 }
@@ -244,10 +245,8 @@ function login(username, password) {
         .then(response => {
             connectInfo.status = response.status;
 
-            if (response.status !== 200) {
-                return response.json().then(Promise.reject.bind(Promise));
-            }
-            return Promise.resolve();
+            if (response.status === 200) return Promise.resolve();
+            else return errorListener(response);
         });
 }
 
@@ -260,12 +259,14 @@ function getPrincipal() {
         .then(response => {
             connectInfo.status = response.status;
 
-            if (response.status !== 200) {
-                return response.json().then(Promise.reject.bind(Promise));
-            }
-            return response.json();
+            if (response.status === 200) return response.json();
+            else return errorListener(response);
         })
         .then(json => connectInfo.spring_user = json, error => errorMessage(error.status, error.error));
+}
+
+function errorListener(response) {
+    return response.json().then(json => { throw json }, () => { throw { message: response.statusText, status: response.status }; });
 }
 
 function errorMessage(status, error) {
@@ -286,7 +287,7 @@ function errorMessage(status, error) {
             connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = status + " Forbidden\nОтсутствует доступ к расширению\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " " + error + "\nОтсутствует доступ к расширению\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
             connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
