@@ -190,25 +190,23 @@ function connect() {
     if (connectInfo.adm_auth)
         login(connectInfo.adm_username, password)
             .then(() => {
-                    connectInfo.spring_auth = true;
-                    connectInfo.error = null;
+                connectInfo.spring_auth = true;
+                connectInfo.error = null;
 
-                    startWebSocket();
-                    return getPrincipal();
-                },
-                error => {
-                    console.log(error);
-                    connectInfo.spring_auth = false;
+                startWebSocket();
+                return getPrincipal();
+            }, error => {
+                console.log(error);
+                connectInfo.spring_auth = false;
 
-                    if (error.message === 'No message available') error.message = error.error;
-                    if (error.message === 'Failed to fetch') error.status = "(failed)";
-                    if (error.message === 'Authentication with ajax is failure') {
-                        if (password) error.status = 4012;
-                        else error.status = 4011;
-                    }
-
-                    errorMessage(error.status, error.message);
-                })
+                if (error.message === 'No message available') error.message = error.error;
+                if (error.message === 'Failed to fetch') error.status = "(failed)";
+                if (error.message === 'Authentication with ajax is failure') {
+                    if (password) error.status = 4012;
+                    else error.status = 4011;
+                }
+                errorMessage(error.status, error.message);
+            })
             .then(() => setConnectInfoToStorage());
 }
 
