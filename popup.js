@@ -10,19 +10,18 @@ $(function() {
     });
 
     chrome.storage.onChanged.addListener(changes => {
+        console.log(changes);
         if (changes.connectInfo) pageListener(changes.connectInfo.newValue);
     });
 });
 
 function pageListener(connectInfo) {
-    console.log(connectInfo);
-
     if (!connectInfo.error) {
         userGlobalInfo = connectInfo.spring_user.principal;
         createScriptList();
         mainPage();
     } else {
-        if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
+        if (connectInfo.status === 401 || connectInfo.status === 4011  || connectInfo.status === 4012) errorAuthPage(connectInfo.error);
         else errorPage(connectInfo.error);
     }
 }
@@ -121,7 +120,6 @@ function errorAuthPage(error) {
 	$('#submit').click(() => {
 	    const password = $('#password').val();
 
-        loadingBar();
         chrome.runtime.sendMessage({ action: 'connect', password: password });
 	});
 }

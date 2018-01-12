@@ -8,8 +8,7 @@ let connectInfo = {
     spring_user: null,
     spring_url: "http://spring.avitoadm.ru",
     status: null,
-    error: null,
-    error_count: 0
+    error: null
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -201,16 +200,15 @@ function connect() {
                     connectInfo.spring_auth = false;
 
                     if (error.message === 'Authentication with ajax is failure') {
-                        if (password) error.status = 4012;
-                        else error.status = 4011;
+                        if (password) connectInfo.status = 4012;
+                        else connectInfo.status = 4011;
                     }
 
                     if (error.message === 'Failed to fetch') {
-                        error.status = "(failed)";
                         connectInfo.status = "(failed)";
                     }
 
-                    errorMessage(error.status, error.message);
+                    errorMessage(connectInfo.status, error.message);
                 })
             .then(() => setConnectInfoToStorage());
 }
@@ -273,8 +271,6 @@ function getPrincipal() {
 }
 
 function errorMessage(status, error) {
-    connectInfo.error_count++;
-
     switch (status) {
         case null:
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
