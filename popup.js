@@ -28,6 +28,15 @@ function pageListener(connectInfo) {
             else errorPage(connectInfo.error);
         }
     }
+
+    // if (!connectInfo.error) {
+    //     userGlobalInfo = connectInfo.user.principal;
+    //     createScriptList();
+    //     mainPage();
+    // } else {
+    //     if (connectInfo.status === 401) authorizationPage(connectInfo.error);
+    //     else errorPage(connectInfo.error);
+    // }
 }
 
 function createScriptList() {

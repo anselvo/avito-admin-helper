@@ -261,6 +261,9 @@ function getPrincipal() {
 
 function errorMessage(status, error) {
     switch (status) {
+        case 9000:
+            connectInfo.error = "test";
+            break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
             break;
@@ -268,19 +271,19 @@ function errorMessage(status, error) {
             connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
             break;
         case 401:
-            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
+            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
             break;
         case 404:
-            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
+            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = "К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " " + error + "\nОтсутствует доступ к функционалу расширения. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
-            connectInfo.error = "К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
+            connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
             break;
         default:
-            connectInfo.error = "К сожалению, возникла ошибка. Обратитесь к тимлидеру";
+            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
     }
 
     addChromeNotification("Ошибка: " + connectInfo.error);
@@ -299,6 +302,8 @@ function initialCondition() {
 
     localStorage.scriptStatus = 'off';
     chrome.storage.local.set({'script': 'none'});
+
+    errorMessage(9000, "Logout adm.avito.ru");
 }
 
 function startWebSocket() {
