@@ -23,7 +23,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
     const version = chrome.runtime.getManifest().version;
 
     if (details.reason === 'update') addChromeNotification("Updated (new version "+ version + ")\n\n" +
-        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works");
+        "Для корректной работы скриптов, рекомендуется обновить страницы, на которых оно работает");
     if (details.reason === 'install') addChromeNotification("Installed (current version " + version + ")");
 
     // забираем необходимую инфу со стореджа для старта расширения
@@ -199,13 +199,11 @@ function connect() {
                 error => {
                     connectInfo.spring_auth = false;
 
+                    if (error.message === 'No message available') error.message = error.error;
+                    if (error.message === 'Failed to fetch') connectInfo.status = "(failed)";
                     if (error.message === 'Authentication with ajax is failure') {
                         if (password) connectInfo.status = 4012;
                         else connectInfo.status = 4011;
-                    }
-
-                    if (error.message === 'Failed to fetch') {
-                        connectInfo.status = "(failed)";
                     }
 
                     errorMessage(connectInfo.status, error.message);
