@@ -18,7 +18,7 @@
     "content_scripts": [
 		{
 			"matches": ["https://*.avito.ru/*", "https://br-analytics.ru/*"],
-			"css": ["css/main.css"],
+			"css": ["include/css/content.css"],
 
 			"js": [
 				"include/library/jquery.min.js",
