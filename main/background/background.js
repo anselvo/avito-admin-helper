@@ -22,8 +22,7 @@ chrome.runtime.onInstalled.addListener(details => {
 	// нотификация об апдейте расширения
     const version = chrome.runtime.getManifest().version;
 
-    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\n" +
-        "Для корректной работы расширения, рекомендуется обновить страницы в браузере");
+    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\nДля корректной работы расширения, рекомендуется обновить страницы в браузере");
     if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
