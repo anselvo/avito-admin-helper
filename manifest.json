@@ -6,10 +6,10 @@
 	
 	"background": {
 		"scripts": [
-			"library/jquery.min.js",
-			"library/angular.min.js",
-			"library/sockjs.min.js",
-            "library/stomp.min.js",
+			"include/library/jquery.min.js",
+			"include/library/angular.min.js",
+			"include/library/sockjs.min.js",
+            "include/library/stomp.min.js",
 			"background/background.js",
 			"background/contextMenu.js"
 		]
@@ -21,11 +21,11 @@
 			"css": ["css/main.css"],
 
 			"js": [
-				"library/jquery.min.js", 
-				"library/jquery.cookie.min.js",
-				"library/angular.min.js",
-				"library/bootstrap.min.js",
-				"library/jquery-ui.min.js",
+				"include/library/jquery.min.js",
+				"include/library/jquery.cookie.min.js",
+				"include/library/angular.min.js",
+				"include/library/bootstrap.min.js",
+				"include/library/jquery-ui.min.js",
 				// "scripts.min.js"
 
 				"content/main.js",
@@ -87,16 +87,16 @@
 	],
 
     "icons": {
-		"16": "image/16x16.png",
-		"55": "image/55x55.png",
-		"128": "image/128x128.png",
-		"140": "image/140x140.png",
-		"300": "image/300x300.png"
+		"16": "include/image/16x16.png",
+		"55": "include/image/55x55.png",
+		"128": "include/image/128x128.png",
+		"140": "include/image/140x140.png",
+		"300": "include/image/300x300.png"
     },
 
     "browser_action": { 
         "default_title": "Admin.Helper",
-        "default_icon": "image/300x300.png",
+        "default_icon": "include/image/300x300.png",
 		"default_popup": "popup/popup.html"
     }
 }
