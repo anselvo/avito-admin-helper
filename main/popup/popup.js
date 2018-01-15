@@ -1,40 +1,41 @@
 let version = chrome.runtime.getManifest().version;
 let scriptList = [];
 let script = false;
-let userGlobalInfo;
+let connectInfo = null;
 
 $(function() {
     loadingBar();
 
     chrome.storage.local.get(result  => {
         script = result.script;
+        connectInfo = result.connectInfo;
 
-        pageSelector(result.connectInfo);
+        pageSelector();
     });
 
     chrome.storage.onChanged.addListener(changes => {
-        if (changes.connectInfo) pageSelector(changes.connectInfo.newValue);
+        if (changes.connectInfo) {
+            connectInfo = changes.connectInfo.newValue;
+            pageSelector();
+        }
     });
 });
 
-function pageSelector(connectInfo) {
-    if (!connectInfo.error) {
-        userGlobalInfo = connectInfo.spring_user.principal;
-        mainPage();
-    } else {
+function pageSelector() {
+    if (!connectInfo.error) mainPage();
+    else {
         if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
         else errorPage(connectInfo.error);
     }
 }
 
 // ОСНОВНАЯ СТРАНИЦА
-
 function mainPage() {
     pageGenerator(
 		'Admin.Helper',
 		mainButtonGenerator(),
 		'',
-		'Удачного рабочего дня, ' + userGlobalInfo.name + '!'
+		'Удачного рабочего дня, ' + connectInfo.spring_user.principal.name + '!'
 	);
 }
 
@@ -57,7 +58,6 @@ function mainButtonGenerator() {
 }
 
 // СТРАНИЦА ОШИБОК
-
 function errorPage(error) {
     pageGenerator(
         'Ошибка',
@@ -71,7 +71,6 @@ function errorPage(error) {
 }
 
 // СТРАНИЦА ОШИБКИ АВТОРИЗАЦИИ
-
 function errorAuthPage(error) {
 	pageGenerator(
 		'Авторизация',
@@ -130,7 +129,7 @@ function chooseScript() {
 // СТРАНИЦА ПРИ ЛОГИНЕ
 function authPage() {
 	pageGenerator(
-        userGlobalInfo.username,
+        connectInfo.spring_user.principal.username,
         mainButtonGenerator(),
 		'<ul class="journal">'+
 			'<li><a href="http://avitoadm.ru/journal/users.html">Сотрудники</a></li>'+
@@ -150,7 +149,6 @@ function authPage() {
 }
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
-
 function pageGenerator(head, scripts, body, end, error) {
     const $body = $('body');
 
