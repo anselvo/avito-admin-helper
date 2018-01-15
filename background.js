@@ -22,9 +22,9 @@ chrome.runtime.onInstalled.addListener(function(details) {
 	// нотификация об апдейте расширения
     const version = chrome.runtime.getManifest().version;
 
-    if (details.reason === 'update') addChromeNotification("Updated (Version "+ version + ")\n\n" +
-        "Для корректной работы скриптов, рекомендуется обновить страницы, на которых оно работает");
-    if (details.reason === 'install') addChromeNotification("Installed (Version " + version + ")");
+    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\n" +
+        "Для корректной работы расширения, рекомендуется обновить страницы в браузере");
+    if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
     getStorageInfo();
