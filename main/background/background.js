@@ -247,7 +247,20 @@ function getPrincipal() {
             if (response.status === 200) return response.json();
             else return errorListener(response);
         })
-        .then(json => connectInfo.spring_user = json, error => errorMessage(error.status, error.error));
+        .then(json => connectInfo.spring_user = authoritiesParse(json), error => errorMessage(error.status, error.error));
+}
+
+function authoritiesParse(json) {
+    const authorities = json.principal.authorities;
+
+    let authoritiesParse = {};
+    for (let i = 0; i < authorities.length; ++i) {
+        authoritiesParse[authorities[i].authority] = true;
+    }
+
+    json.principal.authorities = authoritiesParse;
+
+    return json;
 }
 
 function errorListener(response) {
@@ -285,6 +298,7 @@ function errorMessage(status, error) {
 }
 
 function setConnectInfoToStorage() {
+    console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 

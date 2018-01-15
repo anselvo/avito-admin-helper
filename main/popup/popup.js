@@ -50,7 +50,7 @@ function mainButtonGenerator() {
                 '<span class="script-toggler toggler-on">On</span>' +
                 '<span class="script-toggler toggler-off">Off</span>' +
             '</button>' +
-            '<span class="script-group horizontal"><img class="settings-logo" src="../../include/image/settings_white.png"></span>';
+            '<span class="script-group horizontal"><img id="settings" class="settings-logo" src="../../include/image/settings_white.png"></span>';
 
     return html;
 }
@@ -87,12 +87,12 @@ function errorAuthPage(error) {
 
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
-function chooseScriptPage() {
-    $('#choose-scripts').click(() => {
+function settingsPage() {
+    $('#settings').click(() => {
         pageGenerator(
             'Admin.Helper',
             '',
-            chooseButtonGenerator(scriptList),
+            settingsGenerator(),
             ''
         );
 
@@ -101,16 +101,17 @@ function chooseScriptPage() {
 }
 
 
-function chooseButtonGenerator(buttons) {
+function settingsGenerator() {
+    const authorities = connectInfo.spring_user.principal.authorities;
+    console.log(authorities)
+
     let html = '';
+    for (let authority in authorities) {
+        let id = authority;
 
-    buttons.forEach(function(btn) {
-        let id = btn;
-        let name = btn.charAt(0).toUpperCase() + btn.substr(1);
-
-        html += '<input type="radio" class="radioLabel" name="option" id="'+id+'" />' +
-            '<label class="script-name script-group vertical" for="'+id+'" title="'+name+' Helper">'+name+'</label>';
-    });
+        html += '<input type="radio" class="radioLabel" name="option" id="' + id + '" />' +
+            '<label class="script-name script-group vertical" for="' + id + '" title="' + authority + ' Helper">' + authority + '</label>';
+    }
 
     return html;
 }
@@ -164,7 +165,7 @@ function pageGenerator(head, scripts, body, end, error) {
             $('#scripts').html(scripts);
 
             scriptStatus();
-            chooseScriptPage();
+            settingsPage();
         } else {
             $body.append('<div id="error" class="line"></div>');
             $('#error').html(scripts);
