@@ -51,12 +51,6 @@ function createScriptList() {
 		
 		scriptList = ['support','moderator','intern','traffic','smm', 'infoDoc'];
 	}
-
-    if (!localStorage.script || scriptList.indexOf(localStorage.script) === -1) {
-        localStorage.scriptStatus = 'off';
-        localStorage.script = scriptList[0];
-        chrome.storage.local.set({'script': 'none'});
-    }
 }
 
 // ОСНОВНАЯ СТРАНИЦА
@@ -74,15 +68,12 @@ function mainPage() {
 function mainButtonGenerator() {
     let html = '';
 
-    let script = localStorage.script;
-
-    let name = script.charAt(0).toUpperCase() + script.substr(1);
     let chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
 
     html += '<span class="avito-logo script-group horizontal">' +
                 '<img id="avitoLogo" src="../../include/image/logo_white.png" style="">' +
             '</span>' +
-            '<button id="mainScript" class="script-name script-group horizontal" name="'+script+'" title="'+name+' Helper">'+ name +
+            '<button id="mainScript" class="script-name script-group horizontal" name="script">Script' +
                 '<span class="script-toggler toggler-on">On</span>' +
                 '<span class="script-toggler toggler-off">Off</span>' +
             '</button>'
@@ -94,9 +85,6 @@ function mainButtonGenerator() {
 // СТРАНИЦА ОШИБОК
 
 function errorPage(error) {
-    localStorage.scriptStatus = 'off';
-    chrome.storage.local.set({'script': 'none'});
-
     pageGenerator(
         'Ошибка',
         error,
@@ -160,10 +148,6 @@ function chooseScript() {
     $('label[for]').click(event => {
         let clickScript = $(event.currentTarget).attr('for');
         $('#'+clickScript).prop('checked', true);
-
-        localStorage.script = clickScript;
-        localStorage.scriptStatus = 'on';
-        chrome.storage.local.set({'script': clickScript});
 
         mainPage();
     });
