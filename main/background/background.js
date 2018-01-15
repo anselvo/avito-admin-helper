@@ -118,7 +118,7 @@ function addChromeNotification(message) {
         type: "basic",
         title: "Admin.Helper",
         message: message,
-        iconUrl: "include/image/notification_logo.png",
+        iconUrl: "include/image/notification_logo_black_rad.png",
     };
     chrome.notifications.create(options);
 }
