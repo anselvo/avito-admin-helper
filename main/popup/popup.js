@@ -1,20 +1,23 @@
 let version = chrome.runtime.getManifest().version;
 let scriptList = [];
+let script = false;
 let userGlobalInfo;
 
 $(function() {
     loadingBar();
 
-    chrome.storage.local.get("connectInfo", result  => {
-        pageListener(result.connectInfo);
+    chrome.storage.local.get(result  => {
+        script = result.script;
+
+        pageSelector(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
-        if (changes.connectInfo) pageListener(changes.connectInfo.newValue);
+        if (changes.connectInfo) pageSelector(changes.connectInfo.newValue);
     });
 });
 
-function pageListener(connectInfo) {
+function pageSelector(connectInfo) {
     if (!connectInfo.error) {
         userGlobalInfo = connectInfo.spring_user.principal;
         createScriptList();
@@ -206,7 +209,7 @@ function pageGenerator(head, scripts, body, end, error) {
             $body.append('<div id="scripts" class="radio_buttons"></div>');
             $('#scripts').html(scripts);
 
-            turnScript();
+            scriptStatus();
             chooseScriptPage();
         } else {
             $body.append('<div id="error" class="line"></div>');
@@ -231,30 +234,24 @@ function pageGenerator(head, scripts, body, end, error) {
 	$('#version').html('<span title="Версия расширения">v'+version+'</span>');
 }
 
-function turnScript() {
-    let scriptStatus = localStorage.scriptStatus;
-    let $mainScript = $('#mainScript');
-	
-    if (scriptStatus === 'off') {
-        $mainScript.removeClass('active');
-    }
-    if (scriptStatus === 'on') {
+function scriptStatus() {
+    const $mainScript = $('#mainScript');
+
+    if (script) {
         $mainScript.addClass('active');
+    } else {
+        $mainScript.removeClass('active');
     }
 
     $mainScript.click(() => {
-        scriptStatus = localStorage.scriptStatus;
-
-        if (scriptStatus === 'off') {
-            $mainScript.addClass('active');
-            localStorage.scriptStatus = 'on';
-            chrome.storage.local.set({'script': localStorage.script});
-        }
-
-        if (scriptStatus === 'on') {
+        if (script) {
+            script = false;
             $mainScript.removeClass('active');
-            localStorage.scriptStatus = 'off';
-            chrome.storage.local.set({'script': 'none'});
+            chrome.storage.local.set({ script: false });
+        } else {
+            script = true;
+            $mainScript.addClass('active');
+            chrome.storage.local.set({ script: true });
         }
     });
 }
