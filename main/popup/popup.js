@@ -20,37 +20,11 @@ $(function() {
 function pageSelector(connectInfo) {
     if (!connectInfo.error) {
         userGlobalInfo = connectInfo.spring_user.principal;
-        createScriptList();
         mainPage();
     } else {
         if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
         else errorPage(connectInfo.error);
     }
-}
-
-function createScriptList() {
-	if (userGlobalInfo.subdivision.divisionName === 'Moderator') {
-		
-		scriptList = ['moderator'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Support') {
-		
-		scriptList = ['support', 'moderator'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Intern') {
-		
-		scriptList = ['support', 'moderator', 'intern'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Traffic') {
-		
-		scriptList = ['traffic'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'SMM') {
-
-        scriptList = ['smm'];
-    } else if (userGlobalInfo.subdivision.divisionName === 'InfoDoc') {
-
-        scriptList = ['infoDoc'];
-    } else {
-		
-		scriptList = ['support','moderator','intern','traffic','smm', 'infoDoc'];
-	}
 }
 
 // ОСНОВНАЯ СТРАНИЦА
