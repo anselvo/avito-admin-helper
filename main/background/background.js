@@ -43,15 +43,11 @@ chrome.alarms.onAlarm.addListener(alarm => {
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
 chrome.tabs.onActivated.addListener(info => {
-	chrome.tabs.get(info.tabId, tab => {
-		iconStatus(info.tabId, tab.url);
-	});
+
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-	iconStatus(tabId, tab.url);
-	
 	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
 });
 
@@ -716,14 +712,6 @@ function requestListener(tabId, url) {
 
 function sendMessage(tabId, msg) {	
 	chrome.tabs.sendMessage(tabId, {onUpdated: msg});
-}
-
-function iconStatus(tabId, url) {
-	if (url === undefined) {
-		iconDisable(tabId);
-	} else {
-		iconEnable(tabId);
-	}
 }
 
 function iconDisable(tabId) {
