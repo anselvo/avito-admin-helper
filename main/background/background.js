@@ -69,15 +69,6 @@ chrome.webRequest.onCompleted.addListener(detailsURL => {
 	{ urls: [`${connectInfo.adm_url}/*`] }
 );
 
-// ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
-chrome.storage.onChanged.addListener(result => {
-	if ("script" in result) {
-	    script = result.script.newValue;
-	    setBudgetIcon(script);
-
-    }
-});
-
 // ЛОВИТ СООБЩЕНИЯ
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
     switch (request.action) {
@@ -139,6 +130,10 @@ function getStorageInfo() {
         password = result.password ? result.password : null;
 
         setBudgetIcon(script);
+    });
+
+    chrome.storage.onChanged.addListener(result => {
+        if (result.script) setBudgetIcon(result.script.newValue);
     });
 }
 
@@ -711,7 +706,7 @@ function requestListener(tabId, url) {
 }
 
 function sendMessage(tabId, msg) {	
-	chrome.tabs.sendMessage(tabId, {onUpdated: msg});
+	chrome.tabs.sendMessage(tabId, { onUpdated: msg });
 }
 
 function iconDisable(tabId) {
@@ -725,15 +720,13 @@ function iconEnable(tabId) {
 }
 
 function setBudgetIcon(script) {
-    if (script !== 'none' && script) {
-		let logo = script.charAt(0).toUpperCase();
-		chrome.browserAction.setBadgeText({text: logo});
-		chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
+    if (script) {
+		chrome.browserAction.setBadgeText({text: 'On'});
 
-        console.log('Включен скрип: ' + script);
+        console.log('Content scripts - On');
 	} else {
-		chrome.browserAction.setBadgeText({text: ""});
+		chrome.browserAction.setBadgeText({text: "Off"});
 
-        console.log('Скрипты выключены');
+        console.log('Content scripts - Off');
 	}
 }
