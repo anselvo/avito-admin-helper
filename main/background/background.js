@@ -207,8 +207,7 @@ function disconnect() {
 
                 connectInfo.status = null;
 
-                localStorage.scriptStatus = 'off';
-                chrome.storage.local.set({'script': 'none'});
+                chrome.storage.local.set({ script: false });
 
                 errorMessage(connectInfo.status);
             })
