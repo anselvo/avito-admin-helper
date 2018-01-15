@@ -43,16 +43,14 @@ function mainPage() {
 function mainButtonGenerator() {
     let html = '';
 
-    let chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
-
     html += '<span class="avito-logo script-group horizontal">' +
-                '<img id="avitoLogo" src="../../include/image/logo_white.png" style="">' +
+                '<img id="avitoLogo" src="../../include/image/logo_white.png">' +
             '</span>' +
             '<button id="mainScript" class="script-name script-group horizontal" name="script">Script' +
                 '<span class="script-toggler toggler-on">On</span>' +
                 '<span class="script-toggler toggler-off">Off</span>' +
-            '</button>'
-            + chooseScriptBtn;
+            '</button>' +
+            '<span class="script-group horizontal"><img class="settings-logo" src="../../include/image/settings_white.png"></span>';
 
     return html;
 }

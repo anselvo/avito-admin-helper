@@ -168,23 +168,27 @@ body {
 }
 
 #avitoLogo {
-	width: 28px;
+	width: 32px;
 	margin-top: 4px;
-    padding: 2px;
+    /*padding: 2px;*/
+}
+
+@keyframes rotate{
+	from { transform:  rotate(0) }
+	to { transform: rotate(360deg) }
+}
+
+#avitoLogo:hover, #avitoLogoBig:hover {
+    animation: rotate 3s infinite linear;
+}
+
+.settings-logo {
+    width: 32px;
+    margin-top: 4px;
 }
 
 .big-logo {
-	width: 60px !important;
-}
-
-@keyframes rotate{ from { transform:  rotate(0);}	to {transform: rotate(360deg);}}
-@-moz-keyframes rotate{from {-moz-transform:  rotate(0);}	to {-moz-transform: rotate(360deg);}}
-@-webkit-keyframes rotate{from {-webkit-transform:  rotate(0);}	to {-webkit-transform: rotate(360deg);}}
-
-#avitoLogo:hover, #avitoLogoBig:hover {
-	animation: rotate 3s infinite linear; 
-	-moz-animation: rotate 3s infinite linear;
-	-webkit-animation: rotate 3s infinite linear;
+    width: 60px !important;
 }
 
 #username, #password, [name="notification"], .dropdown dt a, .dropdown dd ul {
