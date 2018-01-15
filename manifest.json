@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Admin.Helper",
 	"short_name": "AH", 
-    "version": "4.3.8",
+    "version": "4.3.9",
 	
 	"background": {
 		"scripts": [
@@ -10,8 +10,8 @@
 			"include/library/angular.min.js",
 			"include/library/sockjs.min.js",
             "include/library/stomp.min.js",
-			"background/background.js",
-			"background/contextMenu.js"
+			"main/background/background.js",
+			"main/background/contextMenu.js"
 		]
     },
 
@@ -28,51 +28,51 @@
 				"include/library/jquery-ui.min.js",
 				// "scripts.min.js"
 
-				"content/main.js",
+				"main/content/main.js",
 
-				"content/requests/post.js",
-				"content/requests/get.js",
+				"main/content/requests/post.js",
+				"main/content/requests/get.js",
 
-				"content/api/holidays.js",
-				"content/api/notification.js",
-				"content/api/other.js",
-				"content/api/user.js",
-				"content/api/moder.js",
-				"content/api/helpdesk.js",
-				"content/api/comments.js",
-				"content/api/count_money.js",
-				"content/api/assistant.js",
-				"content/api/indicators.js",
+				"main/content/api/holidays.js",
+				"main/content/api/notification.js",
+				"main/content/api/other.js",
+				"main/content/api/user.js",
+				"main/content/api/moder.js",
+				"main/content/api/helpdesk.js",
+				"main/content/api/comments.js",
+				"main/content/api/count_money.js",
+				"main/content/api/assistant.js",
+				"main/content/api/indicators.js",
 
-				"content/routes/items_item_info.js",
-				"content/routes/items_search.js",
-				"content/routes/items_comparison.js",
-				"content/routes/items_moder.js",
-				"content/routes/items_moder_old.js",
-				"content/routes/users_user_info.js",
-				"content/routes/users_search.js",
-				"content/routes/users_account_info.js",
-				"content/routes/shops_info_view.js",
-				"content/routes/shops_moderation.js",
-				"content/routes/system_access.js",
-				"content/routes/helpdesk.js",
-				"content/routes/helpdesk_details.js",
-				"content/routes/billing_walletlog.js",
-				"content/routes/billing_invoices.js",
-				"content/routes/detectives_queue_search.js",
+				"main/content/routes/items_item_info.js",
+				"main/content/routes/items_search.js",
+				"main/content/routes/items_comparison.js",
+				"main/content/routes/items_moder.js",
+				"main/content/routes/items_moder_old.js",
+				"main/content/routes/users_user_info.js",
+				"main/content/routes/users_search.js",
+				"main/content/routes/users_account_info.js",
+				"main/content/routes/shops_info_view.js",
+				"main/content/routes/shops_moderation.js",
+				"main/content/routes/system_access.js",
+				"main/content/routes/helpdesk.js",
+				"main/content/routes/helpdesk_details.js",
+				"main/content/routes/billing_walletlog.js",
+				"main/content/routes/billing_invoices.js",
+				"main/content/routes/detectives_queue_search.js",
 
-				"content/helpers/smm.js",
-				"content/helpers/support.js",
-				"content/helpers/moderation.js",
-				"content/helpers/intern.js",
-				"content/helpers/traffic.js",
-				"content/helpers/infodoc.js"
+				"main/content/helpers/smm.js",
+				"main/content/helpers/support.js",
+				"main/content/helpers/moderation.js",
+				"main/content/helpers/intern.js",
+				"main/content/helpers/traffic.js",
+				"main/content/helpers/infodoc.js"
 			],
 			"run_at": "document_start"
 		}
     ],
 
-	"web_accessible_resources" : ["inject/helpdesk.js"],
+	"web_accessible_resources" : ["main/inject/helpdesk.js"],
 
 	"permissions": [
 		"webRequest",
@@ -97,6 +97,6 @@
     "browser_action": { 
         "default_title": "Admin.Helper",
         "default_icon": "include/image/300x300.png",
-		"default_popup": "popup/popup.html"
+		"default_popup": "main/popup/popup.html"
     }
 }
