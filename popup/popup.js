@@ -77,7 +77,7 @@ function mainButtonGenerator() {
     let chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
 
     html += '<span class="avito-logo script-group horizontal">' +
-                '<img id="avitoLogo" src="image/logo_white.png" style="">' +
+                '<img id="avitoLogo" src="../include/image/logo_white.png" style="">' +
             '</span>' +
             '<button id="mainScript" class="script-name script-group horizontal" name="'+script+'" title="'+name+' Helper">'+ name +
                 '<span class="script-toggler toggler-on">On</span>' +
@@ -97,7 +97,7 @@ function errorPage(error) {
     pageGenerator(
         'Ошибка',
         error,
-        '<img id="avitoLogo" class="big-logo" src="image/logo_white.png">',
+        '<img id="avitoLogo" class="big-logo" src="../include/image/logo_white.png">',
         '',
         true
     );
@@ -194,7 +194,7 @@ function pageGenerator(head, scripts, body, end, error) {
     const $body = $('body');
 
     $body.empty()
-        .append('<div id="background-body"><img id="avitoBackground" src="image/popup_background.jpg"></div>');
+        .append('<div id="background-body"><img id="avitoBackground" src="../include/image/popup_background.jpg"></div>');
 	
 	if (head !== '') {
         $body.append('<div id="head" class="line"></div>');
@@ -262,7 +262,7 @@ function turnScript() {
 function loadingBar() {
     $('body')
         .empty()
-        .append('<div id="body" class="line"><img id="avitoBackground" src="image/popup_background.jpg"></div>')
+        .append('<div id="body" class="line"><img id="avitoBackground" src="../include/image/popup_background.jpg"></div>')
         .append('<div class="cssload-loader">'+
             '<div class="cssload-inner cssload-one"></div>'+
             '<div class="cssload-inner cssload-two"></div>'+

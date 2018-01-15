@@ -10,8 +10,8 @@
 			"library/angular.min.js",
 			"library/sockjs.min.js",
             "library/stomp.min.js",
-			"background.js",
-			"contextMenu.js"
+			"background/background.js",
+			"background/contextMenu.js"
 		]
     },
 
@@ -83,13 +83,7 @@
 		"alarms",
 		"notifications",
         "contextMenus",
-		"contentSettings",
-        "https://*.avito.ru/*",
-		"http://*.avitoadm.ru/*",
-		"https://br-analytics.ru/*",
-		"https://yandex.ru/*",
-		"https://google.ru/*",
-		"http://localhost:8080/*"
+		"<all_urls>"
 	],
 
     "icons": {
@@ -103,6 +97,6 @@
     "browser_action": { 
         "default_title": "Admin.Helper",
         "default_icon": "image/300x300.png",
-		"default_popup": "popup.html"
+		"default_popup": "popup/popup.html"
     }
 }
