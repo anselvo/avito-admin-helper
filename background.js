@@ -196,7 +196,6 @@ function connect() {
                 startWebSocket();
                 return getPrincipal();
             }, error => {
-                console.log(error);
                 connectInfo.spring_auth = false;
 
                 if (error.message === 'No message available') error.message = error.error;
@@ -298,7 +297,6 @@ function errorMessage(status, error) {
 }
 
 function setConnectInfoToStorage() {
-    // console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
