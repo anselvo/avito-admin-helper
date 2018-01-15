@@ -12,13 +12,13 @@ let connectInfo = {
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
-chrome.runtime.onUpdateAvailable.addListener(function() {
+chrome.runtime.onUpdateAvailable.addListener(() => {
     // принудительное обновление расширения
     chrome.runtime.reload();
 });
 
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
-chrome.runtime.onInstalled.addListener(function(details) {
+chrome.runtime.onInstalled.addListener(details => {
 	// нотификация об апдейте расширения
     const version = chrome.runtime.getManifest().version;
 
@@ -37,27 +37,26 @@ chrome.runtime.onInstalled.addListener(function(details) {
 });
 
 // ЛОВИТ БУДИЛЬНИК
-chrome.alarms.onAlarm.addListener(function(alarm) {
+chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
-chrome.tabs.onActivated.addListener(function (info) {
-	chrome.tabs.get(info.tabId, function(tab){
+chrome.tabs.onActivated.addListener(info => {
+	chrome.tabs.get(info.tabId, tab => {
 		iconStatus(info.tabId, tab.url);
 	});
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	iconStatus(tabId, tab.url);
 	
 	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
 });
 
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
-chrome.webRequest.onBeforeRequest.addListener(
-	function (details) {
+chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
             if (script === 'moderator') moderationListener(details);
             if (script === 'smm') smmListener(details);
@@ -68,14 +67,14 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 
 // ЛОВИТ КАКИЕ ОТВЕТЫ ПОЛУЧЕНЫ ОТ СЕРВЕРА
-chrome.webRequest.onCompleted.addListener(function (detailsURL) {
+chrome.webRequest.onCompleted.addListener(detailsURL => {
         requestListener(detailsURL.tabId, detailsURL.url);
 	}, 
 	{ urls: [`${connectInfo.adm_url}/*`] }
 );
 
 // ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
-chrome.storage.onChanged.addListener(function (result) {
+chrome.storage.onChanged.addListener(result => {
 	if ("script" in result) {
 	    script = result.script.newValue;
 	    setBudgetIcon(script);
@@ -84,7 +83,7 @@ chrome.storage.onChanged.addListener(function (result) {
 });
 
 // ЛОВИТ СООБЩЕНИЯ
-chrome.runtime.onMessage.addListener(function(request, sender, callback) {
+chrome.runtime.onMessage.addListener((request, sender, callback) => {
     switch (request.action) {
         case "XMLHttpRequest":
             let xhr = new XMLHttpRequest();
@@ -139,7 +138,7 @@ function addChromeNotification(message) {
 }
 
 function getStorageInfo() {
-    chrome.storage.local.get(function (result) {
+    chrome.storage.local.get(result => {
         script = result.script ? result.script : null;
         password = result.password ? result.password : null;
 
@@ -148,7 +147,7 @@ function getStorageInfo() {
 }
 
 function getCookieInfo() {
-	chrome.cookies.get({'url': `${connectInfo.adm_url}`, 'name': 'adm_username'}, function(cookie) {
+	chrome.cookies.get({'url': `${connectInfo.adm_url}`, 'name': 'adm_username'}, cookie => {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
@@ -166,7 +165,7 @@ function getCookieInfo() {
 		}
 	});
 
-	chrome.cookies.onChanged.addListener(function (changeInfo){
+	chrome.cookies.onChanged.addListener(changeInfo => {
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
 
@@ -575,7 +574,7 @@ function sendLogToDB(type, reason, count, items_id) {
 }
 
 function sendLogToStorage(type, count) {
-	chrome.storage.local.get('mod_stat', function (result) {
+	chrome.storage.local.get('mod_stat', result => {
 		if (!result.mod_stat) {
 			let mod_stat = {
 				'mod_stat': {
