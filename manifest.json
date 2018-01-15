@@ -87,10 +87,9 @@
 	],
 
     "icons": {
-		"16": "include/image/16x16.png",
-		"55": "include/image/55x55.png",
-		"128": "include/image/128x128.png",
-		"140": "include/image/140x140.png",
+		"16": "include/image/300x300.png",
+		"48": "include/image/300x300.png",
+		"128": "include/image/300x300.png",
 		"300": "include/image/300x300.png"
     },
 
