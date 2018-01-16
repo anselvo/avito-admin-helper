@@ -5,6 +5,8 @@ body {
     margin: 20px 12px;
 	user-select: none;
 	font-family: Roboto, serif;
+	background: url("../../include/image/popup_background.jpg") no-repeat center;
+    background-size: cover;
 }
 
 #head {

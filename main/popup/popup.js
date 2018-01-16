@@ -151,9 +151,8 @@ function authPage() {
 function pageGenerator(head, scripts, body, end, error) {
     const $body = $('body');
 
-    $body.empty()
-        .append('<div id="background-body"><img id="avitoBackground" src="../../include/image/popup_background.jpg"></div>');
-	
+    $body.empty();
+
 	if (head !== '') {
         $body.append('<div id="head" class="line"></div>');
 		$('#head').html(head);
@@ -214,7 +213,6 @@ function scriptStatus() {
 function loadingBar() {
     $('body')
         .empty()
-        .append('<div id="body" class="line"><img id="avitoBackground" src="../../include/image/popup_background.jpg"></div>')
         .append('<div class="cssload-loader">'+
             '<div class="cssload-inner cssload-one"></div>'+
             '<div class="cssload-inner cssload-two"></div>'+
