@@ -2898,7 +2898,7 @@ function getAttendantTL(btn) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: "http://avitoadm.ru/support_helper/attendant_tl/getTL.php?login="+ userGlobalInfo.teamlead_login,
+            url: "http://avitoadm.ru/support_helper/attendant_tl/getTL.php?login="+ userGlobalInfo.subdivision.teamlead_login,
         },
 
         function(response) {
