@@ -93,16 +93,16 @@ function userInfoOnItem() {
 
 // кол центра
 
-function callCenter() {
-    if (userGlobalInfo.subdivision.subdivision === 'RC' || userGlobalInfo.subdivision.subdivision === 'SD' || userGlobalInfo.subdivision.subdivision === 'DTR'
-        || userGlobalInfo.subdivision.subdivision === 'DRE' || userGlobalInfo.subdivision.subdivision === 'DJB' || userGlobalInfo.subdivision.subdivision === 'DSR'
-        || userGlobalInfo.subdivision.subdivision === 'DBH' || userGlobalInfo.subdivision.subdivision === 'D3D' || userGlobalInfo.subdivision.subdivision === 'DLV'
-        || userGlobalInfo.subdivision.subdivision === 'DC' || userGlobalInfo.subdivision.subdivision === 'TL' || userGlobalInfo.subdivision.subdivision === 'ME') {
-
-        rejectByCall();
-        timeInCity();
-    }
-}
+// function callCenter() {
+//     if (userGlobalInfo.subdivision.subdivision === 'RC' || userGlobalInfo.subdivision.subdivision === 'SD' || userGlobalInfo.subdivision.subdivision === 'DTR'
+//         || userGlobalInfo.subdivision.subdivision === 'DRE' || userGlobalInfo.subdivision.subdivision === 'DJB' || userGlobalInfo.subdivision.subdivision === 'DSR'
+//         || userGlobalInfo.subdivision.subdivision === 'DBH' || userGlobalInfo.subdivision.subdivision === 'D3D' || userGlobalInfo.subdivision.subdivision === 'DLV'
+//         || userGlobalInfo.subdivision.subdivision === 'DC' || userGlobalInfo.subdivision.subdivision === 'TL' || userGlobalInfo.subdivision.subdivision === 'ME') {
+//
+//         rejectByCall();
+//         timeInCity();
+//     }
+// }
 
 function rejectByCall() {
     var id = location.href.replace(/\D/g, '');

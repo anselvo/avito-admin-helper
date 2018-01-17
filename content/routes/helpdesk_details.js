@@ -2570,13 +2570,11 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         if (type.indexOf('компания') + 1) {
             if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="personal">установить как частное лицо</a>');
 
-            let agentSubdivision = userGlobalInfo.subdivision;
-
             let indicators = ['inn','pro', 'auto', 'shop', 'subscription'];
-            if (~allowedPremiumUsersSubd.indexOf(agentSubdivision)) {
+            if (isAuthority('ROLE_USER-INDICATORS--REPREMIUM')) {
                 indicators.push('REPremium');
             }
-            if (~allowedExtensionIndSubd.indexOf(agentSubdivision)) {
+            if (isAuthority('ROLE_USER-INDICATORS--EXTENSION')) {
                 indicators.push('extension');
             }
             addIndicatorsHelpdeskDetails(indicators, $(response));
@@ -2759,15 +2757,15 @@ function rightPanelUnblockUser() {
 //---------- Смена ассигни -----------//
 function changeAssignee() {
     if ($('#change-assignee-wrapper').length > 0) return;
-    let allowedSubdivisions = [
-        31, // Поддержка профессиональных пользователей
-        41, // Руководитель группы службы поддержки
-        48, // Руководитель группы поддержки профессиональных пользователей
-        49, // Поддержка профессиональных инструментов
-        30, // Developer
-        66, // Руководитель группы InfoDoc
-        43, // Руководитель отдела
-    ];
+    // let allowedSubdivisions = [
+    //     31, // Поддержка профессиональных пользователей
+    //     41, // Руководитель группы службы поддержки
+    //     48, // Руководитель группы поддержки профессиональных пользователей
+    //     49, // Поддержка профессиональных инструментов
+    //     30, // Developer
+    //     66, // Руководитель группы InfoDoc
+    //     43, // Руководитель отдела
+    // ];
 
     let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
     let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
@@ -2790,11 +2788,10 @@ function changeAssignee() {
     
     let changeBtns = $('#sh-chenge-assignee-to-me-btn, #sh-clear-assignee-btn');
     $(changeBtns).click(function () {
-        let userSubdivisionId = +userGlobalInfo.subdivision_id;
         let ticketStatus = getTicketStatusText();
         if ((~ticketStatus.indexOf('закрытое')
             || ticketStatus === 'решенное')
-            && allowedSubdivisions.indexOf(userSubdivisionId) === -1) {
+            && !isAuthority('ROLE_HELPDESK-DETAILS-CHANGE-ASSIGNEE-ANY-STATUS')) {
             alert('Это действие недоступно для обращений со статусами "Закрытое" и "Решенное"');
             return;
         }
@@ -3802,13 +3799,7 @@ function customerClaimNotif() {
 function claimReevaluation(teamleadLogin) {
     $('#reevaluate-ticket-container').remove();
 
-    let allowedSubd = [
-        30, // Developer
-        43, // Руководитель отдела
-        76, // Customer claims
-    ];
-
-    if (allowedSubd.indexOf(+userGlobalInfo.subdivision_id) === -1) return;
+    if (!isAuthority('ROLE_HELPDESK-DETAILS-CLAIM-REEVALUATION')) return;
 
     $('.helpdesk-side-panel-setting-checkbox').append(`
         <div style="margin: 10px 0;" id="reevaluate-ticket-container" class="ah-tooltip-wrapper ah-disabled">
@@ -3877,16 +3868,6 @@ function getReevaluateTLTagId(leaderLogin) {
 //++++++++++ парсинг айди айтемов в комменте ++++++++++//
 function parseItemIdsInTicket() {
     // console.log('parseItemIdsInTicket Func');
-
-    var subdivisionId = +userGlobalInfo.subdivision_id;
-    var allowedSubdivisionIds = [
-        32, // Abuse
-        41, // Bikeshenko
-        42, // Karnacheva
-        30  // Script Dev
-    ];
-
-    if (allowedSubdivisionIds.indexOf(subdivisionId) == -1) return;
 
     $('.sh-parsing-tools-holder').remove();
     $('#parsed-item-ids').remove();

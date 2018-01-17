@@ -82,13 +82,8 @@ function renderSanctionIPPopup(ip, ticketLink) {
 
     var byTellCallBtn = $(bodyForm).find('[name="ticketLink"]').next();
 
-    var allowedSubdivisions = [30, // developer
-        31, // prosupport
-        49]; //protools
-    var subdivisionId = +userGlobalInfo.subdivision_id;
-
     $(byTellCallBtn).click(function() {
-        if (allowedSubdivisions.indexOf(subdivisionId) == -1) {
+        if (!isAuthority('ROLE_SYSTEM-ACCESS-SANCTION-IP-BY-CALL')) {
             alert('У вас нет доступа для включения этой опции.');
             return;
         }
@@ -117,7 +112,7 @@ function renderSanctionIPPopup(ip, ticketLink) {
             return;
         }
 
-        if ( $(byTellCallBtn).hasClass('sh-active-btn') && ~allowedSubdivisions.indexOf(subdivisionId)) {
+        if ( $(byTellCallBtn).hasClass('sh-active-btn') && isAuthority('ROLE_SYSTEM-ACCESS-SANCTION-IP-BY-CALL')) {
             ticketLink = 'По звонку';
         } else {
             if (!helpdeskLinkPatter.test(ticketLink)) {

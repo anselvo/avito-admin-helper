@@ -1,6 +1,6 @@
 
 function personalStatistics() {
-    if (window.location.href.indexOf("helpdesk") + 1) return;
+    // if (window.location.href.indexOf("helpdesk") + 1) return;
 
     $('body').append('<div id="ah-rightShotBar"></div>');
     $('#ah-rightShotBar').append('<div id="ah-personalStatistics"></div>');
@@ -108,7 +108,7 @@ function closePre() {
 }
 
 //----- Compare Photos -----//
-var comparePhotoLoadItemsCount;
+// var comparePhotoLoadItemsCount;
 
 function comparePhotoPre() {
 

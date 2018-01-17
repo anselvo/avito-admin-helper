@@ -413,14 +413,7 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (userGlobalInfo.subdivision.subdivision === 'DJB' ||
-        userGlobalInfo.subdivision.subdivision === 'DSR' ||
-        userGlobalInfo.subdivision.subdivision === 'D3D' ||
-        userGlobalInfo.subdivision.subdivision === 'DBH' ||
-        userGlobalInfo.subdivision.subdivision === 'DRE' ||
-        userGlobalInfo.subdivision.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision.subdivision === 'SD') clickPostUserAgent();
+    if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO-AUTOLOAD')) clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))

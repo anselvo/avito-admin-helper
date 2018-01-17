@@ -37,14 +37,7 @@ function showItemsInfoForItems() {
 
     $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
 
-    if (userGlobalInfo.subdivision.subdivision === 'DJB' ||
-        userGlobalInfo.subdivision.subdivision === 'DSR' ||
-        userGlobalInfo.subdivision.subdivision === 'D3D' ||
-        userGlobalInfo.subdivision.subdivision === 'DBH' ||
-        userGlobalInfo.subdivision.subdivision === 'DRE' ||
-        userGlobalInfo.subdivision.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision.subdivision === 'DTR' ||
-        userGlobalInfo.subdivision.subdivision === 'SD') clickPostShowItemInfo();
+    if (isAuthority('ROLE_ITEMS-SEARCH-ITEM-INFO-AUTOLOAD')) clickPostShowItemInfo();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'I'.charCodeAt(0))
@@ -170,14 +163,20 @@ function userInfoForPost() {
         params = params ? params.replace(/"/g, "&quot;") : '{}';
         var cityItem = $(itemList[i]).parents('tr').attr("data-location");
 
-        if (scriptGlobal === 'moderator') {
+        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--ABUSES')) {
             $(itemList[i])
-                .prepend('<span class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px; float: right;">Info</span>')
                 .prepend('<span class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px; float: right">Abuses</span>');
         }
 
-        $(itemList[i])
-            .prepend('<span class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
+        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--INFO')) {
+            $(itemList[i])
+                .prepend('<span class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px; float: right;">Info</span>');
+		}
+
+        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--WL')) {
+            $(itemList[i])
+                .prepend('<span class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
+		}
 
     }
 
@@ -439,7 +438,7 @@ function searchInform() {
 		}
 		
 		var href = getSearchInformHref(queryStringParams);
-		
+
 		$(descrBlock).find('.it_tiles').append('<a target="_blank" href="'+ href +'" class="" style="">Поиск информ</a>');
 		
 		// console.log($(this).data('id'), price, isPriceMin);

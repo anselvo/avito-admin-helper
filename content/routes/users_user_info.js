@@ -710,82 +710,6 @@ function addIPSystemAccessLink() {
 }
 //+++++ ссылки на system/access рядом с IP +++++//
 
-//----- логирование отвязанных номеров  -----//
-function logUnferifiedPhone() {
-    var subdivision = userGlobalInfo.subdivision.subdivision.toLowerCase();
-    var allowedSubdivisions = ['s1', 'sa', 'sd', 'tl'];
-
-    if (allowedSubdivisions.indexOf(subdivision) == -1)
-        return;
-
-    var parentFormGroup = $('#phones');
-    var phoneMoreBlock = $(parentFormGroup).find('.phone-stat-more');
-
-    $(phoneMoreBlock).each(function (i, item) {
-        var phoneNumber = $(item).find('button.i-verify').attr('data-phone');
-        $(item).prepend('<button type="button" class="sh-default-btn addOld-phone-to-log" title="" style="float: left; margin-right: 4px;" data-phone=' + phoneNumber + '>В лог</button>');
-    });
-
-    $('.addOld-phone-to-log').click(function () {
-        var phone = $(this).attr('data-phone');
-        var avitoUserId = getParamOnUserInfo('user-id');
-        var avitoUserEmail = getParamOnUserInfo('e-mail');
-        var userId = +userGlobalInfo.id;
-
-        var obj = {
-            phone: phone,
-            avitoUserId: avitoUserId,
-            avitoUserEmail: avitoUserEmail,
-            userId: userId
-        }
-
-        // console.log(obj);
-        $('#sh-loading-layer').show();
-        addPhoneToDB(obj);
-    });
-}
-
-function addPhoneToDB(data) {
-    chrome.runtime.sendMessage({
-        action: 'XMLHttpRequest',
-        method: "POST",
-        url: "http://avitoadm.ru/support_helper/phone_log/addPhone.php",
-        data: "logPhone=" + JSON.stringify(data),
-    },
-            function (response) {
-                $('#sh-loading-layer').hide();
-                // console.log(response);
-                if (~response.indexOf('Неверный запрос') || response == 'error') {
-                    setTimeout(function () {
-                        alert('Произошла техническая ошибка.');
-                    }, 100);
-                    return;
-                }
-
-                if (response == 'Добавлен') {
-                    setTimeout(function () {
-                        alert('Ошибка: для этого пользователя данный номер телефона уже был добавлен в лог за последние 60 минут.');
-                    }, 100);
-                    return;
-                }
-
-
-                // console.log(response);
-                try {
-                    var json = JSON.parse(response);
-                    var phone = json.phone;
-                } catch (e) {
-                    setTimeout(function () {
-                        alert('Произошла техническая ошибка.');
-                    }, 100);
-                    return;
-                }
-                outTextFrame('Телефон "' + phone + '" был успешно добавлен в лог.');
-            }
-    );
-}
-//+++++ логирование отвязанных номеров +++++//
-
 // элементы на странице юзера (траффики)
 function usersInfoElements() {
     $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="copyEmailJH" class="sh-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="height:30px;padding: 5px 10px; font-size: 12px; margin-left: -30px; position: relative;"><span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
@@ -816,10 +740,15 @@ function feesAvailableModal() {
     observe(feesAvailableNode);
     observe(feesAvailableGlobalNode);
 
-    feesAvailableNode.addEventListener('click', handleClick);
-    feesAvailableNode.addEventListener('change', handleChange);
-    feesAvailableGlobalNode.addEventListener('click', handleClick);
-    feesAvailableGlobalNode.addEventListener('change', handleChange);
+    if (feesAvailableNode) {
+        feesAvailableNode.addEventListener('click', handleClick);
+        feesAvailableNode.addEventListener('change', handleChange);
+    }
+
+    if (feesAvailableGlobalNode) {
+        feesAvailableGlobalNode.addEventListener('click', handleClick);
+        feesAvailableGlobalNode.addEventListener('change', handleChange);
+    }
 
     function observe(node) {
         if (!node) return;

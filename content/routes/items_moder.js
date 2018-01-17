@@ -1,46 +1,46 @@
 function premoderationsStartNew() {
-    // таймер
-    preTimer();
+    // // таймер
+    // preTimer();
 
-    // элементы для каждого айтема
-    addElementsForEachItemNew();
+    // // элементы для каждого айтема
+    // addElementsForEachItemNew();
 
-    // Добавляет Info и Abuse и Block user
-    addSomeElementsNew();
+    // // Добавляет Info и Abuse и Block user
+    // addSomeElementsNew();
 
-    // Сравнение фото
-    comparePhotoPreNew();
+    // // Сравнение фото
+    // comparePhotoPreNew();
 
-    // Закрывание прежки
-    closePre();
+    // // Закрывание прежки
+    // closePre();
 
-    // Красит кнопки, если флагов больше двух
-    colorButtons();
+    // // Красит кнопки, если флагов больше двух
+    // colorButtons();
 
-    // spam links
-    eyeLinks($('.item-info-name'));
+    // // spam links
+    // eyeLinks($('.item-info-name'));
 
-    // искать картинки в интернете
-    searchByImageLinks();
+    // // искать картинки в интернете
+    // searchByImageLinks();
 
-    // Добавление инфы в комперисон
-    comparisonInfo();
+    // // Добавление инфы в комперисон
+    // comparisonInfo();
 
-    // убрать лишние категории для модеров
+    // убрать лишние категории для модеров (не используется)
     // hideSubcategory();
 
-    // пометка объявлений, что они тестовые
-    abTest();
+    // // пометка объявлений, что они тестовые
+    // abTest();
 
-    // добавление ссылок для антифрода
-    antifraudLinks('pre');
+    // // добавление ссылок для антифрода
+    // antifraudLinks('pre');
 
-    // убрать "Искать тестовые" объявления из ПРЕ
-    hideTestItemsSearch();
+    // // убрать "Искать тестовые" объявления из ПРЕ
+    // hideTestItemsSearch();
 }
 
 function hideTestItemsSearch() {
-    if (userGlobalInfo.division_name === "Moderator")
+    // if (userGlobalInfo.division_name === "Moderator")
         $('[name="isTest"]').parents('.form-group').hide();
 }
 
@@ -134,51 +134,51 @@ function abTestCheckedPhoto($items) {
     }
 }
 
-function hideSubcategory() {
-    let goodCategory = ['1', '4', '110', '111', '112', '113', '5', '2', '6', '7', '35', '8'];
-
-    if (userGlobalInfo.subdivision.subdivision !== 'TL' && userGlobalInfo.subdivision.subdivision !== 'SD'  && userGlobalInfo.subdivision.subdivision !== 'ME') {
-        $('.subcategory:not(:contains(Вакансии), :contains(Резюме))').hide();
-        $('.js-multiselect-reasons').hide();
-
-        let url = new URL(location).searchParams;
-        let category = url.getAll('categoryId[]');
-        let reasons = url.getAll('reasons[]');
-
-        let redirect = false;
-
-        if (reasons.length > 0) redirect = true;
-
-        for (let i = 0; i < category.length; ++i) {
-            let exist = false;
-            for (let j = 0; j < goodCategory.length; ++j) {
-                if (category[i] === goodCategory[j]) exist = true;
-            }
-
-            if (!exist) {
-                redirect = true;
-                break;
-            }
-        }
-
-        if (redirect) {
-            chrome.runtime.sendMessage({
-                action: 'sendNotification',
-                username: userGlobalInfo.username,
-                head: 'Информация о сотруднике',
-                body: 'Ваш сотрудник ' + userGlobalInfo.surname + ' ' + userGlobalInfo.name + ' (' + userGlobalInfo.username + ') пытался зайти на страницу премодерации с запрещенными параметрами и был перенаправлен на чистую страницу премодерации.\n\nИспользуемые параметры:\nКатегории: ' + category + '\nПричины: ' + reasons,
-                to_type: '|username|',
-                to_name: '|' + userGlobalInfo.teamlead_login + '|'
-            }, function(response) {
-                console.log(response);
-            });
-
-
-            window.onbeforeunload = null;
-            location.href = "https://adm.avito.ru/items/moder";
-        }
-    }
-}
+// function hideSubcategory() {
+//     let goodCategory = ['1', '4', '110', '111', '112', '113', '5', '2', '6', '7', '35', '8'];
+//
+//     if (userGlobalInfo.subdivision.subdivision !== 'TL' && userGlobalInfo.subdivision.subdivision !== 'SD'  && userGlobalInfo.subdivision.subdivision !== 'ME') {
+//         $('.subcategory:not(:contains(Вакансии), :contains(Резюме))').hide();
+//         $('.js-multiselect-reasons').hide();
+//
+//         let url = new URL(location).searchParams;
+//         let category = url.getAll('categoryId[]');
+//         let reasons = url.getAll('reasons[]');
+//
+//         let redirect = false;
+//
+//         if (reasons.length > 0) redirect = true;
+//
+//         for (let i = 0; i < category.length; ++i) {
+//             let exist = false;
+//             for (let j = 0; j < goodCategory.length; ++j) {
+//                 if (category[i] === goodCategory[j]) exist = true;
+//             }
+//
+//             if (!exist) {
+//                 redirect = true;
+//                 break;
+//             }
+//         }
+//
+//         if (redirect) {
+//             chrome.runtime.sendMessage({
+//                 action: 'sendNotification',
+//                 username: userGlobalInfo.username,
+//                 head: 'Информация о сотруднике',
+//                 body: 'Ваш сотрудник ' + userGlobalInfo.surname + ' ' + userGlobalInfo.name + ' (' + userGlobalInfo.username + ') пытался зайти на страницу премодерации с запрещенными параметрами и был перенаправлен на чистую страницу премодерации.\n\nИспользуемые параметры:\nКатегории: ' + category + '\nПричины: ' + reasons,
+//                 to_type: '|username|',
+//                 to_name: '|' + userGlobalInfo.teamlead_login + '|'
+//             }, function(response) {
+//                 console.log(response);
+//             });
+//
+//
+//             window.onbeforeunload = null;
+//             location.href = "https://adm.avito.ru/items/moder";
+//         }
+//     }
+// }
 
 function comparisonInfo() {
     let target = $('.js-modal-content')[0];

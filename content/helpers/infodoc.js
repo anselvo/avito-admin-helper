@@ -1,24 +1,24 @@
 function startInfoDoc() {
-    console.log('infoDoc script start');
+    // console.log('infoDoc script start');
+    //
+    // chrome.runtime.onMessage.addListener(function (request) {
+    //     if (request.onUpdated === 'ticketUser')
+    //         setTimeout(infoDocTicketUser, 200);
+    //
+    //     if (request.onUpdated === 'ticketInfo')
+    //         setTimeout(infoDocTicketInfo, 100);
+    //
+    //     if (request.onUpdated === 'ticketQueue')
+    //         setTimeout(infoDocTicketQueue, 100);
+    // });
 
-    chrome.runtime.onMessage.addListener(function (request) {
-        if (request.onUpdated === 'ticketUser')
-            setTimeout(infoDocTicketUser, 200);
-
-        if (request.onUpdated === 'ticketInfo')
-            setTimeout(infoDocTicketInfo, 100);
-
-        if (request.onUpdated === 'ticketQueue')
-            setTimeout(infoDocTicketQueue, 100);
-    });
-
-    // загрузка
-    $('body').append(''+
-    '<div id="sh-loading-layer">'+
-        '<div class="sh-cssload-container">'+
-            '<div class="sh-cssload-whirlpool"></div>'+
-        '</div>'+
-    '</div>');
+    // // загрузка
+    // $('body').append(''+
+    // '<div id="sh-loading-layer">'+
+    //     '<div class="sh-cssload-container">'+
+    //         '<div class="sh-cssload-whirlpool"></div>'+
+    //     '</div>'+
+    // '</div>');
 
     // User info
     var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
@@ -26,104 +26,104 @@ function startInfoDoc() {
             || shortUserLinkReg.test(currentUrl)
             || ~currentUrl.indexOf('https://adm.avito.ru/adm/users/user/info/')) {
 
-        // сопоставления логинов с категорией
-        adminTableCategory();
+        // // сопоставления логинов с категорией
+        // adminTableCategory();
 
-            // парсер комментов
-            linksOnComments('td.is-break', currentUrl);
+            // // парсер комментов
+            // linksOnComments('td.is-break', currentUrl);
             
-            // индикаторы
-            addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager',
-                'onlyBankTransfer', 'REPremium', 'extension']);
+            // // индикаторы
+            // addIndicatorsUserInfo(['inn', 'legalEntity', 'auto', 'shop', 'subscription', 'persManager',
+            //     'onlyBankTransfer', 'REPremium', 'extension']);
 
-        // переход в HD
-        linkToHDOnUser();
+        // // переход в HD
+        // linkToHDOnUser();
 
-        copyDataToClipboard(['e-mail', 'phones', 'companyE-mail', 'inn']);
+        // copyDataToClipboard(['e-mail', 'phones', 'companyE-mail', 'inn']);
 
-        addFixedTools($('body'), ['scroll-top']);
+        // addFixedTools($('body'), ['scroll-top']);
 
-        addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+        // addWlLinkOnUserInfo(); // переход в ВЛ со страницы юзера (все статусы, последние пол года)
     }
 
     // users/search
     if (currentUrl.indexOf('https://adm.avito.ru/users/search') + 1
         || currentUrl.indexOf('https://adm.avito.ru/adm/users/search') + 1) {
-        addInfoDocQueueLink($('.header__title'));
+        // addInfoDocQueueLink($('.header__title'));
     }
     // Account info
     if (currentUrl.indexOf('https://adm.avito.ru/adm/users/account/info/') + 1
             || currentUrl.indexOf('https://adm.avito.ru/users/account/info/') + 1) {
-        // парсер комментов
-        linksOnComments('td.is-break', currentUrl);
+        // // парсер комментов
+        // linksOnComments('td.is-break', currentUrl);
 
-        // добавление кнопок подсчета в Account info
-        countMoneyAccount();
+        // // добавление кнопок подсчета в Account info
+        // countMoneyAccount();
 
-        // дополнения к операциям резервирования
-        reservedOperation('/users/account/info');
-        userViewOperations();
+        // // дополнения к операциям резервирования
+        // reservedOperation('/users/account/info');
+        // userViewOperations();
 
         // addWLLinkForDocumentsAccountInfo();
-        addWlLinkAccountInfo(getWlLinkForDocuments, {
-            linkName: 'Сумма закрывающих'
-        });
+        // addWlLinkAccountInfo(getWlLinkForDocuments, {
+        //     linkName: 'Сумма закрывающих'
+        // });
 
-        addPackageInfoAccountInfo();
+        // addPackageInfoAccountInfo();
     }
 
     // walletlog
     if (currentUrl.indexOf('https://adm.avito.ru/adm/billing/walletlog') + 1
             || currentUrl.indexOf('https://adm.avito.ru/billing/walletlog') + 1) {
-        // дополнения к операциям резервирования
-        reservedOperation('/billing/walletlog');
+        // // дополнения к операциям резервирования
+        // reservedOperation('/billing/walletlog');
 
-        countMoneyWalletlog();
+        // countMoneyWalletlog();
 
-        addPackageInfoWalletlog();
+        // addPackageInfoWalletlog();
     }
 
     // helpdesk
     if (~currentUrl.indexOf('https://adm.avito.ru/helpdesk')) {
 
-        const app = document.getElementById('app');
-        const observer = new MutationObserver(function (mutations) {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1
-                        && node.classList.contains('helpdesk-tab-pane')
-                        && [].find.call(node.querySelectorAll('h4'),
-                            item => ~item.className.indexOf('details-left-panel-title'))) {
+        // const app = document.getElementById('app');
+        // const observer = new MutationObserver(function (mutations) {
+        //     mutations.forEach(mutation => {
+        //         mutation.addedNodes.forEach(node => {
+        //             if (node.nodeType === 1
+        //                 && node.classList.contains('helpdesk-tab-pane')
+        //                 && [].find.call(node.querySelectorAll('h4'),
+        //                     item => ~item.className.indexOf('details-left-panel-title'))) {
+        //
+        //                 infoDocTicketInfo();
+        //             }
+        //         });
+        //     });
+        // });
+        //
+        // const config = {childList: true, subtree: true};
+        // observer.observe(app, config);
 
-                        infoDocTicketInfo();
-                    }
-                });
-            });
-        });
-
-        const config = {childList: true, subtree: true};
-        observer.observe(app, config);
-
-        findAgentID(); // ID агента
-
-        getAllUsers(); // инфа обо всех пользователях
+        // findAgentID(); // ID агента
+        //
+        // getAllUsers(); // инфа обо всех пользователях
     }
 
     // billing/invoices
     if (~currentUrl.indexOf('https://adm.avito.ru/billing/invoices')
         || ~currentUrl.indexOf('https://adm.avito.ru/adm/billing/invoices')) {
-        showUsersIdsBillingInvoices();
+        // showUsersIdsBillingInvoices();
     }
 
     // root
     let mainPageReg = /adm\.avito\.ru\/$/i;
     if (mainPageReg.test(currentUrl)) {
-        $('section.content').prepend(`
-            <div class="ah-infodoc-queue-link-holder"></div>
-            <div class="ah-clearfix"></div>
-        `);
-
-        addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
+        // $('section.content').prepend(`
+        //     <div class="ah-infodoc-queue-link-holder"></div>
+        //     <div class="ah-clearfix"></div>
+        // `);
+        //
+        // addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
     }
 }
 
@@ -131,39 +131,39 @@ function infoDocTicketInfo() {
     // ассигни сразу на себя
 //    changeAssigneeToMe(localStorage.agentID);
 
-    // смена ассигни
-    changeAssignee();
+    // // смена ассигни
+    // changeAssignee();
 
-    // фиксированный контейнер (настройки, кнопка наверх)
-    addFixedTools($('div.col-xs-3:eq(1)'), ['scroll-top']);
+    // // фиксированный контейнер (настройки, кнопка наверх)
+    // addFixedTools($('div.col-xs-3:eq(1)'), ['scroll-top']);
     
-    // инфа об агента
-    showAgentInfoTicket();
+    // // инфа об агента
+    // showAgentInfoTicket();
 
-    copyTicketId(); // копирование айди тикета
+    // copyTicketId(); // копирование айди тикета
 
-    copyCurrentTicketLink(); // копирование ссылки на тикет
+    // copyCurrentTicketLink(); // копирование ссылки на тикет
 }
 
 function infoDocTicketUser() {
-    // копирование мыла юзера в буфер
-    addCopyUserMailInTicket();
+    // // копирование мыла юзера в буфер
+    // addCopyUserMailInTicket();
 
-    // простановка коммента на УЗ из HD
-    addCommentOnUserFromTicket();
+    // // простановка коммента на УЗ из HD
+    // addCommentOnUserFromTicket();
 }
 
 function infoDocTicketQueue() {
-    var timer = setInterval(() => {
-        var loadingVisible = $('.helpdesk-loading')
-                .hasClass('helpdesk-loading_visible');
-        if (!loadingVisible) {
-            // открывать тикеты в новой вкладке
-            openTicketInNewTab();
-            
-            showAgentInfoQueue();
-            
-            clearInterval(timer);
-        }
-    }, 50);
+    // var timer = setInterval(() => {
+    //     var loadingVisible = $('.helpdesk-loading')
+    //             .hasClass('helpdesk-loading_visible');
+    //     if (!loadingVisible) {
+    //         // // открывать тикеты в новой вкладке
+    //         // openTicketInNewTab();
+    //
+    //         showAgentInfoQueue();
+    //
+    //         clearInterval(timer);
+    //     }
+    // }, 50);
 }
