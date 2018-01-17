@@ -1884,7 +1884,7 @@ function addCommentOnUserFromTicket() {
 	
     $('.helpdesk-additional-info-panel div:eq(0) ').after('<div class="sh-comment-onuser-wrapper"><textarea class="form-control" id="sh-areaComment" placeholder="Оставить комментарий на УЗ" rows="3"></textarea><input type="button" class="btn btn-primary btn-success" value="Add Comment" title="" id="addComment" style="float: right; margin-top: 10px; outline: none;"/><br><br><hr class="sh-comment-onuser-hr"></div>');
 
-    if (scriptGlobal !== 'infoDoc') {
+    if (isAuthority('ROLE_HELPDESK-DETAILS-COMMENT-ON-USER--TICKET-LINK')) {
         let ticketLink = getCurrentTicketLink();
         $('#sh-areaComment').val(ticketLink + ' ');
     }

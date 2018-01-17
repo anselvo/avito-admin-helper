@@ -1,5 +1,4 @@
 let userGlobalInfo;
-let scriptGlobal;
 let currentUrl;
 let springUrl;
 let admUrl;
@@ -43,8 +42,6 @@ $(function () {
             admUrl = result.connectInfo.admUrl;
         }
         if (result.connectInfo.user) userGlobalInfo = result.connectInfo.user.principal;
-
-        scriptGlobal = result.script;
 
         startNotification(result.notifications);
 
@@ -161,6 +158,7 @@ $(function () {
             'ROLE_HELPDESK-DETAILS-CHANGE-ALL-LINKS': true,
             'ROLE_HELPDESK-DETAILS-LINKS-ON-COMMENTS': true,
             'ROLE_HELPDESK-DETAILS-COMMENT-ON-USER': true,
+            'ROLE_HELPDESK-DETAILS-COMMENT-ON-USER--TICKET-LINK': true,
             'ROLE_HELPDESK-DETAILS-UNBLOCK-USER': true,
             'ROLE_HELPDESK-DETAILS-USER-INFO': true,
             'ROLE_HELPDESK-DETAILS-MESSENGER-LINK': true,

@@ -306,11 +306,6 @@ function getCountMoneyBtn(data) {
 
     let itemLink = data.itemLink || '';
     let itemId = itemLink.split('/')[4];
-    // if (scriptGlobal === 'support') {
-    //     if (!isFinite(itemId)) {
-    //         return;
-    //     }
-    // }
 
     let value = '+';
     let btnClass = 'btn-success';
