@@ -67,7 +67,6 @@ $(function () {
             'ROLE_USER-COPY-DATA--URL': true,
             'ROLE_USER-COPY-DATA--COMPANY-EMAIL': true,
             "ROLE_USER-COPY-DATA--INN": true,
-            "ROLE_USER-COPY-EMAIL-FULL": true,
             'ROLE_USER-UNVERIFY_PHONES': true,
             'ROLE_USER-PHONES-VERIFICATION_LINK': true,
             'ROLE_USER-MESSENGER-LINK': true,
@@ -608,9 +607,6 @@ function handleRoles() {
     if (isAuthority('ROLE_USER-COPY-DATA')) { // копирование данных
         roleHandler.userCopyData();
     }
-    if (isAuthority('ROLE_USER-COPY-EMAIL-FULL')) { // копирование email полностью (траффики)
-        roleHandler.userCopyEmailFull();
-    }
     if (isAuthority('ROLE_USER-UNVERIFY_PHONES')) { // отвязка номеров с комментами
         roleHandler.unverifyPhones();
     }
@@ -947,12 +943,6 @@ RoleHandler.prototype.userCopyData = function() {
             arr.push('inn');
         }
         copyDataToClipboard(arr);
-    }
-};
-
-RoleHandler.prototype.userCopyEmailFull = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
-        usersInfoElements();
     }
 };
 
