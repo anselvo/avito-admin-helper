@@ -1,4 +1,3 @@
-let script = null;
 let stompClient = null;
 let connectInfo = {
     adm_auth: false,
@@ -26,7 +25,7 @@ chrome.runtime.onInstalled.addListener(details => {
     if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
-    getStorageInfo();
+    budgetStatus();
 
 	// определяем кто залогинен в админку
 	getCookieInfo();
@@ -53,8 +52,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
 chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
-            if (script === 'moderator') moderationListener(details);
-            if (script === 'smm') smmListener(details);
+            moderationListener(details);
+            smmListener(details);
 		}
     },
     {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
@@ -122,11 +121,9 @@ function addChromeNotification(message) {
     chrome.notifications.create(options);
 }
 
-function getStorageInfo() {
+function budgetStatus() {
     chrome.storage.local.get(result => {
-        script = result.script ? result.script : null;
-
-        setBudgetIcon(script);
+        setBudgetIcon(result.script);
     });
 
     chrome.storage.onChanged.addListener(result => {
@@ -735,13 +732,20 @@ function iconEnable(tabId) {
 }
 
 function setBudgetIcon(script) {
-    if (script) {
-		chrome.browserAction.setBadgeText({text: 'On'});
+    switch (script) {
+        case true:
+            chrome.browserAction.setBadgeText({text: 'On'});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#e2442c'});
 
-        console.log('Content scripts - On');
-	} else {
-		chrome.browserAction.setBadgeText({text: "Off"});
+            console.log('Content scripts - On');
+            break;
+        case false:
+            chrome.browserAction.setBadgeText({text: "Off"});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#595959'});
 
-        console.log('Content scripts - Off');
-	}
+            console.log('Content scripts - Off');
+            break;
+        default:
+            chrome.browserAction.setBadgeText({text: ''});
+    }
 }

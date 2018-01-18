@@ -124,6 +124,7 @@ function pageGenerator(body, isNav) {
 
 
     if (isNav) navGenerator();
+    else scriptSwitch(null);
 }
 
 function navRemove() {
