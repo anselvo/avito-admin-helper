@@ -1,4 +1,4 @@
-let script = null, password = null;
+let script = null;
 let stompClient = null;
 let connectInfo = {
     adm_auth: false,
@@ -104,8 +104,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
 
         case "connect":
             if (request.password) {
-                chrome.storage.local.set({password: request.password});
-                password = request.password;
+                chrome.storage.local.set({ password: request.password });
             }
 
             connect();
@@ -118,7 +117,7 @@ function addChromeNotification(message) {
         type: "basic",
         title: "Admin.Helper",
         message: message,
-        iconUrl: "include/image/notification_logo_black_rad.png",
+        iconUrl: "include/image/black/logo_notification.png",
     };
     chrome.notifications.create(options);
 }
@@ -126,7 +125,6 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         script = result.script ? result.script : null;
-        password = result.password ? result.password : null;
 
         setBudgetIcon(script);
     });
@@ -176,26 +174,31 @@ function getCookieInfo() {
 }
 
 function connect() {
-    if (connectInfo.adm_auth)
-        login(connectInfo.adm_username, password)
-            .then(() => {
-                connectInfo.spring_auth = true;
-                connectInfo.error = null;
+    if (connectInfo.adm_auth) {
+        chrome.storage.local.get('password', result => {
+            const password = result.password ? result.password : null;
 
-                startWebSocket();
-                return getPrincipal();
-            }, error => {
-                connectInfo.spring_auth = false;
+            login(connectInfo.adm_username, password)
+                .then(() => {
+                    connectInfo.spring_auth = true;
+                    connectInfo.error = null;
 
-                if (error.message === 'No message available') error.message = error.error;
-                if (error.message === 'Failed to fetch') error.status = "(failed)";
-                if (error.message === 'Authentication with ajax is failure') {
-                    if (password) error.status = 4012;
-                    else error.status = 4011;
-                }
-                errorMessage(error.status, error.message);
-            })
-            .then(() => setConnectInfoToStorage());
+                    startWebSocket();
+                    return getPrincipal();
+                }, error => {
+                    connectInfo.spring_auth = false;
+
+                    if (error.message === 'No message available') error.message = error.error;
+                    if (error.message === 'Failed to fetch') error.status = "(failed)";
+                    if (error.message === 'Authentication with ajax is failure') {
+                        if (password) error.status = 4012;
+                        else error.status = 4011;
+                    }
+                    errorMessage(error.status, error.message);
+                })
+                .then(() => setConnectInfoToStorage());
+        });
+    }
 }
 
 function disconnect() {
