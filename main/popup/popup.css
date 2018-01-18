@@ -127,18 +127,14 @@ body {
     to { transform: rotate(360deg) }
 }
 
-/* TABLE STYLE */
-
-table {
+.ah-table-settings {
     width: 100%;
     margin: 0 auto;
     border-radius: 4px;
     padding: 10px;
 }
 
-/* INPUT STYLE */
-
-input[type=button], input[type=submit] {
+.ah-button {
     text-transform: uppercase;
     color: #fff;
     background: #595959;
@@ -154,7 +150,7 @@ input[type=button], input[type=submit] {
     margin: 0 3px 0;
 }
 
-input[type=text], input[type=password] {
+.ah-password {
     text-transform: uppercase;
     color: #fff;
     background: #595959;
@@ -168,15 +164,15 @@ input[type=text], input[type=password] {
     margin: 0 3px 0;
 }
 
-input::-webkit-input-placeholder { color: #d9d9d9; }
+.ah-password::-webkit-input-placeholder { color: #d9d9d9; }
 
 /* TOGGLE MATERIAL STYLE */
 
-input[type=checkbox] {
+.ah-checkbox {
     display: none;
 }
 
-label {
+.ah-checkbox-label {
     cursor: pointer;
     width: 35px;
     height: 18px;
@@ -187,7 +183,7 @@ label {
     border: 1px solid #3d3d3d;
 }
 
-label:after {
+.ah-checkbox-label:after {
     content: '';
     position: absolute;
     top: 2px;
@@ -199,16 +195,16 @@ label:after {
     transition: 0.3s;
 }
 
-input:checked + label {
+.ah-checkbox:checked + .ah-checkbox-label {
     background: #e84c3d;
 }
 
-input:checked + label:after {
+.ah-checkbox:checked + .ah-checkbox-label:after {
     left: calc(100% - 2px);
     transform: translateX(-100%);
 }
 
-label:active:after {
+.ah-checkbox-label:active:after {
     width: 20px;
 }
 

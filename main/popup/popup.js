@@ -94,12 +94,17 @@ function settingsPage() {
     div.className = 'ah-settings';
 
     const table = document.createElement('table');
+    table.className = 'ah-table-settings';
     for (let key in authorities) {
         if (authorities.hasOwnProperty(key)) {
             const tr = document.createElement('tr');
 
             const checked = authorities[key] ? 'checked' : '';
-            tr.innerHTML = `<td>${key}</td><td width="35"><input id="${key}" type="checkbox" name="settings" ${checked} /><label class="ah-checkbox" for="${key}"></label></td>`;
+            tr.innerHTML = `<td>${key}</td>
+                            <td width="35">
+                                <input id="${key}" class="ah-checkbox" type="checkbox" name="settings" ${checked} />
+                                <label class="ah-checkbox-label" for="${key}"></label>
+                            </td>`;
 
             table.appendChild(tr);
         }
@@ -121,9 +126,19 @@ function settingsPage() {
 function loadingPage() {
     const div = document.createElement('div');
     div.className = 'ah-loader';
-    div.innerHTML = `<div class="ah-loader-inner ah-loader-one"></div>
-                     <div class="ah-loader-inner ah-loader-two"></div>
-                     <div class="ah-loader-inner ah-loader-three"></div>`;
+
+    const divLoaderOne = document.createElement('div');
+    divLoaderOne.className = 'ah-loader-inner ah-loader-one';
+
+    const divLoaderTwo = document.createElement('div');
+    divLoaderOne.className = 'ah-loader-inner ah-loader-two';
+
+    const divLoaderThree = document.createElement('div');
+    divLoaderOne.className = 'ah-loader-inner ah-loader-three';
+
+    div.appendChild(divLoaderOne);
+    div.appendChild(divLoaderTwo);
+    div.appendChild(divLoaderThree);
 
     pageGenerator(div, false);
 }
@@ -161,7 +176,7 @@ function navGenerator() {
     navRight.className = 'ah-nav-right';
 
     const checked = script ? 'checked' : '';
-    navRight.appendChild(navElement(`<input id="switch" type="checkbox" ${checked} /><label class="ah-nav-switch" for="switch"></label>`));
+    navRight.appendChild(navElement(`<input id="switch" class="ah-checkbox" type="checkbox" ${checked} /><label class="ah-checkbox-label" for="switch"></label>`));
     navRight.appendChild(navElement(`<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">`));
 
     nav.appendChild(navLeft);
