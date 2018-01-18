@@ -1860,21 +1860,6 @@ function getUserBlockTimeFromHistory(userId, timeDisplayNode) {
 }
 //++++++++++ Причина блокировки юзера из админ хистори (> 1,5 месяца назад) ++++++++++//
 
-// Открываем все ссылки в новой вкладке
-function changeAllHDLinks() {
-    $('div.helpdesk-details-section a').attr("target", "_blank");
-
-    // меняем мыльники, которые уже с линками
-    var i = 0;
-    while ($('a[href ^= "mailto:"]').length > 0) {
-        // console.log('mailWithLink Comments Text find');
-
-        var mailWithLink = $('a[href ^= "mailto:"]').slice(i, i + 1).html();
-        $('a[href ^= "mailto:"]').slice(i, i + 1).attr('target', '_blank');
-        $('a[href ^= "mailto:"]').slice(i, i + 1).attr('href', 'https://adm.avito.ru/users/search?email=' + mailWithLink);
-    }
-}
-
 //---------- простановка коммента на УЗ из HD ----------//
 function addCommentOnUserFromTicket() {
 	$('.sh-comment-onuser-wrapper').remove();

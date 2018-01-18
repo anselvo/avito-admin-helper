@@ -43,6 +43,7 @@
 				"content/api/count_money.js",
 				"content/api/assistant.js",
 				"content/api/indicators.js",
+				"content/api/roles.js",
 
 				"content/routes/items_item_info.js",
 				"content/routes/items_search.js",

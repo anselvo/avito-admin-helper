@@ -116,8 +116,10 @@ function getTagsInfo() {
 
                 renderTagsPopup(); // создание попапа тегов один раз
 
-                renderQBWindow(); // создание окна QB один раз
-                updateQBInfo(); // удаляем все, что нет в наборе или удалено/деактивировано
+                if (isAuthority('ROLE_HELPDESK-DETAILS-QUICK-BUTTONS')) {
+                    renderQBWindow(); // создание окна QB один раз
+                    updateQBInfo(); // удаляем все, что нет в наборе или удалено/деактивировано
+                }
             }
     );
 }
