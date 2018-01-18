@@ -247,20 +247,29 @@ function getPrincipal() {
             if (response.status === 200) return response.json();
             else return errorListener(response);
         })
-        .then(json => connectInfo.spring_user = authoritiesParse(json), error => errorMessage(error.status, error.error));
+        .then(json => {
+            connectInfo.spring_user = json;
+            setAuthoritiesToStorage(json.principal.authorities);
+        }, error => errorMessage(error.status, error.error));
 }
 
-function authoritiesParse(json) {
-    const authorities = json.principal.authorities;
+function setAuthoritiesToStorage(authorities) {
+    chrome.storage.local.get('authorities', result => {
+        const tmp = result.authorities ? result.authorities : {};
 
-    let authoritiesParse = {};
-    for (let i = 0; i < authorities.length; ++i) {
-        authoritiesParse[authorities[i].authority] = true;
-    }
+        let authoritiesParse = {};
+        for (let i = 0; i < authorities.length; ++i) {
+            if (authorities[i].authority in tmp) {
+                authoritiesParse[authorities[i].authority] = tmp[authorities[i].authority];
+            } else {
+                authoritiesParse[authorities[i].authority] = true;
+            }
+        }
 
-    json.principal.authorities = authoritiesParse;
 
-    return json;
+        console.log({ authorities: authoritiesParse });
+        chrome.storage.local.set({ authorities: authoritiesParse });
+    });
 }
 
 function errorListener(response) {

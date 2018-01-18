@@ -1,5 +1,6 @@
 let version = chrome.runtime.getManifest().version;
 let script = false;
+let authorities = null;
 let connectInfo = null;
 
 $(function() {
@@ -10,6 +11,7 @@ $(function() {
     chrome.storage.local.get(result  => {
         script = result.script;
         connectInfo = result.connectInfo;
+        authorities = result.authorities;
 
         pageSelector();
     });
@@ -18,6 +20,11 @@ $(function() {
         if (changes.connectInfo) {
             connectInfo = changes.connectInfo.newValue;
             pageSelector();
+        }
+
+        if (changes.authorities) {
+            authorities = changes.authorities.newValue;
+            console.log(authorities);
         }
     });
 });
@@ -83,20 +90,27 @@ function errorPage(status, message) {
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
 function settingsPage() {
-    const authorities = connectInfo.spring_user.principal.authorities;
-
     const div = document.createElement('div');
     div.className = 'ah-settings';
 
     const table = document.createElement('table');
-    for (let authority in authorities) {
-        let id = authority;
-        const tr = document.createElement('tr');
+    for (let key in authorities) {
+        if (authorities.hasOwnProperty(key)) {
+            const tr = document.createElement('tr');
 
-        tr.innerHTML = `<td>${id}</td><td width="35"><input id="${id}" type="checkbox" name="settings" /><label class="ah-checkbox" for="${id}"></label></td>`;
+            const checked = authorities[key] ? 'checked' : '';
+            tr.innerHTML = `<td>${key}</td><td width="35"><input id="${key}" type="checkbox" name="settings" ${checked} /><label class="ah-checkbox" for="${key}"></label></td>`;
 
-        table.appendChild(tr);
+            table.appendChild(tr);
+        }
     }
+
+    table.addEventListener('change', event => {
+        authorities[event.target.id] = event.target.checked;
+
+        console.log({ authorities: authorities });
+        chrome.storage.local.set({ authorities: authorities });
+    });
 
     div.appendChild(table);
 
@@ -141,15 +155,14 @@ function navGenerator() {
     const navLeft = document.createElement('section');
     navLeft.className = 'ah-nav-left';
 
-    navLeft.appendChild(navElement('<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">'));
+    navLeft.appendChild(navElement(`<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">`));
 
     const navRight = document.createElement('section');
     navRight.className = 'ah-nav-right';
 
-    let checked = '';
-    if (script) checked = 'checked';
-    navRight.appendChild(navElement('<input id="switch" type="checkbox" ' + checked + ' /><label class="ah-nav-switch" for="switch"></label>'));
-    navRight.appendChild(navElement('<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">'));
+    const checked = script ? 'checked' : '';
+    navRight.appendChild(navElement(`<input id="switch" type="checkbox" ${checked} /><label class="ah-nav-switch" for="switch"></label>`));
+    navRight.appendChild(navElement(`<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">`));
 
     nav.appendChild(navLeft);
     nav.appendChild(navRight);
