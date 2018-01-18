@@ -34,8 +34,8 @@ function authPage() {
     div.innerHTML = `<div><img class="ah-user-avatar" src="http://spring.avitoadm.ru/employee/img/${connectInfo.spring_user.principal.avatar}"></div>
                      <div>
                         <div class="ah-user-name">${connectInfo.spring_user.principal.name} ${connectInfo.spring_user.principal.surname}</div>
-                        <div>${connectInfo.spring_user.principal.subdivision.divisionName}</div>
-                        <div>${connectInfo.spring_user.principal.shift.shift}, ${connectInfo.spring_user.principal.weekend.weekend}</div>
+                        <div class="ah-user-italic">${connectInfo.spring_user.principal.subdivision.divisionName}</div>
+                        <div class="ah-user-italic">${connectInfo.spring_user.principal.shift.shift}, ${connectInfo.spring_user.principal.weekend.weekend}</div>
                         <div><span>Skype: </span>${connectInfo.spring_user.principal.skype}</div>
                         <div><span>Email: </span>${connectInfo.spring_user.principal.email}</div>
                         <div><span>Phone: </span>${connectInfo.spring_user.principal.phone}</div>

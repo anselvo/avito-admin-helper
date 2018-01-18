@@ -98,13 +98,17 @@ body {
     margin: 3px;
 }
 
+.ah-user-info div span {
+    font-weight: bold;
+}
+
 .ah-user-name {
     font-weight: bold;
     font-size: 17px;
 }
 
-.ah-user-info div span {
-    font-weight: bold;
+.ah-user-italic {
+    font-style: italic;
 }
 
 /* animated image */
