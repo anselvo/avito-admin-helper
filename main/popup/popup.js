@@ -76,6 +76,7 @@ function errorPage(status, message) {
         chrome.runtime.sendMessage({ action: 'connect' });
     }
 
+    scriptSwitch(null);
     pageGenerator(div, false);
 }
 
@@ -122,9 +123,7 @@ function pageGenerator(body, isNav) {
     bodySelector.innerHTML = '';
     bodySelector.appendChild(body);
 
-
     if (isNav) navGenerator();
-    else scriptSwitch(null);
 }
 
 function navRemove() {
