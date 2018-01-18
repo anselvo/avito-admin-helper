@@ -87,15 +87,15 @@
 	],
 
     "icons": {
-		"16": "include/image/logo_black_rad.png",
-		"48": "include/image/logo_black_rad.png",
-		"128": "include/image/logo_black_rad.png",
-		"300": "include/image/logo_black_rad.png"
+		"16": "include/image/black/logo.png",
+		"48": "include/image/black/logo.png",
+		"128": "include/image/black/logo.png",
+		"300": "include/image/black/logo.png"
     },
 
     "browser_action": { 
         "default_title": "Admin.Helper",
-        "default_icon": "include/image/logo_black_rad.png",
+        "default_icon": "include/image/black/logo.png",
 		"default_popup": "main/popup/popup.html"
     }
 }

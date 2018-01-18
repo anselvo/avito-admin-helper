@@ -1,10 +1,11 @@
 let version = chrome.runtime.getManifest().version;
-let scriptList = [];
 let script = false;
 let connectInfo = null;
 
 $(function() {
-    loadingBar();
+    loadingPage();
+
+    $('#version').html('<span title="Версия расширения">Версия '+version+'</span>');
 
     chrome.storage.local.get(result  => {
         script = result.script;
@@ -22,200 +23,166 @@ $(function() {
 });
 
 function pageSelector() {
-    if (!connectInfo.error) mainPage();
-    else {
-        if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
-        else errorPage(connectInfo.error);
-    }
+    if (!connectInfo.error) authPage();
+    else errorPage(connectInfo.status, connectInfo.error);
 }
 
 // ОСНОВНАЯ СТРАНИЦА
-function mainPage() {
-    pageGenerator(
-		'Admin.Helper',
-		mainButtonGenerator(),
-		'',
-		'Удачного рабочего дня, ' + connectInfo.spring_user.principal.name + '!'
-	);
-}
+function authPage() {
+    let div = document.createElement('div');
+    div.className = 'ah-user-info';
+    div.innerHTML = `<div><img class="ah-user-avatar" src="http://spring.avitoadm.ru/employee/img/${connectInfo.spring_user.principal.avatar}"></div>
+                     <div>
+                        <div class="ah-user-name">${connectInfo.spring_user.principal.name} ${connectInfo.spring_user.principal.surname}</div>
+                        <div>${connectInfo.spring_user.principal.subdivision.divisionName}</div>
+                        <div>${connectInfo.spring_user.principal.shift.shift}, ${connectInfo.spring_user.principal.weekend.weekend}</div>
+                        <div><span>Skype: </span>${connectInfo.spring_user.principal.skype}</div>
+                        <div><span>Email: </span>${connectInfo.spring_user.principal.email}</div>
+                        <div><span>Phone: </span>${connectInfo.spring_user.principal.phone}</div>
+                     </div>`;
 
-
-function mainButtonGenerator() {
-    let html = '';
-
-    html += '<span class="avito-logo script-group horizontal">' +
-                '<img id="avitoLogo" src="../../include/image/logo_white.png">' +
-            '</span>' +
-            '<button id="mainScript" class="script-name script-group horizontal" name="script">Script' +
-                '<span class="script-toggler toggler-on">On</span>' +
-                '<span class="script-toggler toggler-off">Off</span>' +
-            '</button>' +
-            '<span class="script-group horizontal"><img id="settings" class="settings-logo" src="../../include/image/settings_white.png"></span>';
-
-    return html;
+    pageGenerator(div, true);
 }
 
 // СТРАНИЦА ОШИБОК
-function errorPage(error) {
-    pageGenerator(
-        'Ошибка',
-        error,
-        '<img id="avitoLogo" class="big-logo" src="../../include/image/logo_white.png">',
-        '',
-        true
-    );
+function errorPage(status, message) {
+    const div = document.createElement('div');
+    div.className = 'ah-error';
+    div.innerHTML = `<div class="ah-error-message">${message}</div>`;
 
-    chrome.runtime.sendMessage({ action: 'connect' });
-}
+    if (status === 401) {
+        const form = document.createElement('form');
+        form.className = 'ah-auth';
 
-// СТРАНИЦА ОШИБКИ АВТОРИЗАЦИИ
-function errorAuthPage(error) {
-	pageGenerator(
-		'Авторизация',
-		error,
-		'<input id="password" type="password" name="pass" placeholder="password" required>',
-		'<input class="btn" type="submit" id="submit" value="SIGN IN">',
-        true
-	);
-			
-	$('#submit').click(() => {
-	    const password = $('#password').val();
+        const pass = document.createElement('input');
+        pass.type = 'password';
+        pass.placeholder = 'password';
+        pass.className = 'ah-password';
+        pass.id = 'password';
+        pass.required = true;
 
-        chrome.runtime.sendMessage({ action: 'connect', password: password });
-	});
+        const submit = document.createElement('input');
+        submit.type = 'submit';
+        submit.placeholder = 'sign in';
+        submit.className = 'ah-button';
+        submit.id = 'submit';
+
+        form.appendChild(pass);
+        form.appendChild(submit);
+        form.addEventListener('submit', () => chrome.runtime.sendMessage({ action: 'connect', password: pass.value }));
+
+        div.appendChild(form);
+    } else {
+        chrome.runtime.sendMessage({ action: 'connect' });
+    }
+
+    pageGenerator(div, false);
 }
 
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
 function settingsPage() {
-    $('#settings').click(() => {
-        pageGenerator(
-            'Admin.Helper',
-            '',
-            settingsGenerator(),
-            ''
-        );
-
-        chooseScript();
-    });
-}
-
-
-function settingsGenerator() {
     const authorities = connectInfo.spring_user.principal.authorities;
-    console.log(authorities)
 
-    let html = '';
+    const div = document.createElement('div');
+    div.className = 'ah-settings';
+
+    const table = document.createElement('table');
     for (let authority in authorities) {
         let id = authority;
+        const tr = document.createElement('tr');
 
-        html += '<input type="radio" class="radioLabel" name="option" id="' + id + '" />' +
-            '<label class="script-name script-group vertical" for="' + id + '" title="' + authority + ' Helper">' + authority + '</label>';
+        tr.innerHTML = `<td>${id}</td><td width="35"><input id="${id}" type="checkbox" name="settings" /><label class="ah-checkbox" for="${id}"></label></td>`;
+
+        table.appendChild(tr);
     }
 
-    return html;
+    div.appendChild(table);
+
+    pageGenerator(div, true);
 }
 
-function chooseScript() {
-    $('label[for]').click(event => {
-        let clickScript = $(event.currentTarget).attr('for');
-        $('#'+clickScript).prop('checked', true);
+// СТРАНИЦА Загрузки
+function loadingPage() {
+    const div = document.createElement('div');
+    div.className = 'ah-loader';
+    div.innerHTML = `<div class="ah-loader-inner ah-loader-one"></div>
+                     <div class="ah-loader-inner ah-loader-two"></div>
+                     <div class="ah-loader-inner ah-loader-three"></div>`;
 
-        mainPage();
-    });
-}
-
-// СТРАНИЦА ПРИ ЛОГИНЕ
-function authPage() {
-	pageGenerator(
-        connectInfo.spring_user.principal.username,
-        mainButtonGenerator(),
-		'<ul class="journal">'+
-			'<li><a href="http://avitoadm.ru/journal/users.html">Сотрудники</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/">Cобытия на сайте S&M</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/tasklog.html">Task log</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/mod_stat.html">Moderation Statistics</a></li>'+
-			'<li><a href="http://avitoadm.ru/support_helper/allowlist/">Allow List</a></li>'+
-			'<li><a href="http://avitoadm.ru/intern_helper/internlog/">Intern log</a></li>'+
-			'<li><span id="sendNotification" class="click">Отправить уведомление</span></li>'+
-		'</ul>',
-	);
-
-	$('.journal').on('click', 'a', function() {
-		chrome.tabs.create({ url: $(this).attr('href') });
-		return false;
-	});
+    pageGenerator(div, false);
 }
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
-function pageGenerator(head, scripts, body, end, error) {
-    const $body = $('body');
+function pageGenerator(body, isNav) {
+    navRemove();
 
-    $body.empty();
+    const bodySelector = document.getElementById('body');
 
-	if (head !== '') {
-        $body.append('<div id="head" class="line"></div>');
-		$('#head').html(head);
-	}
+    bodySelector.innerHTML = '';
+    bodySelector.appendChild(body);
 
-	if (scripts !== '') {
-        if (!error) {
-            $body.append('<div id="scripts" class="radio_buttons"></div>');
-            $('#scripts').html(scripts);
 
-            scriptStatus();
-            settingsPage();
-        } else {
-            $body.append('<div id="error" class="line"></div>');
-            $('#error').html(scripts);
-        }
-    }
-	
-	if (body !== '') {
-        $body.append('<div id="body" class="line"></div>');
-		
-		$('#body').html(body);
-	} else {
-		$('#scripts').css('margin', '35px 0');
-	}
-	
-	if (end !== '') {
-        $body.append('<div id="end" class="line"></div>');
-		$('#end').html(end);
-	}
-
-    $body.append('<div id="version"></div>');
-	$('#version').html('<span title="Версия расширения">v'+version+'</span>');
+    if (isNav) navGenerator();
 }
 
-function scriptStatus() {
-    const $mainScript = $('#mainScript');
+function navRemove() {
+    const nav = document.getElementById('nav');
+    if (nav) nav.remove();
+}
 
-    if (script) {
-        $mainScript.addClass('active');
-    } else {
-        $mainScript.removeClass('active');
-    }
+function navGenerator() {
+    const app = document.getElementById('app');
 
-    $mainScript.click(() => {
-        if (script) {
-            script = false;
-            $mainScript.removeClass('active');
-            chrome.storage.local.set({ script: false });
-        } else {
-            script = true;
-            $mainScript.addClass('active');
-            chrome.storage.local.set({ script: true });
+    const nav = document.createElement('nav');
+    nav.id = 'nav';
+    nav.className = 'ah-nav';
+
+    const navLeft = document.createElement('section');
+    navLeft.className = 'ah-nav-left';
+
+    navLeft.appendChild(navElement('<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">'));
+
+    const navRight = document.createElement('section');
+    navRight.className = 'ah-nav-right';
+
+    let checked = '';
+    if (script) checked = 'checked';
+    navRight.appendChild(navElement('<input id="switch" type="checkbox" ' + checked + ' /><label class="ah-nav-switch" for="switch"></label>'));
+    navRight.appendChild(navElement('<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">'));
+
+    nav.appendChild(navLeft);
+    nav.appendChild(navRight);
+
+    nav.addEventListener('click', event => {
+        switch (event.target.id) {
+            case 'home':
+                pageSelector();
+                break;
+            case 'setting':
+                settingsPage();
+                break;
         }
     });
+
+    nav.addEventListener('change', event => {
+        switch (event.target.id) {
+            case 'switch':
+                scriptSwitch(event.target.checked);
+                break;
+        }
+    });
+
+    app.appendChild(nav);
 }
 
-function loadingBar() {
-    $('body')
-        .empty()
-        .append('<div class="cssload-loader">'+
-            '<div class="cssload-inner cssload-one"></div>'+
-            '<div class="cssload-inner cssload-two"></div>'+
-            '<div class="cssload-inner cssload-three"></div>'+
-        '</div>');
+function navElement(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div;
+}
+
+function scriptSwitch(checked) {
+    script = checked;
+    chrome.storage.local.set({ script: checked });
 }

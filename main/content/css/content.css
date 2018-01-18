@@ -1731,7 +1731,7 @@ div.illumination-btn-box input.btn-default:hover {
 }
 
 /* LOADING BAR */
-.cssload-loader {
+.ah-loader {
 	position: relative;
 	left: calc(50% - 31px);
 	width: 62px;
@@ -1744,7 +1744,7 @@ div.illumination-btn-box input.btn-default:hover {
 	perspective: 780px;
 }
 
-.cssload-inner {
+.ah-loader-inner {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -1760,7 +1760,7 @@ div.illumination-btn-box input.btn-default:hover {
 		-moz-border-radius: 50%;	
 }
 
-.cssload-inner.cssload-one {
+.ah-loader-inner.ah-loader-one {
 	left: 0%;
 	top: 0%;
 	animation: cssload-rotate-one 1.15s linear infinite;
@@ -1771,7 +1771,7 @@ div.illumination-btn-box input.btn-default:hover {
 	border-bottom: 3px solid rgb(0,170,255);
 }
 
-.cssload-inner.cssload-two {
+.ah-loader-inner.ah-loader-two {
 	right: 0%;
 	top: 0%;
 	animation: cssload-rotate-two 1.15s linear infinite;
@@ -1782,7 +1782,7 @@ div.illumination-btn-box input.btn-default:hover {
 	border-right: 3px solid rgb(151,207,38);
 }
 
-.cssload-inner.cssload-three {
+.ah-loader-inner.ah-loader-three {
 	right: 0%;
 	bottom: 0%;
 	animation: cssload-rotate-three 1.15s linear infinite;
