@@ -330,6 +330,8 @@ function startWebSocket() {
     }
 
     function stompFailureCallback() {
+        chrome.storage.local.set({notifications: {}});
+
         connect();
     }
 
