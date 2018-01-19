@@ -61,12 +61,14 @@ body {
 }
 
 .ah-body {
-    background: white;
     margin: 5px;
-    border-radius: 4px;
-    padding: 3px;
-    box-shadow: 0 0 2px #929292;
     font-size: 14px;
+}
+
+.ah-body-block {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 0 2px #929292;
 }
 
 .ah-error-message {
@@ -85,21 +87,25 @@ body {
     margin-top: 5px;
 }
 
+.ah-user-info {
+    display: flex;
+}
+
 .ah-user-avatar {
     width: 120px;
     border-radius: 4px;
 }
 
-.ah-user-info {
-    display: flex;
+.ah-user-avatar-block {
+    margin: 5px;
+    width: 120px;
+    border-radius: 4px;
+    text-align: center;
 }
 
-.ah-user-info div {
-    margin: 3px;
-}
-
-.ah-user-info div span {
-    font-weight: bold;
+.ah-user-info-block {
+    margin: 5px;
+    flex-grow: 1;
 }
 
 .ah-user-name {
@@ -107,11 +113,24 @@ body {
     font-size: 17px;
 }
 
-.ah-user-italic {
+.ah-user-position {
     font-style: italic;
+    color: #828282;
 }
 
-/* animated image */
+.ah-user-schedule {
+    color: #828282;
+}
+
+.ah-user-info-contact {
+    margin-top: 5px;
+}
+
+.ah-user-info-contact span {
+    color: #828282;
+}
+
+    /* animated image */
 
 .ah-animate-logo {
     width: 32px;
@@ -130,8 +149,18 @@ body {
 .ah-table-settings {
     width: 100%;
     margin: 0 auto;
-    border-radius: 4px;
     padding: 10px;
+    border-radius: 4px;
+    border-collapse: collapse;
+}
+
+.ah-table-settings td {
+    padding: 8px;
+    line-height: 1px;
+}
+
+.ah-table-settings tr:not(:last-child) td {
+    border-bottom: 1px solid #d6d6d6;
 }
 
 .ah-button {

@@ -1,4 +1,4 @@
-let version = chrome.runtime.getManifest().version;
+const version = chrome.runtime.getManifest().version;
 let script = false;
 let authorities = null;
 let connectInfo = null;
@@ -6,7 +6,8 @@ let connectInfo = null;
 $(function() {
     loadingPage();
 
-    $('#version').html('<span title="Версия расширения">Версия '+version+'</span>');
+    const divVersion = document.getElementById('version');
+    divVersion.innerHTML = `<span title="Версия расширения">Версия ${version}</span>`;
 
     chrome.storage.local.get(result  => {
         script = result.script;
@@ -36,25 +37,63 @@ function pageSelector() {
 
 // ОСНОВНАЯ СТРАНИЦА
 function authPage() {
-    let div = document.createElement('div');
-    div.className = 'ah-user-info';
-    div.innerHTML = `<div><img class="ah-user-avatar" src="http://spring.avitoadm.ru/employee/img/${connectInfo.spring_user.principal.avatar}"></div>
-                     <div>
-                        <div class="ah-user-name">${connectInfo.spring_user.principal.name} ${connectInfo.spring_user.principal.surname}</div>
-                        <div class="ah-user-italic">${connectInfo.spring_user.principal.subdivision.divisionName}</div>
-                        <div class="ah-user-italic">${connectInfo.spring_user.principal.shift.shift}, ${connectInfo.spring_user.principal.weekend.weekend}</div>
-                        <div><span>Skype: </span>${connectInfo.spring_user.principal.skype}</div>
-                        <div><span>Email: </span>${connectInfo.spring_user.principal.email}</div>
-                        <div><span>Phone: </span>${connectInfo.spring_user.principal.phone}</div>
-                     </div>`;
+    const div = document.createElement('div');
+    div.className = 'ah-user-info ah-body-block';
+
+    const divAvatar = document.createElement('div');
+    divAvatar.className = 'ah-user-avatar-block';
+
+    const avatar = document.createElement('img');
+    avatar.className = 'ah-user-avatar';
+    if (connectInfo.spring_user.principal.avatar) avatar.src = connectInfo.spring_url + '/employee/img/' + connectInfo.spring_user.principal.avatar;
+    else avatar.src = '../../include/image/logo_user_default.png';
+
+    divAvatar.appendChild(avatar);
+
+    const divUserInfo = document.createElement('div');
+    divUserInfo.className = 'ah-user-info-block';
+
+    const name = document.createElement('div');
+    name.className = 'ah-user-name';
+    name.textContent = connectInfo.spring_user.principal.name + " " + connectInfo.spring_user.principal.surname;
+
+    const position = document.createElement('div');
+    position.className = 'ah-user-position';
+    position.textContent = connectInfo.spring_user.principal.subdivision.divisionName;
+
+    const schedule = document.createElement('div');
+    schedule.className = 'ah-user-schedule';
+    schedule.textContent = connectInfo.spring_user.principal.shift.shift + ", " + connectInfo.spring_user.principal.weekend.weekend;
+
+    const divContactInfo = document.createElement('div');
+    divContactInfo.className = 'ah-user-info-contact';
+
+    divContactInfo.appendChild(addContactInfoElement('Email', connectInfo.spring_user.principal.email));
+    divContactInfo.appendChild(addContactInfoElement('Phone', connectInfo.spring_user.principal.phone));
+    divContactInfo.appendChild(addContactInfoElement('Skype', connectInfo.spring_user.principal.skype));
+
+    divUserInfo.appendChild(name);
+    divUserInfo.appendChild(position);
+    divUserInfo.appendChild(schedule);
+
+    div.appendChild(divAvatar);
+    div.appendChild(divUserInfo);
 
     pageGenerator(div, true);
+}
+
+function addContactInfoElement(name, option) {
+    if (connectInfo.spring_user.principal.email) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = `<span>${name}: </span>${option}`;
+        return tmp;
+    }
 }
 
 // СТРАНИЦА ОШИБОК
 function errorPage(status, message) {
     const div = document.createElement('div');
-    div.className = 'ah-error';
+    div.className = 'ah-error ah-body-block';
     div.innerHTML = `<div class="ah-error-message">${message}</div>`;
 
     if (status === 401) {
@@ -91,7 +130,7 @@ function errorPage(status, message) {
 // СТРАНИЦА ВЫБОРА СКРИПТА
 function settingsPage() {
     const div = document.createElement('div');
-    div.className = 'ah-settings';
+    div.className = 'ah-settings ah-body-block';
 
     const table = document.createElement('table');
     table.className = 'ah-table-settings';
@@ -131,10 +170,10 @@ function loadingPage() {
     divLoaderOne.className = 'ah-loader-inner ah-loader-one';
 
     const divLoaderTwo = document.createElement('div');
-    divLoaderOne.className = 'ah-loader-inner ah-loader-two';
+    divLoaderTwo.className = 'ah-loader-inner ah-loader-two';
 
     const divLoaderThree = document.createElement('div');
-    divLoaderOne.className = 'ah-loader-inner ah-loader-three';
+    divLoaderThree.className = 'ah-loader-inner ah-loader-three';
 
     div.appendChild(divLoaderOne);
     div.appendChild(divLoaderTwo);
@@ -170,14 +209,14 @@ function navGenerator() {
     const navLeft = document.createElement('section');
     navLeft.className = 'ah-nav-left';
 
-    navLeft.appendChild(navElement(`<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">`));
+    navLeft.appendChild(addNavElement(`<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">`));
 
     const navRight = document.createElement('section');
     navRight.className = 'ah-nav-right';
 
     const checked = script ? 'checked' : '';
-    navRight.appendChild(navElement(`<input id="switch" class="ah-checkbox" type="checkbox" ${checked} /><label class="ah-checkbox-label" for="switch"></label>`));
-    navRight.appendChild(navElement(`<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">`));
+    navRight.appendChild(addNavElement(`<input id="switch" class="ah-checkbox" type="checkbox" ${checked} /><label class="ah-checkbox-label" for="switch"></label>`));
+    navRight.appendChild(addNavElement(`<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">`));
 
     nav.appendChild(navLeft);
     nav.appendChild(navRight);
@@ -204,7 +243,7 @@ function navGenerator() {
     app.appendChild(nav);
 }
 
-function navElement(html) {
+function addNavElement(html) {
     const div = document.createElement('div');
     div.innerHTML = html;
     return div;
