@@ -24,8 +24,8 @@ function showAgentInfoQueue() {
         let assigneeNameBlock = $(row).find('.helpdesk-table-row-assigneeName');
         let assigneeNameText = $(assigneeNameBlock).find('span').attr('title');
         
-        for (var i = 0; i < allUsersGlobalInfo.length; i++) {
-            let user = allUsersGlobalInfo[i];
+        for (var i = 0; i < global.allUsersInfo.length; i++) {
+            let user = global.allUsersInfo[i];
             let agentFullName = user.name.replace(/(^ | $)/g, '') 
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             if (assigneeNameText === agentFullName) {

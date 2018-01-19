@@ -10,11 +10,11 @@ function addTags() {
     $(tagLabel).append('<button id="sh-tags-btn" type="button" class="sh-default-btn" style="" title="Выбрать теги">Выбор</button>');
 
     $('#sh-tags-btn').click(function() {
-        if (!settingsGlobal.helpdeskTags) {
+        if (!global.hdSettings.helpdeskTags) {
             alert('Теги еще не загрузились.\nПопробуйте подождать несколько секунд и повторить попытку.\nЕсли проблема сохраняется в течение длительного времени, попробуйте перезагрузить страницу.');
             return;
         }
-        if (settingsGlobal.helpdeskTags == 'FatalError') {
+        if (global.hdSettings.helpdeskTags == 'FatalError') {
             alert('Произошла техническая ошибка: не удалось загрузить теги. Попробуйте перезагрузить страницу.');
             return;
         }
@@ -63,18 +63,18 @@ function renderTagsPopup() {
     // контейнер для групп тегов
     $('div.sh-tags-popup').append('<div class="sh-tags-group-container"></div>');
 
-    settingsGlobal.helpdeskTags.set.popup.columns.forEach(function(column) {
+    global.hdSettings.helpdeskTags.set.popup.columns.forEach(function(column) {
         $('div.sh-tags-group-container').append('<div class="sh-tags-column" data-column-id="'+ column.id +'"></div>');
         column.groups.forEach(function(group) {
 
-            settingsGlobal.helpdeskTags.tagGroups.forEach(function(globalGroup) {
+            global.hdSettings.helpdeskTags.tagGroups.forEach(function(globalGroup) {
                 if (group.id == globalGroup.id && globalGroup.is_active) {
                     $('div.sh-tags-column[data-column-id="'+ column.id +'"]').append('<div class="sh-tags-group" data-tags-group-id="'+ group.id +'"><ul class="sh-default-list"></ul></div>');
                 }
             });
             group.tags.forEach(function(tag) {
 
-                settingsGlobal.helpdeskTags.tags.forEach(function(globalTag) {
+                global.hdSettings.helpdeskTags.tags.forEach(function(globalTag) {
                     if (tag == globalTag.avito_desk_id && globalTag.is_active) {
                         $('div.sh-tags-group-container [data-column-id="'+ column.id +'"] [data-tags-group-id="'+ group.id +'"] ul').append('<li class="sh-default-list-item" title="'+ globalTag.description +'"><input type="checkbox" id="popup-tag-'+ globalTag.avito_desk_id +'" value="'+ globalTag.avito_desk_id +'" class="sh-tags-checkbox"><label for="popup-tag-'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label><button class="sh-fast-tag-add-btn" data-tag-id="'+ globalTag.avito_desk_id +'" data-tag-name="'+ globalTag.name +'">+</button></li>');
                     }
@@ -228,11 +228,11 @@ function addQuickButtons() {
     // обработчики
     // настройки
     $('#sh-quick-btns-settings').click(function() {
-        if (!settingsGlobal.helpdeskTags) {
+        if (!global.hdSettings.helpdeskTags) {
             alert('Теги еще не загрузились.\nПопробуйте подождать несколько секунд и повторить попытку.\nЕсли проблема сохраняется в течение длительного времени, попробуйте перезагрузить страницу.');
             return;
         }
-        if (settingsGlobal.helpdeskTags == 'FatalError') {
+        if (global.hdSettings.helpdeskTags == 'FatalError') {
             alert('Произошла техническая ошибка: не удалось загрузить теги. Попробуйте перезагрузить страницу.');
             return;
         }
@@ -333,14 +333,14 @@ function updateQBInfo() {
 
     // синхронизация тегов ---
     var allTagsGlobal = [];
-    settingsGlobal.helpdeskTags.tags.forEach(function(tag) {
+    global.hdSettings.helpdeskTags.tags.forEach(function(tag) {
         if (tag.is_active) {
             allTagsGlobal.push(tag.avito_desk_id);
         }
     });
 
     var allTagsInSet = [];
-    settingsGlobal.helpdeskTags.set.QB.groups.forEach(function(group) {
+    global.hdSettings.helpdeskTags.set.QB.groups.forEach(function(group) {
         group.tags.forEach(function(tagId) {
             allTagsInSet.push(tagId);
         });
@@ -398,8 +398,8 @@ function renderQBWindow() {
     // ПРОБЛЕМЫ
     $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы</div><div class="ah-btn-group ah-field-flex" style=""><select class="ah-form-control ah-btn-group-left ah-flex-grow-extended" id="sh-qb-problems-select" style="margin-bottom: 0;"></select><button type="button" class="sh-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-selected-problem">✕</button></div></div>');
 
-    let helpdeskProblemsStr = settingsGlobal.helpdeskProblemsJSON;
-    if (!settingsGlobal.helpdeskProblemsJSON) {
+    let helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
+    if (!global.hdSettings.helpdeskProblemsJSON) {
         helpdeskProblemsStr = '[]';
     }
     $('#sh-qb-problems-select').append('<option value="">Не выбрано</option>');
@@ -419,8 +419,8 @@ function renderQBWindow() {
     // ТЕГИ
     $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Теги</div><div class="ah-btn-group ah-field-flex" style=""><button type="button" class="sh-default-btn ah-btn-group-left ah-flex-grow-extended" id="sh-qb-tags-select-btn" style=""><span class="ah-btn-name-left">Не выбрано</span><b class="ah-caret-right"></b></button><button type="button" class="sh-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-all-selected-tags">✕</button><ul id="sh-qb-tags-multiselect" class="ah-dropdown-menu ah-multiselect" style="top: 35px; width: 100%;"></ul></div></div>');
 
-    var allTagsSettingsGlobal = settingsGlobal.helpdeskTags;
-    if (!settingsGlobal.helpdeskTags) {
+    var allTagsSettingsGlobal = global.hdSettings.helpdeskTags;
+    if (!global.hdSettings.helpdeskTags) {
         allTagsSettingsGlobal = [];
     }
     allTagsSettingsGlobal.set.QB.groups.forEach(function(group) {
@@ -982,7 +982,7 @@ function showSelectedQBParams(btnInfo) {
     // теги
     var tagsNames = [];
     btnInfo.tags.forEach(function(tagId) {
-        settingsGlobal.helpdeskTags.tags.forEach(function(globalTag) {
+        global.hdSettings.helpdeskTags.tags.forEach(function(globalTag) {
             if (tagId == globalTag.avito_desk_id && globalTag.is_active) {
                 tagsNames.push(globalTag.name);
             }
@@ -1398,8 +1398,8 @@ function importOldQB() {
 function createOldQBTheme(oldObj) {
     var LSobj =  JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
-    var helpdeskProblemsStr = settingsGlobal.helpdeskProblemsJSON;
-    if (!settingsGlobal.helpdeskProblemsJSON) {
+    var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
+    if (!global.hdSettings.helpdeskProblemsJSON) {
         helpdeskProblemsStr = '[]';
     }
     var allProblems = JSON.parse(helpdeskProblemsStr);
@@ -2883,11 +2883,11 @@ function getAttendantTL(btn) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: "http://avitoadm.ru/support_helper/attendant_tl/getTL.php?login="+ userGlobalInfo.subdivision.teamlead_login,
+            url: "http://avitoadm.ru/support_helper/attendant_tl/getTL.php?login="+ global.userInfo.subdivision.teamlead_login,
         },
 
         function(response) {
-            attendantTLGlobalInfo = {};
+            global.attendantTlInfo = {};
             $('#sh-loading-layer').hide();
             if (response == 'error') {
                 setTimeout(function() {
@@ -2912,8 +2912,8 @@ function getAttendantTL(btn) {
                 return;
             }
 			
-            attendantTLGlobalInfo = response;
-			// console.log(attendantTLGlobalInfo);
+            global.attendantTlInfo = response;
+			// console.log(global.attendantTlInfo);
 			
             setInternalNoteMode(btn);
         }
@@ -2931,7 +2931,7 @@ function setInternalNoteMode(btn) {
         alert('Ошибка: не удалось переключиться в режим внутреннего примечания.');
         $(btn).toggleClass('sh-active-btn');
         $('#attendant-tl-notification').remove();
-		attendantTLGlobalInfo = {};
+		global.attendantTlInfo = {};
         return;
     }
     $(label).click();
@@ -2943,13 +2943,13 @@ function setInternalNoteMode(btn) {
             alert('Ошибка: не удалось выбрать тимлидера в качестве адресата.');
             $(btn).toggleClass('sh-active-btn');
             $('#attendant-tl-notification').remove();
-			attendantTLGlobalInfo = {};
+			global.attendantTlInfo = {};
             return;
         }
         $(usersSelect).click();
 
         setTimeout(() => {
-            var teamLeadName = attendantTLGlobalInfo.name +' '+ attendantTLGlobalInfo.surname;
+            var teamLeadName = global.attendantTlInfo.name +' '+ global.attendantTlInfo.surname;
             var list = $(commentForm).find('.helpdesk-select-typeahead-dropdown-list');
             var item = $(list).find('.helpdesk-select-typeahead-dropdown-item:contains('+ teamLeadName +')');
             var value = $(commentForm).find('.helpdesk-select-typeahead-value div');
@@ -3002,8 +3002,8 @@ function showAttendantTlNotification() {
 }
 
 function checkAdmUserIdAttendantTL() {
-    var teamLeadName = attendantTLGlobalInfo.name +' '+ attendantTLGlobalInfo.surname;
-    if (!attendantTLGlobalInfo.adm_user_id) {
+    var teamLeadName = global.attendantTlInfo.name +' '+ global.attendantTlInfo.surname;
+    if (!global.attendantTlInfo.adm_user_id) {
 		$('#sh-loading-layer').hide();
 		setTimeout(() => {
 			alert('Не удалось назначить тимлидера "'+ teamLeadName +'" в качестве исполнителя. Пожалуйста, сообщите о данной ошибке вашему тимлидеру.');
@@ -3032,7 +3032,7 @@ function addTagAttendantTL() {
 		newInput.value = 1251; // agent_help
         existingTags[0].parentNode.appendChild(newInput);
 
-		var admUserId = attendantTLGlobalInfo.adm_user_id;
+		var admUserId = global.attendantTlInfo.adm_user_id;
 		addExtraAssigneeId(admUserId);
 			
 	    document.querySelector('.helpdesk-click-fog').click();
@@ -3615,7 +3615,7 @@ function addNegativeUsersAbusesNotification() {
     }
 
     document.dispatchEvent(new Event('requestHelpdeskStore'));
-    const helpdeskStore = settingsGlobal.helpdeskStore;
+    const helpdeskStore = global.hdSettings.helpdeskStore;
     if (!helpdeskStore) return;
     const currentClientId = helpdeskStore.tickets.loadedInfo.requesterId;
     const currentInfo = negativesInfo.clients.find(item => item.client_id === currentClientId);
@@ -3715,7 +3715,7 @@ function showAgentInfoTicket() {
         claimReevaluation();
         return;
     }
-    if (allUsersGlobalInfo === 'FatalError') {
+    if (global.allUsersInfo === 'FatalError') {
         $(assigneeBlockSpan).before('<span id="sh-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
     }
@@ -3728,8 +3728,8 @@ function showAgentInfoTicket() {
         return;
     }
     
-    for (var i = 0; i < allUsersGlobalInfo.length; i++) {
-        let user = allUsersGlobalInfo[i];
+    for (var i = 0; i < global.allUsersInfo.length; i++) {
+        let user = global.allUsersInfo[i];
         if (user.username == currentLogin[0]) {
             // console.log(user);
             let teamleadLogin = user.teamlead_login;
@@ -3750,8 +3750,8 @@ function showAgentInfoTicket() {
             return;
         }
         
-        for (var i = 0; i < allUsersGlobalInfo.length; i++) {
-            let user = allUsersGlobalInfo[i];
+        for (var i = 0; i < global.allUsersInfo.length; i++) {
+            let user = global.allUsersInfo[i];
             let userFullName = user.name.replace(/(^ | $)/g, '') 
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             
@@ -4178,8 +4178,8 @@ function skipersMonitoring() {
     var ticketStatus;
 
     ticketId = getCurrentTicketId(window.location.href);
-    userName = userGlobalInfo.name +' '+ userGlobalInfo.surname;
-    userLogin = userGlobalInfo.username;
+    userName = global.userInfo.name +' '+ global.userInfo.surname;
+    userLogin = global.userInfo.username;
 
     var regExpNotSkiped = /ticket(Edit|Comment|Pending|Solve|OnHold|Spam|Duplicate)/i;
 

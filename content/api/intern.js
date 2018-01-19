@@ -28,7 +28,7 @@ function premoderationInternComparisonNew() {
 						else reason.push('Не дубль [' + itemID + ']');
                     }
 
-                    interntoJSONitem(userGlobalInfo.username, 'Comparison', mainItemID, 'Open', [], reason);
+                    interntoJSONitem(global.userInfo.username, 'Comparison', mainItemID, 'Open', [], reason);
 
                     $('tr[data-id="' + mainItemID + '"]').detach();
                     $('.close').click();

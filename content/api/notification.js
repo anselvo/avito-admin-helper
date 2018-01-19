@@ -47,7 +47,7 @@ function notificationRemoveWS(notifications) {
 //---------- Allow List Checker ----------//
 
 function startAllowList() {
-	allowListCheck(userGlobalInfo.subdivision.subdivision, userGlobalInfo.username);
+	allowListCheck(global.userInfo.subdivision.subdivision, global.userInfo.username);
 }
 
 function allowListCheck(agentLine, agentlogin) {
@@ -185,11 +185,11 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 				changeAllowListItem(item, time, 'modAgentID', agentlogin);
 				changeAllowListItem(item, time, 'status', 'checking');
 				$('[item='+item+']').parents('.notificationBarItem').find('.notificationRemove').click();
-				existGlobal = undefined;
+				global.existGlobal = undefined;
 			} else {
 				alert('Данное объявление уже проверяется другим агентом.');
 				$('[item='+item+']').parents('.notificationBarItem').find('.notificationRemove').click();
-				existGlobal = undefined;
+				global.existGlobal = undefined;
 			}
 		}
 	);

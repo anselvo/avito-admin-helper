@@ -75,7 +75,7 @@ function usersInfo(id, itemid, offset, query) {
     openInfoWindow(380, offset);
 
     if (!query) query = '';
-    beforeID = id;
+    global.beforeId = id;
 
     let href = "https://adm.avito.ru/users/user/info/"+id;
     let hrefitem = "https://adm.avito.ru/items/item/info/"+itemid;
@@ -387,7 +387,7 @@ function ymapapi(address) {
 function usersAbuses(id, itemid, offset) {
     openInfoWindow(500, offset);
 
-    beforeID = itemid;
+    global.beforeId = itemid;
 
     let href;
     if (localStorage.abusesSetting === 'true') href = "https://adm.avito.ru/abuses/search?userId="+id+"&itemId="+itemid;

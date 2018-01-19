@@ -43,7 +43,7 @@ function renderSanctionIPPopup(ip, ticketLink) {
     var bodyForm = $(body).find('form[name="shSanctionIp"]');
 
 
-    var agentFullName = userGlobalInfo.name +' '+ userGlobalInfo.surname;
+    var agentFullName = global.userInfo.name +' '+ global.userInfo.surname;
     $(bodyForm).append('<div class=""><input type="hidden" name="agent" value="'+ agentFullName +'"></div>');
 
     $(bodyForm).append('<div class="ah-field-group"><div class="ah-field-title">IP-адрес</div><div class="ah-field-flex" style=""><input class="ah-form-control" style="" name="ip" value="'+ ip +'" placeholder=""></div></div>');

@@ -1,6 +1,6 @@
 // проверка наличия authority
 function isAuthority(authority) {
-    return !!userGlobalInfo.authorities[authority];
+    return !!global.userInfo.authorities[authority];
 }
 
 // обработка ролей
@@ -541,21 +541,16 @@ function handleRoles() {
 
         $body.append('<div id="layer-blackout-modal"></div>');
 
-        if (admUrlPatterns.users_user_info.test(currentUrl)) {
-            // попап с затемнением
-            $body.append('<div id="sh-popup-layer-blackout-btn"></div>');
-        }
-
-        if (admUrlPatterns.items_item_info.test(currentUrl)) {
+        if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
             if (!localStorage.allowList) localStorage.allowList = '';
         }
 
-        if (admUrlPatterns.helpdesk.test(currentUrl)) {
+        if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
             // инжекст скрипта для получения состояния приложения
             injectScript(chrome.runtime.getURL('/inject/helpdesk.js'), document.body);
 
             document.addEventListener('receiveHelpdeskStore', e => {
-                settingsGlobal.helpdeskStore = e.detail;
+                global.hdSettings.helpdeskStore = e.detail;
             });
 
             // observer
@@ -589,11 +584,6 @@ function handleRoles() {
         }
 
         // FROM MODERATOR
-        if (localStorage.allButtons) {
-            localStorage.removeItem('allButtons');
-            console.log('allButtons key removed');
-        }
-
         if (!localStorage.checkboxInfo) localStorage.checkboxInfo = '';
     }
 }
@@ -621,42 +611,42 @@ RoleHandler.prototype.internLogLink = function() {
 };
 
 RoleHandler.prototype.employeeLabels = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)
-        || admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)
+        || global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         adminTableCategory();
     }
 };
 
 RoleHandler.prototype.linksOnComments = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)
-        || admUrlPatterns.items_item_info.test(currentUrl)) {
-        linksOnComments('td.is-break', currentUrl);
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)
+        || global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
+        linksOnComments('td.is-break', global.currentUrl);
     }
 
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
-        const userID = currentUrl.split('/');
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
+        const userID = global.currentUrl.split('/');
         linksOnComments('td.is-break', userID[6]);
     }
 
-    if (admUrlPatterns.items_comparison.test(currentUrl)) {
-        linksOnComments('.row-user-block:last table td', currentUrl);
+    if (global.admUrlPatterns.items_comparison.test(global.currentUrl)) {
+        linksOnComments('.row-user-block:last table td', global.currentUrl);
     }
 };
 
 RoleHandler.prototype.userCheckDoubles = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         userChekDoubles();
     }
 };
 
 RoleHandler.prototype.userChangeEmail = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         userChangeEmail();
     }
 };
 
 RoleHandler.prototype.userIndicators = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         const userIndicators = ['inn', 'auto', 'shop', 'subscription', 'persManager'];
         if (isAuthority('ROLE_USER-INDICATORS--PRO')) {
             userIndicators.splice(1, 0, 'pro');
@@ -678,13 +668,13 @@ RoleHandler.prototype.userIndicators = function() {
 };
 
 RoleHandler.prototype.userAlternatePhoneSearch = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         alternatePhoneSearch();
     }
 };
 
 RoleHandler.prototype.userCopyData = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         const arr = ['e-mail', 'phones'];
         if (isAuthority('ROLE_USER-COPY-DATA--URL')) {
             arr.push('url');
@@ -700,13 +690,13 @@ RoleHandler.prototype.userCopyData = function() {
 };
 
 RoleHandler.prototype.userUnverifyPhones = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         addUnverifyPhonesButtons();
     }
 };
 
 RoleHandler.prototype.userPhonesVerificationLink = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         $('button[data-verify-text="Верифицировать"]').each((idx, item) => {
             const $item = $(item);
             const phone_number = $item.attr("data-phone");
@@ -716,236 +706,236 @@ RoleHandler.prototype.userPhonesVerificationLink = function() {
 };
 
 RoleHandler.prototype.userMessengerLink = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         messengerLinkOnUser();
     }
 };
 
 RoleHandler.prototype.userCreateTicket = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         renderCreateNewTicketWindow('/users/user/info');
         addCreateTicketBtn('/users/user/info');
     }
 };
 
 RoleHandler.prototype.userHDLink = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         linkToHDOnUser();
     }
 };
 
 RoleHandler.prototype.userShowCountryIP = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         showCountryIP();
     }
 };
 
 RoleHandler.prototype.userSystemAccessLink = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         addIPSystemAccessLink();
     }
 };
 
 RoleHandler.prototype.userWlLink = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         addWlLinkOnUserInfo();
     }
 };
 
 RoleHandler.prototype.userFeesAvailableModal = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         feesAvailableModal();
     }
 };
 
 RoleHandler.prototype.userScrollTop = function() {
-    if (admUrlPatterns.users_user_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         addFixedTools($('body'), ['scroll-top']);
     }
 };
 
 RoleHandler.prototype.hideBlockUserBtn = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)
-        || admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)
+        || global.admUrlPatterns.items_search.test(global.currentUrl)) {
         hideBlockUserButton();
     }
 };
 
 RoleHandler.prototype.allowList = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
-        allowlist(currentUrl, userGlobalInfo.username);
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
+        allowlist(global.currentUrl, global.userInfo.username);
     }
 };
 
 RoleHandler.prototype.allowListMsg = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
-        allowListMSG(currentUrl, userGlobalInfo.username);
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
+        allowListMSG(global.currentUrl, global.userInfo.username);
     }
 };
 
 RoleHandler.prototype.allowItem = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         allowItem();
     }
 };
 
 RoleHandler.prototype.itemCopyItem = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         copyItemOnItemInfo();
     }
 };
 
 RoleHandler.prototype.itemRefundInfo = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         addRefundInfo();
     }
 };
 
 RoleHandler.prototype.itemCityTime = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         timeInCity();
     }
 };
 
 RoleHandler.prototype.itemCompareItems = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         addCompareItemsItemInfo();
     }
 };
 
 RoleHandler.prototype.itemAccountInfoLink = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         addAccountLinkItemInfo();
     }
 };
 
 RoleHandler.prototype.itemUserInfo = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         userInfoOnItem();
     }
 };
 
 RoleHandler.prototype.itemRejectByCall = function() {
-    if (admUrlPatterns.items_item_info.test(currentUrl)) {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         rejectByCall();
     }
 };
 
 RoleHandler.prototype.itemsSearchInfoBtn = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         addInfoToItems();
     }
 };
 
 RoleHandler.prototype.itemsSearchItemInfo = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         showItemsInfoForItems();
     }
 };
 
 RoleHandler.prototype.itemsSearchItemDescription = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         showDescriptionForItems();
     }
 };
 
 RoleHandler.prototype.itemsSearchUserInfo = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         userInfoForPost();
     }
 };
 
 RoleHandler.prototype.usersSearchBlockUser = function() {
-    if (admUrlPatterns.users_search.test(currentUrl)) {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         usersSearchBlockUser();
     }
 };
 
 RoleHandler.prototype.itemsSearchUserInfoAuto = function() {
-    if (~currentUrl.indexOf("?phone=")
-        || ~currentUrl.indexOf("?ip=")) {
+    if (~global.currentUrl.indexOf("?phone=")
+        || ~global.currentUrl.indexOf("?ip=")) {
         usersInfoForItems();
     }
 };
 
 RoleHandler.prototype.itemsSearchCheckboxClick = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         chooseItem();
     }
 };
 
 RoleHandler.prototype.itemsSearchInformSearch = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         searchInform();
     }
 };
 
 RoleHandler.prototype.itemsSearchBlockUsers = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         postBlockUsers();
     }
 };
 
 RoleHandler.prototype.itemsSearchComparePhoto = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         comparePhotoPost();
     }
 };
 
 RoleHandler.prototype.itemsSearchAntifraudLinks = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         antifraudLinks('post');
     }
 };
 
 RoleHandler.prototype.searchByImageLinks = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)
-        || admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)
+        || global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         searchByImageLinks();
     }
 };
 
 RoleHandler.prototype.itemsSearchCopyItem = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         copyItemsOnItemsSearch();
     }
 };
 
 RoleHandler.prototype.accountCountMoney = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         countMoneyAccount();
     }
 };
 
 RoleHandler.prototype.accountItemInfo = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         statusItem();
     }
 };
 
 RoleHandler.prototype.accountCompensationBtns = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addCompensationBtns();
     }
 };
 
 RoleHandler.prototype.reservedOperations = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         reservedOperation('/users/account/info');
     }
-    if (admUrlPatterns.billing_walletlog.test(currentUrl)) {
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         reservedOperation('/billing/walletlog');
     }
 };
 
 RoleHandler.prototype.accountUserViewOperations = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         userViewOperations();
     }
 };
 
 RoleHandler.prototype.accountWlLink = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addWlLinkAccountInfo(getWlLinkForUser,
             {linkTitle: 'Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода'}
         );
@@ -953,7 +943,7 @@ RoleHandler.prototype.accountWlLink = function() {
 };
 
 RoleHandler.prototype.accountWlLinkClosingAmount = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addWlLinkAccountInfo(getWlLinkForDocuments, {
             linkName: 'Сумма закрывающих'
         });
@@ -961,85 +951,85 @@ RoleHandler.prototype.accountWlLinkClosingAmount = function() {
 };
 
 RoleHandler.prototype.accountPackageInfo = function() {
-    if (admUrlPatterns.users_account_info.test(currentUrl)) {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addPackageInfoAccountInfo();
     }
 };
 
 RoleHandler.prototype.billingWalletlogItemStatus = function() {
-    if (admUrlPatterns.billing_walletlog.test(currentUrl)) {
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         addShowItemStatusBtn();
     }
 };
 
 RoleHandler.prototype.billingWalletlogCountMoney = function() {
-    if (admUrlPatterns.billing_walletlog.test(currentUrl)) {
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         countMoneyWalletlog();
     }
 };
 
 RoleHandler.prototype.billingWalletlogPackageInfo = function() {
-    if (admUrlPatterns.billing_walletlog.test(currentUrl)) {
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         addPackageInfoWalletlog();
     }
 };
 
 RoleHandler.prototype.billingInvoicesUserIds = function() {
-    if (admUrlPatterns.billing_invoices.test(currentUrl)) {
+    if (global.admUrlPatterns.billing_invoices.test(global.currentUrl)) {
         showUsersIdsBillingInvoices();
     }
 };
 
 RoleHandler.prototype.usersSearchFindVerifiedPhone = function() {
-    if (admUrlPatterns.users_search.test(currentUrl)) {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         findWherePhoneVerified();
     }
 };
 
 RoleHandler.prototype.usersSearchCopyPhone = function() {
-    if (admUrlPatterns.users_search.test(currentUrl)) {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         copyPhoneToClipboard();
     }
 };
 
 RoleHandler.prototype.usersSearchInfodocQueueLink = function() {
-    if (admUrlPatterns.users_search.test(currentUrl)) {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         addInfoDocQueueLink($('.header__title'));
     }
 };
 
 RoleHandler.prototype.usersSearchInfoBtn = function() {
-    if (admUrlPatterns.users_search.test(currentUrl)) {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         addInfoToItems();
     }
 };
 
 RoleHandler.prototype.systemAccessSanctionIp = function() {
-    if (admUrlPatterns.system_access.test(currentUrl)) {
+    if (global.admUrlPatterns.system_access.test(global.currentUrl)) {
         sanctionIPSystemAccess();
     }
 };
 
 RoleHandler.prototype.itemsComparisonCopyItem = function() {
-    if (admUrlPatterns.items_comparison.test(currentUrl)) {
+    if (global.admUrlPatterns.items_comparison.test(global.currentUrl)) {
         copyItemIdsComparisonPage();
     }
 };
 
 RoleHandler.prototype.itemsComparisonComparisonElementsOld = function() {
-    if (admUrlPatterns.items_comparison.test(currentUrl)) {
+    if (global.admUrlPatterns.items_comparison.test(global.currentUrl)) {
         comparisonInfoOld();
     }
 };
 
 RoleHandler.prototype.itemsComparisonArchiveComparisonElements = function() {
-    if (admUrlPatterns.items_comparison_archive.test(currentUrl)) {
+    if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
         addComparisonInfo();
     }
 };
 
 RoleHandler.prototype.searchBySocial = function() {
-    if (admUrlPatterns.main.test(currentUrl)) {
+    if (global.admUrlPatterns.main.test(global.currentUrl)) {
         const $formBlock = $('form[action="/users/search"]');
 
         $formBlock.after(''+
@@ -1061,7 +1051,7 @@ RoleHandler.prototype.searchBySocial = function() {
 };
 
 RoleHandler.prototype.mainInfodocQueueLink = function() {
-    if (admUrlPatterns.main.test(currentUrl)) {
+    if (global.admUrlPatterns.main.test(global.currentUrl)) {
         $('section.content').prepend(`
             <div class="ah-infodoc-queue-link-holder"></div>
             <div class="ah-clearfix"></div>
@@ -1072,13 +1062,13 @@ RoleHandler.prototype.mainInfodocQueueLink = function() {
 };
 
 RoleHandler.prototype.shopElements = function() {
-    if (admUrlPatterns.shops_info_view.test(currentUrl)) {
+    if (global.admUrlPatterns.shops_info_view.test(global.currentUrl)) {
         shopsInfoElements();
     }
 };
 
 RoleHandler.prototype.shopModeration = function() {
-    if (admUrlPatterns.shops_moderation.test(currentUrl)) {
+    if (global.admUrlPatterns.shops_moderation.test(global.currentUrl)) {
         const shopModeration = new ShopModeration();
         if (shopModeration.mainBlock.querySelector('[data-section]')) {
             shopModeration.addMailForm();
@@ -1090,43 +1080,43 @@ RoleHandler.prototype.shopModeration = function() {
 };
 
 RoleHandler.prototype.internButtons = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)
-        || admUrlPatterns.items_comparison.test(currentUrl)
-        || admUrlPatterns.items_comparison_archive.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)
+        || global.admUrlPatterns.items_comparison.test(global.currentUrl)
+        || global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
         addButtonsIntern();
     }
 };
 
 RoleHandler.prototype.internPremoderation = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)) {
-        premoderationInternNew(userGlobalInfo.username, 'post');
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        premoderationInternNew(global.userInfo.username, 'post');
     }
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
-        premoderationInternNew(userGlobalInfo.username, 'pre');
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        premoderationInternNew(global.userInfo.username, 'pre');
     }
 };
 
 RoleHandler.prototype.internPremoderationComparison = function() {
-    if (admUrlPatterns.items_comparison.test(currentUrl)
-        || admUrlPatterns.items_comparison_archive.test(currentUrl)) {
-        premoderationInternComparison(userGlobalInfo.username, currentUrl);
+    if (global.admUrlPatterns.items_comparison.test(global.currentUrl)
+        || global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
+        premoderationInternComparison(global.userInfo.username, global.currentUrl);
     }
 };
 
 RoleHandler.prototype.internPremoderationComparisonNew = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         premoderationInternComparisonNew();
     }
 };
 
 RoleHandler.prototype.internTest = function() {
-    if (~currentUrl.indexOf("http://avitoadm.ru/intern_helper/")) {
+    if (~global.currentUrl.indexOf("http://avitoadm.ru/intern_helper/")) {
         eg();
     }
 };
 
 RoleHandler.prototype.moderatorPersonalStatistic = function() {
-    if (!admUrlPatterns.helpdesk.test(currentUrl)) {
+    if (!global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
         personalStatistics();
     }
 };
@@ -1140,89 +1130,89 @@ RoleHandler.prototype.fillOtherReasonField = function() {
 };
 
 RoleHandler.prototype.itemsModerTimer = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         preTimer();
     }
 };
 
 RoleHandler.prototype.itemsModerEachItemElements = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         addElementsForEachItemNew();
     }
 };
 
 RoleHandler.prototype.itemsModerInfoAbuseBlock = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         addSomeElementsNew();
     }
 };
 
 RoleHandler.prototype.itemsModerComparePhoto = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         comparePhotoPreNew();
     }
 };
 
 RoleHandler.prototype.itemsModerClose = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         closePre();
     }
 };
 
 RoleHandler.prototype.itemsModerColorButtons = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         colorButtons();
     }
 };
 
 RoleHandler.prototype.spamLinks = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         eyeLinks($('.item-info-name'));
     }
-    if (admUrlPatterns.items_search.test(currentUrl)) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         eyeLinks($('.item_title'));
     }
 };
 
 RoleHandler.prototype.itemsModerComparisonElements = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         comparisonInfo();
     }
 };
 
 RoleHandler.prototype.itemsModerAbTest = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         abTest();
     }
 };
 
 RoleHandler.prototype.itemsModerAntifraudLinks = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         antifraudLinks('pre');
     }
 };
 
 RoleHandler.prototype.itemsModerHideSearchTest = function() {
-    if (admUrlPatterns.items_moder.test(currentUrl)) {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         hideTestItemsSearch();
     }
 };
 
 RoleHandler.prototype.snp = function() {
-    if (admUrlPatterns.items_search.test(currentUrl)
-        && ~currentUrl.indexOf('user_id')) {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)
+        && ~global.currentUrl.indexOf('user_id')) {
 
         const queryStr = parseQueryURL(window.location.search);
         smartSNP(queryStr['user_id']);
     }
 
-    if (admUrlPatterns.messenger_user.test(currentUrl)) {
-        smartSNP(currentUrl.split('/')[5]);
+    if (global.admUrlPatterns.messenger_user.test(global.currentUrl)) {
+        smartSNP(global.currentUrl.split('/')[5]);
     }
 };
 
 RoleHandler.prototype.detectivesHoldItems = function() {
-    if (admUrlPatterns.detectives_queue_search.test(currentUrl)) {
+    if (global.admUrlPatterns.detectives_queue_search.test(global.currentUrl)) {
         addHoldItems();
     }
 };
@@ -1232,13 +1222,13 @@ RoleHandler.prototype.helpdeskAddTags = function() {
 };
 
 RoleHandler.prototype.helpdeskGetTags = function() {
-    if (admUrlPatterns.helpdesk.test(currentUrl)) {
+    if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
         getTagsInfo();
     }
 };
 
 RoleHandler.prototype.helpdeskCreateTicket = function() {
-    if (admUrlPatterns.helpdesk.test(currentUrl)) {
+    if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
         renderCreateNewTicketWindow('/helpdesk/details');
     }
 };
@@ -1248,13 +1238,13 @@ RoleHandler.prototype.helpdeskCreateTicketBtn = function() {
 };
 
 RoleHandler.prototype.helpdeskGetNegativeUsers = function() {
-    if (admUrlPatterns.helpdesk.test(currentUrl)) {
+    if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
         getNegativeUsers();
     }
 };
 
 RoleHandler.prototype.helpdeskNegativeUsersNotification = function() {
-    if (admUrlPatterns.helpdesk.test(currentUrl)) {
+    if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
         addNegativeUsersAbusesNotification();
     }
 };

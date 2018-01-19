@@ -108,7 +108,7 @@ function closePre() {
 }
 
 //----- Compare Photos -----//
-// var comparePhotoLoadItemsCount;
+// var global.comparePhotoLoadItemsCount;
 
 function comparePhotoPre() {
 
@@ -157,7 +157,7 @@ function comparePhotoPost() {
 
 function clickComparePhoto() {
     $('.comparePhotoPre').click(function () {
-        comparePhotoLoadItemsCount = 0;
+        global.comparePhotoLoadItemsCount = 0;
         var item1id = $(this).attr('item1id');
         var item2id = $(this).attr('item2id');
 
@@ -260,8 +260,8 @@ function showComparePhotosPre(id, appendID) {
                 $('#photo'+appendID).append('<div class="photo-component-image-border"><a class="photo-component-link" href="'+jsonParsePhotos[i].url+'" target="_blank"><img class="photo-component-image js-image" alt="" src="'+jsonParsePhotos[i].thumbUrl+'"></a></div>');
             }
 
-            ++comparePhotoLoadItemsCount;
-            if (comparePhotoLoadItemsCount == 2) {
+            ++global.comparePhotoLoadItemsCount;
+            if (global.comparePhotoLoadItemsCount == 2) {
                 $('.comparePhotoLoadingWindow').detach();
                 comparePhotoItemCategory();
             }

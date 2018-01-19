@@ -350,7 +350,8 @@ function addUnverifyPhonesButtons() {
 
 // отвязка номеров с комментами
 function unverifyPhones(id) {
-
+    // попап с затемнением
+    $('body').append('<div id="sh-popup-layer-blackout-btn"></div>');
 
     $('.sh-unverify-phone-btn').unbind().click(function () {
         var phone = $(this).data('phone');

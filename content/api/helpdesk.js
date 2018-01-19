@@ -63,7 +63,7 @@ function addExtraAssigneeId(agentId) {
 
 //---------- Записываем в глобальную JSON строку всех проблем HD ----------//
 function getHelpdeskProblems() {
-    settingsGlobal.helpdeskProblemsJSON = '[{"id":2,"parentId":1,"name":"Регистрация учетной записи","additions":null,"info":null},{"id":3,"parentId":1,"name":"Настройки Личного кабинета","additions":null,"info":null},{"id":4,"parentId":1,"name":"Восстановление пароля","additions":null,"info":null},{"id":5,"parentId":1,"name":"Удаление учетной записи","additions":null,"info":null},{"id":6,"parentId":1,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":8,"parentId":7,"name":"Подача нового объявления","additions":null,"info":null},{"id":9,"parentId":7,"name":"Редактирование объявления","additions":null,"info":null},{"id":10,"parentId":7,"name":"Активация объявления","additions":null,"info":null},{"id":11,"parentId":7,"name":"Снятие объявления с публикации","additions":null,"info":null},{"id":12,"parentId":7,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":14,"parentId":13,"name":"Заблокированное объявление","additions":null,"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":15,"parentId":13,"name":"Заблокированная учетная запись","additions":null,"info":null},{"id":16,"parentId":13,"name":"Отклоненное объявление","additions":null,"info":null},{"id":18,"parentId":17,"name":"Прием СМС или звонка","additions":null,"info":null},{"id":19,"parentId":17,"name":"Отвязка номера от учетной записи","additions":null,"info":null},{"id":20,"parentId":17,"name":"Технические проблемы","additions":null,"info":null},{"id":21,"parentId":17,"name":"Другие вопросы","additions":null,"info":null},{"id":23,"parentId":22,"name":"Не вижу свое оплаченное объявление","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":24,"parentId":22,"name":"Оплата и применение дополнительных услуг","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":25,"parentId":22,"name":"Пополнение Кошелька Avito","additions":[{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":26,"parentId":22,"name":"Другие вопросы и консультации","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":29,"parentId":27,"name":"Пакеты размещений","additions":null,"info":null},{"id":30,"parentId":27,"name":"Разовое размещение","additions":null,"info":null},{"id":31,"parentId":27,"name":"Лимит бесплатных размещений","additions":null,"info":null},{"id":32,"parentId":27,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":34,"parentId":33,"name":"Проблемы с доступом к сайту","additions":null,"info":null},{"id":35,"parentId":33,"name":"Проблемы со входом в Личный кабинет","additions":null,"info":null},{"id":36,"parentId":33,"name":"Проблемы при подаче, активации или редактировании","additions":null,"info":null},{"id":37,"parentId":33,"name":"Проблемы при загрузке фото","additions":null,"info":null},{"id":38,"parentId":33,"name":"Ошибки отображения элементов сайта","additions":null,"info":null},{"id":39,"parentId":33,"name":"Некорректная работа поиска","additions":null,"info":null},{"id":40,"parentId":33,"name":"Проблемы с отправкой сообщений","additions":null,"info":null},{"id":41,"parentId":33,"name":"Другие технические проблемы","additions":null,"info":null},{"id":43,"parentId":42,"name":"Блокировка или отклонение объявлений","additions":null,"info":null},{"id":44,"parentId":42,"name":"Платные услуги и Кошелек Avito ","additions":null,"info":null},{"id":45,"parentId":42,"name":"Безналичные платежи","additions":null,"info":null},{"id":46,"parentId":42,"name":"Реквизиты организации","additions":null,"info":null},{"id":47,"parentId":42,"name":"Закрывающие документы","additions":null,"info":null},{"id":48,"parentId":42,"name":"Сервисы Автозагрузка, ActiAgent, ActiDealer","additions":[{"name":"Тематика","items":[{"id":47,"name":"Автозагрузка"},{"id":48,"name":"ActiDealer"},{"id":49,"name":"ActiAgent"}]}],"info":null},{"id":49,"parentId":42,"name":"Технические вопросы","additions":null,"info":null},{"id":50,"parentId":42,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":67,"parentId":42,"name":"Жалобы","additions":null,"info":null},{"id":53,"parentId":51,"name":"Avito Контекст","additions":[{"name":"Тематика в Контекст","items":[{"id":27,"name":"Создание кампании Avito Контекст"},{"id":28,"name":"Оплата компании Avito Контекст"},{"id":29,"name":"Модерация Avito Контекст"},{"id":30,"name":"Измерение результатов Avito Контекст"},{"id":31,"name":"Общие вопросы и консультации"}]}],"info":null},{"id":54,"parentId":51,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":56,"parentId":55,"name":"Обман при совершении сделки","additions":null,"info":null},{"id":57,"parentId":55,"name":"Подозрительное объявление или пользователь","additions":null,"info":null},{"id":58,"parentId":55,"name":"Мошенническое SMS, MMS или веб-сайт","additions":null,"info":null},{"id":59,"parentId":55,"name":"Мошенническое письмо","additions":null,"info":null},{"id":60,"parentId":55,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":62,"parentId":61,"name":"Приложение для iOS","additions":null,"info":null},{"id":63,"parentId":61,"name":"Приложение для Android","additions":null,"info":null},{"id":64,"parentId":61,"name":"Мобильная версия сайта","additions":null,"info":null},{"id":65,"parentId":61,"name":"Полная версия сайта с мобильного устройства","additions":null,"info":null},{"id":66,"parentId":61,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":80,"parentId":79,"name":"Вопрос по отправке заказа","additions":null,"info":null},{"id":81,"parentId":79,"name":"Вопрос по получению заказа","additions":null,"info":null},{"id":1,"parentId":null,"name":"Учетная запись и Личный кабинет","additions":null,"info":null},{"id":7,"parentId":null,"name":"Работа с объявлениями","additions":null,"info":null},{"id":13,"parentId":null,"name":"Блокировки и отклонения","additions":null,"info":null},{"id":17,"parentId":null,"name":"Подтверждение телефонных номеров","additions":null,"info":[{"id":2,"name":"Телефон","systemName":"phone"}]},{"id":22,"parentId":null,"name":"Платные услуги и сервисы","additions":null,"info":null},{"id":27,"parentId":null,"name":"Платное размещение объявлений","additions":null,"info":null},{"id":33,"parentId":null,"name":"Технические проблемы","additions":null,"info":null},{"id":42,"parentId":null,"name":"Магазины, Автозагрузка и юридические лица","additions":null,"info":null},{"id":51,"parentId":null,"name":"Рекламные сервисы (Avito Контекст)","additions":null,"info":null},{"id":55,"parentId":null,"name":"Безопасность на Avito","additions":null,"info":null},{"id":61,"parentId":null,"name":"Мобильный Avito","additions":null,"info":null},{"id":79,"parentId":null,"name":"Avito Доставка","additions":null,"info":null}]';
+    global.hdSettings.helpdeskProblemsJSON = '[{"id":2,"parentId":1,"name":"Регистрация учетной записи","additions":null,"info":null},{"id":3,"parentId":1,"name":"Настройки Личного кабинета","additions":null,"info":null},{"id":4,"parentId":1,"name":"Восстановление пароля","additions":null,"info":null},{"id":5,"parentId":1,"name":"Удаление учетной записи","additions":null,"info":null},{"id":6,"parentId":1,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":8,"parentId":7,"name":"Подача нового объявления","additions":null,"info":null},{"id":9,"parentId":7,"name":"Редактирование объявления","additions":null,"info":null},{"id":10,"parentId":7,"name":"Активация объявления","additions":null,"info":null},{"id":11,"parentId":7,"name":"Снятие объявления с публикации","additions":null,"info":null},{"id":12,"parentId":7,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":14,"parentId":13,"name":"Заблокированное объявление","additions":null,"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":15,"parentId":13,"name":"Заблокированная учетная запись","additions":null,"info":null},{"id":16,"parentId":13,"name":"Отклоненное объявление","additions":null,"info":null},{"id":18,"parentId":17,"name":"Прием СМС или звонка","additions":null,"info":null},{"id":19,"parentId":17,"name":"Отвязка номера от учетной записи","additions":null,"info":null},{"id":20,"parentId":17,"name":"Технические проблемы","additions":null,"info":null},{"id":21,"parentId":17,"name":"Другие вопросы","additions":null,"info":null},{"id":23,"parentId":22,"name":"Не вижу свое оплаченное объявление","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":24,"parentId":22,"name":"Оплата и применение дополнительных услуг","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":25,"parentId":22,"name":"Пополнение Кошелька Avito","additions":[{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":26,"parentId":22,"name":"Другие вопросы и консультации","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":29,"parentId":27,"name":"Пакеты размещений","additions":null,"info":null},{"id":30,"parentId":27,"name":"Разовое размещение","additions":null,"info":null},{"id":31,"parentId":27,"name":"Лимит бесплатных размещений","additions":null,"info":null},{"id":32,"parentId":27,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":34,"parentId":33,"name":"Проблемы с доступом к сайту","additions":null,"info":null},{"id":35,"parentId":33,"name":"Проблемы со входом в Личный кабинет","additions":null,"info":null},{"id":36,"parentId":33,"name":"Проблемы при подаче, активации или редактировании","additions":null,"info":null},{"id":37,"parentId":33,"name":"Проблемы при загрузке фото","additions":null,"info":null},{"id":38,"parentId":33,"name":"Ошибки отображения элементов сайта","additions":null,"info":null},{"id":39,"parentId":33,"name":"Некорректная работа поиска","additions":null,"info":null},{"id":40,"parentId":33,"name":"Проблемы с отправкой сообщений","additions":null,"info":null},{"id":41,"parentId":33,"name":"Другие технические проблемы","additions":null,"info":null},{"id":43,"parentId":42,"name":"Блокировка или отклонение объявлений","additions":null,"info":null},{"id":44,"parentId":42,"name":"Платные услуги и Кошелек Avito ","additions":null,"info":null},{"id":45,"parentId":42,"name":"Безналичные платежи","additions":null,"info":null},{"id":46,"parentId":42,"name":"Реквизиты организации","additions":null,"info":null},{"id":47,"parentId":42,"name":"Закрывающие документы","additions":null,"info":null},{"id":48,"parentId":42,"name":"Сервисы Автозагрузка, ActiAgent, ActiDealer","additions":[{"name":"Тематика","items":[{"id":47,"name":"Автозагрузка"},{"id":48,"name":"ActiDealer"},{"id":49,"name":"ActiAgent"}]}],"info":null},{"id":49,"parentId":42,"name":"Технические вопросы","additions":null,"info":null},{"id":50,"parentId":42,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":67,"parentId":42,"name":"Жалобы","additions":null,"info":null},{"id":53,"parentId":51,"name":"Avito Контекст","additions":[{"name":"Тематика в Контекст","items":[{"id":27,"name":"Создание кампании Avito Контекст"},{"id":28,"name":"Оплата компании Avito Контекст"},{"id":29,"name":"Модерация Avito Контекст"},{"id":30,"name":"Измерение результатов Avito Контекст"},{"id":31,"name":"Общие вопросы и консультации"}]}],"info":null},{"id":54,"parentId":51,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":56,"parentId":55,"name":"Обман при совершении сделки","additions":null,"info":null},{"id":57,"parentId":55,"name":"Подозрительное объявление или пользователь","additions":null,"info":null},{"id":58,"parentId":55,"name":"Мошенническое SMS, MMS или веб-сайт","additions":null,"info":null},{"id":59,"parentId":55,"name":"Мошенническое письмо","additions":null,"info":null},{"id":60,"parentId":55,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":62,"parentId":61,"name":"Приложение для iOS","additions":null,"info":null},{"id":63,"parentId":61,"name":"Приложение для Android","additions":null,"info":null},{"id":64,"parentId":61,"name":"Мобильная версия сайта","additions":null,"info":null},{"id":65,"parentId":61,"name":"Полная версия сайта с мобильного устройства","additions":null,"info":null},{"id":66,"parentId":61,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":80,"parentId":79,"name":"Вопрос по отправке заказа","additions":null,"info":null},{"id":81,"parentId":79,"name":"Вопрос по получению заказа","additions":null,"info":null},{"id":1,"parentId":null,"name":"Учетная запись и Личный кабинет","additions":null,"info":null},{"id":7,"parentId":null,"name":"Работа с объявлениями","additions":null,"info":null},{"id":13,"parentId":null,"name":"Блокировки и отклонения","additions":null,"info":null},{"id":17,"parentId":null,"name":"Подтверждение телефонных номеров","additions":null,"info":[{"id":2,"name":"Телефон","systemName":"phone"}]},{"id":22,"parentId":null,"name":"Платные услуги и сервисы","additions":null,"info":null},{"id":27,"parentId":null,"name":"Платное размещение объявлений","additions":null,"info":null},{"id":33,"parentId":null,"name":"Технические проблемы","additions":null,"info":null},{"id":42,"parentId":null,"name":"Магазины, Автозагрузка и юридические лица","additions":null,"info":null},{"id":51,"parentId":null,"name":"Рекламные сервисы (Avito Контекст)","additions":null,"info":null},{"id":55,"parentId":null,"name":"Безопасность на Avito","additions":null,"info":null},{"id":61,"parentId":null,"name":"Мобильный Avito","additions":null,"info":null},{"id":79,"parentId":null,"name":"Avito Доставка","additions":null,"info":null}]';
 }
 //++++++++++ Записываем в глобальную JSON строку всех проблем HD ++++++++++//
 
@@ -88,7 +88,7 @@ function findAgentID() {
 // информация о тегах
 function getTagsInfo() {
     var data = {
-        user_id: +userGlobalInfo.id
+        user_id: +global.userInfo.id
     }
 
     chrome.runtime.sendMessage({
@@ -100,7 +100,7 @@ function getTagsInfo() {
             function (response) {
                 if (~response.indexOf('Неверный запрос') || response == 'error') {
                     // outTextFrame('Ошибка загрузки тегов.');
-                    settingsGlobal.helpdeskTags = 'FatalError';
+                    global.hdSettings.helpdeskTags = 'FatalError';
                     return;
                 }
                 // console.log(response);
@@ -108,11 +108,11 @@ function getTagsInfo() {
                 try {
                     var resp = JSON.parse(response);
                 } catch (e) {
-                    settingsGlobal.helpdeskTags = 'FatalError';
+                    global.hdSettings.helpdeskTags = 'FatalError';
                     return;
                 }
 
-                settingsGlobal.helpdeskTags = resp;
+                global.hdSettings.helpdeskTags = resp;
 
                 renderTagsPopup(); // создание попапа тегов один раз
 
@@ -124,7 +124,7 @@ function getTagsInfo() {
     );
 }
 
-// инфа обо всех пользователях allUsersGlobalInfo
+// инфа обо всех пользователях global.allUsersInfo
 function getAllUsers() {
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
@@ -135,12 +135,12 @@ function getAllUsers() {
                 try {
                     var jsonParse = JSON.parse(response);
                 } catch (e) {
-                    allUsersGlobalInfo = 'FatalError';
+                    global.allUsersInfo = 'FatalError';
                     showAgentInfoTicket();
                     return;
                 }
 
-                allUsersGlobalInfo = jsonParse.table;
+                global.allUsersInfo = jsonParse.table;
 
                 // первый раз запуск после загузки страницы
                 showAgentInfoTicket();
@@ -211,7 +211,7 @@ function renderCreateNewTicketWindow(route) {
     $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы (вопрос)</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-problem"></select></div></div>');
 
     try {
-        var helpdeskProblemsStr = settingsGlobal.helpdeskProblemsJSON;
+        var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
     } catch (e) {
         var helpdeskProblemsStr = '[]';
     }
@@ -314,7 +314,7 @@ function renderCreateNewTicketWindow(route) {
         $(list).addClass('ah-dropped');
         $(list).show();
 
-        if (!settingsGlobal.helpdeskTemplatesJSON) {
+        if (!global.hdSettings.helpdeskTemplatesJSON) {
             $(list).append('<span id="create-ticket-loading-templates" style="text-align: center; width: 100%; display: inline-block; color: #c5c5c5; font-weight: 500;">Загрузка...</span>');
             getHDTemplates();
         }
@@ -402,7 +402,7 @@ function renderCreateNewTicketWindow(route) {
         }
 
         var list = $(modal).find('.create-ticket-choose-tags-list');
-        if (!settingsGlobal.helpdeskTagsJSON) {
+        if (!global.hdSettings.helpdeskTagsJSON) {
             $(list).append('<span id="create-ticket-loading-tags" style="text-align: center; width: 100%; display: inline-block; color: #c5c5c5; font-weight: 500;">Загрузка...</span>');
             getHDTags();
         } else {
@@ -554,10 +554,10 @@ function getHDTemplates() {
                     return;
                 }
 
-                settingsGlobal.helpdeskTemplatesJSON = response.result;
-                settingsGlobal.helpdeskTemplatesJSON.sort(compareTemplatesNames);
+                global.hdSettings.helpdeskTemplatesJSON = response.result;
+                global.hdSettings.helpdeskTemplatesJSON.sort(compareTemplatesNames);
 
-                var templatesAll = settingsGlobal.helpdeskTemplatesJSON;
+                var templatesAll = global.hdSettings.helpdeskTemplatesJSON;
 
                 var btn = $('#create-ticket-choose-templates');
                 var list = $(btn).next();
@@ -753,7 +753,7 @@ function getHDTags() {
                     return;
                 }
 
-                settingsGlobal.helpdeskTagsJSON = response;
+                global.hdSettings.helpdeskTagsJSON = response;
                 createTicketAddTagHandler();
             }
         }
@@ -761,7 +761,7 @@ function getHDTags() {
 }
 
 function createTicketAddTagHandler() {
-    var tagsAll = settingsGlobal.helpdeskTagsJSON;
+    var tagsAll = global.hdSettings.helpdeskTagsJSON;
 
     var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var list = $(modal).find('.create-ticket-choose-tags-list');
@@ -940,8 +940,8 @@ function substituteCreateTicketValues() {
     var problemId = $('[name="problemId"]').val();
     var theme = '';
 
-    var helpdeskProblemsStr = settingsGlobal.helpdeskProblemsJSON;
-    if (!settingsGlobal.helpdeskProblemsJSON) {
+    var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
+    if (!global.hdSettings.helpdeskProblemsJSON) {
         helpdeskProblemsStr = '[]';
     }
 
