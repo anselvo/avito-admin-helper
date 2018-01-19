@@ -1,268 +1,255 @@
-let version = chrome.runtime.getManifest().version;
-let scriptList = [];
+const version = chrome.runtime.getManifest().version;
 let script = false;
-let userGlobalInfo;
+let authorities = null;
+let connectInfo = null;
 
 $(function() {
-    loadingBar();
+    loadingPage();
+
+    const divVersion = document.getElementById('version');
+    divVersion.innerHTML = `<span title="Версия расширения">Версия ${version}</span>`;
 
     chrome.storage.local.get(result  => {
         script = result.script;
+        connectInfo = result.connectInfo;
+        authorities = result.authorities;
 
-        pageSelector(result.connectInfo);
+        pageSelector();
     });
 
     chrome.storage.onChanged.addListener(changes => {
-        if (changes.connectInfo) pageSelector(changes.connectInfo.newValue);
+        if (changes.connectInfo) {
+            connectInfo = changes.connectInfo.newValue;
+            pageSelector();
+        }
+
+        if (changes.authorities) {
+            authorities = changes.authorities.newValue;
+            console.log(authorities);
+        }
     });
 });
 
-function pageSelector(connectInfo) {
-    if (!connectInfo.error) {
-        userGlobalInfo = connectInfo.spring_user.principal;
-        createScriptList();
-        mainPage();
-    } else {
-        if (connectInfo.status === 401) errorAuthPage(connectInfo.error);
-        else errorPage(connectInfo.error);
-    }
-}
-
-function createScriptList() {
-	if (userGlobalInfo.subdivision.divisionName === 'Moderator') {
-		
-		scriptList = ['moderator'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Support') {
-		
-		scriptList = ['support', 'moderator'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Intern') {
-		
-		scriptList = ['support', 'moderator', 'intern'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'Traffic') {
-		
-		scriptList = ['traffic'];
-	} else if (userGlobalInfo.subdivision.divisionName === 'SMM') {
-
-        scriptList = ['smm'];
-    } else if (userGlobalInfo.subdivision.divisionName === 'InfoDoc') {
-
-        scriptList = ['infoDoc'];
-    } else {
-		
-		scriptList = ['support','moderator','intern','traffic','smm', 'infoDoc'];
-	}
-
-    if (!localStorage.script || scriptList.indexOf(localStorage.script) === -1) {
-        localStorage.scriptStatus = 'off';
-        localStorage.script = scriptList[0];
-        chrome.storage.local.set({'script': 'none'});
-    }
+function pageSelector() {
+    if (!connectInfo.error) authPage();
+    else errorPage(connectInfo.status, connectInfo.error);
 }
 
 // ОСНОВНАЯ СТРАНИЦА
+function authPage() {
+    const div = document.createElement('div');
+    div.className = 'ah-user-info ah-body-block';
 
-function mainPage() {
-    pageGenerator(
-		'Admin.Helper',
-		mainButtonGenerator(),
-		'',
-		'Удачного рабочего дня, ' + userGlobalInfo.name + '!'
-	);
+    const divAvatar = document.createElement('div');
+    divAvatar.className = 'ah-user-avatar-block';
+
+    const avatar = document.createElement('img');
+    avatar.className = 'ah-user-avatar';
+    if (connectInfo.spring_user.principal.avatar) avatar.src = connectInfo.spring_url + '/employee/img/' + connectInfo.spring_user.principal.avatar;
+    else avatar.src = '../../include/image/logo_user_default.png';
+
+    divAvatar.appendChild(avatar);
+
+    const divUserInfo = document.createElement('div');
+    divUserInfo.className = 'ah-user-info-block';
+
+    const name = document.createElement('div');
+    name.className = 'ah-user-name';
+    name.textContent = connectInfo.spring_user.principal.name + " " + connectInfo.spring_user.principal.surname;
+
+    const position = document.createElement('div');
+    position.className = 'ah-user-position';
+    position.textContent = connectInfo.spring_user.principal.subdivision.divisionName;
+
+    const schedule = document.createElement('div');
+    schedule.className = 'ah-user-schedule';
+    schedule.textContent = connectInfo.spring_user.principal.shift.shift + ", " + connectInfo.spring_user.principal.weekend.weekend;
+
+    const divContactInfo = document.createElement('div');
+    divContactInfo.className = 'ah-user-info-contact';
+
+    divContactInfo.appendChild(addContactInfoElement('Email', connectInfo.spring_user.principal.email));
+    divContactInfo.appendChild(addContactInfoElement('Phone', connectInfo.spring_user.principal.phone));
+    divContactInfo.appendChild(addContactInfoElement('Skype', connectInfo.spring_user.principal.skype));
+
+    divUserInfo.appendChild(name);
+    divUserInfo.appendChild(position);
+    divUserInfo.appendChild(schedule);
+
+    div.appendChild(divAvatar);
+    div.appendChild(divUserInfo);
+
+    pageGenerator(div, true);
 }
 
-
-function mainButtonGenerator() {
-    let html = '';
-
-    let script = localStorage.script;
-
-    let name = script.charAt(0).toUpperCase() + script.substr(1);
-    let chooseScriptBtn = (scriptList.length > 1) ? '<span class="script-group horizontal" id="choose-scripts"><i class="fa fa-list fa-3x" aria-hidden="true" style="margin-top: 6px; font-size: 28px;"></i></span>' : '';
-
-    html += '<span class="avito-logo script-group horizontal">' +
-                '<img id="avitoLogo" src="../../include/image/logo_white.png" style="">' +
-            '</span>' +
-            '<button id="mainScript" class="script-name script-group horizontal" name="'+script+'" title="'+name+' Helper">'+ name +
-                '<span class="script-toggler toggler-on">On</span>' +
-                '<span class="script-toggler toggler-off">Off</span>' +
-            '</button>'
-            + chooseScriptBtn;
-
-    return html;
+function addContactInfoElement(name, option) {
+    if (connectInfo.spring_user.principal.email) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = `<span>${name}: </span>${option}`;
+        return tmp;
+    }
 }
 
 // СТРАНИЦА ОШИБОК
+function errorPage(status, message) {
+    const div = document.createElement('div');
+    div.className = 'ah-error ah-body-block';
+    div.innerHTML = `<div class="ah-error-message">${message}</div>`;
 
-function errorPage(error) {
-    localStorage.scriptStatus = 'off';
-    chrome.storage.local.set({'script': 'none'});
+    if (status === 401) {
+        const form = document.createElement('form');
+        form.className = 'ah-auth';
 
-    pageGenerator(
-        'Ошибка',
-        error,
-        '<img id="avitoLogo" class="big-logo" src="../../include/image/logo_white.png">',
-        '',
-        true
-    );
+        const pass = document.createElement('input');
+        pass.type = 'password';
+        pass.placeholder = 'password';
+        pass.className = 'ah-password';
+        pass.id = 'password';
+        pass.required = true;
 
-    chrome.runtime.sendMessage({ action: 'connect' });
-}
+        const submit = document.createElement('input');
+        submit.type = 'submit';
+        submit.placeholder = 'sign in';
+        submit.className = 'ah-button';
+        submit.id = 'submit';
 
-// СТРАНИЦА ОШИБКИ АВТОРИЗАЦИИ
+        form.appendChild(pass);
+        form.appendChild(submit);
+        form.addEventListener('submit', () => chrome.runtime.sendMessage({ action: 'connect', password: pass.value }));
 
-function errorAuthPage(error) {
-	pageGenerator(
-		'Авторизация',
-		error,
-		'<input id="password" type="password" name="pass" placeholder="password" required>',
-		'<input class="btn" type="submit" id="submit" value="SIGN IN">',
-        true
-	);
-			
-	$('#submit').click(() => {
-	    const password = $('#password').val();
+        div.appendChild(form);
+    } else {
+        chrome.runtime.sendMessage({ action: 'connect' });
+    }
 
-        chrome.runtime.sendMessage({ action: 'connect', password: password });
-	});
+    scriptSwitch(null);
+    pageGenerator(div, false);
 }
 
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
-function chooseScriptPage() {
-    $('#choose-scripts').click(() => {
-        pageGenerator(
-            'Admin.Helper',
-            '',
-            chooseButtonGenerator(scriptList),
-            ''
-        );
+function settingsPage() {
+    const div = document.createElement('div');
+    div.className = 'ah-settings ah-body-block';
 
-        chooseScript();
+    const table = document.createElement('table');
+    table.className = 'ah-table-settings';
+    for (let key in authorities) {
+        if (authorities.hasOwnProperty(key)) {
+            const tr = document.createElement('tr');
+
+            const checked = authorities[key] ? 'checked' : '';
+            tr.innerHTML = `<td>${key}</td>
+                            <td width="35">
+                                <input id="${key}" class="ah-checkbox" type="checkbox" name="settings" ${checked} />
+                                <label class="ah-checkbox-label" for="${key}"></label>
+                            </td>`;
+
+            table.appendChild(tr);
+        }
+    }
+
+    table.addEventListener('change', event => {
+        authorities[event.target.id] = event.target.checked;
+
+        console.log({ authorities: authorities });
+        chrome.storage.local.set({ authorities: authorities });
     });
+
+    div.appendChild(table);
+
+    pageGenerator(div, true);
 }
 
+// СТРАНИЦА Загрузки
+function loadingPage() {
+    const div = document.createElement('div');
+    div.className = 'ah-loader';
 
-function chooseButtonGenerator(buttons) {
-    let html = '';
+    const divLoaderOne = document.createElement('div');
+    divLoaderOne.className = 'ah-loader-inner ah-loader-one';
 
-    buttons.forEach(function(btn) {
-        let id = btn;
-        let name = btn.charAt(0).toUpperCase() + btn.substr(1);
+    const divLoaderTwo = document.createElement('div');
+    divLoaderTwo.className = 'ah-loader-inner ah-loader-two';
 
-        html += '<input type="radio" class="radioLabel" name="option" id="'+id+'" />' +
-            '<label class="script-name script-group vertical" for="'+id+'" title="'+name+' Helper">'+name+'</label>';
-    });
+    const divLoaderThree = document.createElement('div');
+    divLoaderThree.className = 'ah-loader-inner ah-loader-three';
 
-    return html;
-}
+    div.appendChild(divLoaderOne);
+    div.appendChild(divLoaderTwo);
+    div.appendChild(divLoaderThree);
 
-function chooseScript() {
-    $('label[for]').click(event => {
-        let clickScript = $(event.currentTarget).attr('for');
-        $('#'+clickScript).prop('checked', true);
-
-        localStorage.script = clickScript;
-        localStorage.scriptStatus = 'on';
-        chrome.storage.local.set({'script': clickScript});
-
-        mainPage();
-    });
-}
-
-// СТРАНИЦА ПРИ ЛОГИНЕ
-function authPage() {
-	pageGenerator(
-        userGlobalInfo.username,
-        mainButtonGenerator(),
-		'<ul class="journal">'+
-			'<li><a href="http://avitoadm.ru/journal/users.html">Сотрудники</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/">Cобытия на сайте S&M</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/tasklog.html">Task log</a></li>'+
-			'<li><a href="http://avitoadm.ru/journal/mod_stat.html">Moderation Statistics</a></li>'+
-			'<li><a href="http://avitoadm.ru/support_helper/allowlist/">Allow List</a></li>'+
-			'<li><a href="http://avitoadm.ru/intern_helper/internlog/">Intern log</a></li>'+
-			'<li><span id="sendNotification" class="click">Отправить уведомление</span></li>'+
-		'</ul>',
-	);
-
-	$('.journal').on('click', 'a', function() {
-		chrome.tabs.create({ url: $(this).attr('href') });
-		return false;
-	});
+    pageGenerator(div, false);
 }
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
+function pageGenerator(body, isNav) {
+    navRemove();
 
-function pageGenerator(head, scripts, body, end, error) {
-    const $body = $('body');
+    const bodySelector = document.getElementById('body');
 
-    $body.empty()
-        .append('<div id="background-body"><img id="avitoBackground" src="../../include/image/popup_background.jpg"></div>');
-	
-	if (head !== '') {
-        $body.append('<div id="head" class="line"></div>');
-		$('#head').html(head);
-	}
+    bodySelector.innerHTML = '';
+    bodySelector.appendChild(body);
 
-	if (scripts !== '') {
-        if (!error) {
-            $body.append('<div id="scripts" class="radio_buttons"></div>');
-            $('#scripts').html(scripts);
-
-            scriptStatus();
-            chooseScriptPage();
-        } else {
-            $body.append('<div id="error" class="line"></div>');
-            $('#error').html(scripts);
-        }
-    }
-	
-	if (body !== '') {
-        $body.append('<div id="body" class="line"></div>');
-		
-		$('#body').html(body);
-	} else {
-		$('#scripts').css('margin', '35px 0');
-	}
-	
-	if (end !== '') {
-        $body.append('<div id="end" class="line"></div>');
-		$('#end').html(end);
-	}
-
-    $body.append('<div id="version"></div>');
-	$('#version').html('<span title="Версия расширения">v'+version+'</span>');
+    if (isNav) navGenerator();
 }
 
-function scriptStatus() {
-    const $mainScript = $('#mainScript');
+function navRemove() {
+    const nav = document.getElementById('nav');
+    if (nav) nav.remove();
+}
 
-    if (script) {
-        $mainScript.addClass('active');
-    } else {
-        $mainScript.removeClass('active');
-    }
+function navGenerator() {
+    const app = document.getElementById('app');
 
-    $mainScript.click(() => {
-        if (script) {
-            script = false;
-            $mainScript.removeClass('active');
-            chrome.storage.local.set({ script: false });
-        } else {
-            script = true;
-            $mainScript.addClass('active');
-            chrome.storage.local.set({ script: true });
+    const nav = document.createElement('nav');
+    nav.id = 'nav';
+    nav.className = 'ah-nav';
+
+    const navLeft = document.createElement('section');
+    navLeft.className = 'ah-nav-left';
+
+    navLeft.appendChild(addNavElement(`<img id="home" class="ah-nav-icon" src="../../include/image/black/icon_home.png">`));
+
+    const navRight = document.createElement('section');
+    navRight.className = 'ah-nav-right';
+
+    const checked = script ? 'checked' : '';
+    navRight.appendChild(addNavElement(`<input id="switch" class="ah-checkbox" type="checkbox" ${checked} /><label class="ah-checkbox-label" for="switch"></label>`));
+    navRight.appendChild(addNavElement(`<img id="setting" class="ah-nav-icon" src="../../include/image/black/icon_settings.png">`));
+
+    nav.appendChild(navLeft);
+    nav.appendChild(navRight);
+
+    nav.addEventListener('click', event => {
+        switch (event.target.id) {
+            case 'home':
+                pageSelector();
+                break;
+            case 'setting':
+                settingsPage();
+                break;
         }
     });
+
+    nav.addEventListener('change', event => {
+        switch (event.target.id) {
+            case 'switch':
+                scriptSwitch(event.target.checked);
+                break;
+        }
+    });
+
+    app.appendChild(nav);
 }
 
-function loadingBar() {
-    $('body')
-        .empty()
-        .append('<div id="body" class="line"><img id="avitoBackground" src="../../include/image/popup_background.jpg"></div>')
-        .append('<div class="cssload-loader">'+
-            '<div class="cssload-inner cssload-one"></div>'+
-            '<div class="cssload-inner cssload-two"></div>'+
-            '<div class="cssload-inner cssload-three"></div>'+
-        '</div>');
+function addNavElement(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div;
+}
+
+function scriptSwitch(checked) {
+    script = checked;
+    chrome.storage.local.set({ script: checked });
 }

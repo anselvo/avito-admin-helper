@@ -1,4 +1,3 @@
-let script = null, password = null;
 let stompClient = null;
 let connectInfo = {
     adm_auth: false,
@@ -22,12 +21,11 @@ chrome.runtime.onInstalled.addListener(details => {
 	// нотификация об апдейте расширения
     const version = chrome.runtime.getManifest().version;
 
-    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\n" +
-        "Для корректной работы расширения, рекомендуется обновить страницы в браузере");
+    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\nДля корректной работы расширения, рекомендуется обновить страницы в браузере");
     if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
-    getStorageInfo();
+    budgetStatus();
 
 	// определяем кто залогинен в админку
 	getCookieInfo();
@@ -54,8 +52,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
 chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
-            if (script === 'moderator') moderationListener(details);
-            if (script === 'smm') smmListener(details);
+            moderationListener(details);
+            smmListener(details);
 		}
     },
     {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
@@ -105,8 +103,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
 
         case "connect":
             if (request.password) {
-                chrome.storage.local.set({password: request.password});
-                password = request.password;
+                chrome.storage.local.set({ password: request.password });
             }
 
             connect();
@@ -119,17 +116,14 @@ function addChromeNotification(message) {
         type: "basic",
         title: "Admin.Helper",
         message: message,
-        iconUrl: "include/image/notificationLogo.png",
+        iconUrl: "include/image/black/logo_notification.png",
     };
     chrome.notifications.create(options);
 }
 
-function getStorageInfo() {
+function budgetStatus() {
     chrome.storage.local.get(result => {
-        script = result.script ? result.script : null;
-        password = result.password ? result.password : null;
-
-        setBudgetIcon(script);
+        setBudgetIcon(result.script);
     });
 
     chrome.storage.onChanged.addListener(result => {
@@ -177,26 +171,31 @@ function getCookieInfo() {
 }
 
 function connect() {
-    if (connectInfo.adm_auth)
-        login(connectInfo.adm_username, password)
-            .then(() => {
-                connectInfo.spring_auth = true;
-                connectInfo.error = null;
+    if (connectInfo.adm_auth) {
+        chrome.storage.local.get('password', result => {
+            const password = result.password ? result.password : null;
 
-                startWebSocket();
-                return getPrincipal();
-            }, error => {
-                connectInfo.spring_auth = false;
+            login(connectInfo.adm_username, password)
+                .then(() => {
+                    connectInfo.spring_auth = true;
+                    connectInfo.error = null;
 
-                if (error.message === 'No message available') error.message = error.error;
-                if (error.message === 'Failed to fetch') error.status = "(failed)";
-                if (error.message === 'Authentication with ajax is failure') {
-                    if (password) error.status = 4012;
-                    else error.status = 4011;
-                }
-                errorMessage(error.status, error.message);
-            })
-            .then(() => setConnectInfoToStorage());
+                    startWebSocket();
+                    return getPrincipal();
+                }, error => {
+                    connectInfo.spring_auth = false;
+
+                    if (error.message === 'No message available') error.message = error.error;
+                    if (error.message === 'Failed to fetch') error.status = "(failed)";
+                    if (error.message === 'Authentication with ajax is failure') {
+                        if (password) error.status = 4012;
+                        else error.status = 4011;
+                    }
+                    errorMessage(error.status, error.message);
+                })
+                .then(() => setConnectInfoToStorage());
+        });
+    }
 }
 
 function disconnect() {
@@ -208,8 +207,7 @@ function disconnect() {
 
                 connectInfo.status = null;
 
-                localStorage.scriptStatus = 'off';
-                chrome.storage.local.set({'script': 'none'});
+                chrome.storage.local.set({ script: false });
 
                 errorMessage(connectInfo.status);
             })
@@ -249,7 +247,29 @@ function getPrincipal() {
             if (response.status === 200) return response.json();
             else return errorListener(response);
         })
-        .then(json => connectInfo.spring_user = json, error => errorMessage(error.status, error.error));
+        .then(json => {
+            connectInfo.spring_user = json;
+            setAuthoritiesToStorage(json.principal.authorities);
+        }, error => errorMessage(error.status, error.error));
+}
+
+function setAuthoritiesToStorage(authorities) {
+    chrome.storage.local.get('authorities', result => {
+        const tmp = result.authorities ? result.authorities : {};
+
+        let authoritiesParse = {};
+        for (let i = 0; i < authorities.length; ++i) {
+            if (authorities[i].authority in tmp) {
+                authoritiesParse[authorities[i].authority] = tmp[authorities[i].authority];
+            } else {
+                authoritiesParse[authorities[i].authority] = true;
+            }
+        }
+
+
+        console.log({ authorities: authoritiesParse });
+        chrome.storage.local.set({ authorities: authoritiesParse });
+    });
 }
 
 function errorListener(response) {
@@ -287,6 +307,7 @@ function errorMessage(status, error) {
 }
 
 function setConnectInfoToStorage() {
+    console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
@@ -720,13 +741,20 @@ function iconEnable(tabId) {
 }
 
 function setBudgetIcon(script) {
-    if (script) {
-		chrome.browserAction.setBadgeText({text: 'On'});
+    switch (script) {
+        case true:
+            chrome.browserAction.setBadgeText({text: 'On'});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#e2442c'});
 
-        console.log('Content scripts - On');
-	} else {
-		chrome.browserAction.setBadgeText({text: "Off"});
+            console.log('Content scripts - On');
+            break;
+        case false:
+            chrome.browserAction.setBadgeText({text: "Off"});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#595959'});
 
-        console.log('Content scripts - Off');
-	}
+            console.log('Content scripts - Off');
+            break;
+        default:
+            chrome.browserAction.setBadgeText({text: ''});
+    }
 }
