@@ -1869,7 +1869,7 @@ function addCommentOnUserFromTicket() {
 	
     $('.helpdesk-additional-info-panel div:eq(0) ').after('<div class="sh-comment-onuser-wrapper"><textarea class="form-control" id="sh-areaComment" placeholder="Оставить комментарий на УЗ" rows="3"></textarea><input type="button" class="btn btn-primary btn-success" value="Add Comment" title="" id="addComment" style="float: right; margin-top: 10px; outline: none;"/><br><br><hr class="sh-comment-onuser-hr"></div>');
 
-    if (isAuthority('ROLE_HELPDESK-DETAILS-COMMENT-ON-USER--TICKET-LINK')) {
+    if (isAuthority('ROLE_HELPDESK-COMMENT-USER--TICKET-LINK')) {
         let ticketLink = getCurrentTicketLink();
         $('#sh-areaComment').val(ticketLink + ' ');
     }
@@ -2776,7 +2776,7 @@ function changeAssignee() {
         let ticketStatus = getTicketStatusText();
         if ((~ticketStatus.indexOf('закрытое')
             || ticketStatus === 'решенное')
-            && !isAuthority('ROLE_HELPDESK-DETAILS-CHANGE-ASSIGNEE-ANY-STATUS')) {
+            && !isAuthority('ROLE_HELPDESK-CHANGE-ASSIGNEE-ANY-STATUS')) {
             alert('Это действие недоступно для обращений со статусами "Закрытое" и "Решенное"');
             return;
         }
@@ -3784,7 +3784,7 @@ function customerClaimNotif() {
 function claimReevaluation(teamleadLogin) {
     $('#reevaluate-ticket-container').remove();
 
-    if (!isAuthority('ROLE_HELPDESK-DETAILS-CLAIM-REEVALUATION')) return;
+    if (!isAuthority('ROLE_HELPDESK-CLAIM-REEVALUATION')) return;
 
     $('.helpdesk-side-panel-setting-checkbox').append(`
         <div style="margin: 10px 0;" id="reevaluate-ticket-container" class="ah-tooltip-wrapper ah-disabled">

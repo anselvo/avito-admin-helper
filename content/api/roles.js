@@ -37,154 +37,154 @@ function handleRoles() {
         $('#sh-extra-assigneeId').remove();
 
         // добавление тегов
-        if (isAuthority('ROLE_HELPDESK-DETAILS-TAGS')) {
+        if (isAuthority('ROLE_HELPDESK-TAGS')) {
             roleHandler.helpdeskAddTags();
         }
         // быстрые кнопки
-        if (isAuthority('ROLE_HELPDESK-DETAILS-QUICK-BUTTONS')) {
+        if (isAuthority('ROLE_HELPDESK-QUICK-BUTTONS')) {
             roleHandler.helpdeskQuickButtons();
         }
 
         // фиксированный контейнер (настройки, кнопка наверх)
-        if (isAuthority('ROLE_HELPDESK-DETAILS-FIXED-TOOLS')) {
-            roleHandler.helpdeskDetailsFixedTools();
+        if (isAuthority('ROLE_HELPDESK-FIXED-TOOLS')) {
+            roleHandler.helpdeskFixedTools();
         }
 
         // айпи в техинфе
-        if (isAuthority('ROLE_HELPDESK-DETAILS-TECH-INFO-IP-LINK')) {
-            roleHandler.helpdeskDetailsTechInfoIpLink();
+        if (isAuthority('ROLE_HELPDESK-TECH-INFO-IP-LINK')) {
+            roleHandler.helpdeskTechInfoIpLink();
         }
 
         // альтернативный поиск в переписке
-        if (isAuthority('ROLE_HELPDESK-DETAILS-ALTERNATE-SEARCH')) {
-            roleHandler.helpdeskDetailsAlternateSearch();
+        if (isAuthority('ROLE_HELPDESK-ALTERNATE-SEARCH')) {
+            roleHandler.helpdeskAlternateSearch();
         }
 
         // смена ассигни
-        if (isAuthority('ROLE_HELPDESK-DETAILS-CHANGE-ASSIGNEE')) {
-            roleHandler.helpdeskDetailsChangeAssignee();
+        if (isAuthority('ROLE_HELPDESK-CHANGE-ASSIGNEE')) {
+            roleHandler.helpdeskChangeAssignee();
         }
 
         // очистка цитат
-        if (isAuthority('ROLE_HELPDESK-DETAILS-BLOCKQUOTE-CLEAR')) {
-            roleHandler.helpdeskDetailsBlockquoteClear();
+        if (isAuthority('ROLE_HELPDESK-BLOCKQUOTE-CLEAR')) {
+            roleHandler.helpdeskBlockquoteClear();
         }
 
         // показывать скрывать цитаты
-        if (isAuthority('ROLE_HELPDESK-DETAILS-BLOCKQUOTE-TOGGLE')) {
-            roleHandler.helpdeskDetailsBlockquoteToggle();
+        if (isAuthority('ROLE_HELPDESK-BLOCKQUOTE-TOGGLE')) {
+            roleHandler.helpdeskBlockquoteToggle();
         }
 
         // инфа об агента
-        if (isAuthority('ROLE_HELPDESK-DETAILS-EMPLOYEE-LABEL')) {
-            roleHandler.helpdeskDetailsEmployeeLabel();
+        if (isAuthority('ROLE_HELPDESK-EMPLOYEE-LABEL')) {
+            roleHandler.helpdeskEmployeeLabel();
         }
 
         // кнопка создания тикета
-        if (isAuthority('ROLE_HELPDESK-DETAILS-CREATE-TICKET')) {
+        if (isAuthority('ROLE_HELPDESK-CREATE-TICKET')) {
             roleHandler.helpdeskCreateTicketBtn();
         }
 
         // операции с тикетом (дежурный тим, классификация)
-        if (isAuthority('ROLE_HELPDESK-DETAILS-CONTROL-TOOLS')) {
-            roleHandler.helpdeskTicketControlTools();
+        if (isAuthority('ROLE_HELPDESK-CONTROL-TOOLS')) {
+            roleHandler.helpdeskControlTools();
         }
 
         // элементы в тайтле тикета
-        if (isAuthority('ROLE_HELPDESK-DETAILS-TICKET-TITLE-TOOLS')) {
+        if (isAuthority('ROLE_HELPDESK-TICKET-TITLE-TOOLS')) {
             roleHandler.helpdeskTicketTitleTools();
         }
 
         // парсинг IP в описании тикета
-        if (isAuthority('ROLE_HELPDESK-DETAILS-IP-DESCRIPTION')) {
-            roleHandler.helpdeskDetailsIpDescription();
+        if (isAuthority('ROLE_HELPDESK-DESCRIPTION-IP')) {
+            roleHandler.helpdeskDescriptionIp();
         }
 
         // одобрение IP в техинфо
-        if (isAuthority('ROLE_HELPDESK-DETAILS-TECH-INFO-SANCTION-IP')) {
-            roleHandler.helpdeskDetailsTechInfoSanctionIp();
+        if (isAuthority('ROLE_HELPDESK-TECH-INFO-SANCTION-IP')) {
+            roleHandler.helpdeskTechInfoSanctionIp();
         }
 
         // поиск юзера по айди в соцсети
-        if (isAuthority('ROLE_HELPDESK-DETAILS-SEARCH-BY-SOCIAL')) {
-            roleHandler.helpdeskDetailsSearchBySocial();
+        if (isAuthority('ROLE_HELPDESK-SEARCH-BY-SOCIAL')) {
+            roleHandler.helpdeskSearchBySocial();
         }
 
         // копирование ссылки на тикет
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COPY-TICKET-LINK')) {
-            roleHandler.helpdeskDetailsCopyTicketLink();
+        if (isAuthority('ROLE_HELPDESK-COPY-TICKET-LINK')) {
+            roleHandler.helpdeskCopyTicketLink();
         }
 
         // копировать имя реквестера
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COPY-REQUESTER-NAME')) {
-            roleHandler.helpdeskDetailsCopyRequesterName();
+        if (isAuthority('ROLE_HELPDESK-COPY-REQUESTER-NAME')) {
+            roleHandler.helpdeskCopyRequesterName();
         }
 
         // копирование айди тикета
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COPY-TICKET-ID')) {
-            roleHandler.helpdeskDetailsCopyTicketId();
+        if (isAuthority('ROLE_HELPDESK-COPY-TICKET-ID')) {
+            roleHandler.helpdeskCopyTicketId();
         }
 
         // поповер для айди айтема на левой панели
-        if (isAuthority('ROLE_HELPDESK-DETAILS-LEFT-PANEL-ITEM-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-ITEM-POPOVER')) {
             roleHandler.helpdeskLeftPanelItemPopover();
         }
 
         // поповер для айпи на левой панели
-        if (isAuthority('ROLE_HELPDESK-DETAILS-LEFT-PANEL-IP-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-IP-POPOVER')) {
             roleHandler.helpdeskLeftPanelIpPopover();
         }
 
         // поповер для номера телефона на левой панели
-        if (isAuthority('ROLE_HELPDESK-DETAILS-LEFT-PANEL-PHONE-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-PHONE-POPOVER')) {
             roleHandler.helpdeskLeftPanelPhonePopover();
         }
 
         // нотификация о жалобах от крайне негативных юзеров
-        if (isAuthority('ROLE_HELPDESK-DETAILS-NEGATIVE-USERS-NOTIFICATION')) {
-            roleHandler.helpdeskAddtNegativeUsersNotification();
+        if (isAuthority('ROLE_HELPDESK-NEGATIVE-USERS')) {
+            roleHandler.helpdeskNegativeUsersNotification();
         }
     }
 
     function helpdeskUserInfoEvent() {
         // Рядом с Blocked - причина блокировки в HD
-        if (isAuthority('ROLE_HELPDESK-DETAILS-BLOCKED-USER-REASON')) {
-            roleHandler.helpdeskDetailsBlockedUserReason();
+        if (isAuthority('ROLE_HELPDESK-BLOCKED-REASON')) {
+            roleHandler.helpdeskBlockedReason();
         }
 
         // Гиперссылки в правом сайдбаре на комментах к УЗ
-        if (isAuthority('ROLE_HELPDESK-DETAILS-LINKS-ON-COMMENTS')) {
-            roleHandler.helpdeskDetailsLinksOnComments();
+        if (isAuthority('ROLE_HELPDESK-LINKS-ON-COMMENTS')) {
+            roleHandler.helpdeskLinksOnComments();
         }
 
         // простановка коммента на УЗ из HD
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COMMENT-ON-USER')) {
-            roleHandler.helpdeskDetailsCommentUser();
+        if (isAuthority('ROLE_HELPDESK-COMMENT-USER')) {
+            roleHandler.helpdeskCommentUser();
         }
 
         // разблокировка юзера из HD + коммент
-        if (isAuthority('ROLE_HELPDESK-DETAILS-UNBLOCK-USER')) {
-            roleHandler.helpdeskDetailsUnblockUser();
+        if (isAuthority('ROLE_HELPDESK-UNBLOCK-USER')) {
+            roleHandler.helpdeskUnblockUser();
         }
 
         // предполагаемая УЗ
-        if (isAuthority('ROLE_HELPDESK-DETAILS-USER-INFO')) {
-            roleHandler.helpdeskDetailsUserInfo();
+        if (isAuthority('ROLE_HELPDESK-USER-INFO')) {
+            roleHandler.helpdeskUserInfo();
         }
 
         // линк на мессенджер
-        if (isAuthority('ROLE_HELPDESK-DETAILS-MESSENGER-LINK')) {
-            roleHandler.helpdeskDetailsMessengerLink();
+        if (isAuthority('ROLE_HELPDESK-MESSENGER-LINK')) {
+            roleHandler.helpdeskMessengerLink();
         }
 
         // копирование мыла юзера в буфер
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COPY-USER-MAIL')) {
+        if (isAuthority('ROLE_HELPDESK-COPY-USER-MAIL')) {
             roleHandler.helpdeskDetailsCopyUserMail();
         }
 
         // копирование имени юзера
-        if (isAuthority('ROLE_HELPDESK-DETAILS-COPY-USER-NAME')) {
-            roleHandler.helpdeskDetailsCopyUserName();
+        if (isAuthority('ROLE_HELPDESK-COPY-USER-NAME')) {
+            roleHandler.helpdeskCopyUserName();
         }
     }
 
@@ -226,13 +226,13 @@ function handleRoles() {
 
     function helpdeskTicketCommentsInfoEvent() {
         // парсинг айди айтемов в комменте
-        if (isAuthority('ROLE_HELPDESK-DETAILS-PARSE-ITEMS-COMMENTS')) {
-            roleHandler.helpdeskParseItemsComments();
+        if (isAuthority('ROLE_HELPDESK-COMMENTS-ITEM')) {
+            roleHandler.helpdeskCommentsItems();
         }
 
         // парсинг IP в комментах тикета
-        if (isAuthority('ROLE_HELPDESK-DETAILS-IP-COMMENTS')) {
-            roleHandler.helpdeskDetailsIpComments();
+        if (isAuthority('ROLE_HELPDESK-COMMENTS-IP')) {
+            roleHandler.helpdeskCommentsIp();
         }
     }
 
@@ -255,19 +255,19 @@ function handleRoles() {
         roleHandler.userChangeEmail();
     }
     if (isAuthority('ROLE_USER-INDICATORS')) { // индикаторы на юзере
-        roleHandler.userIndicatorsSupport();
+        roleHandler.userIndicators();
     }
     if (isAuthority('ROLE_USER-ALTERNATE_PHONE_SEARCH')) { // альтернативный поиск по телефону
-        roleHandler.alternatePhoneSearch();
+        roleHandler.userAlternatePhoneSearch();
     }
     if (isAuthority('ROLE_USER-COPY-DATA')) { // копирование данных
         roleHandler.userCopyData();
     }
     if (isAuthority('ROLE_USER-UNVERIFY_PHONES')) { // отвязка номеров с комментами
-        roleHandler.unverifyPhones();
+        roleHandler.userUnverifyPhones();
     }
-    if (isAuthority('ROLE_USER-PHONES-VERIFICATION_LINK')) { // линк на Phones verification
-        roleHandler.phonesVerificationLink();
+    if (isAuthority('ROLE_USER-PHONES-VERIFICATION-LINK')) { // линк на Phones verification
+        roleHandler.userPhonesVerificationLink();
     }
     if (isAuthority('ROLE_USER-MESSENGER-LINK')) { // линк на Мессенджер
         roleHandler.userMessengerLink();
@@ -317,7 +317,7 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEM-COMPARE-ITEMS')) { // сравнение объявлений
         roleHandler.itemCompareItems();
     }
-    if (isAuthority('ROLE_ITEM-ACCOUNT-INFO-LINK')) { // ссылка на кошелек
+    if (isAuthority('ROLE_ITEM-ACCOUNT-LINK')) { // ссылка на кошелек
         roleHandler.itemAccountInfoLink();
     }
     if (isAuthority('ROLE_ITEM-USER-INFO')) { // инфо о юзере на айтеме
@@ -368,29 +368,29 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEMS-SEARCH-COPY-ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemsSearchCopyItem();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-COUNT-MONEY')) { // добавление кнопок подсчета в Account info
-        roleHandler.accountInfoCountMoney();
+    if (isAuthority('ROLE_ACCOUNT-COUNT-MONEY')) { // добавление кнопок подсчета в Account info
+        roleHandler.accountCountMoney();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-ITEM-INFO')) { // статус объявления и причина блокировки
-        roleHandler.accountInfoItemInfo();
+    if (isAuthority('ROLE_ACCOUNT-ITEM-INFO')) { // статус объявления и причина блокировки
+        roleHandler.accountItemInfo();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-COMPENSATION-BTNS')) { // кнопки для компенсации ДС
-        roleHandler.accountInfoCompensationBtns();
+    if (isAuthority('ROLE_ACCOUNT-COMPENSATION-BTNS')) { // кнопки для компенсации ДС
+        roleHandler.accountCompensationBtns();
     }
     if (isAuthority('ROLE_RESERVED-OPERATIONS')) { // дополнения к операциям резервирования
         roleHandler.reservedOperations();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-USER-VIEW-OPERATIONS')) { // показ операций, которые видет пользователь
-        roleHandler.accountInfoUserViewOperations();
+    if (isAuthority('ROLE_ACCOUNT-USER-VIEW-OPERATIONS')) { // показ операций, которые видет пользователь
+        roleHandler.accountUserViewOperations();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-WL-LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
-        roleHandler.accountInfoWlLink();
+    if (isAuthority('ROLE_ACCOUNT-WL-LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
+        roleHandler.accountWlLink();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-WL-LINK-CLOSING-AMOUNT')) {  // ссылка на WL - сумма закрывающих
-        roleHandler.accountInfoWlLinkClosingAmount();
+    if (isAuthority('ROLE_ACCOUNT-WL-LINK-CLOSING-AMOUNT')) {  // ссылка на WL - сумма закрывающих
+        roleHandler.accountWlLinkClosingAmount();
     }
-    if (isAuthority('ROLE_ACCOUNT-INFO-PACKAGE-INFO')) {  // инфа о пакетах (счет)
-        roleHandler.accountInfoPackageInfo();
+    if (isAuthority('ROLE_ACCOUNT-PACKAGE-INFO')) {  // инфа о пакетах (счет)
+        roleHandler.accountPackageInfo();
     }
     if (isAuthority('ROLE_BILLING-WALLETLOG-ITEM-STATUS')) {  // статусы айтемов (wl)
         roleHandler.billingWalletlogItemStatus();
@@ -432,7 +432,7 @@ function handleRoles() {
         roleHandler.mainInfodocQueueLink();
     }
     if (isAuthority('ROLE_SHOP-ELEMENTS')) {  // фичи на странице шопа
-        roleHandler.shopInfoElements();
+        roleHandler.shopElements();
     }
     if (isAuthority('ROLE_SHOP-MODERATION')) {  // фичи на странице модерации шопа
         roleHandler.shopModeration();
@@ -497,16 +497,16 @@ function handleRoles() {
     if (isAuthority('ROLE_SNP')) { // Отправка письма пользователю о взломе и смена пароля
         roleHandler.snp();
     }
-    if (isAuthority('ROLE_DETECTIVES-QUEUE-SEARCH-HOLD-ITEMS')) { // удержание айтемов
-        roleHandler.holdItems();
+    if (isAuthority('ROLE_DETECTIVES-HOLD-ITEMS')) { // удержание айтемов
+        roleHandler.detectivesHoldItems();
     }
-    if (isAuthority('ROLE_HELPDESK-DETAILS-TAGS')) { // получаем инф-ию о тегах
+    if (isAuthority('ROLE_HELPDESK-TAGS')) { // получаем инф-ию о тегах
         roleHandler.helpdeskGetTags();
     }
-    if (isAuthority('ROLE_HELPDESK-DETAILS-CREATE-TICKET')) { // отрисовка окна создания тикета
+    if (isAuthority('ROLE_HELPDESK-CREATE-TICKET')) { // отрисовка окна создания тикета
         roleHandler.helpdeskCreateTicket();
     }
-    if (isAuthority('ROLE_HELPDESK-DETAILS-NEGATIVE-USERS-NOTIFICATION')) { // инфа о негативных юзерах
+    if (isAuthority('ROLE_HELPDESK-NEGATIVE-USERS')) { // инфа о негативных юзерах
         roleHandler.helpdeskGetNegativeUsers();
     }
 
@@ -619,6 +619,7 @@ RoleHandler.prototype.internLogLink = function() {
         <li class="divider" role="separator"></li>
     `);
 };
+
 RoleHandler.prototype.employeeLabels = function() {
     if (admUrlPatterns.users_user_info.test(currentUrl)
         || admUrlPatterns.items_item_info.test(currentUrl)) {
@@ -654,7 +655,7 @@ RoleHandler.prototype.userChangeEmail = function() {
     }
 };
 
-RoleHandler.prototype.userIndicatorsSupport = function() {
+RoleHandler.prototype.userIndicators = function() {
     if (admUrlPatterns.users_user_info.test(currentUrl)) {
         const userIndicators = ['inn', 'auto', 'shop', 'subscription', 'persManager'];
         if (isAuthority('ROLE_USER-INDICATORS--PRO')) {
@@ -676,7 +677,7 @@ RoleHandler.prototype.userIndicatorsSupport = function() {
     }
 };
 
-RoleHandler.prototype.alternatePhoneSearch = function() {
+RoleHandler.prototype.userAlternatePhoneSearch = function() {
     if (admUrlPatterns.users_user_info.test(currentUrl)) {
         alternatePhoneSearch();
     }
@@ -698,13 +699,13 @@ RoleHandler.prototype.userCopyData = function() {
     }
 };
 
-RoleHandler.prototype.unverifyPhones = function() {
+RoleHandler.prototype.userUnverifyPhones = function() {
     if (admUrlPatterns.users_user_info.test(currentUrl)) {
         addUnverifyPhonesButtons();
     }
 };
 
-RoleHandler.prototype.phonesVerificationLink = function() {
+RoleHandler.prototype.userPhonesVerificationLink = function() {
     if (admUrlPatterns.users_user_info.test(currentUrl)) {
         $('button[data-verify-text="Верифицировать"]').each((idx, item) => {
             const $item = $(item);
@@ -910,19 +911,19 @@ RoleHandler.prototype.itemsSearchCopyItem = function() {
     }
 };
 
-RoleHandler.prototype.accountInfoCountMoney = function() {
+RoleHandler.prototype.accountCountMoney = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         countMoneyAccount();
     }
 };
 
-RoleHandler.prototype.accountInfoItemInfo = function() {
+RoleHandler.prototype.accountItemInfo = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         statusItem();
     }
 };
 
-RoleHandler.prototype.accountInfoCompensationBtns = function() {
+RoleHandler.prototype.accountCompensationBtns = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         addCompensationBtns();
     }
@@ -937,13 +938,13 @@ RoleHandler.prototype.reservedOperations = function() {
     }
 };
 
-RoleHandler.prototype.accountInfoUserViewOperations = function() {
+RoleHandler.prototype.accountUserViewOperations = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         userViewOperations();
     }
 };
 
-RoleHandler.prototype.accountInfoWlLink = function() {
+RoleHandler.prototype.accountWlLink = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         addWlLinkAccountInfo(getWlLinkForUser,
             {linkTitle: 'Перейти в Wallet Log с фильтрами: текущий пользователь, все статусы, последние полгода'}
@@ -951,7 +952,7 @@ RoleHandler.prototype.accountInfoWlLink = function() {
     }
 };
 
-RoleHandler.prototype.accountInfoWlLinkClosingAmount = function() {
+RoleHandler.prototype.accountWlLinkClosingAmount = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         addWlLinkAccountInfo(getWlLinkForDocuments, {
             linkName: 'Сумма закрывающих'
@@ -959,7 +960,7 @@ RoleHandler.prototype.accountInfoWlLinkClosingAmount = function() {
     }
 };
 
-RoleHandler.prototype.accountInfoPackageInfo = function() {
+RoleHandler.prototype.accountPackageInfo = function() {
     if (admUrlPatterns.users_account_info.test(currentUrl)) {
         addPackageInfoAccountInfo();
     }
@@ -1070,7 +1071,7 @@ RoleHandler.prototype.mainInfodocQueueLink = function() {
     }
 };
 
-RoleHandler.prototype.shopInfoElements = function() {
+RoleHandler.prototype.shopElements = function() {
     if (admUrlPatterns.shops_info_view.test(currentUrl)) {
         shopsInfoElements();
     }
@@ -1220,20 +1221,20 @@ RoleHandler.prototype.snp = function() {
     }
 };
 
-RoleHandler.prototype.holdItems = function() {
+RoleHandler.prototype.detectivesHoldItems = function() {
     if (admUrlPatterns.detectives_queue_search.test(currentUrl)) {
         addHoldItems();
     }
+};
+
+RoleHandler.prototype.helpdeskAddTags = function() {
+    addTags();
 };
 
 RoleHandler.prototype.helpdeskGetTags = function() {
     if (admUrlPatterns.helpdesk.test(currentUrl)) {
         getTagsInfo();
     }
-};
-
-RoleHandler.prototype.helpdeskAddTags = function() {
-    addTags();
 };
 
 RoleHandler.prototype.helpdeskCreateTicket = function() {
@@ -1252,7 +1253,7 @@ RoleHandler.prototype.helpdeskGetNegativeUsers = function() {
     }
 };
 
-RoleHandler.prototype.helpdeskAddtNegativeUsersNotification = function() {
+RoleHandler.prototype.helpdeskNegativeUsersNotification = function() {
     if (admUrlPatterns.helpdesk.test(currentUrl)) {
         addNegativeUsersAbusesNotification();
     }
@@ -1262,39 +1263,39 @@ RoleHandler.prototype.helpdeskQuickButtons = function() {
     addQuickButtons();
 };
 
-RoleHandler.prototype.helpdeskDetailsFixedTools = function() {
+RoleHandler.prototype.helpdeskFixedTools = function() {
     const arr = ['scroll-top'];
-    if (isAuthority('ROLE_HELPDESK-DETAILS-FIXED-TOOLS--SETTINGS')) {
+    if (isAuthority('ROLE_HELPDESK-FIXED-TOOLS--SETTINGS')) {
         arr.push('hd-settings');
     }
     addFixedTools($('div.col-xs-3:eq(1)'), arr);
 };
 
-RoleHandler.prototype.helpdeskDetailsTechInfoIpLink = function() {
+RoleHandler.prototype.helpdeskTechInfoIpLink = function() {
     createHyperLinksIpInTechInfo();
 };
 
-RoleHandler.prototype.helpdeskDetailsAlternateSearch = function() {
+RoleHandler.prototype.helpdeskAlternateSearch = function() {
     setAlternateSearchInTicketCorresp();
 };
 
-RoleHandler.prototype.helpdeskDetailsChangeAssignee = function() {
+RoleHandler.prototype.helpdeskChangeAssignee = function() {
     changeAssignee();
 };
 
-RoleHandler.prototype.helpdeskDetailsBlockquoteClear = function() {
+RoleHandler.prototype.helpdeskBlockquoteClear = function() {
     blockquoteClear();
 };
 
-RoleHandler.prototype.helpdeskDetailsBlockquoteToggle = function() {
+RoleHandler.prototype.helpdeskBlockquoteToggle = function() {
     blockquoteHide();
 };
 
-RoleHandler.prototype.helpdeskDetailsEmployeeLabel = function() {
+RoleHandler.prototype.helpdeskEmployeeLabel = function() {
     showAgentInfoTicket();
 };
 
-RoleHandler.prototype.helpdeskTicketControlTools = function() {
+RoleHandler.prototype.helpdeskControlTools = function() {
     addTicketControlTools();
 };
 
@@ -1302,29 +1303,29 @@ RoleHandler.prototype.helpdeskTicketTitleTools = function() {
     addElementsTicketTitle();
 };
 
-RoleHandler.prototype.helpdeskDetailsIpDescription = function() {
+RoleHandler.prototype.helpdeskDescriptionIp = function() {
     const description = $('.helpdesk-details-panel .helpdesk-html-view.helpdesk-ticket-paragraph:not(.hidden), .helpdesk-details-panel .helpdesk-html-view:not(.hidden):last');
     const className = 'sh-matched-ip-description';
     parseIPInDetailsPanel(description, className);
 };
 
-RoleHandler.prototype.helpdeskDetailsTechInfoSanctionIp = function() {
+RoleHandler.prototype.helpdeskTechInfoSanctionIp = function() {
     sanctionIPTechInfo();
 };
 
-RoleHandler.prototype.helpdeskDetailsSearchBySocial = function() {
+RoleHandler.prototype.helpdeskSearchBySocial = function() {
     addSearchUserBySocialBlock();
 };
 
-RoleHandler.prototype.helpdeskDetailsCopyTicketLink = function() {
+RoleHandler.prototype.helpdeskCopyTicketLink = function() {
     copyCurrentTicketLink();
 };
 
-RoleHandler.prototype.helpdeskDetailsCopyRequesterName = function() {
+RoleHandler.prototype.helpdeskCopyRequesterName = function() {
     copyRequesterName();
 };
 
-RoleHandler.prototype.helpdeskDetailsCopyTicketId = function() {
+RoleHandler.prototype.helpdeskCopyTicketId = function() {
     copyTicketId();
 };
 
@@ -1340,28 +1341,28 @@ RoleHandler.prototype.helpdeskLeftPanelPhonePopover = function() {
     addPhoneNumberPopoverOnLeftPanel();
 };
 
-RoleHandler.prototype.helpdeskDetailsBlockedUserReason = function() {
+RoleHandler.prototype.helpdeskBlockedReason = function() {
     showReasonBlockedUser();
 };
 
-RoleHandler.prototype.helpdeskDetailsLinksOnComments = function() {
+RoleHandler.prototype.helpdeskLinksOnComments = function() {
     const userId = $('a[href *= "/users/search?user_id="]').text();
     linksOnComments('.helpdesk-additional-info-comment-text', userId);
 };
 
-RoleHandler.prototype.helpdeskDetailsCommentUser = function() {
+RoleHandler.prototype.helpdeskCommentUser = function() {
     addCommentOnUserFromTicket();
 };
 
-RoleHandler.prototype.helpdeskDetailsUnblockUser = function() {
+RoleHandler.prototype.helpdeskUnblockUser = function() {
     unblockUserHD();
 };
 
-RoleHandler.prototype.helpdeskDetailsUserInfo = function() {
+RoleHandler.prototype.helpdeskUserInfo = function() {
     infoAboutUser();
 };
 
-RoleHandler.prototype.helpdeskDetailsMessengerLink = function() {
+RoleHandler.prototype.helpdeskMessengerLink = function() {
     addMessengerLinkInTicket();
 };
 
@@ -1369,7 +1370,7 @@ RoleHandler.prototype.helpdeskDetailsCopyUserMail = function() {
     addCopyUserMailInTicket();
 };
 
-RoleHandler.prototype.helpdeskDetailsCopyUserName = function() {
+RoleHandler.prototype.helpdeskCopyUserName = function() {
     copyUserNameOnTicket();
 };
 
@@ -1407,11 +1408,11 @@ RoleHandler.prototype.helpdeskTlHelpComment = function() {
     }
 };
 
-RoleHandler.prototype.helpdeskParseItemsComments = function() {
+RoleHandler.prototype.helpdeskCommentsItems = function() {
     parseItemIdsInTicket();
 };
 
-RoleHandler.prototype.helpdeskDetailsIpComments = function() {
+RoleHandler.prototype.helpdeskCommentsIp = function() {
     const comments = $('.helpdesk-details-panel .helpdesk-html-view:not(.hidden, :last)');
     const className = 'sh-matched-ip-comment';
     parseIPInDetailsPanel(comments, className);

@@ -116,7 +116,7 @@ function getTagsInfo() {
 
                 renderTagsPopup(); // создание попапа тегов один раз
 
-                if (isAuthority('ROLE_HELPDESK-DETAILS-QUICK-BUTTONS')) {
+                if (isAuthority('ROLE_HELPDESK-QUICK-BUTTONS')) {
                     renderQBWindow(); // создание окна QB один раз
                     updateQBInfo(); // удаляем все, что нет в наборе или удалено/деактивировано
                 }
@@ -981,7 +981,7 @@ function substituteCreateTicketValues() {
     const $addedTagsBlock = $(modal).find('#create-ticket-choose-tags');
 
     // автозаполнение для voice support
-    if (isAuthority('ROLE_HELPDESK-DETAILS-CREATE-TICKET-VOICE-SUPPORT')) {
+    if (isAuthority('ROLE_HELPDESK-CREATE-TICKET-VOICE-SUPPORT')) {
         // tag callcenter
         $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
         $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
@@ -989,7 +989,7 @@ function substituteCreateTicketValues() {
     }
 
     // автозаполнение для C2c
-    if (isAuthority('ROLE_HELPDESK-DETAILS-CREATE-TICKET-C2C')) {
+    if (isAuthority('ROLE_HELPDESK-CREATE-TICKET-C2C')) {
         // tag delivery_call
         $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1549">');
         $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
