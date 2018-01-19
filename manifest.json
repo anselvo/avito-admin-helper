@@ -43,6 +43,7 @@
 				"content/api/count_money.js",
 				"content/api/assistant.js",
 				"content/api/indicators.js",
+				"content/api/intern.js",
 				"content/api/roles.js",
 
 				"content/routes/items_item_info.js",
@@ -60,14 +61,7 @@
 				"content/routes/helpdesk_details.js",
 				"content/routes/billing_walletlog.js",
 				"content/routes/billing_invoices.js",
-				"content/routes/detectives_queue_search.js",
-
-				"content/helpers/smm.js",
-				"content/helpers/support.js",
-				"content/helpers/moderation.js",
-				"content/helpers/intern.js",
-				"content/helpers/traffic.js",
-				"content/helpers/infodoc.js"
+				"content/routes/detectives_queue_search.js"
 			],
 			"run_at": "document_start"
 		}
