@@ -25,7 +25,7 @@ chrome.runtime.onInstalled.addListener(details => {
     if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
-    budgetStatus();
+    getStorageInfo();
 
 	// определяем кто залогинен в админку
 	getCookieInfo();
@@ -121,13 +121,15 @@ function addChromeNotification(message) {
     chrome.notifications.create(options);
 }
 
-function budgetStatus() {
+function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
     });
 
     chrome.storage.onChanged.addListener(result => {
         if (result.script) setBudgetIcon(result.script.newValue);
+        if (result.authorities) console.log({ authorities: result.authorities.newValue });
+        if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
     });
 }
 
@@ -266,8 +268,6 @@ function setAuthoritiesToStorage(authorities) {
             }
         }
 
-
-        console.log({ authorities: authoritiesParse });
         chrome.storage.local.set({ authorities: authoritiesParse });
     });
 }
@@ -307,7 +307,6 @@ function errorMessage(status, error) {
 }
 
 function setConnectInfoToStorage() {
-    console.log({ connectInfo: connectInfo });
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
