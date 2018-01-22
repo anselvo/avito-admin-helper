@@ -1,31 +1,28 @@
-let script = null, password = null;
 let stompClient = null;
 let connectInfo = {
-    auth: false,
-    adm: false,
+    adm_auth: false,
     adm_username: null,
+    adm_url: "https://adm.avito.ru",
+    spring_auth: false,
+    spring_user: null,
+    spring_url: "http://spring.avitoadm.ru",
     status: null,
-    user: null,
-    error: null,
-    auth_count: 0,
-    springUrl: "http://spring.avitoadm.ru",
-    admUrl: "https://adm.avito.ru"
+    error: null
 };
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
-chrome.runtime.onUpdateAvailable.addListener(function() {
+chrome.runtime.onUpdateAvailable.addListener(() => {
     // принудительное обновление расширения
     chrome.runtime.reload();
 });
 
 // ЛОВИТ КОГДА РАСШИРЕНИЕ УСТАНОВЛЕНО ИЛИ ОБНОВЛЕННО
-chrome.runtime.onInstalled.addListener(function(details) {
+chrome.runtime.onInstalled.addListener(details => {
 	// нотификация об апдейте расширения
     const version = chrome.runtime.getManifest().version;
 
-    if (details.reason === 'update') addChromeNotification("Updated (new version "+ version + ")\n\n" +
-        "Recommendation: for the extension to work correctly, please reload all pages on which the extension works");
-    if (details.reason === 'install') addChromeNotification("Installed (current version " + version + ")");
+    if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\nДля корректной работы расширения, рекомендуется обновить страницы в браузере");
+    if (details.reason === 'install') addChromeNotification("Installed " + version);
 
     // забираем необходимую инфу со стореджа для старта расширения
     getStorageInfo();
@@ -38,54 +35,40 @@ chrome.runtime.onInstalled.addListener(function(details) {
 });
 
 // ЛОВИТ БУДИЛЬНИК
-chrome.alarms.onAlarm.addListener(function(alarm) {
+chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
-chrome.tabs.onActivated.addListener(function (info) {
-	chrome.tabs.get(info.tabId, function(tab){
-		iconStatus(info.tabId, tab.url);
-	});
+chrome.tabs.onActivated.addListener(info => {
+
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	iconStatus(tabId, tab.url);
-	
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
 });
 
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
-chrome.webRequest.onBeforeRequest.addListener(
-	function (details) {
+chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
-            if (script === 'moderator') moderationListener(details);
-            if (script === 'smm') smmListener(details);
+            moderationListener(details);
+            smmListener(details);
 		}
     },
-    {urls: [`${connectInfo.admUrl}/*`, "https://br-analytics.ru/*"]},
+    {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
     ['blocking', 'requestBody']
 );
 
 // ЛОВИТ КАКИЕ ОТВЕТЫ ПОЛУЧЕНЫ ОТ СЕРВЕРА
-chrome.webRequest.onCompleted.addListener(function (detailsURL) {
+chrome.webRequest.onCompleted.addListener(detailsURL => {
         requestListener(detailsURL.tabId, detailsURL.url);
 	}, 
-	{ urls: [`${connectInfo.admUrl}/*`] }
+	{ urls: [`${connectInfo.adm_url}/*`] }
 );
 
-// ЛОВИТ ИНФОРМАЦИЮ ОБ ИЗМЕНЕНИИ СТОРАДЖА
-chrome.storage.onChanged.addListener(function (result) {
-	if ("script" in result) {
-	    script = result.script.newValue;
-	    setBudgetIcon(script);
-
-    }
-});
-
 // ЛОВИТ СООБЩЕНИЯ
-chrome.runtime.onMessage.addListener(function(request, sender, callback) {
+chrome.runtime.onMessage.addListener((request, sender, callback) => {
     switch (request.action) {
         case "XMLHttpRequest":
             let xhr = new XMLHttpRequest();
@@ -118,14 +101,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             }
             return false;
 
-        case "authentication":
-            chrome.storage.local.set({ password: request.password });
-            password = request.password;
-            connect();
-            return false;
+        case "connect":
+            if (request.password) {
+                chrome.storage.local.set({ password: request.password });
+            }
 
-        case "principal":
-            getPrincipal();
+            connect();
             return false;
     }
 });
@@ -135,43 +116,47 @@ function addChromeNotification(message) {
         type: "basic",
         title: "Admin.Helper",
         message: message,
-        iconUrl: "image/notificationLogo.png",
+        iconUrl: "include/image/black/logo_notification.png",
     };
     chrome.notifications.create(options);
 }
 
 function getStorageInfo() {
-    chrome.storage.local.get(function (result) {
-        script = result.script;
-        password = result.password;
+    chrome.storage.local.get(result => {
+        setBudgetIcon(result.script);
+    });
 
-        setBudgetIcon(script);
+    chrome.storage.onChanged.addListener(result => {
+        if (result.script) setBudgetIcon(result.script.newValue);
+        // if (result.authorities) console.log({ authorities: result.authorities.newValue });
+        // if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
     });
 }
 
 function getCookieInfo() {
-	chrome.cookies.get({'url': `${connectInfo.admUrl}`, 'name': 'adm_username'}, function(cookie) {
+	chrome.cookies.get({'url': `${connectInfo.adm_url}`, 'name': 'adm_username'}, cookie => {
 		if (cookie) {
 			console.log('You login to adm.avito.ru as ' + cookie.value);
 
-            connectInfo.adm = true;
+            connectInfo.adm_auth = true;
             connectInfo.adm_username = cookie.value;
 
             connect();
 		} else {
 			console.log('You not login in adm.avito.ru');
 
-            initialCondition();
+            connectInfo.adm_auth = false;
+            connectInfo.adm_username = null;
 
-            connect();
+            disconnect();
 		}
 	});
 
-	chrome.cookies.onChanged.addListener(function (changeInfo){
+	chrome.cookies.onChanged.addListener(changeInfo => {
 		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
 			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
 
-            connectInfo.adm = true;
+            connectInfo.adm_auth = true;
             connectInfo.adm_username = changeInfo.cookie.value;
 
             connect();
@@ -179,45 +164,59 @@ function getCookieInfo() {
         if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
             console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
 
-            initialCondition();
+            connectInfo.adm_auth = false;
+            connectInfo.adm_username = null;
 
-            connect();
+            disconnect();
         }
 	});
 }
 
 function connect() {
-    if (connectInfo.adm) {
-        authentication(connectInfo.adm_username, password)
-            .then(() => {
-                    connectInfo.auth = true;
+    if (connectInfo.adm_auth) {
+        chrome.storage.local.get('password', result => {
+            const password = result.password ? result.password : null;
+
+            login(connectInfo.adm_username, password)
+                .then(() => {
+                    connectInfo.spring_auth = true;
                     connectInfo.error = null;
 
                     startWebSocket();
-                    getPrincipal();
-                },
-                error => {
-                    connectInfo.auth = false;
+                    return getPrincipal();
+                }, error => {
+                    connectInfo.spring_auth = false;
 
+                    if (error.message === 'No message available') error.message = error.error;
+                    if (error.message === 'Failed to fetch') error.status = "(failed)";
                     if (error.message === 'Authentication with ajax is failure') {
                         if (password) error.status = 4012;
                         else error.status = 4011;
                     }
-
-                    errorMessage(error.status, error.error);
+                    errorMessage(error.status, error.message);
                 })
-            .then(() => setAuthenticationStorageInfo());
-
-    } else {
-        logout().then(() => {
-            connectInfo.auth = false;
-
-            setAuthenticationStorageInfo();
+                .then(() => setConnectInfoToStorage());
         });
     }
 }
 
-function authentication(username, password) {
+function disconnect() {
+    if (!connectInfo.adm_auth)
+        logout()
+            .then(() => {
+                connectInfo.spring_auth = false;
+                connectInfo.spring_user = null;
+
+                connectInfo.status = null;
+
+                chrome.storage.local.set({ script: null });
+
+                errorMessage(connectInfo.status);
+            })
+            .then(() => setConnectInfoToStorage());
+}
+
+function login(username, password) {
     let formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -229,38 +228,62 @@ function authentication(username, password) {
         body: formData
     };
 
-    return fetch(`${connectInfo.springUrl}/login`, headers)
+    return fetch(`${connectInfo.spring_url}/login`, headers)
         .then(response => {
             connectInfo.status = response.status;
-            connectInfo.auth_count++;
 
-            if (response.status !== 200) {
-                return response.json().then(Promise.reject.bind(Promise));
-            }
-            return Promise.resolve();
+            if (response.status === 200) return Promise.resolve();
+            else return errorListener(response);
         });
 }
 
 function logout() {
-    return fetch(`${connectInfo.springUrl}/logout`, { credentials: 'include' });
+    return fetch(`${connectInfo.spring_url}/logout`, { credentials: 'include' });
 }
 
 function getPrincipal() {
-    fetch(`${connectInfo.springUrl}/auth/principal`, { credentials: 'include', redirect: 'error' })
+    return fetch(`${connectInfo.spring_url}/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
-            if (response.status !== 200) {
-                return response.json().then(Promise.reject.bind(Promise));
-            }
-            return response.json();
+            if (response.status === 200) return response.json();
+            else return errorListener(response);
         })
-        .then(json => connectInfo.user = json, error => errorMessage(error.status, error.error))
-        .then(() => setAuthenticationStorageInfo());
+        .then(json => {
+            connectInfo.spring_user = json;
+            setAuthoritiesToStorage(json.principal.authorities);
+        }, error => errorMessage(error.status, error.error));
+}
+
+function setAuthoritiesToStorage(authorities) {
+    chrome.storage.local.get('authorities', result => {
+        const tmp = result.authorities ? result.authorities : {};
+
+        let authoritiesParse = {};
+        for (let i = 0; i < authorities.length; ++i) {
+            if (authorities[i].authority in tmp) {
+                authoritiesParse[authorities[i].authority] = tmp[authorities[i].authority];
+            } else {
+                authoritiesParse[authorities[i].authority] = true;
+            }
+        }
+
+        chrome.storage.local.set({ authorities: authoritiesParse });
+    });
+}
+
+function errorListener(response) {
+    return response.json().then(json => { throw json }, () => { throw { message: response.statusText, status: response.status }; });
 }
 
 function errorMessage(status, error) {
     switch (status) {
+        case null:
+            connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
+            break;
+        case "(failed)":
+            connectInfo.error = "Отсутствует соединение с сервером. Сообщите о проблеме тимлидеру";
+            break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
             break;
@@ -268,45 +291,33 @@ function errorMessage(status, error) {
             connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
             break;
         case 401:
-            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
-            break;
-        case 404:
-            connectInfo.error = status + " " + error + "\nОбратитесь к тимлидеру";
+            connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = "К сожалению, что-то пошло не так и я не могу предоставить вам доступ к своему функционалу. Возможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " " + error + "\nОтсутствует доступ к расширению\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
             break;
         case 500:
-            connectInfo.error = "К сожалению, произошла техническая ошибка. Попробуйте закрыть окно расширения и открыть его заново";
+            connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
             break;
         default:
-            connectInfo.error = "К сожалению, возникла ошибка. Обратитесь к тимлидеру";
+            connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
     }
 
     addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
-function setAuthenticationStorageInfo() {
-    console.log({ connectInfo: connectInfo });
+function setConnectInfoToStorage() {
     chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
-function initialCondition() {
-    connectInfo.adm = false;
-    connectInfo.username = null;
-    connectInfo.status = null;
-    connectInfo.user = null;
-
-    localStorage.scriptStatus = 'off';
-    chrome.storage.local.set({'script': 'none'});
-}
-
 function startWebSocket() {
-    const socket = new SockJS(`${connectInfo.springUrl}/ws`);
+    const socket = new SockJS(`${connectInfo.spring_url}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
-    stompClient.connect({}, () => {
-        chrome.storage.local.set({ notifications: {} });
+    stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
+
+    function stompSuccessCallback() {
+        chrome.storage.local.set({notifications: {}});
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -314,10 +325,14 @@ function startWebSocket() {
 
         stompClient.subscribe('/user/queue/notification.update', removeNotificationFromStorage);
 
-        stompClient.subscribe('/user/queue/user.update', updateUserInfoToStorage);
-
         stompClient.send('/app/notification/unread', {});
-    });
+    }
+
+    function stompFailureCallback() {
+        chrome.storage.local.set({notifications: {}});
+
+        connect();
+    }
 
     function addNotificationToStorage(response) {
         const newNotifications = JSON.parse(response.body);
@@ -353,14 +368,6 @@ function startWebSocket() {
             chrome.storage.local.set(result);
         });
     }
-
-    function updateUserInfoToStorage(response) {
-        console.log(response.body);
-        getPrincipal();
-
-        // connectInfo.user = JSON.parse(response.body);
-        // setAuthenticationStorageInfo();
-    }
 }
 
 function smmListener(details) {
@@ -384,11 +391,11 @@ function smmLogToDB(messageId, tagString) {
     let log = {
         messageId: messageId,
         tagString: tagString,
-        usernameId: connectInfo.user.principal.id
+        usernameId: connectInfo.spring_user.principal.id
     };
 
     let json = JSON.stringify(log);
-    let url = `${connectInfo.springUrl}/smmstat/update`;
+    let url = `${connectInfo.spring_url}/smmstat/update`;
 
     $.ajax({
         url: url,
@@ -411,7 +418,7 @@ function moderationListener(details) {
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
 	
 	//pre
-	if (details.url === `${connectInfo.admUrl}/items/moder/submit/all`) {
+	if (details.url === `${connectInfo.adm_url}/items/moder/submit/all`) {
 		chrome.storage.local.get(function (result) {
             let blockedItemsID;
 			if (!result.blockedItemsID) blockedItemsID = [];
@@ -430,7 +437,7 @@ function moderationListener(details) {
 		});
 	}
 	
-	if (details.url === `${connectInfo.admUrl}/items/moder/submit`) {
+	if (details.url === `${connectInfo.adm_url}/items/moder/submit`) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 
@@ -442,7 +449,7 @@ function moderationListener(details) {
 	}
 	
 	//post
-	if (details.url === `${connectInfo.admUrl}/items/item/reject`) {
+	if (details.url === `${connectInfo.adm_url}/items/item/reject`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -456,7 +463,7 @@ function moderationListener(details) {
 		sendLogToDB('reject item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url === `${connectInfo.admUrl}/items/item/block`) {
+	if (details.url === `${connectInfo.adm_url}/items/item/block`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
@@ -472,7 +479,7 @@ function moderationListener(details) {
 	}
 	
 	//comparison
-	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
+	if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
 		let alive = details.url.split('/');
 		count = formData['ids[]'].length-1;
 		ids = formData['ids[]'];
@@ -485,7 +492,7 @@ function moderationListener(details) {
 		sendLogToDB('block item', '20', count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/`)+1 && details.url.indexOf('block')+1) {
+	if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/`)+1 && details.url.indexOf('block')+1) {
 		count = formData['ids[]'].length;
         items_id = formData['ids[]'].join();
 		let blockItem = details.url.split('/');
@@ -496,7 +503,7 @@ function moderationListener(details) {
 	}
 
 	//comparison 3.0
-    if (details.url.indexOf(`${connectInfo.admUrl}/items/comparison/moderate`)+1) {
+    if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/moderate`)+1) {
         let comment = formData['comment'];
         let items = comment[0].split(', ');
         let tmp = items[0].split(':');
@@ -532,14 +539,14 @@ function moderationListener(details) {
     }
 	
 	//users
-	if (details.url === `${connectInfo.admUrl}/users/user/block`) {
+	if (details.url === `${connectInfo.adm_url}/users/user/block`) {
 		count = formData['id'].length;
         items_id = formData['id'].join();
 		
 		sendLogToDB('block user', reason, count, items_id);
 	}
 
-	if (details.url === `${connectInfo.admUrl}/detectives/queue/add`) {
+	if (details.url === `${connectInfo.adm_url}/detectives/queue/add`) {
         items_id = formData['itemId'].join();
         sendLogToDB('detectives', reason, 1, items_id);
     }
@@ -559,7 +566,7 @@ function addBlockedItemsIDtoStorage(ids) {
 
 function sendLogToDB(type, reason, count, items_id) {
 	let row = {
-        username_id: connectInfo.user.principal.id,
+        username_id: connectInfo.spring_user.principal.id,
         type: type,
         items_id: items_id,
         reason: reason,
@@ -580,7 +587,7 @@ function sendLogToDB(type, reason, count, items_id) {
 }
 
 function sendLogToStorage(type, count) {
-	chrome.storage.local.get('mod_stat', function (result) {
+	chrome.storage.local.get('mod_stat', result => {
 		if (!result.mod_stat) {
 			let mod_stat = {
 				'mod_stat': {
@@ -656,28 +663,28 @@ function newDay(currentDay) {
 function requestListener(tabId, url) {
 
 	// helpdesk
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/edit/`) ) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/edit/`) ) {
 		sendMessage(tabId, 'ticketEdit');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
 		sendMessage(tabId, 'ticketComment');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
 		sendMessage(tabId, 'ticketPending');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
 		sendMessage(tabId, 'ticketSolve');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
 		sendMessage(tabId, 'ticketOnHold');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
 		sendMessage(tabId, 'ticketSpam');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
 		sendMessage(tabId, 'ticketDuplicate');
 	}
-	if ( ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
+	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
 		sendMessage(tabId, 'ticketTake');
 	}
 
@@ -686,18 +693,18 @@ function requestListener(tabId, url) {
         sendMessage(tabId, 'ticketUser');
     }
 
-	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/search`)+1) {
+	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/search`)+1) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
-	if (url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
+	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
 		sendMessage(tabId, 'ticketInfo');
 	}
-	if ((~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/next`)) {
+	if ((~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/next`)) {
 		sendMessage(tabId, 'ticketEnter');
 	}
 	
-	if (~url.indexOf(`${connectInfo.admUrl}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
+	if (~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
 		sendMessage(tabId, 'ticketComments');
 	}
 
@@ -721,15 +728,7 @@ function requestListener(tabId, url) {
 }
 
 function sendMessage(tabId, msg) {	
-	chrome.tabs.sendMessage(tabId, {onUpdated: msg});
-}
-
-function iconStatus(tabId, url) {
-	if (url === undefined) {
-		iconDisable(tabId);
-	} else {
-		iconEnable(tabId);
-	}
+	chrome.tabs.sendMessage(tabId, { onUpdated: msg });
 }
 
 function iconDisable(tabId) {
@@ -743,15 +742,20 @@ function iconEnable(tabId) {
 }
 
 function setBudgetIcon(script) {
-    if (script !== 'none' && script) {
-		let logo = script.charAt(0).toUpperCase();
-		chrome.browserAction.setBadgeText({text: logo});
-		chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
+    switch (script) {
+        case true:
+            chrome.browserAction.setBadgeText({text: 'On'});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#e2442c'});
 
-        console.log('Включен скрип: ' + script);
-	} else {
-		chrome.browserAction.setBadgeText({text: ""});
+            console.log('Content scripts - On');
+            break;
+        case false:
+            chrome.browserAction.setBadgeText({text: "Off"});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#595959'});
 
-        console.log('Скрипты выключены');
-	}
+            console.log('Content scripts - Off');
+            break;
+        default:
+            chrome.browserAction.setBadgeText({text: ''});
+    }
 }
