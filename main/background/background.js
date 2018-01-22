@@ -128,8 +128,8 @@ function getStorageInfo() {
 
     chrome.storage.onChanged.addListener(result => {
         if (result.script) setBudgetIcon(result.script.newValue);
-        if (result.authorities) console.log({ authorities: result.authorities.newValue });
-        if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
+        // if (result.authorities) console.log({ authorities: result.authorities.newValue });
+        // if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
     });
 }
 
