@@ -129,30 +129,31 @@ function errorPage(status, message) {
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
 function settingsPage() {
+    const permission = connectInfo.spring_user.principal.permissionSet;
+
     const div = document.createElement('div');
     div.className = 'ah-settings ah-body-block';
 
     const table = document.createElement('table');
     table.className = 'ah-table-settings';
-    for (let key in authorities) {
-        if (authorities.hasOwnProperty(key)) {
-            const tr = document.createElement('tr');
 
-            const checked = authorities[key] ? 'checked' : '';
-            tr.innerHTML = `<td>${key}</td>
-                            <td width="35">
-                                <input id="${key}" class="ah-checkbox" type="checkbox" name="settings" ${checked} />
-                                <label class="ah-checkbox-label" for="${key}"></label>
-                            </td>`;
+    for (let i = 0; i < permission.length; ++i) {
+        const roleName = "ROLE_" + permission[i].name.toUpperCase();
+        const tr = document.createElement('tr');
 
-            table.appendChild(tr);
-        }
+        const checked = authorities[roleName] ? 'checked' : '';
+        tr.innerHTML = `<td><div class="ah-table-settings-name">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
+                        <td width="35">
+                            <input id="${permission[i].id}" class="ah-checkbox" type="checkbox" name="settings" data-role="${roleName}" ${checked} />
+                            <label class="ah-checkbox-label" for="${permission[i].id}"></label>
+                        </td>`;
+
+        table.appendChild(tr);
     }
 
     table.addEventListener('change', event => {
-        authorities[event.target.id] = event.target.checked;
+        authorities[event.target.dataset.role] = event.target.checked;
 
-        console.log({ authorities: authorities });
         chrome.storage.local.set({ authorities: authorities });
     });
 

@@ -21,7 +21,7 @@ body {
 }
 
 .ah-nav {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -156,11 +156,17 @@ body {
 
 .ah-table-settings td {
     padding: 8px;
-    line-height: 1px;
+    vertical-align: top;
 }
 
 .ah-table-settings tr:not(:last-child) td {
     border-bottom: 1px solid #d6d6d6;
+}
+
+.ah-table-settings-description {
+    font-size: 10px;
+    font-style: italic;
+    color: #828282;
 }
 
 .ah-button {
