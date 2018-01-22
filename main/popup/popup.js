@@ -138,17 +138,20 @@ function settingsPage() {
     table.className = 'ah-table-settings';
 
     for (let i = 0; i < permission.length; ++i) {
-        const roleName = "ROLE_" + permission[i].name.toUpperCase();
-        const tr = document.createElement('tr');
+        if (permission[i].visible) {
+            const tr = document.createElement('tr');
 
-        const checked = authorities[roleName] ? 'checked' : '';
-        tr.innerHTML = `<td><div class="ah-table-settings-name">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
+            const roleName = "ROLE_" + permission[i].name.toUpperCase();
+            const checked = authorities[roleName] ? 'checked' : '';
+
+            tr.innerHTML = `<td><div class="ah-table-settings-name">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
                         <td width="35">
                             <input id="${permission[i].id}" class="ah-checkbox" type="checkbox" name="settings" data-role="${roleName}" ${checked} />
                             <label class="ah-checkbox-label" for="${permission[i].id}"></label>
                         </td>`;
 
-        table.appendChild(tr);
+            table.appendChild(tr);
+        }
     }
 
     table.addEventListener('change', event => {
