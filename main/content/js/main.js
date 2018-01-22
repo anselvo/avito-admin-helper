@@ -1,8 +1,8 @@
 const global = {
+    connectInfo: null,
+    authorities: null,
     userInfo: null,
     currentUrl: null,
-    springUrl: null,
-    admUrl: null,
     admUrlPatterns: {
         main: /https:\/\/adm\.avito\.ru\/$/,
         items_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?items\/search/,
@@ -36,17 +36,17 @@ $(function () {
     global.currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-        if (result.connectInfo) {
-            global.springUrl = result.connectInfo.springUrl;
-            global.admUrl = result.connectInfo.admUrl;
+
+        global.connectInfo = result.connectInfo;
+        global.authorities = result.authorities;
+
+        if (result.script) {
+            startNotification(result.notifications);
+
+            holidays();
+
+            handleRoles();
         }
-        if (result.connectInfo.user) global.userInfo = result.connectInfo.user.principal;
-
-        startNotification(result.notifications);
-
-        holidays();
-
-        handleRoles();
     });
 
     // уничтожать поповер по клику не на нем

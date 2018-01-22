@@ -1,6 +1,6 @@
 // проверка наличия authority
 function isAuthority(authority) {
-    return !!global.userInfo.authorities[authority];
+    return !!global.authorities[authority];
 }
 
 // обработка ролей
