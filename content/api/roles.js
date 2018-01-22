@@ -38,111 +38,111 @@ function handleRoles() {
         $('#sh-extra-assigneeId').remove();
 
         // добавление тегов
-        if (isAuthority('ROLE_HELPDESK-TAGS')) {
+        if (isAuthority('ROLE_HELPDESK_TAGS')) {
             roleHandler.helpdeskAddTags();
         }
         // быстрые кнопки
-        if (isAuthority('ROLE_HELPDESK-QUICK-BUTTONS')) {
+        if (isAuthority('ROLE_HELPDESK_QUICK_BUTTONS')) {
             roleHandler.helpdeskQuickButtons();
         }
 
         // фиксированный контейнер (настройки, кнопка наверх)
-        if (isAuthority('ROLE_HELPDESK-FIXED-TOOLS')) {
+        if (isAuthority('ROLE_HELPDESK_FIXED_TOOLS')) {
             roleHandler.helpdeskFixedTools();
         }
 
         // айпи в техинфе
-        if (isAuthority('ROLE_HELPDESK-TECH-INFO-IP-LINK')) {
+        if (isAuthority('ROLE_HELPDESK_TECH_INFO_IP_LINK')) {
             roleHandler.helpdeskTechInfoIpLink();
         }
 
         // альтернативный поиск в переписке
-        if (isAuthority('ROLE_HELPDESK-ALTERNATE-SEARCH')) {
+        if (isAuthority('ROLE_HELPDESK_ALTERNATE_SEARCH')) {
             roleHandler.helpdeskAlternateSearch();
         }
 
         // смена ассигни
-        if (isAuthority('ROLE_HELPDESK-CHANGE-ASSIGNEE')) {
+        if (isAuthority('ROLE_HELPDESK_CHANGE_ASSIGNEE')) {
             roleHandler.helpdeskChangeAssignee();
         }
 
         // очистка цитат
-        if (isAuthority('ROLE_HELPDESK-BLOCKQUOTE-CLEAR')) {
+        if (isAuthority('ROLE_HELPDESK_BLOCKQUOTE_CLEAR')) {
             roleHandler.helpdeskBlockquoteClear();
         }
 
         // показывать скрывать цитаты
-        if (isAuthority('ROLE_HELPDESK-BLOCKQUOTE-TOGGLE')) {
+        if (isAuthority('ROLE_HELPDESK_BLOCKQUOTE_TOGGLE')) {
             roleHandler.helpdeskBlockquoteToggle();
         }
 
         // инфа об агента
-        if (isAuthority('ROLE_HELPDESK-EMPLOYEE-LABEL')) {
+        if (isAuthority('ROLE_HELPDESK_EMPLOYEE_LABEL')) {
             roleHandler.helpdeskEmployeeLabel();
         }
 
         // кнопка создания тикета
-        if (isAuthority('ROLE_HELPDESK-CREATE-TICKET')) {
+        if (isAuthority('ROLE_HELPDESK_CREATE_TICKET')) {
             roleHandler.helpdeskCreateTicketBtn();
         }
 
         // операции с тикетом (дежурный тим, классификация)
-        if (isAuthority('ROLE_HELPDESK-CONTROL-TOOLS')) {
+        if (isAuthority('ROLE_HELPDESK_CONTROL_TOOLS')) {
             roleHandler.helpdeskControlTools();
         }
 
         // элементы в тайтле тикета
-        if (isAuthority('ROLE_HELPDESK-TICKET-TITLE-TOOLS')) {
+        if (isAuthority('ROLE_HELPDESK_TICKET_TITLE_TOOLS')) {
             roleHandler.helpdeskTicketTitleTools();
         }
 
         // парсинг IP в описании тикета
-        if (isAuthority('ROLE_HELPDESK-DESCRIPTION-IP')) {
+        if (isAuthority('ROLE_HELPDESK_DESCRIPTION_IP')) {
             roleHandler.helpdeskDescriptionIp();
         }
 
         // одобрение IP в техинфо
-        if (isAuthority('ROLE_HELPDESK-TECH-INFO-SANCTION-IP')) {
+        if (isAuthority('ROLE_HELPDESK_TECH_INFO_SANCTION_IP')) {
             roleHandler.helpdeskTechInfoSanctionIp();
         }
 
         // поиск юзера по айди в соцсети
-        if (isAuthority('ROLE_HELPDESK-SEARCH-BY-SOCIAL')) {
+        if (isAuthority('ROLE_HELPDESK_SEARCH_BY_SOCIAL')) {
             roleHandler.helpdeskSearchBySocial();
         }
 
         // копирование ссылки на тикет
-        if (isAuthority('ROLE_HELPDESK-COPY-TICKET-LINK')) {
+        if (isAuthority('ROLE_HELPDESK_COPY_TICKET_LINK')) {
             roleHandler.helpdeskCopyTicketLink();
         }
 
         // копировать имя реквестера
-        if (isAuthority('ROLE_HELPDESK-COPY-REQUESTER-NAME')) {
+        if (isAuthority('ROLE_HELPDESK_COPY_REQUESTER_NAME')) {
             roleHandler.helpdeskCopyRequesterName();
         }
 
         // копирование айди тикета
-        if (isAuthority('ROLE_HELPDESK-COPY-TICKET-ID')) {
+        if (isAuthority('ROLE_HELPDESK_COPY_TICKET_ID')) {
             roleHandler.helpdeskCopyTicketId();
         }
 
         // поповер для айди айтема на левой панели
-        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-ITEM-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_ITEM_POPOVER')) {
             roleHandler.helpdeskLeftPanelItemPopover();
         }
 
         // поповер для айпи на левой панели
-        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-IP-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_IP_POPOVER')) {
             roleHandler.helpdeskLeftPanelIpPopover();
         }
 
         // поповер для номера телефона на левой панели
-        if (isAuthority('ROLE_HELPDESK-LEFT-PANEL-PHONE-POPOVER')) {
+        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_PHONE_POPOVER')) {
             roleHandler.helpdeskLeftPanelPhonePopover();
         }
 
         // нотификация о жалобах от крайне негативных юзеров
-        if (isAuthority('ROLE_HELPDESK-NEGATIVE-USERS')) {
+        if (isAuthority('ROLE_HELPDESK_NEGATIVE_USERS')) {
             roleHandler.helpdeskNegativeUsersNotification();
         }
     }
@@ -150,42 +150,42 @@ function handleRoles() {
     // TICKET USER
     function helpdeskUserInfoEvent() {
         // Рядом с Blocked - причина блокировки в HD
-        if (isAuthority('ROLE_HELPDESK-BLOCKED-REASON')) {
+        if (isAuthority('ROLE_HELPDESK_BLOCKED_REASON')) {
             roleHandler.helpdeskBlockedReason();
         }
 
         // Гиперссылки в правом сайдбаре на комментах к УЗ
-        if (isAuthority('ROLE_HELPDESK-LINKS-ON-COMMENTS')) {
+        if (isAuthority('ROLE_HELPDESK_LINKS_ON_COMMENTS')) {
             roleHandler.helpdeskLinksOnComments();
         }
 
         // простановка коммента на УЗ из HD
-        if (isAuthority('ROLE_HELPDESK-COMMENT-USER')) {
+        if (isAuthority('ROLE_HELPDESK_COMMENT_USER')) {
             roleHandler.helpdeskCommentUser();
         }
 
         // разблокировка юзера из HD + коммент
-        if (isAuthority('ROLE_HELPDESK-UNBLOCK-USER')) {
+        if (isAuthority('ROLE_HELPDESK_UNBLOCK_USER')) {
             roleHandler.helpdeskUnblockUser();
         }
 
         // предполагаемая УЗ
-        if (isAuthority('ROLE_HELPDESK-USER-INFO')) {
+        if (isAuthority('ROLE_HELPDESK_USER_INFO')) {
             roleHandler.helpdeskUserInfo();
         }
 
         // линк на мессенджер
-        if (isAuthority('ROLE_HELPDESK-MESSENGER-LINK')) {
+        if (isAuthority('ROLE_HELPDESK_MESSENGER_LINK')) {
             roleHandler.helpdeskMessengerLink();
         }
 
         // копирование мыла юзера в буфер
-        if (isAuthority('ROLE_HELPDESK-COPY-USER-MAIL')) {
+        if (isAuthority('ROLE_HELPDESK_COPY_USER_MAIL')) {
             roleHandler.helpdeskDetailsCopyUserMail();
         }
 
         // копирование имени юзера
-        if (isAuthority('ROLE_HELPDESK-COPY-USER-NAME')) {
+        if (isAuthority('ROLE_HELPDESK_COPY_USER_NAME')) {
             roleHandler.helpdeskCopyUserName();
         }
     }
@@ -197,12 +197,12 @@ function handleRoles() {
                 .hasClass('helpdesk-loading_visible');
             if (!loadingVisible) {
                 // открывать тикеты в новой вкладке
-                if (isAuthority('ROLE_HELPDESK-QUEUE-OPEN-TICKET')) {
+                if (isAuthority('ROLE_HELPDESK_QUEUE_OPEN_TICKET')) {
                     roleHandler.helpdeskQueueOpenTicket();
                 }
 
                 // метки о сотрудниках
-                if (isAuthority('ROLE_HELPDESK-QUEUE-EMPLOYEE-LABELS')) {
+                if (isAuthority('ROLE_HELPDESK_QUEUE_EMPLOYEE_LABELS')) {
                     roleHandler.helpdeskQueueEmployeeLabels();
                 }
 
@@ -214,7 +214,7 @@ function handleRoles() {
     // TICKET HOLD
     function helpdeskTicketHoldEvent() {
         // Помощь ТЛ ---
-        if (isAuthority('ROLE_HELPDESK-TL-HELP')) {
+        if (isAuthority('ROLE_HELPDESK_TL_HELP')) {
             roleHandler.helpdeskTlHelpHold();
         }
         // Помощь ТЛ +++
@@ -223,7 +223,7 @@ function handleRoles() {
     // TICKET COMMENT
     function helpdeskTicketCommentEvent() {
         // Помощь ТЛ ---
-        if (isAuthority('ROLE_HELPDESK-TL-HELP')) {
+        if (isAuthority('ROLE_HELPDESK_TL_HELP')) {
             roleHandler.helpdeskTlHelpComment();
         }
         // Помощь ТЛ +++
@@ -232,301 +232,301 @@ function handleRoles() {
     // TICKET COMMENTS INFO
     function helpdeskTicketCommentsInfoEvent() {
         // парсинг айди айтемов в комменте
-        if (isAuthority('ROLE_HELPDESK-COMMENTS-ITEM')) {
+        if (isAuthority('ROLE_HELPDESK_COMMENTS_ITEM')) {
             roleHandler.helpdeskCommentsItems();
         }
 
         // парсинг IP в комментах тикета
-        if (isAuthority('ROLE_HELPDESK-COMMENTS-IP')) {
+        if (isAuthority('ROLE_HELPDESK_COMMENTS_IP')) {
             roleHandler.helpdeskCommentsIp();
         }
     }
 
     // ITEM
-    if (isAuthority('ROLE_ITEM-COPY-ITEM')) { // копирование айди и неймов айтемов
+    if (isAuthority('ROLE_ITEM_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemCopyItem();
     }
-    if (isAuthority('ROLE_ITEM-REFUND-INFO')) { // инфо о Refund
+    if (isAuthority('ROLE_ITEM_REFUND_INFO')) { // инфо о Refund
         roleHandler.itemRefundInfo();
     }
-    if (isAuthority('ROLE_ITEM-CITY-TIME')) { // время в городе
+    if (isAuthority('ROLE_ITEM_CITY_TIME')) { // время в городе
         roleHandler.itemCityTime();
     }
-    if (isAuthority('ROLE_ITEM-COMPARE-ITEMS')) { // сравнение объявлений
+    if (isAuthority('ROLE_ITEM_COMPARE_ITEMS')) { // сравнение объявлений
         roleHandler.itemCompareItems();
     }
-    if (isAuthority('ROLE_ITEM-ACCOUNT-LINK')) { // ссылка на кошелек
+    if (isAuthority('ROLE_ITEM_ACCOUNT_LINK')) { // ссылка на кошелек
         roleHandler.itemAccountInfoLink();
     }
-    if (isAuthority('ROLE_ITEM-USER-INFO')) { // инфо о юзере на айтеме
+    if (isAuthority('ROLE_ITEM_USER_INFO')) { // инфо о юзере на айтеме
         roleHandler.itemUserInfo();
     }
-    if (isAuthority('ROLE_ITEM-REJECT-BY-CALL')) {
+    if (isAuthority('ROLE_ITEM_REJECT_BY_CALL')) {
         roleHandler.itemRejectByCall();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-INFO-BTN')) { // добавить кнопку показа инфы
+    if (isAuthority('ROLE_ITEMS_SEARCH_INFO_BTN')) { // добавить кнопку показа инфы
         roleHandler.itemsSearchInfoBtn();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-ITEM-INFO')) { // показ информации об итеме
+    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_INFO')) { // показ информации об итеме
         roleHandler.itemsSearchItemInfo();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-ITEM-DESCRIPTION')) { // показ описания
+    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_DESCRIPTION')) { // показ описания
         roleHandler.itemsSearchItemDescription();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO')) { // User and Abuses for post
+    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO')) { // User and Abuses for post
         roleHandler.itemsSearchUserInfo();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO-AUTOLOAD')) { // запросы на юзера автоматически
+    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) { // запросы на юзера автоматически
         roleHandler.itemsSearchUserInfoAuto();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-CHECKBOX-CLICK')) { // Обработка клика рядом с checkbox
+    if (isAuthority('ROLE_ITEMS_SEARCH_CHECKBOX_CLICK')) { // Обработка клика рядом с checkbox
         roleHandler.itemsSearchCheckboxClick();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-INFORM-SEARCH')) { // поиск информ
+    if (isAuthority('ROLE_ITEMS_SEARCH_INFORM_SEARCH')) { // поиск информ
         roleHandler.itemsSearchInformSearch();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-BLOCK-USERS')) { // Block users on post
+    if (isAuthority('ROLE_ITEMS_SEARCH_BLOCK_USERS')) { // Block users on post
         roleHandler.itemsSearchBlockUsers();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-COMPARE-PHOTO')) { // сравниние фото на объявлениях
+    if (isAuthority('ROLE_ITEMS_SEARCH_COMPARE_PHOTO')) { // сравниние фото на объявлениях
         roleHandler.itemsSearchComparePhoto();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-ANTIFRAUD-LINKS')) { // линки для антифрода
+    if (isAuthority('ROLE_ITEMS_SEARCH_ANTIFRAUD_LINKS')) { // линки для антифрода
         roleHandler.itemsSearchAntifraudLinks();
     }
-    if (isAuthority('ROLE_ITEMS-SEARCH-COPY-ITEM')) { // копирование айди и неймов айтемов
+    if (isAuthority('ROLE_ITEMS_SEARCH_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemsSearchCopyItem();
     }
-    if (isAuthority('ROLE_ITEMS-COMPARISON-COPY-ITEM')) {  // комирование айтемов в comparison
+    if (isAuthority('ROLE_ITEMS_COMPARISON_COPY_ITEM')) {  // комирование айтемов в comparison
         roleHandler.itemsComparisonCopyItem();
     }
-    if (isAuthority('ROLE_ITEMS-COMPARISON-COMPARISON-ELEMENTS')) {  // фичи для старого комперисона
+    if (isAuthority('ROLE_ITEMS_COMPARISON_COMPARISON_ELEMENTS')) {  // фичи для старого комперисона
         roleHandler.itemsComparisonComparisonElementsOld();
     }
-    if (isAuthority('ROLE_ITEMS-COMPARISON-ARCHIVE-COMPARISON-ELEMENTS')) {  // фичи для архивного комперисона
+    if (isAuthority('ROLE_ITEMS_COMPARISON_ARCHIVE_COMPARISON_ELEMENTS')) {  // фичи для архивного комперисона
         roleHandler.itemsComparisonArchiveComparisonElements();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-TIMER')) {  // таймер в прешке
+    if (isAuthority('ROLE_ITEMS_MODER_TIMER')) {  // таймер в прешке
         roleHandler.itemsModerTimer();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-EACH-ITEM-ELEMENTS')) { // элементы для каждого айтема
+    if (isAuthority('ROLE_ITEMS_MODER_EACH_ITEM_ELEMENTS')) { // элементы для каждого айтема
         roleHandler.itemsModerEachItemElements();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-INFO-ABUSE-BLOCK')) { // Добавляет Info и Abuse и Block user
+    if (isAuthority('ROLE_ITEMS_MODER_INFO_ABUSE_BLOCK')) { // Добавляет Info и Abuse и Block user
         roleHandler.itemsModerInfoAbuseBlock();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-COMPARE-PHOTO')) { // Сравнение фото
+    if (isAuthority('ROLE_ITEMS_MODER_COMPARE_PHOTO')) { // Сравнение фото
         roleHandler.itemsModerComparePhoto();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-CLOSE')) { // Закрывание прежки
+    if (isAuthority('ROLE_ITEMS_MODER_CLOSE')) { // Закрывание прежки
         roleHandler.itemsModerClose();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-COLOR-BUTTONS')) { // Красит кнопки, если флагов больше двух
+    if (isAuthority('ROLE_ITEMS_MODER_COLOR_BUTTONS')) { // Красит кнопки, если флагов больше двух
         roleHandler.itemsModerColorButtons();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-COMPARISON-ELEMENTS')) { // Добавление инфы в комперисон
+    if (isAuthority('ROLE_ITEMS_MODER_COMPARISON_ELEMENTS')) { // Добавление инфы в комперисон
         roleHandler.itemsModerComparisonElements();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-AB-TEST')) { // пометка объявлений, что они тестовые
+    if (isAuthority('ROLE_ITEMS_MODER_AB_TEST')) { // пометка объявлений, что они тестовые
         roleHandler.itemsModerAbTest();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-ANTIFRAUD-LINKS')) { // добавление ссылок для антифрода
+    if (isAuthority('ROLE_ITEMS_MODER_ANTIFRAUD_LINKS')) { // добавление ссылок для антифрода
         roleHandler.itemsModerAntifraudLinks();
     }
-    if (isAuthority('ROLE_ITEMS-MODER-HIDE-SEARCH-TEST')) { // убрать "Искать тестовые" объявления из ПРЕ
+    if (isAuthority('ROLE_ITEMS_MODER_HIDE_SEARCH_TEST')) { // убрать "Искать тестовые" объявления из ПРЕ
         roleHandler.itemsModerHideSearchTest();
     }
 
     // USER
-    if (isAuthority('ROLE_USER-CHECK-DOUBLES')) { // проверка учетных записей
+    if (isAuthority('ROLE_USER_CHECK_DOUBLES')) { // проверка учетных записей
         roleHandler.userCheckDoubles();
     }
-    if (isAuthority('ROLE_USER-CHANGE-EMAIL')) { // изменение е-майла для взломов
+    if (isAuthority('ROLE_USER_CHANGE_EMAIL')) { // изменение е-майла для взломов
         roleHandler.userChangeEmail();
     }
-    if (isAuthority('ROLE_USER-INDICATORS')) { // индикаторы на юзере
+    if (isAuthority('ROLE_USER_INDICATORS')) { // индикаторы на юзере
         roleHandler.userIndicators();
     }
-    if (isAuthority('ROLE_USER-ALTERNATE_PHONE_SEARCH')) { // альтернативный поиск по телефону
+    if (isAuthority('ROLE_USER_ALTERNATE_PHONE_SEARCH')) { // альтернативный поиск по телефону
         roleHandler.userAlternatePhoneSearch();
     }
-    if (isAuthority('ROLE_USER-COPY-DATA')) { // копирование данных
+    if (isAuthority('ROLE_USER_COPY_DATA')) { // копирование данных
         roleHandler.userCopyData();
     }
-    if (isAuthority('ROLE_USER-UNVERIFY_PHONES')) { // отвязка номеров с комментами
+    if (isAuthority('ROLE_USER_UNVERIFY_PHONES')) { // отвязка номеров с комментами
         roleHandler.userUnverifyPhones();
     }
-    if (isAuthority('ROLE_USER-PHONES-VERIFICATION-LINK')) { // линк на Phones verification
+    if (isAuthority('ROLE_USER_PHONES_VERIFICATION_LINK')) { // линк на Phones verification
         roleHandler.userPhonesVerificationLink();
     }
-    if (isAuthority('ROLE_USER-MESSENGER-LINK')) { // линк на Мессенджер
+    if (isAuthority('ROLE_USER_MESSENGER_LINK')) { // линк на Мессенджер
         roleHandler.userMessengerLink();
     }
-    if (isAuthority('ROLE_USER-CREATE-TICKET')) { // создание тикета на юзере
+    if (isAuthority('ROLE_USER_CREATE_TICKET')) { // создание тикета на юзере
         roleHandler.userCreateTicket();
     }
-    if (isAuthority('ROLE_USER-HD-LINK')) { // переход в HD на юзере
+    if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
         roleHandler.userHDLink();
     }
-    if (isAuthority('ROLE_USER-COUNTRY-IP')) { // просмотр страны для IP на юзере
+    if (isAuthority('ROLE_USER_COUNTRY_IP')) { // просмотр страны для IP на юзере
         roleHandler.userShowCountryIP();
     }
-    if (isAuthority('ROLE_USER-SYSTEM-ACCESS-LINK')) { // ссылки на system/access рядом с IP
+    if (isAuthority('ROLE_USER_SYSTEM_ACCESS_LINK')) { // ссылки на system/access рядом с IP
         roleHandler.userSystemAccessLink();
     }
-    if (isAuthority('ROLE_USER-WL-LINK')) { // переход в ВЛ со страницы юзера (все статусы, последние пол года)
+    if (isAuthority('ROLE_USER_WL_LINK')) { // переход в ВЛ со страницы юзера (все статусы, последние пол года)
         roleHandler.userWlLink();
     }
-    if (isAuthority('ROLE_USER-FEES-AVAILABLE-MODAL')) { // добавить функционал для модалок "История использования лимитов"
+    if (isAuthority('ROLE_USER_FEES_AVAILABLE_MODAL')) { // добавить функционал для модалок "История использования лимитов"
         roleHandler.userFeesAvailableModal();
     }
-    if (isAuthority('ROLE_USER-SCROLL-TOP')) { // прокрутка страницы вверх
+    if (isAuthority('ROLE_USER_SCROLL_TOP')) { // прокрутка страницы вверх
         roleHandler.userScrollTop();
     }
-    if (isAuthority('ROLE_USERS-SEARCH-INFO-BTN')) {  // добавить кнопку показа инфы
+    if (isAuthority('ROLE_USERS_SEARCH_INFO_BTN')) {  // добавить кнопку показа инфы
         roleHandler.usersSearchInfoBtn();
     }
-    if (isAuthority('ROLE_USERS-SEARCH-BLOCK-USERS')) {  // блокировка пользователей users/search
+    if (isAuthority('ROLE_USERS_SEARCH_BLOCK_USERS')) {  // блокировка пользователей users/search
         roleHandler.usersSearchBlockUser();
     }
-    if (isAuthority('ROLE_USERS-SEARCH-FIND-VERIFIED-PHONE')) {  // где верифицирован номер
+    if (isAuthority('ROLE_USERS_SEARCH_FIND_VERIFIED_PHONE')) {  // где верифицирован номер
         roleHandler.usersSearchFindVerifiedPhone();
     }
-    if (isAuthority('ROLE_USERS-SEARCH-COPY-PHONE')) {  // копирование телефона в буфер в формате, как на странице юзера
+    if (isAuthority('ROLE_USERS_SEARCH_COPY_PHONE')) {  // копирование телефона в буфер в формате, как на странице юзера
         roleHandler.usersSearchCopyPhone();
     }
-    if (isAuthority('ROLE_USERS-SEARCH-INFODOC-QUEUE-LINK')) {  // ссылка на очередь infodoc
+    if (isAuthority('ROLE_USERS_SEARCH_INFODOC_QUEUE_LINK')) {  // ссылка на очередь infodoc
         roleHandler.usersSearchInfodocQueueLink();
     }
 
     // ACCOUNT
-    if (isAuthority('ROLE_ACCOUNT-COUNT-MONEY')) { // добавление кнопок подсчета в Account info
+    if (isAuthority('ROLE_ACCOUNT_COUNT_MONEY')) { // добавление кнопок подсчета в Account info
         roleHandler.accountCountMoney();
     }
-    if (isAuthority('ROLE_ACCOUNT-ITEM-INFO')) { // статус объявления и причина блокировки
+    if (isAuthority('ROLE_ACCOUNT_ITEM_INFO')) { // статус объявления и причина блокировки
         roleHandler.accountItemInfo();
     }
-    if (isAuthority('ROLE_ACCOUNT-COMPENSATION-BTNS')) { // кнопки для компенсации ДС
+    if (isAuthority('ROLE_ACCOUNT_COMPENSATION_BTNS')) { // кнопки для компенсации ДС
         roleHandler.accountCompensationBtns();
     }
-    if (isAuthority('ROLE_ACCOUNT-USER-VIEW-OPERATIONS')) { // показ операций, которые видет пользователь
+    if (isAuthority('ROLE_ACCOUNT_USER_VIEW_OPERATIONS')) { // показ операций, которые видет пользователь
         roleHandler.accountUserViewOperations();
     }
-    if (isAuthority('ROLE_ACCOUNT-WL-LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
+    if (isAuthority('ROLE_ACCOUNT_WL_LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
         roleHandler.accountWlLink();
     }
-    if (isAuthority('ROLE_ACCOUNT-WL-LINK-CLOSING-AMOUNT')) {  // ссылка на WL - сумма закрывающих
+    if (isAuthority('ROLE_ACCOUNT_WL_LINK_CLOSING_AMOUNT')) {  // ссылка на WL - сумма закрывающих
         roleHandler.accountWlLinkClosingAmount();
     }
-    if (isAuthority('ROLE_ACCOUNT-PACKAGE-INFO')) {  // инфа о пакетах (счет)
+    if (isAuthority('ROLE_ACCOUNT_PACKAGE_INFO')) {  // инфа о пакетах (счет)
         roleHandler.accountPackageInfo();
     }
 
     // BILLING
-    if (isAuthority('ROLE_BILLING-WALLETLOG-ITEM-STATUS')) {  // статусы айтемов (wl)
+    if (isAuthority('ROLE_BILLING_WALLETLOG_ITEM_STATUS')) {  // статусы айтемов (wl)
         roleHandler.billingWalletlogItemStatus();
     }
-    if (isAuthority('ROLE_BILLING-WALLETLOG-COUNT-MONEY')) {  // добавление кнопок подсчета в wl
+    if (isAuthority('ROLE_BILLING_WALLETLOG_COUNT_MONEY')) {  // добавление кнопок подсчета в wl
         roleHandler.billingWalletlogCountMoney();
     }
-    if (isAuthority('ROLE_BILLING-WALLETLOG-PACKAGE-INFO')) {  // инфа о пакетах (wl)
+    if (isAuthority('ROLE_BILLING_WALLETLOG_PACKAGE_INFO')) {  // инфа о пакетах (wl)
         roleHandler.billingWalletlogPackageInfo();
     }
-    if (isAuthority('ROLE_BILLING-INVOICES-USER-ID')) {  // пока id пользователей на /billing/invoices
+    if (isAuthority('ROLE_BILLING_INVOICES_USER_ID')) {  // пока id пользователей на /billing/invoices
         roleHandler.billingInvoicesUserIds();
     }
 
     // HELPDESK
-    if (isAuthority('ROLE_HELPDESK-TAGS')) { // получаем инф-ию о тегах
+    if (isAuthority('ROLE_HELPDESK_TAGS')) { // получаем инф-ию о тегах
         roleHandler.helpdeskGetTags();
     }
-    if (isAuthority('ROLE_HELPDESK-CREATE-TICKET')) { // отрисовка окна создания тикета
+    if (isAuthority('ROLE_HELPDESK_CREATE_TICKET')) { // отрисовка окна создания тикета
         roleHandler.helpdeskCreateTicket();
     }
-    if (isAuthority('ROLE_HELPDESK-NEGATIVE-USERS')) { // инфа о негативных юзерах
+    if (isAuthority('ROLE_HELPDESK_NEGATIVE_USERS')) { // инфа о негативных юзерах
         roleHandler.helpdeskGetNegativeUsers();
     }
 
     // SHOP
-    if (isAuthority('ROLE_SHOP-ELEMENTS')) {  // фичи на странице шопа
+    if (isAuthority('ROLE_SHOP_ELEMENTS')) {  // фичи на странице шопа
         roleHandler.shopElements();
     }
-    if (isAuthority('ROLE_SHOP-MODERATION')) {  // фичи на странице модерации шопа
+    if (isAuthority('ROLE_SHOP_MODERATION')) {  // фичи на странице модерации шопа
         roleHandler.shopModeration();
     }
 
     // SYSTEM
-    if (isAuthority('ROLE_SYSTEM-ACCESS-SANCTION-IP')) {  // одобрение IP в аксессе
+    if (isAuthority('ROLE_SYSTEM_ACCESS_SANCTION_IP')) {  // одобрение IP в аксессе
         roleHandler.systemAccessSanctionIp();
     }
 
     // DETECTIVES
-    if (isAuthority('ROLE_DETECTIVES-HOLD-ITEMS')) { // удержание айтемов
+    if (isAuthority('ROLE_DETECTIVES_HOLD_ITEMS')) { // удержание айтемов
         roleHandler.detectivesHoldItems();
     }
 
     // OTHER
-    if (isAuthority('ROLE_SEARCH-BY-SOCIAL')) {  // поиск юзера по id соц сети на главной
+    if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {  // поиск юзера по id соц сети на главной
         roleHandler.searchBySocial();
     }
-    if (isAuthority('ROLE_MAIN-INFODOC-QUEUE-LINK')) {  // ссылка на очередь инфодок на главной
+    if (isAuthority('ROLE_MAIN_INFODOC_QUEUE_LINK')) {  // ссылка на очередь инфодок на главной
         roleHandler.mainInfodocQueueLink();
     }
-    if (isAuthority('ROLE_INTERN-BUTTONS')) {  // кнопки интернов
+    if (isAuthority('ROLE_INTERN_BUTTONS')) {  // кнопки интернов
         roleHandler.internButtons();
     }
-    if (isAuthority('ROLE_INTERN-PREMODERATION')) {  // интерны премодерация
+    if (isAuthority('ROLE_INTERN_PREMODERATION')) {  // интерны премодерация
         roleHandler.internPremoderation();
     }
-    if (isAuthority('ROLE_INTERN-PREMODERATION-COMPARISON')) {  // интерны компэрисон
+    if (isAuthority('ROLE_INTERN_PREMODERATION_COMPARISON')) {  // интерны компэрисон
         roleHandler.internPremoderationComparison();
     }
-    if (isAuthority('ROLE_INTERN-PREMODERATION-COMPARISON-NEW')) {  // интерны компэрисон (новый)
+    if (isAuthority('ROLE_INTERN_PREMODERATION_COMPARISON_NEW')) {  // интерны компэрисон (новый)
         roleHandler.internPremoderationComparisonNew();
     }
-    if (isAuthority('ROLE_INTERN-TEST')) {  // тест интернов
+    if (isAuthority('ROLE_INTERN_TEST')) {  // тест интернов
         roleHandler.internTest();
     }
-    if (isAuthority('ROLE_MODERATOR-PERSONAL-STATISTIC')) {  // Статистика модератора
+    if (isAuthority('ROLE_MODERATOR_PERSONAL_STATISTIC')) {  // Статистика модератора
         roleHandler.moderatorPersonalStatistic();
     }
-    if (isAuthority('ROLE_MODERATOR-SETTINGS')) {  // Настройки AH для модерации
+    if (isAuthority('ROLE_MODERATOR_SETTINGS')) {  // Настройки AH для модерации
         roleHandler.moderatorSettings();
     }
-    if (isAuthority('ROLE_FILL-OTHER-REASON-FIELD')) {  // добавление автоматическего текста в поле "Другие причины"
+    if (isAuthority('ROLE_FILL_OTHER_REASON_FIELD')) {  // добавление автоматическего текста в поле "Другие причины"
         roleHandler.fillOtherReasonField();
     }
-    if (isAuthority('ROLE_TASKLOG-LINK')) { // ссылка на тасклог
+    if (isAuthority('ROLE_TASKLOG_LINK')) { // ссылка на тасклог
         roleHandler.taskLogLink();
     }
-    if (isAuthority('ROLE_INTERNLOG-LINK')) { // ссылка на интернлог
+    if (isAuthority('ROLE_INTERNLOG_LINK')) { // ссылка на интернлог
         roleHandler.internLogLink();
     }
-    if (isAuthority('ROLE_EMPLOYEE-LABELS')) { // сопоставления логинов с категорией
+    if (isAuthority('ROLE_EMPLOYEE_LABELS')) { // сопоставления логинов с категорией
         roleHandler.employeeLabels();
     }
-    if (isAuthority('ROLE_LINKS-ON-COMMENTS')) { // кликабельные ссылки
+    if (isAuthority('ROLE_LINKS_ON_COMMENTS')) { // кликабельные ссылки
         roleHandler.linksOnComments();
     }
-    if (isAuthority('ROLE_HIDE-BLOCK-USER-BTN')) { // убирает кнопку блока юзеров
+    if (isAuthority('ROLE_HIDE_BLOCK_USER_BTN')) { // убирает кнопку блока юзеров
         roleHandler.hideBlockUserBtn();
     }
-    if (isAuthority('ROLE_ALLOW-LIST')) { // добавление элеммента в список для активации
+    if (isAuthority('ROLE_ALLOW_LIST')) { // добавление элеммента в список для активации
         roleHandler.allowList();
     }
-    if (isAuthority('ROLE_ALLOW-LIST-MSG')) { // добавления сообщения о проверке объявления в базе данных
+    if (isAuthority('ROLE_ALLOW_LIST_MSG')) { // добавления сообщения о проверке объявления в базе данных
         roleHandler.allowListMsg();
     }
-    if (isAuthority('ROLE_ALLOW-ITEM')) { // одобрить объявление
+    if (isAuthority('ROLE_ALLOW_ITEM')) { // одобрить объявление
         roleHandler.allowItem();
     }
-    if (isAuthority('ROLE_SEARCH-BY-IMAGE-LINKS')) { // поиск по изображениям
+    if (isAuthority('ROLE_SEARCH_BY_IMAGE_LINKS')) { // поиск по изображениям
         roleHandler.searchByImageLinks();
     }
-    if (isAuthority('ROLE_RESERVED-OPERATIONS')) { // дополнения к операциям резервирования
+    if (isAuthority('ROLE_RESERVED_OPERATIONS')) { // дополнения к операциям резервирования
         roleHandler.reservedOperations();
     }
-    if (isAuthority('ROLE_SPAM-LINKS')) { // spam links
+    if (isAuthority('ROLE_SPAM_LINKS')) { // spam links
         roleHandler.spamLinks();
     }
     if (isAuthority('ROLE_SNP')) { // Отправка письма пользователю о взломе и смена пароля
@@ -652,7 +652,7 @@ RoleHandler.prototype.helpdeskQuickButtons = function() {
 
 RoleHandler.prototype.helpdeskFixedTools = function() {
     const arr = ['scroll-top'];
-    if (isAuthority('ROLE_HELPDESK-FIXED-TOOLS--SETTINGS')) {
+    if (isAuthority('ROLE_HELPDESK_FIXED_TOOLS_SETTINGS')) {
         arr.push('hd-settings');
     }
     addFixedTools($('div.col-xs-3:eq(1)'), arr);
@@ -995,19 +995,19 @@ RoleHandler.prototype.itemsComparisonArchiveComparisonElements = function() {
 RoleHandler.prototype.userIndicators = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         const userIndicators = ['inn', 'auto', 'shop', 'subscription', 'persManager'];
-        if (isAuthority('ROLE_USER-INDICATORS--PRO')) {
+        if (isAuthority('ROLE_USER_INDICATORS_PRO')) {
             userIndicators.splice(1, 0, 'pro');
         }
-        if (isAuthority('ROLE_USER-INDICATORS--LEGAL_ENTITY')) {
+        if (isAuthority('ROLE_USER_INDICATORS_LEGAL_ENTITY')) {
             userIndicators.splice(2, 0, 'legalEntity');
         }
-        if (isAuthority('ROLE_USER-INDICATORS--ONLY-BANK-TRANSFER')) {
+        if (isAuthority('ROLE_USER_INDICATORS_ONLY_BANK_TRANSFER')) {
             userIndicators.push('onlyBankTransfer');
         }
-        if (isAuthority('ROLE_USER-INDICATORS--REPREMIUM')) {
+        if (isAuthority('ROLE_USER_INDICATORS_REPREMIUM')) {
             userIndicators.push('REPremium');
         }
-        if (isAuthority('ROLE_USER-INDICATORS--EXTENSION')) {
+        if (isAuthority('ROLE_USER_INDICATORS_EXTENSION')) {
             userIndicators.push('extension');
         }
         addIndicatorsUserInfo(userIndicators);
@@ -1023,13 +1023,13 @@ RoleHandler.prototype.userAlternatePhoneSearch = function() {
 RoleHandler.prototype.userCopyData = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         const arr = ['e-mail', 'phones'];
-        if (isAuthority('ROLE_USER-COPY-DATA--URL')) {
+        if (isAuthority('ROLE_USER_COPY_DATA_URL')) {
             arr.push('url');
         }
-        if (isAuthority('ROLE_USER-COPY-DATA--COMPANY-EMAIL')) {
+        if (isAuthority('ROLE_USER_COPY_DATA_COMPANY_EMAIL')) {
             arr.push('companyE-mail');
         }
-        if (isAuthority('ROLE_USER-COPY-DATA--INN')) {
+        if (isAuthority('ROLE_USER_COPY_DATA_INN')) {
             arr.push('inn');
         }
         copyDataToClipboard(arr);

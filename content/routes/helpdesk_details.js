@@ -1869,7 +1869,7 @@ function addCommentOnUserFromTicket() {
 	
     $('.helpdesk-additional-info-panel div:eq(0) ').after('<div class="sh-comment-onuser-wrapper"><textarea class="form-control" id="sh-areaComment" placeholder="Оставить комментарий на УЗ" rows="3"></textarea><input type="button" class="btn btn-primary btn-success" value="Add Comment" title="" id="addComment" style="float: right; margin-top: 10px; outline: none;"/><br><br><hr class="sh-comment-onuser-hr"></div>');
 
-    if (isAuthority('ROLE_HELPDESK-COMMENT-USER--TICKET-LINK')) {
+    if (isAuthority('ROLE_HELPDESK_COMMENT_USER_TICKET_LINK')) {
         let ticketLink = getCurrentTicketLink();
         $('#sh-areaComment').val(ticketLink + ' ');
     }
@@ -2556,10 +2556,10 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             if (changeType > 0) $('#ah-rightPanelType').append('<a class="ah-rightPanelTypeChange" typeStatus="personal">установить как частное лицо</a>');
 
             let indicators = ['inn','pro', 'auto', 'shop', 'subscription'];
-            if (isAuthority('ROLE_USER-INDICATORS--REPREMIUM')) {
+            if (isAuthority('ROLE_USER_INDICATORS_REPREMIUM')) {
                 indicators.push('REPremium');
             }
-            if (isAuthority('ROLE_USER-INDICATORS--EXTENSION')) {
+            if (isAuthority('ROLE_USER_INDICATORS_EXTENSION')) {
                 indicators.push('extension');
             }
             addIndicatorsHelpdeskDetails(indicators, $(response));
@@ -2776,7 +2776,7 @@ function changeAssignee() {
         let ticketStatus = getTicketStatusText();
         if ((~ticketStatus.indexOf('закрытое')
             || ticketStatus === 'решенное')
-            && !isAuthority('ROLE_HELPDESK-CHANGE-ASSIGNEE-ANY-STATUS')) {
+            && !isAuthority('ROLE_HELPDESK_CHANGE_ASSIGNEE_ANY_STATUS')) {
             alert('Это действие недоступно для обращений со статусами "Закрытое" и "Решенное"');
             return;
         }
@@ -3784,7 +3784,7 @@ function customerClaimNotif() {
 function claimReevaluation(teamleadLogin) {
     $('#reevaluate-ticket-container').remove();
 
-    if (!isAuthority('ROLE_HELPDESK-CLAIM-REEVALUATION')) return;
+    if (!isAuthority('ROLE_HELPDESK_CLAIM_REEVALUATION')) return;
 
     $('.helpdesk-side-panel-setting-checkbox').append(`
         <div style="margin: 10px 0;" id="reevaluate-ticket-container" class="ah-tooltip-wrapper ah-disabled">

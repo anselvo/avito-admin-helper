@@ -37,7 +37,7 @@ function showItemsInfoForItems() {
 
     $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
 
-    if (isAuthority('ROLE_ITEMS-SEARCH-ITEM-INFO-AUTOLOAD')) clickPostShowItemInfo();
+    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_INFO_AUTOLOAD')) clickPostShowItemInfo();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'I'.charCodeAt(0))
@@ -163,17 +163,17 @@ function userInfoForPost() {
         params = params ? params.replace(/"/g, "&quot;") : '{}';
         var cityItem = $(itemList[i]).parents('tr').attr("data-location");
 
-        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--ABUSES')) {
+        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_ABUSES')) {
             $(itemList[i])
                 .prepend('<span class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px; float: right">Abuses</span>');
         }
 
-        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--INFO')) {
+        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_INFO')) {
             $(itemList[i])
                 .prepend('<span class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px; float: right;">Info</span>');
 		}
 
-        if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO--WL')) {
+        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_WL')) {
             $(itemList[i])
                 .prepend('<span class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
 		}

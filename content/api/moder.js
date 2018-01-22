@@ -413,7 +413,7 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (isAuthority('ROLE_ITEMS-SEARCH-USER-INFO-AUTOLOAD')) clickPostUserAgent();
+    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
