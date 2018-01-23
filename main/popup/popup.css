@@ -69,6 +69,7 @@ body {
     background: white;
     border-radius: 4px;
     box-shadow: 0 0 2px #929292;
+    margin-top: 8px;
 }
 
 .ah-error-message {
@@ -157,10 +158,13 @@ body {
 .ah-table-settings td {
     padding: 8px;
     vertical-align: top;
+    border-top: 1px solid #d6d6d6;
 }
 
-.ah-table-settings tr:not(:last-child) td {
-    border-bottom: 1px solid #d6d6d6;
+.ah-table-settings caption {
+    padding: 5px;
+    font-weight: bold;
+    color: #d14a3b;
 }
 
 .ah-table-settings-description {

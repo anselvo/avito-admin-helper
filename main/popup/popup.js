@@ -79,7 +79,7 @@ function authPage() {
     div.appendChild(divAvatar);
     div.appendChild(divUserInfo);
 
-    pageGenerator(div, true);
+    pageGenerator([div], true);
 }
 
 function addContactInfoElement(name, option) {
@@ -123,19 +123,39 @@ function errorPage(status, message) {
     }
 
     scriptSwitch(null);
-    pageGenerator(div, false);
+    pageGenerator([div], false);
 }
 
 
 // СТРАНИЦА ВЫБОРА СКРИПТА
 function settingsPage() {
-    const permission = connectInfo.spring_user.principal.permissionSet;
+    let body = [];
 
-    const div = document.createElement('div');
-    div.className = 'ah-settings ah-body-block';
+    if (connectInfo.spring_user.principal.permissions) {
+        const userSettings = document.createElement('div');
+        userSettings.className = 'ah-settings-user ah-body-block';
+        userSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.permissions, "Личные настройки"));
+        body.push(userSettings);
+    }
 
+    if (connectInfo.spring_user.principal.position) {
+        const groupSettings = document.createElement('div');
+        groupSettings.className = 'ah-settings-group ah-body-block';
+        groupSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.position.permissions, "Настройки"));
+        body.push(groupSettings);
+    }
+
+    pageGenerator(body, true);
+}
+
+function addSettingsTable(permission, caption) {
     const table = document.createElement('table');
     table.className = 'ah-table-settings';
+
+    const captionSelector = document.createElement('caption');
+    captionSelector.textContent = caption;
+
+    table.appendChild(captionSelector);
 
     for (let i = 0; i < permission.length; ++i) {
         if (permission[i].visible) {
@@ -143,11 +163,13 @@ function settingsPage() {
 
             const roleName = "ROLE_" + permission[i].name.toUpperCase();
             const checked = authorities[roleName] ? 'checked' : '';
+            const id = permission[i].id + (Math.floor(Math.random() * (1000 - 1)) + 1);
 
             tr.innerHTML = `<td><div class="ah-table-settings-name">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
+                        <td width="20">${permission[i].visible}</td>
                         <td width="35">
-                            <input id="${permission[i].id}" class="ah-checkbox" type="checkbox" name="settings" data-role="${roleName}" ${checked} />
-                            <label class="ah-checkbox-label" for="${permission[i].id}"></label>
+                            <input id="${id}" class="ah-checkbox" type="checkbox" name="settings" data-uuid="${permission[i].id}" data-role="${roleName}" ${checked} />
+                            <label class="ah-checkbox-label" for="${id}"></label>
                         </td>`;
 
             table.appendChild(tr);
@@ -157,12 +179,13 @@ function settingsPage() {
     table.addEventListener('change', event => {
         authorities[event.target.dataset.role] = event.target.checked;
 
+        const checkbox = document.querySelectorAll(`[data-uuid="${event.target.dataset.uuid}"]`);
+        for (let i = 0; i < checkbox.length; ++i) checkbox[i].checked = event.target.checked;
+
         chrome.storage.local.set({ authorities: authorities });
     });
 
-    div.appendChild(table);
-
-    pageGenerator(div, true);
+    return table;
 }
 
 // СТРАНИЦА Загрузки
@@ -183,7 +206,7 @@ function loadingPage() {
     div.appendChild(divLoaderTwo);
     div.appendChild(divLoaderThree);
 
-    pageGenerator(div, false);
+    pageGenerator([div], false);
 }
 
 // ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
@@ -193,7 +216,9 @@ function pageGenerator(body, isNav) {
     const bodySelector = document.getElementById('body');
 
     bodySelector.innerHTML = '';
-    bodySelector.appendChild(body);
+    for (let i = 0; i < body.length; ++i) {
+        bodySelector.appendChild(body[i]);
+    }
 
     if (isNav) navGenerator();
 }

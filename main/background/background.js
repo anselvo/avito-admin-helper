@@ -128,8 +128,8 @@ function getStorageInfo() {
 
     chrome.storage.onChanged.addListener(result => {
         if (result.script) setBudgetIcon(result.script.newValue);
-        // if (result.authorities) console.log({ authorities: result.authorities.newValue });
-        // if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
+        if (result.authorities) console.log({ authorities: result.authorities.newValue });
+        if (result.connectInfo) console.log({ connectInfo: result.connectInfo.newValue });
     });
 }
 
@@ -251,7 +251,7 @@ function getPrincipal() {
         })
         .then(json => {
             connectInfo.spring_user = json;
-            setAuthoritiesToStorage(json.principal.authorities);
+            setAuthoritiesToStorage(json.principal.authoritiesMap);
         }, error => errorMessage(error.status, error.error));
 }
 
@@ -259,16 +259,10 @@ function setAuthoritiesToStorage(authorities) {
     chrome.storage.local.get('authorities', result => {
         const tmp = result.authorities ? result.authorities : {};
 
-        let authoritiesParse = {};
-        for (let i = 0; i < authorities.length; ++i) {
-            if (authorities[i].authority in tmp) {
-                authoritiesParse[authorities[i].authority] = tmp[authorities[i].authority];
-            } else {
-                authoritiesParse[authorities[i].authority] = true;
-            }
-        }
+        for (let key in tmp)
+            if (key in authorities) authorities[key] = tmp[key];
 
-        chrome.storage.local.set({ authorities: authoritiesParse });
+        chrome.storage.local.set({ authorities: authorities });
     });
 }
 
