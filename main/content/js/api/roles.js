@@ -528,7 +528,7 @@ function handleRoles() {
 
         if (global.admUrlPatterns.helpdesk.test(global.currentUrl)) {
             // инжекст скрипта для получения состояния приложения
-            injectScript(chrome.runtime.getURL('/inject/helpdesk.js'), document.body);
+            injectScript(chrome.runtime.getURL('/main/inject/helpdesk.js'), document.body);
 
             document.addEventListener('receiveHelpdeskStore', e => {
                 global.hdSettings.helpdeskStore = e.detail;
