@@ -77,12 +77,12 @@ function handleRoles() {
         }
 
         // инфа об агента
-        if (isAuthority('ROLE_HELPDESK_EMPLOYEE_LABEL')) {
+        if (isAuthority('ROLE_EMPLOYEE_LABELS')) {
             roleHandler.helpdeskEmployeeLabel();
         }
 
         // кнопка создания тикета
-        if (isAuthority('ROLE_HELPDESK_CREATE_TICKET')) {
+        if (isAuthority('ROLE_CREATE_TICKET')) {
             roleHandler.helpdeskCreateTicketBtn();
         }
 
@@ -97,17 +97,17 @@ function handleRoles() {
         }
 
         // парсинг IP в описании тикета
-        if (isAuthority('ROLE_HELPDESK_DESCRIPTION_IP')) {
+        if (isAuthority('ROLE_HELPDESK_CORRESPONDENCE_IP')) {
             roleHandler.helpdeskDescriptionIp();
         }
 
         // одобрение IP в техинфо
-        if (isAuthority('ROLE_HELPDESK_TECH_INFO_SANCTION_IP')) {
+        if (isAuthority('ROLE_SANCTION_IP')) {
             roleHandler.helpdeskTechInfoSanctionIp();
         }
 
         // поиск юзера по айди в соцсети
-        if (isAuthority('ROLE_HELPDESK_SEARCH_BY_SOCIAL')) {
+        if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
             roleHandler.helpdeskSearchBySocial();
         }
 
@@ -155,7 +155,7 @@ function handleRoles() {
         }
 
         // Гиперссылки в правом сайдбаре на комментах к УЗ
-        if (isAuthority('ROLE_HELPDESK_LINKS_ON_COMMENTS')) {
+        if (isAuthority('ROLE_LINKS_ON_COMMENTS')) {
             roleHandler.helpdeskLinksOnComments();
         }
 
@@ -202,7 +202,7 @@ function handleRoles() {
                 }
 
                 // метки о сотрудниках
-                if (isAuthority('ROLE_HELPDESK_QUEUE_EMPLOYEE_LABELS')) {
+                if (isAuthority('ROLE_EMPLOYEE_LABELS')) {
                     roleHandler.helpdeskQueueEmployeeLabels();
                 }
 
@@ -237,7 +237,7 @@ function handleRoles() {
         }
 
         // парсинг IP в комментах тикета
-        if (isAuthority('ROLE_HELPDESK_COMMENTS_IP')) {
+        if (isAuthority('ROLE_HELPDESK_CORRESPONDENCE_IP')) {
             roleHandler.helpdeskCommentsIp();
         }
     }
@@ -258,41 +258,17 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEM_ACCOUNT_LINK')) { // ссылка на кошелек
         roleHandler.itemAccountInfoLink();
     }
-    if (isAuthority('ROLE_ITEM_USER_INFO')) { // инфо о юзере на айтеме
-        roleHandler.itemUserInfo();
-    }
     if (isAuthority('ROLE_ITEM_REJECT_BY_CALL')) {
         roleHandler.itemRejectByCall();
     }
-    if (isAuthority('ROLE_ITEMS_SEARCH_INFO_BTN')) { // добавить кнопку показа инфы
-        roleHandler.itemsSearchInfoBtn();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_INFO')) { // показ информации об итеме
-        roleHandler.itemsSearchItemInfo();
-    }
     if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_DESCRIPTION')) { // показ описания
         roleHandler.itemsSearchItemDescription();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO')) { // User and Abuses for post
-        roleHandler.itemsSearchUserInfo();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) { // запросы на юзера автоматически
-        roleHandler.itemsSearchUserInfoAuto();
     }
     if (isAuthority('ROLE_ITEMS_SEARCH_CHECKBOX_CLICK')) { // Обработка клика рядом с checkbox
         roleHandler.itemsSearchCheckboxClick();
     }
     if (isAuthority('ROLE_ITEMS_SEARCH_INFORM_SEARCH')) { // поиск информ
         roleHandler.itemsSearchInformSearch();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_BLOCK_USERS')) { // Block users on post
-        roleHandler.itemsSearchBlockUsers();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_COMPARE_PHOTO')) { // сравниние фото на объявлениях
-        roleHandler.itemsSearchComparePhoto();
-    }
-    if (isAuthority('ROLE_ITEMS_SEARCH_ANTIFRAUD_LINKS')) { // линки для антифрода
-        roleHandler.itemsSearchAntifraudLinks();
     }
     if (isAuthority('ROLE_ITEMS_SEARCH_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemsSearchCopyItem();
@@ -312,12 +288,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEMS_MODER_EACH_ITEM_ELEMENTS')) { // элементы для каждого айтема
         roleHandler.itemsModerEachItemElements();
     }
-    if (isAuthority('ROLE_ITEMS_MODER_INFO_ABUSE_BLOCK')) { // Добавляет Info и Abuse и Block user
-        roleHandler.itemsModerInfoAbuseBlock();
-    }
-    if (isAuthority('ROLE_ITEMS_MODER_COMPARE_PHOTO')) { // Сравнение фото
-        roleHandler.itemsModerComparePhoto();
-    }
     if (isAuthority('ROLE_ITEMS_MODER_CLOSE')) { // Закрывание прежки
         roleHandler.itemsModerClose();
     }
@@ -329,9 +299,6 @@ function handleRoles() {
     }
     if (isAuthority('ROLE_ITEMS_MODER_AB_TEST')) { // пометка объявлений, что они тестовые
         roleHandler.itemsModerAbTest();
-    }
-    if (isAuthority('ROLE_ITEMS_MODER_ANTIFRAUD_LINKS')) { // добавление ссылок для антифрода
-        roleHandler.itemsModerAntifraudLinks();
     }
     if (isAuthority('ROLE_ITEMS_MODER_HIDE_SEARCH_TEST')) { // убрать "Искать тестовые" объявления из ПРЕ
         roleHandler.itemsModerHideSearchTest();
@@ -362,7 +329,7 @@ function handleRoles() {
     if (isAuthority('ROLE_USER_MESSENGER_LINK')) { // линк на Мессенджер
         roleHandler.userMessengerLink();
     }
-    if (isAuthority('ROLE_USER_CREATE_TICKET')) { // создание тикета на юзере
+    if (isAuthority('ROLE_CREATE_TICKET')) { // создание тикета на юзере
         roleHandler.userCreateTicket();
     }
     if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
@@ -383,26 +350,14 @@ function handleRoles() {
     if (isAuthority('ROLE_USER_SCROLL_TOP')) { // прокрутка страницы вверх
         roleHandler.userScrollTop();
     }
-    if (isAuthority('ROLE_USERS_SEARCH_INFO_BTN')) {  // добавить кнопку показа инфы
-        roleHandler.usersSearchInfoBtn();
-    }
-    if (isAuthority('ROLE_USERS_SEARCH_BLOCK_USERS')) {  // блокировка пользователей users/search
-        roleHandler.usersSearchBlockUser();
-    }
     if (isAuthority('ROLE_USERS_SEARCH_FIND_VERIFIED_PHONE')) {  // где верифицирован номер
         roleHandler.usersSearchFindVerifiedPhone();
     }
     if (isAuthority('ROLE_USERS_SEARCH_COPY_PHONE')) {  // копирование телефона в буфер в формате, как на странице юзера
         roleHandler.usersSearchCopyPhone();
     }
-    if (isAuthority('ROLE_USERS_SEARCH_INFODOC_QUEUE_LINK')) {  // ссылка на очередь infodoc
-        roleHandler.usersSearchInfodocQueueLink();
-    }
 
     // ACCOUNT
-    if (isAuthority('ROLE_ACCOUNT_COUNT_MONEY')) { // добавление кнопок подсчета в Account info
-        roleHandler.accountCountMoney();
-    }
     if (isAuthority('ROLE_ACCOUNT_ITEM_INFO')) { // статус объявления и причина блокировки
         roleHandler.accountItemInfo();
     }
@@ -418,19 +373,10 @@ function handleRoles() {
     if (isAuthority('ROLE_ACCOUNT_WL_LINK_CLOSING_AMOUNT')) {  // ссылка на WL - сумма закрывающих
         roleHandler.accountWlLinkClosingAmount();
     }
-    if (isAuthority('ROLE_ACCOUNT_PACKAGE_INFO')) {  // инфа о пакетах (счет)
-        roleHandler.accountPackageInfo();
-    }
 
     // BILLING
     if (isAuthority('ROLE_BILLING_WALLETLOG_ITEM_STATUS')) {  // статусы айтемов (wl)
         roleHandler.billingWalletlogItemStatus();
-    }
-    if (isAuthority('ROLE_BILLING_WALLETLOG_COUNT_MONEY')) {  // добавление кнопок подсчета в wl
-        roleHandler.billingWalletlogCountMoney();
-    }
-    if (isAuthority('ROLE_BILLING_WALLETLOG_PACKAGE_INFO')) {  // инфа о пакетах (wl)
-        roleHandler.billingWalletlogPackageInfo();
     }
     if (isAuthority('ROLE_BILLING_INVOICES_USER_ID')) {  // пока id пользователей на /billing/invoices
         roleHandler.billingInvoicesUserIds();
@@ -440,7 +386,7 @@ function handleRoles() {
     if (isAuthority('ROLE_HELPDESK_TAGS')) { // получаем инф-ию о тегах
         roleHandler.helpdeskGetTags();
     }
-    if (isAuthority('ROLE_HELPDESK_CREATE_TICKET')) { // отрисовка окна создания тикета
+    if (isAuthority('ROLE_CREATE_TICKET')) { // отрисовка окна создания тикета
         roleHandler.helpdeskCreateTicket();
     }
     if (isAuthority('ROLE_HELPDESK_NEGATIVE_USERS')) { // инфа о негативных юзерах
@@ -456,7 +402,7 @@ function handleRoles() {
     }
 
     // SYSTEM
-    if (isAuthority('ROLE_SYSTEM_ACCESS_SANCTION_IP')) {  // одобрение IP в аксессе
+    if (isAuthority('ROLE_SANCTION_IP')) {  // одобрение IP в аксессе
         roleHandler.systemAccessSanctionIp();
     }
 
@@ -466,26 +412,38 @@ function handleRoles() {
     }
 
     // OTHER
+    if (isAuthority('ROLE_SEARCH_BLOCK_USERS')) {  // блокировка пользователей в поисках
+        roleHandler.searchBlockUsers();
+    }
+    if (isAuthority('ROLE_SEARCH_INFO_BTN')) {  // добавить кнопку показа инфы
+        roleHandler.searchInfoBtn();
+    }
+    if (isAuthority('ROLE_ITEMS_USER_INFO')) { // info, wl, abuse
+        roleHandler.itemsUserInfo();
+    }
+    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) { // запросы на юзера автоматически
+        roleHandler.itemsSearchUserInfoAuto();
+    }
+    if (isAuthority('ROLE_COMPARE_PHOTO')) { // сравнение фото
+        roleHandler.comparePhoto();
+    }
+    if (isAuthority('ROLE_ANTIFRAUD_LINKS')) { // добавление ссылок для антифрода
+        roleHandler.antifraudLinks();
+    }
+    if (isAuthority('ROLE_COUNT_MONEY')) {  // добавление кнопок подсчета ДС
+        roleHandler.countMoney();
+    }
+    if (isAuthority('ROLE_PACKAGE_INFO')) {  // инфа о пакетах
+        roleHandler.packageInfo();
+    }
     if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {  // поиск юзера по id соц сети на главной
         roleHandler.searchBySocial();
     }
-    if (isAuthority('ROLE_MAIN_INFODOC_QUEUE_LINK')) {  // ссылка на очередь инфодок на главной
-        roleHandler.mainInfodocQueueLink();
+    if (isAuthority('ROLE_INFODOC_QUEUE_LINK')) {  // ссылка на очередь инфодок на главной
+        roleHandler.infodocQueueLink();
     }
-    if (isAuthority('ROLE_INTERN_BUTTONS')) {  // кнопки интернов
-        roleHandler.internButtons();
-    }
-    if (isAuthority('ROLE_INTERN_PREMODERATION')) {  // интерны премодерация
-        roleHandler.internPremoderation();
-    }
-    if (isAuthority('ROLE_INTERN_PREMODERATION_COMPARISON')) {  // интерны компэрисон
-        roleHandler.internPremoderationComparison();
-    }
-    if (isAuthority('ROLE_INTERN_PREMODERATION_COMPARISON_NEW')) {  // интерны компэрисон (новый)
-        roleHandler.internPremoderationComparisonNew();
-    }
-    if (isAuthority('ROLE_INTERN_TEST')) {  // тест интернов
-        roleHandler.internTest();
+    if (isAuthority('ROLE_INTERN')) {  // интетрны
+        roleHandler.intern();
     }
     if (isAuthority('ROLE_MODERATOR_PERSONAL_STATISTIC')) {  // Статистика модератора
         roleHandler.moderatorPersonalStatistic();
@@ -835,39 +793,15 @@ RoleHandler.prototype.itemAccountInfoLink = function() {
     }
 };
 
-RoleHandler.prototype.itemUserInfo = function() {
-    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
-        userInfoOnItem();
-    }
-};
-
 RoleHandler.prototype.itemRejectByCall = function() {
     if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         rejectByCall();
     }
 };
 
-RoleHandler.prototype.itemsSearchInfoBtn = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        addInfoToItems();
-    }
-};
-
-RoleHandler.prototype.itemsSearchItemInfo = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        showItemsInfoForItems();
-    }
-};
-
 RoleHandler.prototype.itemsSearchItemDescription = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         showDescriptionForItems();
-    }
-};
-
-RoleHandler.prototype.itemsSearchUserInfo = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        userInfoForPost();
     }
 };
 
@@ -890,24 +824,6 @@ RoleHandler.prototype.itemsSearchInformSearch = function() {
     }
 };
 
-RoleHandler.prototype.itemsSearchBlockUsers = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        postBlockUsers();
-    }
-};
-
-RoleHandler.prototype.itemsSearchComparePhoto = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        comparePhotoPost();
-    }
-};
-
-RoleHandler.prototype.itemsSearchAntifraudLinks = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        antifraudLinks('post');
-    }
-};
-
 RoleHandler.prototype.itemsSearchCopyItem = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         copyItemsOnItemsSearch();
@@ -926,12 +842,6 @@ RoleHandler.prototype.itemsModerAbTest = function() {
     }
 };
 
-RoleHandler.prototype.itemsModerAntifraudLinks = function() {
-    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
-        antifraudLinks('pre');
-    }
-};
-
 RoleHandler.prototype.itemsModerHideSearchTest = function() {
     if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         hideTestItemsSearch();
@@ -947,18 +857,6 @@ RoleHandler.prototype.itemsModerTimer = function() {
 RoleHandler.prototype.itemsModerEachItemElements = function() {
     if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
         addElementsForEachItemNew();
-    }
-};
-
-RoleHandler.prototype.itemsModerInfoAbuseBlock = function() {
-    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
-        addSomeElementsNew();
-    }
-};
-
-RoleHandler.prototype.itemsModerComparePhoto = function() {
-    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
-        comparePhotoPreNew();
     }
 };
 
@@ -1113,12 +1011,6 @@ RoleHandler.prototype.userScrollTop = function() {
     }
 };
 
-RoleHandler.prototype.usersSearchBlockUser = function() {
-    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
-        usersSearchBlockUser();
-    }
-};
-
 RoleHandler.prototype.usersSearchFindVerifiedPhone = function() {
     if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         findWherePhoneVerified();
@@ -1128,24 +1020,6 @@ RoleHandler.prototype.usersSearchFindVerifiedPhone = function() {
 RoleHandler.prototype.usersSearchCopyPhone = function() {
     if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
         copyPhoneToClipboard();
-    }
-};
-
-RoleHandler.prototype.usersSearchInfodocQueueLink = function() {
-    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
-        addInfoDocQueueLink($('.header__title'));
-    }
-};
-
-RoleHandler.prototype.usersSearchInfoBtn = function() {
-    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
-        addInfoToItems();
-    }
-};
-
-RoleHandler.prototype.accountCountMoney = function() {
-    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
-        countMoneyAccount();
     }
 };
 
@@ -1183,27 +1057,9 @@ RoleHandler.prototype.accountWlLinkClosingAmount = function() {
     }
 };
 
-RoleHandler.prototype.accountPackageInfo = function() {
-    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
-        addPackageInfoAccountInfo();
-    }
-};
-
 RoleHandler.prototype.billingWalletlogItemStatus = function() {
     if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         addShowItemStatusBtn();
-    }
-};
-
-RoleHandler.prototype.billingWalletlogCountMoney = function() {
-    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
-        countMoneyWalletlog();
-    }
-};
-
-RoleHandler.prototype.billingWalletlogPackageInfo = function() {
-    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
-        addPackageInfoWalletlog();
     }
 };
 
@@ -1243,7 +1099,80 @@ RoleHandler.prototype.detectivesHoldItems = function() {
     }
 };
 
-RoleHandler.prototype.mainInfodocQueueLink = function() {
+RoleHandler.prototype.searchBlockUsers = function() {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        postBlockUsers();
+    }
+
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
+        usersSearchBlockUser();
+    }
+};
+
+RoleHandler.prototype.searchInfoBtn = function() {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        addInfoToItems();
+        showItemsInfoForItems();
+    }
+
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
+        addInfoToItems();
+    }
+};
+
+RoleHandler.prototype.itemsUserInfo = function() {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        userInfoForPost();
+    }
+
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        addSomeElementsNew();
+    }
+
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
+        userInfoOnItem();
+    }
+};
+
+RoleHandler.prototype.comparePhoto = function() {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        comparePhotoPost();
+    }
+
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        comparePhotoPreNew();
+    }
+};
+
+RoleHandler.prototype.antifraudLinks = function() {
+    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        antifraudLinks('post');
+    }
+
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        antifraudLinks('pre');
+    }
+};
+
+RoleHandler.prototype.countMoney = function() {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
+        countMoneyAccount();
+    }
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
+        countMoneyWalletlog();
+    }
+};
+
+RoleHandler.prototype.packageInfo = function() {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
+        addPackageInfoAccountInfo();
+    }
+    if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
+        addPackageInfoWalletlog();
+    }
+};
+
+RoleHandler.prototype.infodocQueueLink = function() {
     if (global.admUrlPatterns.main.test(global.currentUrl)) {
         $('section.content').prepend(`
             <div class="ah-infodoc-queue-link-holder"></div>
@@ -1251,6 +1180,10 @@ RoleHandler.prototype.mainInfodocQueueLink = function() {
         `);
 
         addInfoDocQueueLink($('.ah-infodoc-queue-link-holder'));
+    }
+
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
+        addInfoDocQueueLink($('.header__title'));
     }
 };
 
@@ -1276,37 +1209,23 @@ RoleHandler.prototype.searchBySocial = function() {
     }
 };
 
-RoleHandler.prototype.internButtons = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)
-        || global.admUrlPatterns.items_comparison.test(global.currentUrl)
-        || global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
-        addButtonsIntern();
-    }
-};
-
-RoleHandler.prototype.internPremoderation = function() {
+RoleHandler.prototype.intern = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
+        addButtonsIntern();
         premoderationInternNew(global.userInfo.username, 'post');
     }
-    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
-        premoderationInternNew(global.userInfo.username, 'pre');
-    }
-};
 
-RoleHandler.prototype.internPremoderationComparison = function() {
     if (global.admUrlPatterns.items_comparison.test(global.currentUrl)
         || global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
+        addButtonsIntern();
         premoderationInternComparison(global.userInfo.username, global.currentUrl);
     }
-};
 
-RoleHandler.prototype.internPremoderationComparisonNew = function() {
     if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        premoderationInternNew(global.userInfo.username, 'pre');
         premoderationInternComparisonNew();
     }
-};
 
-RoleHandler.prototype.internTest = function() {
     if (~global.currentUrl.indexOf("http://avitoadm.ru/intern_helper/")) {
         eg();
     }
