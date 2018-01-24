@@ -1,10 +1,10 @@
 //++++++++++++++ Открывать тикеты из очереди в новой вкладке ++++++++++++++ //
 function openTicketInNewTab() {
     $('.sh-open-in-new-tab-link').remove();
-    var rows = $('table.helpdesk-table tbody tr.helpdesk-table-tr');
+    var rows = $('table tbody tr');
 
     $(rows).each(function (i, item) {
-        var ticketId = $(item).find('.helpdesk-table-row-id').text().split(' ')[0];
+        var ticketId = $(item).find('td:eq(2)').text().split(' ')[0];
         $(item).before(''+
         '<a class="sh-open-in-new-tab-link" style=""'+
         'href="https://adm.avito.ru/helpdesk/details/' + ticketId + '" target="_blank" '+
@@ -17,11 +17,11 @@ function openTicketInNewTab() {
 function showAgentInfoQueue() {
     $('.agent-info-sign').remove();
     
-    let table = $('.helpdesk-main-section .helpdesk-table');
-    let rows = $(table).find('.helpdesk-table-tr');
+    let table = $('table');
+    let rows = $(table).find('tr');
         
     $(rows).each(function(i, row) {
-        let assigneeNameBlock = $(row).find('.helpdesk-table-row-assigneeName');
+        let assigneeNameBlock = $(row).find('td:last');
         let assigneeNameText = $(assigneeNameBlock).find('span').attr('title');
         
         for (var i = 0; i < global.allUsersInfo.length; i++) {
