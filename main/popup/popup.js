@@ -56,14 +56,24 @@ function authPage() {
     const name = document.createElement('div');
     name.className = 'ah-user-name';
     name.textContent = connectInfo.spring_user.principal.name + " " + connectInfo.spring_user.principal.surname;
+    divUserInfo.appendChild(name);
 
     const position = document.createElement('div');
     position.className = 'ah-user-position';
     position.textContent = connectInfo.spring_user.principal.subdivision.divisionName;
+    divUserInfo.appendChild(position);
 
     const schedule = document.createElement('div');
     schedule.className = 'ah-user-schedule';
     schedule.textContent = connectInfo.spring_user.principal.shift.shift + ", " + connectInfo.spring_user.principal.weekend.weekend;
+    divUserInfo.appendChild(schedule);
+
+    if (connectInfo.spring_user.principal.leader) {
+        const leader = document.createElement('div');
+        leader.className = 'ah-user-leader';
+        leader.textContent = connectInfo.spring_user.principal.leader.name + " " + connectInfo.spring_user.principal.leader.surname;
+        divUserInfo.appendChild(leader);
+    }
 
     const divContactInfo = document.createElement('div');
     divContactInfo.className = 'ah-user-info-contact';
@@ -72,9 +82,6 @@ function authPage() {
     divContactInfo.appendChild(addContactInfoElement('Phone', connectInfo.spring_user.principal.phone));
     divContactInfo.appendChild(addContactInfoElement('Skype', connectInfo.spring_user.principal.skype));
 
-    divUserInfo.appendChild(name);
-    divUserInfo.appendChild(position);
-    divUserInfo.appendChild(schedule);
 
     div.appendChild(divAvatar);
     div.appendChild(divUserInfo);
