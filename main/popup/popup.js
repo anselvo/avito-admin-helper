@@ -131,14 +131,14 @@ function errorPage(status, message) {
 function settingsPage() {
     let body = [];
 
-    if (connectInfo.spring_user.principal.permissions) {
+    if (connectInfo.spring_user.principal.permissions.length > 0) {
         const userSettings = document.createElement('div');
         userSettings.className = 'ah-settings-user ah-body-block';
         userSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.permissions, "Личные настройки"));
         body.push(userSettings);
     }
 
-    if (connectInfo.spring_user.principal.position) {
+    if (connectInfo.spring_user.principal.position.permissions.length > 0) {
         const groupSettings = document.createElement('div');
         groupSettings.className = 'ah-settings-group ah-body-block';
         groupSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.position.permissions, "Настройки"));
