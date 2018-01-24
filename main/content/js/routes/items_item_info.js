@@ -140,7 +140,7 @@ function timeInCity() {
         method: "GET",
         url: url
     }, function(response) {
-        let time = $(response).find('.t-construct-adapter__time').html();
+        let time = $(response).find('.fact-answer').html();
 
         $('body').append('<div class="ah-currentTimeInCity">' + time + '</div>');
     });
