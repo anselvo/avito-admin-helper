@@ -165,7 +165,7 @@ function addSettingsTable(permission, caption) {
             const checked = authorities[roleName] ? 'checked' : '';
             const id = permission[i].id + (Math.floor(Math.random() * (1000 - 1)) + 1);
 
-            tr.innerHTML = `<td><div class="ah-table-settings-name">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
+            tr.innerHTML = `<td><div class="ah-table-settings-name" title="${permission[i].name}">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
                         <td width="35">
                             <input id="${id}" class="ah-checkbox" type="checkbox" name="settings" data-uuid="${permission[i].id}" data-role="${roleName}" ${checked} />
                             <label class="ah-checkbox-label" for="${id}"></label>
