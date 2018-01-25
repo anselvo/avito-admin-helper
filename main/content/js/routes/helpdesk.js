@@ -1,7 +1,7 @@
 //++++++++++++++ Открывать тикеты из очереди в новой вкладке ++++++++++++++ //
 function openTicketInNewTab() {
     $('.sh-open-in-new-tab-link').remove();
-    var rows = $('table tbody tr');
+    var rows = $('.helpdesk-main-section table tbody tr');
 
     $(rows).each(function (i, item) {
         var ticketId = $(item).find('td:eq(2)').text().split(' ')[0];
