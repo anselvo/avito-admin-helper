@@ -130,6 +130,12 @@ function addComparisonInfo() {
             .prepend('<div class="ah-ab-test">A/B TEST</div>');
     }
 
+    // AB test в комперисоне
+    if ($(basedItemInfo).find('.ah-led-yellow').length !== 0) {
+        $('.comparison-item-name:eq(0)')
+            .after('<div class="ah-led-yellow" title="Обратите внимание на флаги!"></div>');
+    }
+
     // добавить причины отклонения
     optionOtherReasons('.btn-group-reject .moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
@@ -288,7 +294,7 @@ function addElementsForEachItemNew() {
 
     let trList = $('#items').find('tr');
     for (let i = 0; i < trList.length; i++) {
-        let value = $(trList[i]).find('.item-info').attr("id");
+        let trItemId = $(trList[i]).data("id");
         let itemVersion = $(trList[i]).find('input[name="version"]').val();
         let prob = $(trList[i]).data('pathProbs');
 
@@ -310,8 +316,6 @@ function addElementsForEachItemNew() {
         }
 
         // ++++++ отображение кол-ва активных айтемов, как в items/search  ++++++ //
-        value = value.replace("desc_","");
-
         for (let key in localStorage) {
             if (key.indexOf('createdButtons') + 1) {
 
@@ -333,7 +337,7 @@ function addElementsForEachItemNew() {
                         .append('<input type="button" ' +
                             'value="' + name + '" ' +
                             'class="btn btn-default btn-sm ah-mh-action-btn" ' +
-                            'bvalue="' + value + '" ' +
+                            'bvalue="' + trItemId + '" ' +
                             'data-reason="' + reason + '" ' +
                             'data-action="' + action + '" ' +
                             'data-version="' + itemVersion + '">');
@@ -352,7 +356,7 @@ function addElementsForEachItemNew() {
                 .append('<input type="button" ' +
                     'value="' + category.short_name + '" ' +
                     'class="btn btn-default btn-sm ah-mh-action-btn" ' +
-                    'bvalue="' + value + '" ' +
+                    'bvalue="' + trItemId + '" ' +
                     'data-reason="178" ' +
                     'data-action="reject" ' +
                     'data-version="' + itemVersion + '" ' +
@@ -379,7 +383,7 @@ function addElementsForEachItemNew() {
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
                             'class="btn btn-default btn-sm ah-mh-action-btn" ' +
-                            'bvalue="' + value + '" ' +
+                            'bvalue="' + trItemId + '" ' +
                             'data-reason="178" ' +
                             'data-action="reject" ' +
                             'data-version="' + itemVersion + '" ' +
@@ -393,7 +397,7 @@ function addElementsForEachItemNew() {
                         .append('<input type="button" ' +
                             'value="' + category.reason[k].short_name + '" ' +
                             'class="btn btn-default btn-sm ah-mh-action-btn" ' +
-                            'bvalue="' + value + '" ' +
+                            'bvalue="' + trItemId + '" ' +
                             'data-reason="178" ' +
                             'data-action="reject" ' +
                             'data-version="' + itemVersion + '" ' +
@@ -404,8 +408,30 @@ function addElementsForEachItemNew() {
 
             }
         }
+
+        // ++++++ добавление кнопки отклонения и выделение флага "Вид объявления"  ++++++ //
+        const $flagItemType = $(trList[i]).find('.b-antifraud .name:contains(Вид объявления)');
+
+        if ($flagItemType.length > 0) {
+            $(trList[i]).find('.item-info-name').append('<div class="ah-led-yellow" title="Обратите внимание на флаги!"></div>');
+
+            const $butBlock = $(trList[i]).find('#ah-but-reject-block');
+            $butBlock.append(`<input type="button" class="btn btn-default btn-sm ah-flag-item-type" 
+                              data-item="${trItemId}" value="ItemType" 
+                              style="box-shadow: inset 0 0 15px 0 #FF0; border: 1px solid #f18500; margin-left: 4px">`);
+        }
     }
 
+    $('.ah-flag-item-type').click(event => {
+        let dataObj = {
+            itemId: event.currentTarget.dataset.item,
+            version: 2,
+            action: 'reject',
+            reason: 715
+        };
+
+        submitItem(dataObj);
+    });
 
     $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
         let dataObj = {
@@ -425,11 +451,11 @@ function addElementsForEachItemNew() {
     });
 
 
-    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function(){
+    $("button.mb_reject.btn , button.mb_block.btn , a.areject, input.ah-mh-action-btn").click(function() {
         lastReject += $(this).parents('tr:eq(0)').attr("data-id")+ '|';
     });
 
-    var butShow = $('<input/>', {
+    let butShow = $('<input/>', {
         value: 'Last Reject',
         type: 'button',
         class: 'btn btn-default green',
@@ -441,7 +467,7 @@ function addElementsForEachItemNew() {
     $('#apply_all').append(butShow);
 
 
-    if(localStorage.chbx1 == 0){
+    if(localStorage.chbx1 === 0){
         $("#chbx1").removeAttr("checked");
     }
     if(localStorage.title!=='' && localStorage.title !== undefined){
