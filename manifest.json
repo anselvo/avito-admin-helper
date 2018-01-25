@@ -29,6 +29,7 @@
 				// "scripts.min.js"
 
 				"main/content/js/main.js",
+				"main/content/js/roles.js",
 
 				"main/content/js/requests/post.js",
 				"main/content/js/requests/get.js",
@@ -44,7 +45,6 @@
 				"main/content/js/api/assistant.js",
 				"main/content/js/api/indicators.js",
 				"main/content/js/api/intern.js",
-				"main/content/js/api/roles.js",
 
 				"main/content/js/routes/items_item_info.js",
 				"main/content/js/routes/items_search.js",
