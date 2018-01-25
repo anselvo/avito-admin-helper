@@ -43,45 +43,59 @@ function authPage() {
     const divAvatar = document.createElement('div');
     divAvatar.className = 'ah-user-avatar-block';
 
-    const avatar = document.createElement('img');
-    avatar.className = 'ah-user-avatar';
-    if (connectInfo.spring_user.principal.avatar) avatar.src = connectInfo.spring_url + '/employee/img/' + connectInfo.spring_user.principal.avatar;
-    else avatar.src = '../../include/image/logo_user_default.png';
-
-    divAvatar.appendChild(avatar);
+    try {
+        const avatar = document.createElement('img');
+        avatar.className = 'ah-user-avatar';
+        if (connectInfo.spring_user.principal.avatar) avatar.src = connectInfo.spring_url + '/employee/img/' + connectInfo.spring_user.principal.avatar;
+        else avatar.src = '../../include/image/logo_user_default.png';
+        divAvatar.appendChild(avatar);
+    } catch (e) { console.log(e); }
 
     const divUserInfo = document.createElement('div');
     divUserInfo.className = 'ah-user-info-block';
 
-    const name = document.createElement('div');
-    name.className = 'ah-user-name';
-    name.textContent = connectInfo.spring_user.principal.name + " " + connectInfo.spring_user.principal.surname;
-    divUserInfo.appendChild(name);
+    try {
+        const name = document.createElement('div');
+        name.className = 'ah-user-name';
+        name.textContent = connectInfo.spring_user.principal.name + " " + connectInfo.spring_user.principal.surname;
+        divUserInfo.appendChild(name);
+    } catch (e) { console.log(e); }
 
-    const position = document.createElement('div');
-    position.className = 'ah-user-position';
-    position.textContent = connectInfo.spring_user.principal.subdivision.divisionName;
-    divUserInfo.appendChild(position);
+    try {
+        const position = document.createElement('div');
+        position.className = 'ah-user-position';
+        position.textContent = connectInfo.spring_user.principal.position.name;
+        divUserInfo.appendChild(position);
+    } catch (e) { console.log(e); }
 
-    const schedule = document.createElement('div');
-    schedule.className = 'ah-user-schedule';
-    schedule.textContent = connectInfo.spring_user.principal.shift.shift + ", " + connectInfo.spring_user.principal.weekend.weekend;
-    divUserInfo.appendChild(schedule);
+    const divInfoWithTitle = document.createElement('div');
+    divInfoWithTitle.className = 'ah-user-info-title';
 
-    if (connectInfo.spring_user.principal.leader) {
-        const leader = document.createElement('div');
-        leader.className = 'ah-user-leader';
-        leader.textContent = connectInfo.spring_user.principal.leader.name + " " + connectInfo.spring_user.principal.leader.surname;
-        divUserInfo.appendChild(leader);
-    }
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Руководитель', connectInfo.spring_user.principal.leader.name + " " + connectInfo.spring_user.principal.leader.surname));
+    } catch (e) { console.log(e); }
 
-    const divContactInfo = document.createElement('div');
-    divContactInfo.className = 'ah-user-info-contact';
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Смена',  connectInfo.spring_user.principal.shift.shift));
+    } catch (e) { console.log(e); }
 
-    divContactInfo.appendChild(addContactInfoElement('Email', connectInfo.spring_user.principal.email));
-    divContactInfo.appendChild(addContactInfoElement('Phone', connectInfo.spring_user.principal.phone));
-    divContactInfo.appendChild(addContactInfoElement('Skype', connectInfo.spring_user.principal.skype));
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Выходные',  connectInfo.spring_user.principal.weekend.weekend));
+    } catch (e) { console.log(e); }
 
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Email', connectInfo.spring_user.principal.email));
+    } catch (e) { console.log(e); }
+
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Phone', connectInfo.spring_user.principal.phone));
+    } catch (e) { console.log(e); }
+
+    try {
+        divInfoWithTitle.appendChild(addInfoElementWithTitle('Skype', connectInfo.spring_user.principal.skype));
+    } catch (e) { console.log(e); }
+
+    divUserInfo.appendChild(divInfoWithTitle);
 
     div.appendChild(divAvatar);
     div.appendChild(divUserInfo);
@@ -89,8 +103,8 @@ function authPage() {
     pageGenerator([div], true);
 }
 
-function addContactInfoElement(name, option) {
-    if (connectInfo.spring_user.principal.email) {
+function addInfoElementWithTitle(name, option) {
+    if (option) {
         const tmp = document.createElement('div');
         tmp.innerHTML = `<span>${name}: </span>${option}`;
         return tmp;

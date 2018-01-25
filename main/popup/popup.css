@@ -107,6 +107,7 @@ body {
 .ah-user-info-block {
     margin: 5px;
     flex-grow: 1;
+    font-size: 12px;
 }
 
 .ah-user-name {
@@ -123,15 +124,16 @@ body {
     color: #828282;
 }
 
-.ah-user-info-contact {
+.ah-user-info-title {
     margin-top: 5px;
 }
 
-.ah-user-info-contact span {
-    color: #828282;
+.ah-user-info-title span {
+    color: #0688ff;
+    font-weight: bold;
 }
 
-    /* animated image */
+/* animated image */
 
 .ah-animate-logo {
     width: 32px;
