@@ -152,18 +152,26 @@ function errorPage(status, message) {
 function settingsPage() {
     let body = [];
 
-    if (connectInfo.spring_user.principal.permissions.length > 0) {
-        const userSettings = document.createElement('div');
-        userSettings.className = 'ah-settings-user ah-body-block';
-        userSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.permissions, "Личные настройки"));
-        body.push(userSettings);
+    try {
+        if (connectInfo.spring_user.principal.permissions.length > 0) {
+            const userSettings = document.createElement('div');
+            userSettings.className = 'ah-settings-user ah-body-block';
+            userSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.permissions, "Личные настройки"));
+            body.push(userSettings);
+        }
+    } catch (e) {
+        console.log(e);
     }
 
-    if (connectInfo.spring_user.principal.position.permissions.length > 0) {
-        const groupSettings = document.createElement('div');
-        groupSettings.className = 'ah-settings-group ah-body-block';
-        groupSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.position.permissions, "Настройки"));
-        body.push(groupSettings);
+    try {
+        if (connectInfo.spring_user.principal.position.permissions.length > 0) {
+            const groupSettings = document.createElement('div');
+            groupSettings.className = 'ah-settings-group ah-body-block';
+            groupSettings.appendChild(addSettingsTable(connectInfo.spring_user.principal.position.permissions, "Настройки"));
+            body.push(groupSettings);
+        }
+    } catch (e) {
+        console.log(e);
     }
 
     pageGenerator(body, true);
@@ -188,7 +196,7 @@ function addSettingsTable(permission, caption) {
 
             tr.innerHTML = `<td><div class="ah-table-settings-name" title="${permission[i].name}">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
                         <td width="35">
-                            <input id="${id}" class="ah-checkbox" type="checkbox" name="settings" data-uuid="${permission[i].id}" data-role="${roleName}" ${checked} />
+                            <input id="${id}" class="ah-checkbox" type="checkbox" name="settings" data-uuid="${permission[i].id}" data-role="${roleName}" data-name="${permission[i].name}" ${checked} />
                             <label class="ah-checkbox-label" for="${id}"></label>
                         </td>`;
 
@@ -203,6 +211,8 @@ function addSettingsTable(permission, caption) {
         for (let i = 0; i < checkbox.length; ++i) checkbox[i].checked = event.target.checked;
 
         chrome.storage.local.set({ authorities: authorities });
+
+        addChromeNotification(`Вы изменили настройку:\n${event.target.dataset.name}\n\nДля того чтобы изменения вступили в силу обновите страницу`);
     });
 
     return table;
@@ -301,4 +311,14 @@ function addNavElement(html) {
 function scriptSwitch(checked) {
     script = checked;
     chrome.storage.local.set({ script: checked });
+}
+
+function addChromeNotification(message) {
+    const options = {
+        type: "basic",
+        title: "Admin.Helper",
+        message: message,
+        iconUrl: "../../include/image/black/logo_notification.png",
+    };
+    chrome.notifications.create(options);
 }
