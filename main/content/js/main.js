@@ -41,8 +41,6 @@ $(function () {
         global.authorities = result.authorities;
         global.userInfo = result.connectInfo.spring_user.principal;
 
-        console.log(result);
-
         if (result.script) {
             startNotification(result.notifications);
 
