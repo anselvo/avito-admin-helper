@@ -293,6 +293,71 @@ function renderCreateNewTicketWindow(route) {
     $(footer).append('<button type="button" class="sh-action-btn" style="letter-spacing: .1px; float: left;">Создать обращение</button>');
     $(footer).append('<div class="ah-clearfix" style=""></div>');
 
+    // автозаполнение
+    const $dropdown = $(`
+    <div class="dropup ah-create-ticket-dropdown ah-create-ticket-dropdown_inline">
+        <div class="btn-group">
+            <button class="btn btn-default ah-create-ticket-dropdown__info"><span class="glyphicon glyphicon-info-sign"></span></button>
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Автозаполнение
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a class="ah-create-ticket-dropdown__item" data-fill="callcenter"
+                    data-placement="left" data-toggle="tooltip" data-html="true" 
+                    title="
+                    <ul class='ah-create-ticket-tooltip__list'>
+                        <li><b>Тег:</b> callcenter</li>
+                    </ul>">
+                   Callcenter
+               </a></li>
+                <li><a class="ah-create-ticket-dropdown__item" data-fill="c2c"
+                    data-placement="left" data-toggle="tooltip" data-html="true" 
+                    title="
+                    <ul class='ah-create-ticket-tooltip__list'>
+                        <li><b>Тег:</b> delivery_call</li>
+                        <li><b>Описание:</b> Телефонное обращение в службу поддержки Пользователей</li>
+                        <li><b>Тема запроса:</b> Avito Доставка</li>
+                        <li><b>Источник:</b> dostavkasupport@avito.ru</li>
+                    </ul>">
+                   C2C
+                </a></li>
+            </ul>
+        </div>
+    </div>`);
+
+    footer.prepend($dropdown);
+
+    $dropdown.click( e => {
+        const target = e.target;
+
+        if (target.closest('.ah-create-ticket-dropdown__item')) {
+            e.stopPropagation();
+            const item = target.closest('.ah-create-ticket-dropdown__item');
+
+            if (item.dataset.checked) {
+                const checkbox = item.querySelector('.ah-create-ticket-dropdown__checkbox');
+                checkbox.remove();
+                item.removeAttribute('data-checked');
+                localStorage.removeItem('ah-create-ticket-autofill');
+            } else {
+                const fill = item.dataset.fill;
+                autoFillCreateTicket(fill);
+            }
+        }
+    });
+
+    $('.ah-create-ticket-dropdown__item').tooltip({
+        container: '[data-modal-info="modal-create-new-ticket"]',
+        animation: false,
+        template: `
+            <div class="tooltip ah-create-ticket-tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner ah-create-ticket-tooltip__tooltip-inner"></div></div>
+        `
+    });
+
+    $('.ah-create-ticket-dropdown__info').tooltip({
+        container: '[data-modal-info="modal-create-new-ticket"]',
+        title: 'При каждом открытии формы её поля будут автоматически заполняться в соответствии с выбранной опцией',
+        trigger: 'focus'
+    });
 
     // обработчики
     var closeBtn = $(modal).find('.ah-modal-close');
@@ -976,35 +1041,56 @@ function substituteCreateTicketValues() {
     $(modal).find('[name="create-ticket-requesterEmail"]').val(requesterEmail);
     $(modal).find('[name="create-ticket-requesterName"]').val(requesterName);
 
+    if (localStorage.getItem('ah-create-ticket-autofill')) {
+        const fill = localStorage.getItem('ah-create-ticket-autofill');
+        autoFillCreateTicket(fill);
+    }
+}
 
-    const $addedTagIdsBlock = $(modal).find('#create-ticket-added-tag-ids');
-    const $addedTagsBlock = $(modal).find('#create-ticket-choose-tags');
+function autoFillCreateTicket(fill) {
+    const modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    const $addedTagIdsBlock = modal.find('#create-ticket-added-tag-ids');
+    const $addedTagsBlock = modal.find('#create-ticket-choose-tags');
+    const $dropdown = modal.find('.ah-create-ticket-dropdown');
 
-    // автозаполнение для voice support
-    if (isAuthority('ROLE_CREATE_TICKET_AUTOFILL')) {
-        // tag callcenter
-        $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
-        $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
-        createTicketRemoveTagBtnHandler();
+    $addedTagIdsBlock.find('[name^="create-ticket-tags"]').remove();
+    $addedTagsBlock.find('.ah-helpdesk-tag').remove();
+
+    $dropdown.find('.ah-create-ticket-dropdown__checkbox').remove();
+    $dropdown.find('.ah-create-ticket-dropdown__item').removeAttr('data-checked');
+    localStorage.setItem('ah-create-ticket-autofill', fill);
+
+    switch (fill) {
+        case 'callcenter':
+            // tag callcenter
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            createTicketRemoveTagBtnHandler();
+            break;
+
+        case 'c2c':
+            // tag delivery_call
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1549">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            createTicketRemoveTagBtnHandler();
+
+            // description
+            modal.find('[name="create-ticket-description"]').val('Телефонное обращение в службу поддержки Пользователей');
+
+            // theme
+            modal.find('[name="create-ticket-theme"]').val(79).change();
+
+            // receivedAtEmail
+            modal.find('[name="create-ticket-receivedAtEmail"]').val('dostavkasupport@avito.ru');
+            break;
     }
 
-    // автозаполнение для C2c
-    if (isAuthority('ROLE_CREATE_TICKET_AUTOFILL')) {
-        // tag delivery_call
-        $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1549">');
-        $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
-        createTicketRemoveTagBtnHandler();
+    const icon = document.createElement(`span`);
+    icon.className = `glyphicon glyphicon-ok text-success ah-create-ticket-dropdown__checkbox`;
 
-        // description
-        $(modal).find('[name="create-ticket-description"]').val('Телефонное обращение в службу поддержки Пользователей');
-
-        // theme
-        $(modal).find('[name="create-ticket-theme"]').val(79).change();
-
-        // receivedAtEmail
-        $(modal).find('[name="create-ticket-receivedAtEmail"]').val('dostavkasupport@avito.ru');
-    }
-
+    const fillItem = $dropdown.find(`.ah-create-ticket-dropdown__item[data-fill=${fill}]`);
+    fillItem.append(icon);
+    fillItem.attr('data-checked', 'true');
 }
 
 function searchHDUserNameInTickets(mail) {
