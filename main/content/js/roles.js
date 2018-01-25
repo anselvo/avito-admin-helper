@@ -1222,6 +1222,7 @@ RoleHandler.prototype.intern = function() {
     }
 
     if (global.admUrlPatterns.items_moder.test(global.currentUrl)) {
+        addButtonsIntern();
         premoderationInternNew(global.userInfo.username, 'pre');
         premoderationInternComparisonNew();
     }
