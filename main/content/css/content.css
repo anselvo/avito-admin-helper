@@ -5935,3 +5935,30 @@ select.ah-form-control:focus {
 .ah-shop-moderation-scrollable-row:hover {
     background-color: rgb(245, 245, 245);
 }
+
+.ah-create-ticket-dropdown_inline {
+    display: inline-block;
+}
+
+.ah-create-ticket-dropdown__item:hover {
+    cursor: pointer;
+}
+
+.ah-create-ticket-tooltip {
+    opacity: 1 !important;
+}
+
+.ah-create-ticket-tooltip .ah-create-ticket-tooltip__tooltip-inner {
+    max-width: 400px;
+    background-color: #73AD21;
+    color: #FFFFFF;
+    border: 1px solid green;
+    padding: 5px 10px 5px 5px;
+    font-size: 14px;
+}
+
+.ah-create-ticket-tooltip__list {
+    margin: 0;
+    padding-left: 20px;
+    text-align: left;
+}
