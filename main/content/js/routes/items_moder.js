@@ -425,7 +425,7 @@ function addElementsForEachItemNew() {
     $('.ah-flag-item-type').click(event => {
         let dataObj = {
             itemId: event.currentTarget.dataset.item,
-            version: 2,
+            version: 1,
             action: 'reject',
             reason: 715
         };
