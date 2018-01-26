@@ -206,7 +206,7 @@ function usersInfo(id, itemid, offset, query) {
                     let history = $(ritem).find('a[href^="/items/search?user_id="]').attr('target', '_blank');
                     let phoneInItem = '#7' + $(ritem).find('#fld_phone').attr('value').replace(/\D/g,'').slice(-10);
                     let regionItem = $(ritem).find('#region option:selected').text();
-                    let regionItemID = $(ritem).find('#region').attr('data-location-id');
+                    let regionItemID = $(ritem).find('#region option:selected').val();
                     let districtItem = $(ritem).find('#fld_district_id option:selected').text();
                     let streetItem = $(ritem).find('#flt_param_address').val();
                     // Право собственности
