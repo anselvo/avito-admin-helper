@@ -5991,14 +5991,31 @@ select.ah-form-control:focus {
 .ah-create-ticket-tooltip .ah-create-ticket-tooltip__tooltip-inner {
     max-width: 400px;
     background-color: #73AD21;
-    color: #FFFFFF;
     border: 1px solid green;
-    padding: 5px 10px 5px 5px;
-    font-size: 14px;
 }
 
 .ah-create-ticket-tooltip__list {
     margin: 0;
     padding-left: 20px;
+    text-align: left;
+}
+
+.ah-create-ticket-tooltip__table {
+    width: 100%;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.ah-create-ticket-tooltip__col {
+    padding: 4px 6px;
+}
+
+.ah-create-ticket-tooltip__col:first-child {
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ah-create-ticket-tooltip__col:last-child {
     text-align: left;
 }
