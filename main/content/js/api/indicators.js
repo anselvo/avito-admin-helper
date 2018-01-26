@@ -382,7 +382,6 @@ function UserInfoIndicators(options) {
         let res = {};
         res.isFired = autoInput.is(":checked") && autoBanIcon.length === 0;
         res.scrollTo = autoInput.parents('.form-group');
-        console.log(res);
         return res;
     };
 
