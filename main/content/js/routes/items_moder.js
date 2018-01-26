@@ -417,7 +417,7 @@ function addElementsForEachItemNew() {
 
             const $butBlock = $(trList[i]).find('#ah-but-reject-block');
             $butBlock.append(`<input type="button" class="btn btn-default btn-sm ah-flag-item-type" 
-                              data-item="${trItemId}" value="ItemType" 
+                              data-item="${trItemId}" data-item-version="${itemVersion}" value="ItemType" 
                               style="box-shadow: inset 0 0 15px 0 #FF0; border: 1px solid #f18500; margin-left: 4px">`);
         }
     }
@@ -425,7 +425,7 @@ function addElementsForEachItemNew() {
     $('.ah-flag-item-type').click(event => {
         let dataObj = {
             itemId: event.currentTarget.dataset.item,
-            version: 1,
+            version: event.currentTarget.dataset.itemVersion,
             action: 'reject',
             reason: 715
         };
