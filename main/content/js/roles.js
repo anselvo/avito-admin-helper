@@ -261,9 +261,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEM_REJECT_BY_CALL')) {
         roleHandler.itemRejectByCall();
     }
-    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_DESCRIPTION')) { // показ описания
-        roleHandler.itemsSearchItemDescription();
-    }
     if (isAuthority('ROLE_ITEMS_SEARCH_CHECKBOX_CLICK')) { // Обработка клика рядом с checkbox
         roleHandler.itemsSearchCheckboxClick();
     }
@@ -412,17 +409,20 @@ function handleRoles() {
     }
 
     // OTHER
-    if (isAuthority('ROLE_SEARCH_BLOCK_USERS')) {  // блокировка пользователей в поисках
-        roleHandler.searchBlockUsers();
-    }
     if (isAuthority('ROLE_SEARCH_INFO_BTN')) {  // добавить кнопку показа инфы
         roleHandler.searchInfoBtn();
     }
-    if (isAuthority('ROLE_ITEMS_USER_INFO')) { // info, wl, abuse
-        roleHandler.itemsUserInfo();
+    if (isAuthority('ROLE_SEARCH_BLOCK_USERS')) {  // блокировка пользователей в поисках
+        roleHandler.searchBlockUsers();
+    }
+    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_DESCRIPTION')) { // показ описания
+        roleHandler.itemsSearchItemDescription();
     }
     if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) { // запросы на юзера автоматически
         roleHandler.itemsSearchUserInfoAuto();
+    }
+    if (isAuthority('ROLE_ITEMS_USER_INFO')) { // info, wl, abuse
+        roleHandler.itemsUserInfo();
     }
     if (isAuthority('ROLE_COMPARE_PHOTO')) { // сравнение фото
         roleHandler.comparePhoto();
@@ -806,8 +806,7 @@ RoleHandler.prototype.itemsSearchItemDescription = function() {
 };
 
 RoleHandler.prototype.itemsSearchUserInfoAuto = function() {
-    if (~global.currentUrl.indexOf("?phone=")
-        || ~global.currentUrl.indexOf("?ip=")) {
+    if (~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) {
         usersInfoForItems();
     }
 };
@@ -1110,13 +1109,13 @@ RoleHandler.prototype.searchBlockUsers = function() {
 };
 
 RoleHandler.prototype.searchInfoBtn = function() {
+    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
+        addInfoToItems();
+    }
+
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         addInfoToItems();
         showItemsInfoForItems();
-    }
-
-    if (global.admUrlPatterns.users_search.test(global.currentUrl)) {
-        addInfoToItems();
     }
 };
 
