@@ -331,23 +331,24 @@ function AhIndicators(indicatorsArr, container) {
 
 function UserInfoIndicators(options) {
     options = options || {};
-    let searchNode = options.searchNode || $('html');
+    const searchNode = options.searchNode || $('html');
 
-    let innInput = searchNode.find('[name="inn"]');
-    let innParentBlock = innInput.parents('.form-group');
-    let innInfoBlock = innParentBlock.find('div.i-verify');
-    let proInput = searchNode.find('#isPro');
-    let companyInfoForm = searchNode.find('#company-info');
-    let convertHelpBlock = companyInfoForm.find('.help-block');
-    let autoInput = searchNode.find('#isAutoupload');
-    let shopInput = searchNode.find('.control-label:contains(Магазин)').next().find('a');
-    let shopInputText = shopInput.text();
-    let subscrInput = searchNode.find('.form-group:contains(Подписка) a');
-    let subscrInputText = subscrInput.text();
-    let persManagerSelect = searchNode.find('select[name="managerId"]');
-    let deliveryForm = searchNode.find('.user-info-deliver-form');
-    let deliveryIsActive = deliveryForm.find('[name="isActive"]');
-    let deliveryApiKey = deliveryForm.find('[name="apiKey"]');
+    const innInput = searchNode.find('[name="inn"]');
+    const innParentBlock = innInput.parents('.form-group');
+    const innInfoBlock = innParentBlock.find('div.i-verify');
+    const proInput = searchNode.find('#isPro');
+    const companyInfoForm = searchNode.find('#company-info');
+    const convertHelpBlock = companyInfoForm.find('.help-block');
+    const autoInput = searchNode.find('#isAutoupload');
+    const autoBanIcon = autoInput.parents('.checkbox').next().find('.glyphicon-ban-circle');
+    const shopInput = searchNode.find('.control-label:contains(Магазин)').next().find('a');
+    const shopInputText = shopInput.text();
+    const subscrInput = searchNode.find('.form-group:contains(Подписка) a');
+    const subscrInputText = subscrInput.text();
+    const persManagerSelect = searchNode.find('select[name="managerId"]');
+    const deliveryForm = searchNode.find('.user-info-deliver-form');
+    const deliveryIsActive = deliveryForm.find('[name="isActive"]');
+    const deliveryApiKey = deliveryForm.find('[name="apiKey"]');
 
     this.getInnInfo = function() {
         let res = {};
@@ -379,8 +380,9 @@ function UserInfoIndicators(options) {
 
     this.getAutoInfo = function() {
         let res = {};
-        res.isFired = autoInput.is(":checked");
+        res.isFired = autoInput.is(":checked") && autoBanIcon.length === 0;
         res.scrollTo = autoInput.parents('.form-group');
+        console.log(res);
         return res;
     };
 
