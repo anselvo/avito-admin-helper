@@ -3894,7 +3894,7 @@ function getUserInfoByItem(userId) {
                         subscriptionField = $(label).parent('.form-group');
                         subscriptionValue = $(subscriptionField).find('.col-xs-9').text();
                     }
-                    if ( $(label).text() == 'Personal manager') {
+                    if ( $(label).text() == 'Персональный менеджер') {
                         persManagerField = $(label).parent('.form-group');
                         persManagerValue = $(persManagerField).find('select option:selected').text();
                     }
@@ -3924,7 +3924,7 @@ function getUserInfoByItem(userId) {
                 if (~subscriptionValue.toLowerCase().indexOf('подписка') && subscriptionValue.toLowerCase().indexOf('бронза') == -1) {
                     hasSubscription = true;
                 }
-                if (persManagerValue.toLowerCase() != 'none' && persManagerValue) {
+                if (persManagerValue.toLowerCase() != 'нет' && persManagerValue) {
                     hasManager = true;
                 }
 
