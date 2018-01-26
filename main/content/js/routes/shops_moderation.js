@@ -309,7 +309,6 @@ ShopModeration.prototype.addCoordinationControls = function () {
         const fieldName = (cellName.textContent === 'Information line') ? 'Информационная строка' : cellName.textContent;
         const fieldValue = item.innerHTML.replace(this.patterns.inputChangedValue,'');
         const sectionName = cellName.closest('.shop-moderation-section').dataset.section;
-        const checkboxLabel = document.createElement('label');
         let sectionNameFormatted = '';
 
         switch (sectionName) {
@@ -327,12 +326,19 @@ ShopModeration.prototype.addCoordinationControls = function () {
                 break;
         }
 
+        const checkbox = document.createElement('input');
+        const checkboxLabel = document.createElement('label');
+
+        checkbox.type = 'checkbox';
+        checkbox.className = 'ah-shop-moderation-coordination-checkbox';
+        checkbox.setAttribute('data-type', 'text');
+        checkbox.setAttribute('data-field-name', fieldName);
+        checkbox.setAttribute('data-field-value', fieldValue);
+        checkbox.setAttribute('data-section-name', sectionNameFormatted);
+
         checkboxLabel.className = 'ah-shop-moderation-label-text';
-        checkboxLabel.innerHTML = `
-            <input data-field-name="${fieldName}" data-field-value="${fieldValue}" data-section-name="${sectionNameFormatted}"
-                data-type="text" type="checkbox" class="ah-shop-moderation-coordination-checkbox">
-            ${cellName.firstChild.textContent}
-        `;
+        checkboxLabel.appendChild(checkbox);
+        checkboxLabel.appendChild(document.createTextNode(` ${cellName.firstChild.textContent}`));
         cellName.replaceChild(checkboxLabel, cellName.firstChild);
     });
 
@@ -356,13 +362,17 @@ ShopModeration.prototype.addCoordinationControls = function () {
             if (!imgLink) return;
 
             const imgHref = imgLink.getAttribute('href');
+            const checkbox = document.createElement('input');
             const checkboxLabel = document.createElement('label');
 
+            checkbox.type = 'checkbox';
+            checkbox.className = 'ah-shop-moderation-coordination-checkbox ah-photo-preview-checkbox';
+            checkbox.setAttribute('data-type', 'image');
+            checkbox.setAttribute('data-field-name', 'Фотография');
+            checkbox.setAttribute('data-href', imgHref);
+
             checkboxLabel.className = 'ah-shop-moderation-label-image';
-            checkboxLabel.innerHTML = `
-                <input data-href="${imgHref}" data-field-name="Фотография" data-type="image"
-                    type="checkbox" class="ah-shop-moderation-coordination-checkbox ah-photo-preview-checkbox">
-            `;
+            checkboxLabel.appendChild(checkbox);
             item.appendChild(checkboxLabel);
         });
     } catch (e){}
@@ -376,15 +386,18 @@ ShopModeration.prototype.addCoordinationControls = function () {
         if (!imgLink) return;
 
         const imgHref = imgLink.getAttribute('href');
+        const checkbox = document.createElement('input');
         const checkboxLabel = document.createElement('label');
 
-        checkboxLabel.className = 'ah-shop-moderation-label-text';
-        checkboxLabel.innerHTML = `
-            <input data-href="${imgHref}" data-field-name="${fieldName}" data-type="image"
-                type="checkbox" class="ah-shop-moderation-coordination-checkbox">
-            ${label.firstChild.textContent}
-        `;
+        checkbox.type = 'checkbox';
+        checkbox.className = 'ah-shop-moderation-coordination-checkbox';
+        checkbox.setAttribute('data-type', 'image');
+        checkbox.setAttribute('data-field-name', fieldName);
+        checkbox.setAttribute('data-href', imgHref);
 
+        checkboxLabel.className = 'ah-shop-moderation-label-text';
+        checkboxLabel.appendChild(checkbox);
+        checkboxLabel.appendChild(document.createTextNode(` ${label.firstChild.textContent}`));
         label.replaceChild(checkboxLabel, label.firstChild);
     });
 
