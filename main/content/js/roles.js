@@ -355,9 +355,6 @@ function handleRoles() {
     }
 
     // ACCOUNT
-    if (isAuthority('ROLE_ACCOUNT_ITEM_INFO')) { // статус объявления и причина блокировки
-        roleHandler.accountItemInfo();
-    }
     if (isAuthority('ROLE_ACCOUNT_COMPENSATION_BTNS')) { // кнопки для компенсации ДС
         roleHandler.accountCompensationBtns();
     }
@@ -429,6 +426,10 @@ function handleRoles() {
     }
     if (isAuthority('ROLE_COUNT_MONEY')) {  // добавление кнопок подсчета ДС
         roleHandler.countMoney();
+    }
+    // Обязательно после счетчика ДС (БАГ)
+    if (isAuthority('ROLE_ACCOUNT_ITEM_INFO')) { // статус объявления и причина блокировки
+        roleHandler.accountItemInfo();
     }
     if (isAuthority('ROLE_PACKAGE_INFO')) {  // инфа о пакетах
         roleHandler.packageInfo();
