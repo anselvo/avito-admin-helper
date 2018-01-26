@@ -163,17 +163,17 @@ function userInfoForPost() {
         params = params ? params.replace(/"/g, "&quot;") : '{}';
         var cityItem = $(itemList[i]).parents('tr').attr("data-location");
 
-        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_INFO')) {
+        if (isAuthority('ROLE_USER_INFO_INFO')) {
             $(itemList[i])
                 .prepend('<span class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px; float: right;">Info</span>');
         }
 
-        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_ABUSES')) {
+        if (isAuthority('ROLE_USER_INFO_ABUSES')) {
             $(itemList[i])
                 .prepend('<span class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px; float: right">Abuses</span>');
         }
 
-        if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_WL')) {
+        if (isAuthority('ROLE_USER_INFO_WL')) {
             $(itemList[i])
                 .prepend('<span class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
 		}
