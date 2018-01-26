@@ -157,11 +157,20 @@ function addComparisonInfo() {
         let userid = tmp[3].split('-')[2];
         let itemid = tmp[2].split('-')[2];
 
-        $(comparisonUserList[i])
-            .parents('.'+tmp[2])
-            .append('<span class="userWalletActionButton userWalletComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>')
-            .append('<span class="userAbuseActionButton userAbuseComparison" useridab="'+userid+'" itemidab="'+itemid+'" style="margin-left: 10px;  float: right;">Abuses</span>')
-            .append('<span class="userInfoActionButton userInfoComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right;">Info</span>');
+        if (isAuthority('ROLE_USER_INFO_WL'))
+            $(comparisonUserList[i])
+                .parents('.'+tmp[2])
+                .append('<span class="userWalletActionButton userWalletComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
+
+        if (isAuthority('ROLE_USER_INFO_ABUSES'))
+            $(comparisonUserList[i])
+                .parents('.'+tmp[2])
+                .append('<span class="userAbuseActionButton userAbuseComparison" useridab="'+userid+'" itemidab="'+itemid+'" style="margin-left: 10px;  float: right;">Abuses</span>');
+
+        if (isAuthority('ROLE_USER_INFO_INFO'))
+            $(comparisonUserList[i])
+                .parents('.'+tmp[2])
+                .append('<span class="userInfoActionButton userInfoComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right;">Info</span>');
 
 
         if (i === 0) var mainUserId = userid;
@@ -232,10 +241,16 @@ function addSomeElementsNew() {
         const type = $(trList[i]).find('.item-info-row-item-type:contains(Тип)').parent().text();
 
         // USER INFO and USER ABUSE
-        $(trList[i]).find('.item-info-name')
-            .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'">WL</a></span>')
-            .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'">Abuses</a></span>')
-            .append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;">' +
+        const $itemInfoName = $(trList[i]).find('.item-info-name');
+
+        if (isAuthority('ROLE_USER_INFO_WL'))
+            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'">WL</a></span>')
+
+        if (isAuthority('ROLE_USER_INFO_ABUSES'))
+            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'">Abuses</a></span>')
+
+        if (isAuthority('ROLE_USER_INFO_INFO'))
+            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;">' +
                 '<a class="userInfoActionButton" infoQuery cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'">Info</a> ' +
                 '<i class="infoSearchIcon glyphicon  glyphicon-search" title="Поисковый запрос для ссылок в Info"></i> ' +
                 '<input type="text" placeholder="Info query" class="infoQuery"></span>');

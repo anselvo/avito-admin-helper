@@ -82,10 +82,15 @@ function userInfoOnItem() {
     // USER INFO and USER ABUSE
     $('.form-group:contains(Пользователь) div.form-control-static').append('<div class="ah-item-user-info"></div>');
 
-    $('.ah-item-user-info')
-        .append('<a class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>')
-        .append('<a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>')
-        .append('<a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px;">WL</a>');
+    const $blockUserInfo = $('.ah-item-user-info');
+    if (isAuthority('ROLE_USER_INFO_INFO'))
+        $blockUserInfo.append('<a class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>');
+
+    if (isAuthority('ROLE_USER_INFO_ABUSES'))
+        $blockUserInfo.append('<a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>');
+
+    if (isAuthority('ROLE_USER_INFO_WL'))
+        $blockUserInfo.append('<a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px;">WL</a>');
 
     usersInfoAction();
 }
