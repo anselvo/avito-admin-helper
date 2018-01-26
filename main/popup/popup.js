@@ -116,6 +116,7 @@ function errorPage(status, message) {
     const div = document.createElement('div');
     div.className = 'ah-error ah-body-block';
     div.innerHTML = `<div class="ah-error-message">${message}</div>`;
+    chrome.runtime.sendMessage({ action: 'connect' });
 
     if (status === 401) {
         const form = document.createElement('form');
@@ -139,8 +140,6 @@ function errorPage(status, message) {
         form.addEventListener('submit', () => chrome.runtime.sendMessage({ action: 'connect', password: pass.value }));
 
         div.appendChild(form);
-    } else {
-        chrome.runtime.sendMessage({ action: 'connect' });
     }
 
     scriptSwitch(null);
