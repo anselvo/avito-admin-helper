@@ -2,76 +2,73 @@
     "manifest_version": 2,
     "name": "Admin.Helper",
 	"short_name": "AH", 
-    "version": "4.3.8",
+    "version": "5.0.0",
 	
 	"background": {
 		"scripts": [
-			"library/jquery.min.js",
-			"library/angular.min.js",
-			"background.js",
-			"contextMenu.js"
+			"include/library/jquery.min.js",
+			"include/library/angular.min.js",
+			"include/library/sockjs.min.js",
+            "include/library/stomp.min.js",
+			"main/background/background.js",
+			"main/background/contextMenu.js"
 		]
     },
 
     "content_scripts": [
 		{
 			"matches": ["https://*.avito.ru/*", "https://br-analytics.ru/*"],
-			"css": ["css/main.css"],
+			"css": ["main/content/css/content.css"],
 
 			"js": [
-				"library/jquery.min.js", 
-				"library/jquery.cookie.min.js",
-				"library/angular.min.js",
-				"library/bootstrap.min.js",
-				"library/jquery-ui.min.js",
+				"include/library/jquery.min.js",
+				"include/library/jquery.cookie.min.js",
+				"include/library/angular.min.js",
+				"include/library/bootstrap.min.js",
+				"include/library/jquery-ui.min.js",
 				// "scripts.min.js"
 
-				"scripts/main.js",
+				"main/content/js/main.js",
+				"main/content/js/roles.js",
 
-				"scripts/requests/post.js",
-				"scripts/requests/get.js",
+				"main/content/js/requests/post.js",
+				"main/content/js/requests/get.js",
 
-				"scripts/api/holidays.js",
-				"scripts/api/notification.js",
-				"scripts/api/other.js",
-				"scripts/api/user.js",
-				"scripts/api/moder.js",
-				"scripts/api/helpdesk.js",
-				"scripts/api/comments.js",
-				"scripts/api/count_money.js",
-				"scripts/api/assistant.js",
-				"scripts/api/indicators.js",
+				"main/content/js/api/holidays.js",
+				"main/content/js/api/notification.js",
+				"main/content/js/api/other.js",
+				"main/content/js/api/user.js",
+				"main/content/js/api/moder.js",
+				"main/content/js/api/helpdesk.js",
+				"main/content/js/api/comments.js",
+				"main/content/js/api/count_money.js",
+				"main/content/js/api/assistant.js",
+				"main/content/js/api/indicators.js",
+				"main/content/js/api/intern.js",
 
-				"scripts/routes/items_item_info.js",
-				"scripts/routes/items_search.js",
-				"scripts/routes/items_comparison.js",
-				"scripts/routes/items_moder.js",
-				"scripts/routes/items_moder_old.js",
-				"scripts/routes/users_user_info.js",
-				"scripts/routes/users_search.js",
-				"scripts/routes/users_account_info.js",
-				"scripts/routes/shops_info_view.js",
-				"scripts/routes/shops_moderation.js",
-				"scripts/routes/system_access.js",
-				"scripts/routes/helpdesk.js",
-				"scripts/routes/helpdesk_details.js",
-				"scripts/routes/billing_walletlog.js",
-				"scripts/routes/billing_invoices.js",
-				"scripts/routes/detectives_queue_search.js",
-
-				"scripts/helpers/smm.js",
-				"scripts/helpers/support.js",
-				"scripts/helpers/moderation.js",
-				"scripts/helpers/intern.js",
-				"scripts/helpers/traffic.js",
-				"scripts/helpers/infodoc.js"
+				"main/content/js/routes/items_item_info.js",
+				"main/content/js/routes/items_search.js",
+				"main/content/js/routes/items_comparison.js",
+				"main/content/js/routes/items_moder.js",
+				"main/content/js/routes/items_moder_old.js",
+				"main/content/js/routes/users_user_info.js",
+				"main/content/js/routes/users_search.js",
+				"main/content/js/routes/users_account_info.js",
+				"main/content/js/routes/shops_info_view.js",
+				"main/content/js/routes/shops_moderation.js",
+				"main/content/js/routes/system_access.js",
+				"main/content/js/routes/helpdesk.js",
+				"main/content/js/routes/helpdesk_details.js",
+				"main/content/js/routes/billing_walletlog.js",
+				"main/content/js/routes/billing_invoices.js",
+				"main/content/js/routes/detectives_queue_search.js"
 			],
 			"run_at": "document_start"
 		}
     ],
 
-	"web_accessible_resources" : ["inject/helpdesk.js"],
-	
+	"web_accessible_resources" : ["main/inject/helpdesk.js"],
+
 	"permissions": [
 		"webRequest",
 		"webRequestBlocking",
@@ -81,24 +78,19 @@
 		"alarms",
 		"notifications",
         "contextMenus",
-        "https://*.avito.ru/*",
-		"http://*.avitoadm.ru/*",
-		"https://br-analytics.ru/*",
-		"https://yandex.ru/*",
-		"https://google.ru/*"
+		"<all_urls>"
 	],
 
     "icons": {
-		"16": "image/16x16.png",
-		"55": "image/55x55.png",
-		"128": "image/128x128.png",
-		"140": "image/140x140.png",
-		"300": "image/300x300.png"
+		"16": "include/image/black/logo.png",
+		"48": "include/image/black/logo.png",
+		"128": "include/image/black/logo.png",
+		"300": "include/image/black/logo.png"
     },
 
     "browser_action": { 
         "default_title": "Admin.Helper",
-        "default_icon": "image/300x300.png",
-		"default_popup": "popup.html"
+        "default_icon": "include/image/black/logo.png",
+		"default_popup": "main/popup/popup.html"
     }
 }
