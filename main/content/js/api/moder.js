@@ -413,7 +413,8 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) clickPostUserAgent();
+    if (isAuthority('ROLE_USERS_INFO_AUTOLOAD')
+    || ~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))

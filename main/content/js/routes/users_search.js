@@ -148,8 +148,8 @@ function usersSearchBlockUser() {
 
     $('body').append('<div id="apply_all" class="fixed-bottom-toolbar" style="padding-left: 60px;"></div>');
 
-    addActionButton();
     addChooseButtonUsersSearch();
+    addActionButton();
     usersListCheck();
 }
 

@@ -37,7 +37,7 @@ function showItemsInfoForItems() {
 
     $('.ah-postShowItemInfo').click(clickPostShowItemInfo);
 
-    if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_INFO_AUTOLOAD')) clickPostShowItemInfo();
+    if (isAuthority('ROLE_ITEMS_INFO_AUTOLOAD')) clickPostShowItemInfo();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'I'.charCodeAt(0))

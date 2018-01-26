@@ -418,9 +418,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEMS_SEARCH_ITEM_DESCRIPTION')) { // показ описания
         roleHandler.itemsSearchItemDescription();
     }
-    if (isAuthority('ROLE_ITEMS_SEARCH_USER_INFO_AUTOLOAD')) { // запросы на юзера автоматически
-        roleHandler.itemsSearchUserInfoAuto();
-    }
     if (isAuthority('ROLE_ITEMS_USER_INFO')) { // info, wl, abuse
         roleHandler.itemsUserInfo();
     }
@@ -802,12 +799,6 @@ RoleHandler.prototype.itemRejectByCall = function() {
 RoleHandler.prototype.itemsSearchItemDescription = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         showDescriptionForItems();
-    }
-};
-
-RoleHandler.prototype.itemsSearchUserInfoAuto = function() {
-    if (~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) {
-        usersInfoForItems();
     }
 };
 
