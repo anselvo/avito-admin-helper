@@ -274,22 +274,25 @@ function errorMessage(status, error) {
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
             break;
         case "(failed)":
-            connectInfo.error = "Отсутствует соединение с сервером. Сообщите о проблеме тимлидеру";
+            connectInfo.error = "Отсутствует соединение с сервером\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
             break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
             break;
         case 4011:
-            connectInfo.error = "Вас нету в списке пользователей или у вас установлен персональный пароль";
+            connectInfo.error = "Вас нет в списке пользователей или у вас установлен персональный пароль";
             break;
         case 401:
             connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
             break;
         case 403:
-            connectInfo.error = status + " " + error + "\nОтсутствует доступ к расширению\nВозможно, вы пытаетесь зайти с чуждого для меня IP адреса";
+            connectInfo.error = status + " " + error + "\nС вашего IP адреса отсутствует доступ к расширению";
             break;
         case 500:
             connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
+            break;
+        case 502:
+            connectInfo.error = status + " " + error + "\nНа сервере проводятся технические работы\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
             break;
         default:
             connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
