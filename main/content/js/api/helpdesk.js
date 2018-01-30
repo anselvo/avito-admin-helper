@@ -13,7 +13,7 @@ function getCurrentTicketLink() {
 function helpDeskClickImitation() {
     var currentYOffset = window.pageYOffset;
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
@@ -48,7 +48,7 @@ function getTicketStatusText() {
 }
 
 function addExtraAssigneeId(agentId) {
-    var allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    var allPanelHeaders = getHdLeftPanelHeaders();
     var classifBlock = [].find.call(allPanelHeaders, singleItem => singleItem.innerText === 'Классификация');
     var classifFrom = classifBlock.nextSibling;
 
@@ -1200,3 +1200,7 @@ function createTicket(data) {
     }
 }
 //---------- Создание обращения ----------//
+
+function getHdLeftPanelHeaders() {
+    return document.querySelectorAll('.col-xs-3:first-child h4');
+}
