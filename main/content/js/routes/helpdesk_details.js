@@ -2,7 +2,7 @@
 function addTags() {
     $('#sh-tags-btn').detach();
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
@@ -199,7 +199,7 @@ function addQuickButtons() {
 
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let classifTable = $(classifHeader).next().find('table');
     let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
@@ -286,7 +286,7 @@ function changeThemeInTicket(btn, currentYOffset) {
         offset = currentYOffset;
     }
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let problemLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Тема / Проблема');
@@ -1697,7 +1697,7 @@ function addTagToTicket(tags, btnQB) {
 
     var currentYOffset = window.pageYOffset;
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
@@ -1764,7 +1764,7 @@ function createHyperLinksIpInTechInfo() {
 
     var regForIp = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/g;
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
     let allLabels = $(techInfoHeader).next().find('tr td:first-child');
     let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
@@ -2752,7 +2752,7 @@ function changeAssignee() {
     //     43, // Руководитель отдела
     // ];
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
     let allLabels = $(membersHeader).next().find('tr td:first-child');
     let assigneeBlock = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Исполнитель');
@@ -2857,7 +2857,7 @@ function attendantTLBtnHandler(btn) {
 	}
 
 	// проверка вкладки "Параметры"
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
 	if (allPanelHeaders.length === 0) {
         alert('Пожалуйста, перейдите во вкладку "Параметры" и повторите попытку');
         return;
@@ -3016,7 +3016,7 @@ function checkAdmUserIdAttendantTL() {
 
 function addTagAttendantTL() {
 	var currentYOffset = window.pageYOffset;
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
@@ -3134,7 +3134,7 @@ function sanctionIPTechInfo() {
 
     var regForIp = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/g;
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
     let allLabels = $(techInfoHeader).next().find('tr td:first-child');
     let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
@@ -3229,7 +3229,7 @@ function addItemIdPopoverOnLeftPanel() {
     if ($('.ah-hd-item-id-left-panel-popover').length !== 0) return;
 
     try {
-        const allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+        const allPanelHeaders = getHdLeftPanelHeaders();
         const classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
         const $allLabels = $(classifHeader).next().find('tr td:first-child');
         const itemIdLabel = [].find.call($allLabels, singleItem => singleItem.firstChild.data === 'Номер объявления');
@@ -3272,7 +3272,7 @@ function addIpPopoverOnLeftPanel() {
     if ($('#ahIpOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+        let allPanelHeaders = getHdLeftPanelHeaders();
         let techInfoHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Техническая информация');
         let allLabels = $(techInfoHeader).next().find('tr td:first-child');
         let ipLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'IP');
@@ -3352,7 +3352,7 @@ function addPhoneNumberPopoverOnLeftPanel() {
     if ($('#ahPhoneNumberOnLeftPanelPopover').length !== 0) return;
 
     try {
-        let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+        let allPanelHeaders = getHdLeftPanelHeaders();
         let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
         let allLabels = $(classifHeader).next().find('tr td:first-child');
         let phoneLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Телефон');
@@ -3502,7 +3502,7 @@ function showAgentInfoTicket() {
     $('#sh-line-sup').remove();
     $('#customer-claim-notification').remove();
 
-    let allPanelHeaders = [].filter.call(document.querySelectorAll('h4'), item => ~item.className.indexOf(`details-left-panel-title`));
+    let allPanelHeaders = getHdLeftPanelHeaders();
     let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
     let allLabels = $(membersHeader).next().find('tr td:first-child');
     let assigneeLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Исполнитель');

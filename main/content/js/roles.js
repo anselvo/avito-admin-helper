@@ -539,8 +539,7 @@ function handleRoles() {
                     mutation.addedNodes.forEach(node => {
                         if (node.nodeType === 1
                             && node.classList.contains('helpdesk-tab-pane')
-                            && [].find.call(node.querySelectorAll('h4'),
-                                item => ~item.className.indexOf('details-left-panel-title'))) {
+                            && getHdLeftPanelHeaders()) {
 
                             helpdeskTicketInfoEvent();
                         }
