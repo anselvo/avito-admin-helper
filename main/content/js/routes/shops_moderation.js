@@ -13,6 +13,8 @@ ShopModeration.prototype.addMailForm = function () {
     const modal = document.createElement('div');
     const form = document.createElement('form');
     const managerEmail = JSON.parse(this.mainBlock.dataset.emails).manager;
+    const isManagerField = !managerEmail;
+
     let templates = {};
 
     fixedContainer.className = 'ah-shop-moderation-mail-controls';
@@ -47,13 +49,7 @@ ShopModeration.prototype.addMailForm = function () {
     `;
 
     form.className = 'ah-shop-moderation-mail-form';
-    form.innerHTML = `
-        ${(!managerEmail) ? `
-            <div class="form-group">
-                <label for="ahManagerEmail">Почта персонального менеджера</label>
-                <input type="email" class="form-control" name="manager_email" id="ahManagerEmail">
-            </div>` : ``
-        }
+    form.innerHTML += `
         <div class="form-group">
             <label>Текст сообщения</label>
             <div contenteditable="true" class="form-control ah-message-text-input"></div>
@@ -99,6 +95,337 @@ ShopModeration.prototype.addMailForm = function () {
                 dropdown.innerHTML = `<span class="text-danger">Произошла техническая ошибка</span>`;
         });
 
+    // все менеджеры
+    if (isManagerField) {
+        const managerEmailFormGroup = document.createElement('div');
+        const managerLabel = document.createElement('label');
+        const managerInput = document.createElement('input');
+        const loader = document.createElement('div');
+
+        managerEmailFormGroup.className = 'form-group';
+
+        managerLabel.textContent = 'Персональный менеджер';
+
+        managerInput.type = 'email';
+        managerInput.name = 'manager_email';
+        managerInput.hidden = true;
+
+        loader.className = 'text-muted';
+        loader.innerHTML = `Загрузка...`;
+
+        managerEmailFormGroup.appendChild(managerLabel);
+        managerEmailFormGroup.appendChild(managerInput);
+        managerEmailFormGroup.appendChild(loader);
+        form.insertBefore(managerEmailFormGroup, form.firstChild);
+
+        getShopManagers()
+            .then( response => {
+                const searchDropdown = document.createElement('div');
+                const searchDropdownInputGroup = document.createElement('div');
+                const searchDropdownInput = document.createElement('input');
+                const searchDropdownTooltip = document.createElement('span');
+
+                const toggle = document.createElement('button');
+                const togglePlaceholder = document.createElement('span');
+                const toggleCaret = document.createElement('span');
+                const reset = document.createElement('button');
+                const manual = document.createElement('button');
+
+                const list = document.createElement('ul');
+
+                const selectedListItemTooltip = document.createElement('span');
+
+                searchDropdown.className = 'dropdown ah-search-dropdown';
+
+                searchDropdownInputGroup.className = 'input-group hidden';
+
+                searchDropdownInput.className = 'form-control ah-search-dropdown__search-input';
+                searchDropdownInput.type = 'text';
+                searchDropdownInput.autocomplete = 'off';
+                searchDropdownInput.placeholder = 'Поиск';
+
+                searchDropdownTooltip.className = 'ah-search-dropdown__tooltip input-group-addon';
+                searchDropdownTooltip.innerHTML = `
+                    <kbd>↑</kbd>
+                    <kbd>↓</kbd>
+                     - навигация,
+                    <kbd>Esc</kbd> - отмена
+                `;
+
+                searchDropdownInputGroup.appendChild(searchDropdownInput);
+                searchDropdownInputGroup.appendChild(searchDropdownTooltip);
+
+                toggle.className = 'btn btn-default btn-block dropdown-toggle ah-search-dropdown__toggle ah-search-dropdown__toggle_not-checked ';
+                toggle.type = 'button';
+                toggle.setAttribute('data-toggle', 'dropdown');
+
+                togglePlaceholder.innerHTML = 'Не выбрано';
+                togglePlaceholder.className = 'ah-search-dropdown__toggle-placeholder';
+                toggleCaret.className = 'caret';
+
+                toggle.appendChild(togglePlaceholder);
+                toggle.appendChild(toggleCaret);
+
+                reset.className = 'btn btn-default ah-search-dropdown__reset';
+                reset.type = 'button';
+                reset.innerHTML = `<span class="glyphicon glyphicon-remove"></span>`;
+
+                manual.className = 'btn btn-default ah-search-dropdown__manual';
+                manual.type = 'button';
+                manual.innerHTML = `<span class="glyphicon glyphicon-pencil"></span>`;
+
+                list.className = 'dropdown-menu ah-search-dropdown__list';
+                list.innerHTML = response.reduce((html, item) => {
+                    html += getListItem(item);
+                    return html;
+                }, '');
+
+                selectedListItemTooltip.className = 'ah-search-dropdown__list-item-tooltip';
+                selectedListItemTooltip.innerHTML = `
+                    <kbd>Enter</kbd> - выбрать
+                `;
+
+                searchDropdown.appendChild(searchDropdownInputGroup);
+                searchDropdown.appendChild(toggle);
+                searchDropdown.appendChild(reset);
+                searchDropdown.appendChild(manual);
+
+                managerEmailFormGroup.appendChild(searchDropdown);
+
+                // переключать на ручной режим
+                const managerInputGroup = document.createElement('div');
+                const managerInputGroupBtn = document.createElement('span');
+                const listBtn = document.createElement('button');
+
+                managerInputGroup.className = 'input-group hidden ah-shop-moderation__manager-input-group';
+                managerInputGroupBtn.className = 'input-group-btn';
+
+                listBtn.className = 'btn btn-default ah-shop-moderation__manager-list';
+                listBtn.type = 'button';
+                listBtn.innerHTML = `<span class="glyphicon glyphicon-list"></span>`;
+
+                managerInputGroupBtn.appendChild(listBtn);
+
+                managerInputGroup.appendChild(managerInput);
+                managerInputGroup.appendChild(managerInputGroupBtn);
+                managerEmailFormGroup.appendChild(managerInputGroup);
+
+                // tooltips
+                $(manual).tooltip({
+                    title: 'Ввести email вручную',
+                    container: 'body',
+                    placement: 'left'
+                });
+                $(listBtn).tooltip({
+                    title: 'Выбрать из списка',
+                    container: 'body',
+                    placement: 'left'
+                });
+
+                // отследить открыт/закрыт дропдаун
+                const searchDropdownObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(mutation => {
+                        const isOpen = mutation.target.classList.contains('open');
+
+                        if (isOpen) {
+                            toggle.classList.add('hidden');
+                            reset.classList.add('hidden');
+                            manual.classList.add('hidden');
+                            searchDropdownInputGroup.classList.remove('hidden');
+                            searchDropdownInput.focus();
+                            searchDropdown.appendChild(list);
+                            handleListNavigation();
+                        } else {
+                            searchDropdownInputGroup.classList.add('hidden');
+                            searchDropdownInput.value = '';
+                            searchDropdownInput.dispatchEvent(new Event('input'));
+                            toggle.classList.remove('hidden');
+                            reset.classList.remove('hidden');
+                            manual.classList.remove('hidden');
+                            list.remove();
+                            toggle.focus();
+                        }
+                    });
+                });
+
+                searchDropdownObserver.observe(searchDropdown, {attributes: true, attributeFilter: ['class']});
+
+                // отследить изменение атрибута "value" инпута
+                const managerInputObserver = new MutationObserver(function(mutations) {
+                    const input = mutations[0].target;
+                    const value = input.getAttribute('value');
+                    if (value === '') {
+                        togglePlaceholder.innerHTML = 'Не выбрано';
+                        toggle.classList.add('ah-search-dropdown__toggle_not-checked');
+                    } else {
+                        const name = input.dataset.name;
+                        togglePlaceholder.innerHTML = `${name}, <span class="text-muted">${value}</span>`;
+                        toggle.classList.remove('ah-search-dropdown__toggle_not-checked');
+                    }
+                });
+
+                managerInputObserver.observe(managerInput, {attributes: true, attributeFilter: ['value']});
+
+                // автокомплит при вводе символов
+                searchDropdownInput.addEventListener('input', function() {
+                    const value = this.value;
+
+                    if (value === '') {
+                        list.innerHTML = response.reduce((html, item) => {
+                            html += getListItem(item);
+                            return html;
+                        }, '');
+                    } else {
+                        list.innerHTML = response.reduce((html, item) => {
+                            if (~item.name.toLowerCase().indexOf(value.toLowerCase())) {
+                                html += getListItem(item);
+                            }
+
+                            return html;
+                        }, '');
+                    }
+
+                    handleListNavigation();
+                    checkListScroll();
+                });
+
+                // горячие клавиши
+                searchDropdownInput.addEventListener('keydown', e => {
+                    const selected = list.querySelector('.ah-search-dropdown__list-item_selected');
+
+                    if (selected) {
+                        switch (e.keyCode) {
+                            case 40: // вниз
+                                e.preventDefault();
+                                const next = selected.nextElementSibling;
+                                if (next) {
+                                    selected.classList.remove('ah-search-dropdown__list-item_selected');
+                                    addSelectedListItemTooltip(next);
+                                }
+                                checkListScroll();
+                                break;
+
+                            case 38: // вверх
+                                e.preventDefault();
+                                const prev = selected.previousElementSibling;
+                                if (prev) {
+                                    selected.classList.remove('ah-search-dropdown__list-item_selected');
+                                    addSelectedListItemTooltip(prev);
+                                }
+                                checkListScroll();
+                                break;
+
+                            case 13: // enter
+                                const firstItem = selected.querySelector('.ah-search-dropdown__list-value');
+                                firstItem.dispatchEvent(new Event('click', {bubbles: true}));
+                                break;
+                        }
+                    }
+
+                    if (e.keyCode === 13) { // enter
+                        e.preventDefault(); // отменить сабмит формы
+                    }
+
+                    if (e.keyCode === 27) { // esc
+                        e.stopPropagation();
+                        searchDropdown.classList.remove('open');
+                    }
+                });
+
+                // выбор менеджера
+                searchDropdown.addEventListener('click', e => {
+                    const target = e.target;
+
+                    // пункт списка
+                    if (target.closest('.ah-search-dropdown__list-value')) {
+                        const item = target.closest('.ah-search-dropdown__list-value');
+                        managerInput.setAttribute('value', item.dataset.email);
+                        managerInput.value = item.dataset.email;
+                        managerInput.setAttribute('data-name', item.dataset.name);
+                    }
+
+                    // сброс
+                    if (target.closest('.ah-search-dropdown__reset')) {
+                        managerInput.setAttribute('value', '');
+                        managerInput.value = '';
+                    }
+
+                    // ручной ввод
+                    if (target.closest('.ah-search-dropdown__manual')) {
+                        searchDropdown.classList.add('hidden');
+                        managerInput.hidden = false;
+                        managerInput.className = 'form-control';
+                        managerInput.placeholder = 'Введите email';
+                        managerInputGroup.classList.remove('hidden');
+                        managerInput.setAttribute('value', '');
+                        managerInput.value = '';
+                    }
+                });
+
+                // менять атрибут у инпута по ресету, чтобы у тоггла плейсхолдер был актуальный
+                form.addEventListener('reset', function() {
+                    managerInput.setAttribute('value', '');
+                });
+
+                // переход к списку менеджеров
+                listBtn.addEventListener('click', function () {
+                    searchDropdown.classList.remove('hidden');
+                    managerInputGroup.classList.add('hidden');
+                    managerInput.setAttribute('value', '');
+                    managerInput.value = '';
+                });
+
+                // получить элемент списка
+                function getListItem(item) {
+                    return `
+                        <li class="ah-search-dropdown__list-item"><a class="ah-search-dropdown__list-value" 
+                        data-email="${item.email}" data-name="${item.name}">
+                            ${item.name}, <span class="text-muted">${item.email}</span>
+                        </a></li>
+                    `;
+                }
+
+                // обработать навигацию
+                function handleListNavigation() {
+                    const firstLi = list.querySelector('li:first-child');
+                    if (firstLi) {
+                        addSelectedListItemTooltip(firstLi);
+                    }
+                }
+
+                // добавить подсказку для выбранного пункта
+                function addSelectedListItemTooltip(item) {
+                    item.classList.add('ah-search-dropdown__list-item_selected');
+                    item.appendChild(selectedListItemTooltip);
+                }
+
+                // проверить скоролл
+                function checkListScroll() {
+                    const selected = list.querySelector('.ah-search-dropdown__list-item_selected');
+                    if (!selected) return;
+
+                    const selectedTopPos = selected.offsetTop;
+                    const selectedBottomPos = selectedTopPos + selected.clientHeight;
+
+                    if (selectedBottomPos > (list.clientHeight + list.scrollTop)) {
+                        list.scrollTop = selectedBottomPos - list.clientHeight;
+                    }
+
+                    if (selectedTopPos < list.scrollTop) {
+                        list.scrollTop = selectedTopPos;
+                    }
+                }
+
+            }, err => {
+                console.log(err);
+                managerLabel.setAttribute('for', 'ahManagerEmail');
+                managerInput.id = 'ahManagerEmail';
+                managerInput.hidden = false;
+                managerInput.className = 'form-control';
+                managerInput.placeholder = 'Введите email';
+            })
+            .then(() => loader.remove());
+    }
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
