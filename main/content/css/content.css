@@ -5990,8 +5990,9 @@ select.ah-form-control:focus {
 
 .ah-create-ticket-tooltip .ah-create-ticket-tooltip__tooltip-inner {
     max-width: 400px;
-    background-color: #73AD21;
-    border: 1px solid green;
+    border: 1px solid #80a7af;
+    background-color: #d9edf7;
+    box-shadow: 2px 4px 10px -2px #80a7af;
 }
 
 .ah-create-ticket-tooltip__list {
@@ -6002,8 +6003,8 @@ select.ah-form-control:focus {
 
 .ah-create-ticket-tooltip__table {
     width: 100%;
-    color: #FFFFFF;
     font-size: 14px;
+    color: #31708f;
 }
 
 .ah-create-ticket-tooltip__col {
