@@ -6110,3 +6110,20 @@ select.ah-form-control:focus {
 .ah-search-dropdown__list-item_selected .ah-search-dropdown__list-value {
     padding-right: 120px;
 }
+
+/*operation info*/
+.btn.ah-operation-info-link__block {
+    display: block;
+}
+
+.ah-operation-info-table {
+    width: 100%;
+}
+
+.ah-operation-info-table__col {
+    padding: 1px 6px;
+}
+
+.ah-operation-info-table__col:first-child {
+    font-weight: bold;
+}

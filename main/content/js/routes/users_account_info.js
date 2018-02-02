@@ -464,3 +464,96 @@ function addPackageInfoAccountInfo() {
 
     showLfPackagesBtnHandler($('#get-lf-packages-info-btn'));
 }
+
+function addAccountOperationInfo() {
+    const table = document.querySelector('.account-history');
+    const rows = table.querySelectorAll('[data-oid]');
+
+    rows.forEach(row => {
+        const statusCell = row.querySelector('td:nth-last-child(2)');
+        const wlLink = statusCell.querySelector('a').getAttribute('href');
+
+        const infoLink = document.createElement('button');
+        infoLink.className = 'btn btn-link ah-pseudo-link ah-operation-info-link ah-operation-info-link__block';
+        infoLink.innerHTML = `инфо`;
+        infoLink.setAttribute('data-link', wlLink);
+
+        statusCell.appendChild(infoLink);
+    });
+
+    const loadedInfo = new Map();
+
+    table.addEventListener('click', e => {
+        const target = e.target;
+
+        if (target.classList.contains('ah-operation-info-link')) {
+            const link = target.dataset.link;
+            const loaded = loadedInfo.get(link);
+
+            if (loaded) {
+                showPopover(target, loaded);
+                return;
+            }
+
+            btnLoaderOn(target);
+            fetch(link, {
+                    credentials: 'include'
+                })
+                .then(response =>  {
+                    if (response.status !== 200) {
+                        const error = `${response.status}${response.statusText ? `, ${response.statusText}` : ''}`;
+                        return Promise.reject(error);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    handleSuccessResponse(target, html, link);
+                    btnLoaderOff(target);
+                })
+                .catch(error => {
+                    btnLoaderOff(target);
+                    alert(error);
+                });
+        }
+    });
+
+    // обработать успешный ответ от сервера
+    function handleSuccessResponse(target, html, link) {
+        try {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            const row = div.querySelector('.billing table tbody tr');
+            const info = getParamsOperationInfo(row);
+            const content = `
+                <table class="ah-operation-info-table">
+                    <tr>
+                        <td class="ah-operation-info-table__col">Внешний ID транзакции</td>
+                        <td class="ah-operation-info-table__col">${info.externalId}</td>
+                    </tr>
+                </table>
+            `;
+
+            loadedInfo.set(link, content);
+
+            showPopover(target, content);
+        } catch (e) {
+            console.log(e);
+            alert(e);
+        }
+    }
+
+    // показать поповер
+    function showPopover(target, content) {
+        $(target).popover({
+            html: true,
+            container: 'body',
+            placement: 'top',
+            content: content,
+            template: `
+            <div class="popover ah-popover-destroy-outclicking">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
+        }).popover('show');
+    }
+}
