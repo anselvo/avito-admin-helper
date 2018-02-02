@@ -6019,3 +6019,20 @@ select.ah-form-control:focus {
 .ah-create-ticket-tooltip__col:last-child {
     text-align: left;
 }
+
+/*operation info*/
+.btn.ah-operation-info-link__block {
+    display: block;
+}
+
+.ah-operation-info-table {
+    width: 100%;
+}
+
+.ah-operation-info-table__col {
+    padding: 1px 6px;
+}
+
+.ah-operation-info-table__col:first-child {
+    font-weight: bold;
+}

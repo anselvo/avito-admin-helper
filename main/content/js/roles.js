@@ -367,6 +367,9 @@ function handleRoles() {
     if (isAuthority('ROLE_ACCOUNT_WL_LINK_CLOSING_AMOUNT')) {  // ссылка на WL - сумма закрывающих
         roleHandler.accountWlLinkClosingAmount();
     }
+    if (isAuthority('ROLE_ACCOUNT_OPERATION_INFO')) {  // инфо об операции в Кошельке
+        roleHandler.accountOperationInfo();
+    }
 
     // BILLING
     if (isAuthority('ROLE_BILLING_WALLETLOG_ITEM_STATUS')) {  // статусы айтемов (wl)
@@ -1044,6 +1047,12 @@ RoleHandler.prototype.accountWlLinkClosingAmount = function() {
         addWlLinkAccountInfo(getWlLinkForDocuments, {
             linkName: 'Сумма закрывающих'
         });
+    }
+};
+
+RoleHandler.prototype.accountOperationInfo = function() {
+    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
+        addAccountOperationInfo();
     }
 };
 

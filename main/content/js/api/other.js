@@ -1799,3 +1799,16 @@ function injectScript(url, node) {
     script.setAttribute('src', url);
     node.appendChild(script);
 }
+
+// параметры операции в ВЛ
+function getParamsOperationInfo(operationRow) {
+    const result = {};
+
+    const idsCell = operationRow.querySelector('td:nth-child(2)');
+    const idsSplitted = idsCell.innerHTML.split('<br>');
+    const idsFormatted = idsSplitted.map(item => item.replace(/<[^>]+>/g, '').trim());
+
+    result.externalId = idsFormatted[2];
+
+    return result;
+}
