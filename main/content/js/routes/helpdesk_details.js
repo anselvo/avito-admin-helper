@@ -3595,7 +3595,7 @@ function claimReevaluation(teamleadLogin) {
     `);
 
     let starsFired = $('.hd-ticket-header-metadata header span').filter(function() {
-        return ~this.className.indexOf('stars-star_yellow');
+        return this.classList.length === 2;
     });
 
     let btn = $('#reevaluate-ticket');
