@@ -301,40 +301,81 @@ function renderCreateNewTicketWindow(route) {
             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Автозаполнение
             <span class="caret"></span></button>
             <ul class="dropdown-menu dropdown-menu-right">
-                <li><a class="ah-create-ticket-dropdown__item" data-fill="callcenter"
-                    data-placement="left" data-toggle="tooltip" data-html="true" 
-                    title="
-                    <table class='ah-create-ticket-tooltip__table'>
-                        <tr>
-                            <td class='ah-create-ticket-tooltip__col'>Теги</td>
-                            <td class='ah-create-ticket-tooltip__col'>callcenter</td>
-                        </tr>
-                    </table>">
-                   Callcenter
-               </a></li>
-                <li><a class="ah-create-ticket-dropdown__item" data-fill="c2c"
-                    data-placement="left" data-toggle="tooltip" data-html="true" 
-                    title="
-                    <table class='ah-create-ticket-tooltip__table'>
-                        <tr>
-                            <td class='ah-create-ticket-tooltip__col'>Теги</td>
-                            <td class='ah-create-ticket-tooltip__col'>delivery_call</td>
-                        </tr>
-                        <tr>
-                            <td class='ah-create-ticket-tooltip__col'>Описание</td>
-                            <td class='ah-create-ticket-tooltip__col'>Телефонное обращение в службу поддержки Пользователей</td>
-                        </tr>
-                        <tr>
-                            <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
-                            <td class='ah-create-ticket-tooltip__col'>Avito Доставка</td>
-                        </tr>
-                        <tr>
-                            <td class='ah-create-ticket-tooltip__col'>Источник</td>
-                            <td class='ah-create-ticket-tooltip__col'>dostavkasupport@avito.ru</td>
-                        </tr>
-                    </table>">
-                   C2C
-                </a></li>
+                <li>
+                    <a class="ah-create-ticket-dropdown__item" data-fill="callcenter"
+                        data-placement="left" data-toggle="tooltip" data-html="true" 
+                        title="
+                        <table class='ah-create-ticket-tooltip__table'>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Источник</td>
+                                <td class='ah-create-ticket-tooltip__col'>support@avito.ru</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Описание</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Теги</td>
+                                <td class='ah-create-ticket-tooltip__col'>callcenter</td>
+                            </tr>
+                        </table>">
+                       Callcenter
+                    </a>
+                </li>
+                <li>
+                    <a class="ah-create-ticket-dropdown__item" data-fill="c2c"
+                        data-placement="left" data-toggle="tooltip" data-html="true" 
+                        title="
+                        <table class='ah-create-ticket-tooltip__table'>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Источник</td>
+                                <td class='ah-create-ticket-tooltip__col'>dostavkasupport@avito.ru</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
+                                <td class='ah-create-ticket-tooltip__col'>Avito Доставка</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Описание</td>
+                                <td class='ah-create-ticket-tooltip__col'>Телефонное обращение в службу поддержки Пользователей</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Теги</td>
+                                <td class='ah-create-ticket-tooltip__col'>delivery_call</td>
+                            </tr>
+                        </table>">
+                       C2C
+                    </a>
+                </li>
+                <li>
+                    <a class="ah-create-ticket-dropdown__item" data-fill="claimline"
+                        data-placement="left" data-toggle="tooltip" data-html="true" 
+                        title="
+                        <table class='ah-create-ticket-tooltip__table'>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Источник</td>
+                                <td class='ah-create-ticket-tooltip__col'>support@avito.ru</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Описание</td>
+                                <td class='ah-create-ticket-tooltip__col'>Телефонное обращение в службу поддержки Пользователей</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Теги</td>
+                                <td class='ah-create-ticket-tooltip__col'>claim_call</td>
+                            </tr>
+                        </table>">
+                       Claimline
+                    </a>
+                </li>
             </ul>
         </div>
     </div>`);
@@ -1066,6 +1107,9 @@ function autoFillCreateTicket(fill) {
     const $addedTagIdsBlock = modal.find('#create-ticket-added-tag-ids');
     const $addedTagsBlock = modal.find('#create-ticket-choose-tags');
     const $dropdown = modal.find('.ah-create-ticket-dropdown');
+    const $descriptionBlock = modal.find('[name="create-ticket-description"]');
+    const $sourceIdBlock = modal.find('[name="create-ticket-sourceId"]');
+    const $themeBlock = modal.find('[name="create-ticket-theme"]');
 
     $addedTagIdsBlock.find('[name^="create-ticket-tags"]').remove();
     $addedTagsBlock.find('.ah-helpdesk-tag').remove();
@@ -1080,6 +1124,15 @@ function autoFillCreateTicket(fill) {
             $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1521">');
             $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">callcenter</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
             createTicketRemoveTagBtnHandler();
+
+            // description
+            $descriptionBlock.val('');
+
+            // theme
+            $themeBlock.val('').change();
+
+            // sourceId
+            $sourceIdBlock.val(2); // support@avito.ru
             break;
 
         case 'c2c':
@@ -1089,13 +1142,29 @@ function autoFillCreateTicket(fill) {
             createTicketRemoveTagBtnHandler();
 
             // description
-            modal.find('[name="create-ticket-description"]').val('Телефонное обращение в службу поддержки Пользователей');
+            $descriptionBlock.val('Телефонное обращение в службу поддержки Пользователей');
 
             // theme
-            modal.find('[name="create-ticket-theme"]').val(79).change();
+            $themeBlock.val(79).change();
 
             // sourceId
-            modal.find('[name="create-ticket-sourceId"]').val(7); // dostavkasupport@avito.ru
+            $sourceIdBlock.val(7); // dostavkasupport@avito.ru
+            break;
+
+        case 'claimline':
+            // tag claim_call
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1481">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">claim_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            createTicketRemoveTagBtnHandler();
+
+            // description
+            $descriptionBlock.val('Телефонное обращение в службу поддержки Пользователей');
+
+            // theme
+            $themeBlock.val('').change();
+
+            // sourceId
+            $sourceIdBlock.val(2); // support@avito.ru
             break;
     }
 
