@@ -5817,6 +5817,10 @@ select.ah-form-control:focus {
     cursor: pointer;
 }
 
+.ah-shop-moderation-form-content .ah-overlay {
+    z-index: 2;
+}
+
 .ah-shop-moderation-form-content .ah-overlay-text {
     font-size: 18px;
 }
@@ -5829,6 +5833,15 @@ select.ah-form-control:focus {
     min-height: 250px;
     white-space: pre-wrap;
     height: auto;
+}
+
+.ah-shop-moderation-mail-form .ah-shop-moderation__manager-input-group {
+    margin-top: 0;
+}
+
+.ah-shop-moderation-mail-form .ah-shop-moderation-tooltip-error {
+    font-size: 12px;
+    float: right;
 }
 
 .ah-shop-moderation-info-panel .ah-panel-body {
@@ -6018,4 +6031,81 @@ select.ah-form-control:focus {
 
 .ah-create-ticket-tooltip__col:last-child {
     text-align: left;
+}
+
+/* search-dropdown */
+.ah-search-dropdown {
+    display: flex;
+    position: relative;
+}
+
+.ah-search-dropdown > .btn {
+    border-radius: 0;
+}
+
+.ah-search-dropdown > .btn:not(:last-of-type) {
+    margin-right: -1px;
+}
+
+.ah-search-dropdown > .btn:first-of-type {
+    border-radius: 4px 0 0 4px;
+}
+
+.ah-search-dropdown > .btn:last-of-type {
+    border-radius: 0 4px 4px 0;
+}
+
+.ah-search-dropdown > .btn:hover,
+.ah-search-dropdown > .btn:focus {
+    z-index: 1;
+}
+
+.ah-search-dropdown .ah-search-dropdown__toggle {
+    text-align: left;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ah-search-dropdown .ah-search-dropdown__toggle_not-checked {
+    color: #777777;
+}
+
+.ah-search-dropdown__toggle-placeholder {
+    margin-right: 4px;
+}
+
+.ah-search-dropdown .ah-search-dropdown__tooltip {
+    font-size: 13px;
+}
+
+.ah-search-dropdown__list {
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.ah-search-dropdown__list-item {
+    position: relative;
+}
+
+.ah-search-dropdown .ah-search-dropdown__list-item-tooltip {
+    position: absolute;
+    top: 4px;
+    right: 10px;
+    font-size: 13px;
+}
+
+.ah-search-dropdown__list-item_selected {
+    background-color: #f5f5f5;
+}
+
+.ah-search-dropdown__list-value {
+    cursor: pointer;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.ah-search-dropdown__list-item_selected .ah-search-dropdown__list-value {
+    padding-right: 120px;
 }
