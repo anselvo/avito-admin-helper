@@ -294,6 +294,9 @@ function errorMessage(status, error) {
         case 502:
             connectInfo.error = status + " " + error + "\nНа сервере проводятся технические работы\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
             break;
+        case 504:
+            connectInfo.error = status + " " + error + "\nСервер не может получить ответ вовремя\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
+            break;
         default:
             connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
     }
