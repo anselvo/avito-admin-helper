@@ -53,7 +53,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
             moderationListener(details);
-            smmListener(details);
 		}
     },
     {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
@@ -366,44 +365,6 @@ function startWebSocket() {
             chrome.storage.local.set(result);
         });
     }
-}
-
-function smmListener(details) {
-    if (details.url === 'https://br-analytics.ru/elastic/ajax/12381016/update/') {
-        let requestBody = decodeURIComponent(String.fromCharCode.apply(null,
-            new Uint8Array(details.requestBody.raw[0].bytes)));
-
-        let json = JSON.parse(requestBody);
-
-        let messageId = json.filter.fmessage[0];
-        let tagString = json.changes.tags.tag_string;
-
-
-        smmLogToDB(messageId, tagString);
-
-        console.log(json);
-    }
-}
-
-function smmLogToDB(messageId, tagString) {
-    let log = {
-        messageId: messageId,
-        tagString: tagString,
-        usernameId: connectInfo.spring_user.principal.id
-    };
-
-    let json = JSON.stringify(log);
-    let url = `${connectInfo.spring_url}/smmstat/update`;
-
-    $.ajax({
-        url: url,
-        type: 'PUT',
-        data: json,
-        contentType: "application/json"
-    }).then(function(data) {
-
-        console.log(data);
-    });
 }
 
 function moderationListener(details) {
