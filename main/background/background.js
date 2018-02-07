@@ -52,7 +52,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР
 chrome.webRequest.onBeforeRequest.addListener(details => {
         if (details.method === 'POST' && details.requestBody) {
-            moderationListener(details);
+            if (connectInfo.spring_user) moderationListener(details);
 		}
     },
     {urls: [`${connectInfo.adm_url}/*`, "https://br-analytics.ru/*"]},
@@ -201,6 +201,7 @@ function disconnect() {
     if (!connectInfo.adm_auth)
         logout()
             .then(() => {
+                console.log(connectInfo.spring_user);
                 connectInfo.spring_auth = false;
                 connectInfo.spring_user = null;
 
