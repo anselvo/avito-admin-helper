@@ -413,8 +413,7 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (isAuthority('ROLE_USERS_INFO_AUTOLOAD')
-    || ~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) clickPostUserAgent();
+    if (isAuthority('ROLE_USERS_INFO_AUTOLOAD') || ~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
@@ -578,7 +577,7 @@ function usersInfoForManyItems(id) {
         if (request.readyState === 4 && request.status === 200)  {
             let r = request.responseText;
 
-            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения)').text();
+            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения) .help-block').text();
             let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();

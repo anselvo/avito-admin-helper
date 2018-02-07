@@ -215,7 +215,7 @@ function addChooseButton() {
         $(loginList[i])
             .parents('tr')
             .find('.description-cell')
-            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>Тех инфо:</b> <span userAgent="'+id+'"></span></div>');
+            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>User-Agent:</b> <span userAgent="'+id+'"></span></div>');
     }
 
     clickChooseButton();
