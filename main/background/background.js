@@ -201,7 +201,6 @@ function disconnect() {
     if (!connectInfo.adm_auth)
         logout()
             .then(() => {
-                console.log(connectInfo.spring_user);
                 connectInfo.spring_auth = false;
                 connectInfo.spring_user = null;
 
