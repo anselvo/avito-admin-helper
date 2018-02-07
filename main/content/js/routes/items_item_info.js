@@ -481,25 +481,27 @@ function addCompareItemsItemInfo() {
 
     $('#compare-items-info').tooltip();
     $('#compare-items-btn').click(function() {
-        let value = $('[name="compareItems"]').val();
-        let items = value.match(/\d{5,}/g);
+        const items = {};
+        const value = $('[name="compareItems"]').val();
+        const self = this;
+        const comparison = new ItemsComparison(items);
 
-        if (!items) return;
+        items.compared = value.match(/\d{5,}/g);
+        if (!items.compared) return;
 
-        items.unshift(getParamsItemInfo().id.toString());
-        let btn = $(this);
-        btnLoaderOn($(btn));
-
-        ahComparison(items, {
-            callback: function() {
-                btnLoaderOff($(btn));
-            },
+        items.abutment = getParamsItemInfo().id.toString();
+        btnLoaderOn(self);
+        comparison.parseEntities({
             getEntityRequest: getItemInfo,
             getEntityParams: getParamsItemInfo,
-            renderEntities: renderCompareItems
-        },{
-            title: 'Сравнение объявлений'
-        });
+        }).then(
+            response => {
+                const modal = comparison.getResultModal({title: `Сравнение объявлений`});
+                comparison.renderEntities(modal, response);
+                $(modal).modal('show');
+            },
+            error => alert(error)
+        ).then(() => btnLoaderOff(self));
     });
 }
 

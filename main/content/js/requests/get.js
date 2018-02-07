@@ -191,3 +191,15 @@ function getShopManagers() {
         return response.json();
     });
 }
+
+// user items
+function getUserItems(userId, page) {
+    return fetch(`/items/search?p=${page || 1}&user_id=${userId}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.text();
+    });
+}

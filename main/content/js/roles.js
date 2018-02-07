@@ -958,7 +958,7 @@ RoleHandler.prototype.userCreateTicket = function() {
 
 RoleHandler.prototype.userCheckDoubles = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
-        userChekDoubles();
+        addCompareUsersUserInfo();
     }
 };
 

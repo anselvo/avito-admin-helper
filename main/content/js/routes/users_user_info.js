@@ -39,24 +39,55 @@ function adminTableCategory() {
 }
 
 // Сравнение учетных записей
-function userChekDoubles() {
-    $('.col-xs-offset-1').find('hr').before('<div class="input-group"><input type="text" placeholder="Ссылка на учетку" id="go_text_result_box" style="" class="form-control"/><span class="input-group-btn"><input type="button" class="btn btn-primary chekUser" title="Находит совпадение между учетными записями, в поле текста надо вставить url учетки с которой надо сверить" value="Проверить" style=""/></span></div>');
-    $('.chekUser').click(function () {
-        $('#check_result_user_box').detach();
-        var href1 = window.location.href;
-        var href2 = $('#go_text_result_box').val();
+function addCompareUsersUserInfo() {
+    const $rightCol = $('.col-xs-offset-1');
+    const $passwordBlock = $rightCol.find('.js-passwords');
+    const $comparisonForm = $(`
+        <form>
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary btn-sm" name="submit">Сравнить с</button>
+                </span>
+                <input type="text" placeholder="Учетные записи" class="form-control input-sm" name="ids">
+                <span class="input-group-addon ah-compare-users-form-help" data-toggle="tooltip" data-placement="left" 
+                    title="Вставьте ID учетных записей, разделенные нечислом">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </span>
+            </div>
+        </form>
+    `);
+    const $helpTooltip = $comparisonForm.find('.ah-compare-users-form-help');
 
-        href1 = href1.replace(/\D/gi, '');
-        href2 = href2.replace(/\D/gi, '');
+    $passwordBlock.after($comparisonForm);
+    $helpTooltip.tooltip();
 
-        if (href1 != href2 && href2 != '') {
-            addBlock();
-            chekUserforDubles(href1, href2);
-        } else if (href1 == href2) {
-            outTextFrame('Это текущая УЗ');
-        } else {
-            outTextFrame('Вставьте URL');
-        }
+    $comparisonForm.submit(function(e) {
+        e.preventDefault();
+        const users = {};
+        const input = this.elements.ids;
+        const btn = this.elements.submit;
+        const value = input.value;
+        const comparison = new UsersComparison(users);
+
+        users.compared = value.match(/\d{5,}/g);
+        if (!users.compared) return;
+
+        users.abutment = getParamsUserInfo().id.toString();
+        btnLoaderOn(btn);
+        comparison.parseEntities({
+            getEntityRequest: getUserInfo,
+            getEntityParams: getParamsUserInfo,
+        }).then(
+            response => {
+                const modal = comparison.getResultModal({
+                    title: `Сравнение УЗ`,
+                    class: 'ah-compare-modal-users'
+                });
+                comparison.renderEntities(modal, response);
+                $(modal).modal('show');
+            },
+            error => alert(error)
+        ).then(() => btnLoaderOff(btn));
     });
 }
 
@@ -65,7 +96,14 @@ function userChangeEmail() {
 
     var email = $(".js-fakeemail-field").text();
 
-    $('.col-xs-offset-1').find('hr').before('<div class="input-group" id="changeEmail"><input type="text" class="form-control" id="checkEmailText" value maxlength placeholder="' + email + '"/><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Change email" title="КНОПКА ДЛЯ ВЛЗОМАННЫХ УЗ С ИЗМЕНЕННЫМ E-MAIL\n- меняет e-mail на вставленный в поле\n- меняет имя на точку\n- восстанавливает УЗ (relevant items)\n- ставит комментарий \'взлом, поменял почту на \*вставленную\*\'\n- нажимает кнопку Send New Password\n- делает мыло Not Fake" id="checkButton"/></span></div>');
+    $('.col-xs-offset-1').find('hr').before(`
+        <div class="input-group" id="changeEmail">
+            <span class="input-group-btn">
+                <input type="button" class="btn btn-primary btn-sm" value="Change email" id="checkButton" title="КНОПКА ДЛЯ ВЛЗОМАННЫХ УЗ С ИЗМЕНЕННЫМ E-MAIL:\n- меняет e-mail на вставленный в поле\n- меняет имя на точку\n- восстанавливает УЗ (relevant items)\n- ставит комментарий 'взлом, поменял почту на *вставленную*'\n- нажимает кнопку Send New Password\n- делает мыло Not Fake">
+            </span>
+            <input type="text" class="form-control input-sm" id="checkEmailText" value maxlength placeholder="${email}">
+        </div>
+    `);
     $('#changeEmail').after('<br><div><span id="statusEmail"></span></div>');
 
     $('#checkButton').click(function () {
