@@ -59,7 +59,9 @@ function addCompareUsersUserInfo() {
     const $helpTooltip = $comparisonForm.find('.ah-compare-users-form-help');
 
     $passwordBlock.after($comparisonForm);
-    $helpTooltip.tooltip();
+    $helpTooltip.tooltip({
+        container: 'body'
+    });
 
     $comparisonForm.submit(function(e) {
         e.preventDefault();
@@ -67,27 +69,29 @@ function addCompareUsersUserInfo() {
         const input = this.elements.ids;
         const btn = this.elements.submit;
         const value = input.value;
-        const comparison = new UsersComparison(users);
 
         users.compared = value.match(/\d{5,}/g);
         if (!users.compared) return;
 
         users.abutment = getParamsUserInfo().id.toString();
-        btnLoaderOn(btn);
-        comparison.parseEntities({
+
+        const comparison = new UsersComparison(users, {
             getEntityRequest: getUserInfo,
             getEntityParams: getParamsUserInfo,
-        }).then(
-            response => {
-                const modal = comparison.getResultModal({
-                    title: `Сравнение УЗ`,
-                    class: 'ah-compare-modal-users'
-                });
-                comparison.renderEntities(modal, response);
-                $(modal).modal('show');
-            },
-            error => alert(error)
-        ).then(() => btnLoaderOff(btn));
+        });
+
+        btnLoaderOn(btn);
+        comparison.parseEntities()
+            .then(response => {
+                    comparison.renderResultModal({
+                        title: `Сравнение УЗ`,
+                        class: 'ah-compare-modal-users'
+                    });
+                    comparison.renderEntities(response);
+
+                    $(comparison.modal).modal('show');
+                }, error => alert(error)
+            ).then(() => btnLoaderOff(btn));
     });
 }
 
