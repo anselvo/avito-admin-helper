@@ -1,4 +1,4 @@
-function consultationNotification() {
+function consultationCount() {
     $('.fixed-bottom-toolbar').append(`<div class="ah-consultation">
                                         <div class="ah-consultation-main ah-radio-flex">
                                             <div class="ah-consultation-name">Выберите консультацию</div>
