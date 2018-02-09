@@ -491,9 +491,9 @@ function handleRoles() {
     if (isAuthority('ROLE_SNP')) { // Отправка письма пользователю о взломе и смена пароля
         roleHandler.snp();
     }
-    // if (isAuthority('ROLE_CONSULTATION_NOTIFICATION')) { // Отправка письма пользователю о взломе и смена пароля
+    if (isAuthority('ROLE_CONSULTATION_NOTIFICATION')) { // Отправка письма пользователю о взломе и смена пароля
         roleHandler.consultationNotification();
-    // }
+    }
 
     // общие функции
     function generalFunctions() {
