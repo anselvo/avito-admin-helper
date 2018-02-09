@@ -175,10 +175,10 @@ function addComparisonInfo() {
 
         if (i === 0) var mainUserId = userid;
         else {
-            if (mainUserId !== userid)
+            if (mainUserId !== userid)  // disable for test
                 $(comparisonUserList[i])
                     .parents('.'+tmp[2])
-                    .append('<span class="pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</span>');
+                    .append('<button class="btn btn-link ah-pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</button>');
         }
 
         if (localStorage.imageSearchComparison === 'true') {
@@ -193,11 +193,91 @@ function addComparisonInfo() {
             }
         }
 
-        $('.compareUserOnComparison[itemid='+itemid+']').click(function () {
-            let similarUserID = $(this).attr('userid');
+        $('.compareUserOnComparison[itemid='+itemid+']').click(function (e) {
+            const similarUserID = $(this).attr('userid');
 
-            addBlock();
-            chekUserforDubles(mainUserId, similarUserID);
+            // addBlock();
+            // chekUserforDubles(mainUserId, similarUserID);
+
+            const btn = this;
+            const users = {};
+            users.compared = [similarUserID];
+            users.abutment = mainUserId;
+            const comparison = new UsersComparison(users, {
+                getEntityRequest: getUserInfo,
+                getEntityParams: getParamsUserInfo,
+            });
+            btnLoaderOn(btn);
+
+            comparison.parseEntities()
+                .then(response => {
+                        if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
+                            comparison.renderResultModal({
+                                title: `Сравнение УЗ`,
+                                class: 'ah-compare-modal-users'
+                            });
+                            comparison.renderEntities(response);
+
+                            $(comparison.modal).modal('show');
+                        } else { // items/moder
+                            const existingBsModal = document.querySelector('.modal.in');
+                            if (existingBsModal) {
+                                existingBsModal.removeAttribute('tabindex');
+                            }
+
+                            comparison.renderResultModal({
+                                title: `Сравнение УЗ`,
+                                class: 'ah-compare-modal-users ah-compare-modal__second'
+                            });
+                            comparison.renderEntities(response);
+
+                            comparison.modal.style.cssText = 'display: block;';
+                            $(comparison.modal).trigger('shown.bs.modal');
+                            comparison.modal.focus();
+
+                            $(comparison.modal).on('hidden.bs.modal', function () {
+                                if (existingBsModal) {
+                                    existingBsModal.setAttribute('tabindex', '-1');
+                                    existingBsModal.focus();
+                                }
+                            });
+
+
+                            comparison.modal.addEventListener('keydown', e => {
+                                // Предотвратить обработку хоткеев админского комперисона
+                                const admKeyCodes = [
+                                    81, // q
+                                    87, // w
+                                    69, // e
+                                    82, // r
+                                ];
+                                if (admKeyCodes.includes(e.keyCode)) {
+                                    e.stopPropagation();
+                                }
+
+                                // Закрывать сркиптовый комперисон по Escape
+                                if (e.keyCode === 27) { // Esc
+                                    comparison.modal.style.cssText = 'display: none;';
+                                    $(comparison.modal).trigger('hidden.bs.modal');
+                                }
+                            });
+
+                            // Предотвратить сабмит админского комперисона
+                            comparison.modal.addEventListener('keyup', e => {
+                                if (e.keyCode === 32) { // Space
+                                    e.stopPropagation();
+                                }
+                            });
+
+                            comparison.modal.addEventListener('click', e => {
+                                if (!e.target.closest('.modal-dialog')) {
+                                    comparison.modal.style.cssText = 'display: none;';
+                                    $(comparison.modal).trigger('hidden.bs.modal');
+                                }
+                            });
+                        }
+                    }, error => alert(error)
+                ).then(() => btnLoaderOff(btn));
         });
 
         $('.userInfoComparison[itemid='+itemid+']').click(function () {

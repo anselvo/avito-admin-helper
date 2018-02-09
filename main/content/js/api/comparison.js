@@ -83,8 +83,11 @@ AhComparison.prototype.renderResultModal = function(options) {
     const modalTitle = options.title || `Сравнение`;
     const modalClass = options.class || '';
 
-    const existingModal = document.querySelector('.ah-compare-modal');
-    if (existingModal) existingModal.remove();
+    const openedModal = document.querySelector('.ah-compare-modal');
+    if (openedModal) {
+        $(openedModal).modal("hide");
+        openedModal.remove();
+    }
 
     const modal = document.createElement('div');
     modal.className = `modal ah-dynamic-bs-modal ah-compare-modal ${modalClass}`;
@@ -140,9 +143,12 @@ AhComparison.prototype.renderResultModal = function(options) {
 
     function modalClickHandler(e) {
         let target = e.target;
-        // const container = modal.querySelector('.ah-compare-container');
 
         while (target !== this) {
+            if (target.classList.contains('close')) {
+                modal.style.cssText = 'display: none;';
+                $(modal).trigger('hidden.bs.modal');
+            }
             // collapse
             if (target.classList.contains('ah-compare-show-more')) {
                 const prev = target.previousElementSibling;
@@ -490,7 +496,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
     // опорное
     const abutmentItemIdNode = this.modal.querySelector(`.ah-compare-items-item-id[data-entity-id="${abutmentId}"]`);
-    abutmentItemIdNode.insertAdjacentHTML('beforebegin',`<span class="label label-primary">Опорное</span> `);
+    abutmentItemIdNode.insertAdjacentHTML('beforebegin',`<span class="label label-primary ah-compare-label-abutment">Опорное</span> `);
 
     // тултипы причин
     $(this.modal.querySelectorAll(`.ah-compare-items-reason-tooltip`)).tooltip({
@@ -512,7 +518,10 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                     response => showIpInfoPopover(target, response, {container: modalContainer}),
                     error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
                 ).then(
-                () => btnLoaderOff(target)
+                () => {
+                    btnLoaderOff(target);
+                    this.modal.focus();
+                }
             );
         }
     });
@@ -563,6 +572,7 @@ UsersComparison.prototype = Object.create(AhComparison.prototype);
 UsersComparison.prototype.constructor = AhComparison;
 
 UsersComparison.prototype.renderEntities = function(parsedEntities) {
+    const self = this;
 
     const modalContainer = this.modal.querySelector('.ah-compare-container');
     const rows = {
@@ -692,7 +702,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         cellControl.insertAdjacentHTML('beforeend', control);
 
         cellMailChance.insertAdjacentHTML('beforeend',`
-            ${(+info.id === +abutmentId) ? `<span class="label label-primary">Опорная</span> `: ``}
+            ${(+info.id === +abutmentId) ? `<span class="label label-primary ah-compare-label-abutment">Опорная</span> `: ``}
             <a class="ah-compare-users-user-mail ah-visitable-link" data-entity-id="${info.id}" target="_blank" 
                 href="https://adm.avito.ru/users/user/info/${info.id}">${info.mail}</a>,
             <span> Шанс -</span> ${chance}
@@ -774,7 +784,10 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
                     response => showIpInfoPopover(target, response, {container: modalContainer}),
                     error => alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
                 ).then(
-                () => btnLoaderOff(target)
+                () => {
+                    btnLoaderOff(target);
+                    self.modal.focus();
+                }
             );
         }
     });
@@ -925,6 +938,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         }
 
         entityCell.appendChild(list);
+        self.modal.focus();
     }
 
     // сравнение

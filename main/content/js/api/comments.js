@@ -76,7 +76,7 @@ function linksOnComments(tableClass, currentUserID) {
                 if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
                     if (~links[i].indexOf('https://adm.avito.ru/users/user/info/') || shortUserLinkReg.test(links[i])) {
                         var userID = links[i].replace(/\D/gi, '');
-                        text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</span>)</span>');
+                        text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</button>)</span>');
                         $(commentBlock).html(text1);
                     } else {
                         text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a>');
@@ -92,7 +92,7 @@ function linksOnComments(tableClass, currentUserID) {
             var tmp = text.split("Alive user ID: ");
             if (tmp[1] == undefined) continue;
             var users = tmp[1].split(/\D/);
-            text = text.replace(users[0], '<a href="https://adm.avito.ru/users/user/info/' + users[0] + '" target="_blank">' + users[0] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareUser" userID="' + users[0] + '" title="Сравнить учетные записи">&#8644</span>)</span>');
+            text = text.replace(users[0], '<a href="https://adm.avito.ru/users/user/info/' + users[0] + '" target="_blank">' + users[0] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + users[0] + '" title="Сравнить учетные записи">&#8644</button>)</span>');
             $(commentBlock).html(text);
 
             var tmp2 = text.split("Base item ID: ");
@@ -125,7 +125,7 @@ function linksOnComments(tableClass, currentUserID) {
             if (tmp2[1] == undefined) continue;
             var users2 = tmp2[1].split(/\D/);
             for (var i = 1; i < users2.length; i++) { // Цикл с 1, т.к. ID дублируются
-                text = text.replace(users2[i], '<a href="https://adm.avito.ru/users/user/info/' + users2[i] + '" target="_blank">' + users2[i] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareUser" userID="' + users2[i] + '" title="Сравнить учетные записи">&#8644</span>)</span>');
+                text = text.replace(users2[i], '<a href="https://adm.avito.ru/users/user/info/' + users2[i] + '" target="_blank">' + users2[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + users2[i] + '" title="Сравнить учетные записи">&#8644</button>)</span>');
                 $(commentBlock).html(text);
             }
         }
@@ -154,10 +154,36 @@ function linksOnComments(tableClass, currentUserID) {
     }
 
     $('.compareUser').unbind('click').click(function () {
-        var similarUserID = $(this).attr('userID');
+        const similarUserID = $(this).attr('userID');
 
-        addBlock();
-        chekUserforDubles(currentUserID, similarUserID);
+        // addBlock();
+        // chekUserforDubles(currentUserID, similarUserID);
+
+        const btn = this;
+        if (~currentUserID.indexOf('https')) {
+            currentUserID = currentUserID.replace(/\D/gi, '');
+        }
+
+        const users = {};
+        users.compared = [similarUserID];
+        users.abutment = currentUserID;
+        const comparison = new UsersComparison(users, {
+            getEntityRequest: getUserInfo,
+            getEntityParams: getParamsUserInfo,
+        });
+        btnLoaderOn(btn);
+        comparison.parseEntities()
+            .then(response => {
+                    comparison.renderResultModal({
+                        title: `Сравнение УЗ`,
+                        class: 'ah-compare-modal-users'
+                    });
+                    comparison.renderEntities(response);
+
+                    $(comparison.modal).modal('show');
+                }, error => alert(error)
+            ).then(() => btnLoaderOff(btn));
+
     });
 
     $('.compareItems').unbind('click').click(function () {
@@ -169,6 +195,9 @@ function linksOnComments(tableClass, currentUserID) {
         $('.images-preview-gallery').remove();
         $('body').append('<div class="images-preview-gallery" style="display: none; position:fixed; z-index: 1080; background-color: rgba(255, 255, 255, 0.95); text-align: center; border-radius: 0; padding: 10px; border: 1px solid rgba(153, 153, 153, 0.56);"></div>');
 
+        if (~currentUserID.indexOf('https')) {
+            currentUserID = currentUserID.replace(/\D/gi, '');
+        }
         loadComperison(itemID, currentUserID);
     });
 }
@@ -203,69 +232,69 @@ function addBlock() {
         }
     });
 }
-function chekUserforDubles(href1, href2) {
-    var url1, url2;
-    if (href1.indexOf('https')+1) {
-        url1 = href1.replace(/\D/gi, '');
-    } else {
-        url1 = href1;
-    }
-    if (href2.indexOf('https')+1) {
-        url2 = href2.replace(/\D/gi, '');
-    } else {
-        url2 = href2;
-    }
-
-    if (url1 == url2) {
-        alert('Вы пытаетесь сравнить одну и ту же учетную запись');
-        $('#check_result_user_box').detach();
-        return;
-    }
-
-    $('#result_result_box').html('');
-    $('#result_result_box').append('<div id="user1" userID="'+url1+'" class="ah-user-column-one" style="display:inline;float:left;"></div>');
-    $('#result_result_box').append('<div id="user2" userID="'+url2+'" class="ah-user-column-two" style="display:inline;float:right;"></div>');
-    $('#result_result_box').append('<div id="overallBar" class="sh-default-list" style="position:absolute;display:none;background:#E0F2F1;box-shadow: 0 1px 1px rgba(0,0,0,.175);left:220px;width:140px;height:30px;padding:1px;text-align:center;"></div>');
-
-    $('#overallBar').append('<input type="button" class="sh-action-btn"  value="TN" title="Техническая неполадка (восстанавливает учетную запись, на которой вы сейчас находитесь с Relevantive items)" id="texNep" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
-        ' <input type="button" class="sh-action-btn"  value="SP" title="SPAM (блокирует учетную запись, на которой вы сейчас находитесь с прекращением)" id="spamUsers" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
-        ' <input type="button" class="sh-action-btn"  value="PM" title="Put a mark on users (простановка пометок, где активная и где заблокированная)" id="putMark" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
-        ' <input type="button" class="sh-action-btn"  value="SU" title="Swap Users Status (восстанавливает заблокированного и блокирует активного)" id="swapUsers" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">');
-
-    $('#user2,#user1').append('<div class="loadingBar sh-default-list" style="position:absolute;width:267px;height:440px;background:#e0e7e8;text-align:center;vertical-align:middle;color:red;padding-top:150px;">Loading...</div>');
-
-    $('#user2,#user1').append('<div class="forchekuser actionBar" style="display:block;width:267px;height:30px;"></div>');
-    $('#user1 .actionBar').append('<div class="actionBarIN sh-default-list" style="background:#E0F2F1;width:200px;box-shadow: 0 1px 1px rgba(0,0,0,.175);float:left;padding:1px;text-align:left;"></div>');
-    $('#user2 .actionBar').append('<div class="actionBarIN sh-default-list" style="background:#E0F2F1;width:200px;box-shadow: 0 1px 1px rgba(0,0,0,.175);float:right;padding:1px;text-align:right;"></div>');
-
-    $('#user2,#user1').append('<div class="forchekuser itemforcheknone sh-default-list" style="display:none;background:#eef5f7;width:267px;box-shadow: 0 1px 1px rgba(0,0,0,.175);height:200px;padding:5px;overflow:auto;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser itemforchek sh-default-list" style="display:none;background:#eef5f7;height:30px;box-shadow: 0 1px 1px rgba(0,0,0,.175);width:267px;padding:5px;overflow:auto;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser emailforchek sh-default-list" title="Email address" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser statusforchek sh-default-list" title="User status" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;font-weight:bold;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser registeredforchek sh-default-list" title="Registered time" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser nameforchek sh-default-list" title="User name" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser namemanagerforchek sh-default-list" title="User manager name" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser cityforchek sh-default-list"  title="User location" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser metroforchek sh-default-list" title="User Metro station" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser tehforchek sh-default-list" title="Last auth user agent" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;height:200px;width:267px;padding:5px;overflow:auto;color:black;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser phoneforchek sh-default-list" title="User phones numbers" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:200px;overflow:auto;"></div>');
-    $('#user2,#user1').append('<div class="forchekuser ipforchek sh-default-list" title="Last auth IPs" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;height:200px;width:267px;padding:5px;overflow:auto;"></div>');
-    $('.forchekuser').css("margin-bottom", "3px");
-
-    loadUsersForDoublesCheck('user1', url1);
-    loadUsersForDoublesCheck('user2', url2);
-
-    var timerId = setInterval(function () {
-        // if ($('#user1 .statusforchek').html() != '' && $('#user1 .ipforchek').html() != '' && $('#user1 .phoneforchek').html() != '' && $('#user2 .ipforchek').html() != '' && $('#user2 .phoneforchek').html() != '') {
-			
-		if ($('#result_result_box .loadingBar').length == 0) {
-            $('#overallBar').show();
-            chekresultQuicly(false);
-            compareButtonsListener();
-            clearInterval(timerId);
-        }
-    },10);
-}
+// function chekUserforDubles(href1, href2) {
+//     var url1, url2;
+//     if (href1.indexOf('https')+1) {
+//         url1 = href1.replace(/\D/gi, '');
+//     } else {
+//         url1 = href1;
+//     }
+//     if (href2.indexOf('https')+1) {
+//         url2 = href2.replace(/\D/gi, '');
+//     } else {
+//         url2 = href2;
+//     }
+//
+//     if (url1 == url2) {
+//         alert('Вы пытаетесь сравнить одну и ту же учетную запись');
+//         $('#check_result_user_box').detach();
+//         return;
+//     }
+//
+//     $('#result_result_box').html('');
+//     $('#result_result_box').append('<div id="user1" userID="'+url1+'" class="ah-user-column-one" style="display:inline;float:left;"></div>');
+//     $('#result_result_box').append('<div id="user2" userID="'+url2+'" class="ah-user-column-two" style="display:inline;float:right;"></div>');
+//     $('#result_result_box').append('<div id="overallBar" class="sh-default-list" style="position:absolute;display:none;background:#E0F2F1;box-shadow: 0 1px 1px rgba(0,0,0,.175);left:220px;width:140px;height:30px;padding:1px;text-align:center;"></div>');
+//
+//     $('#overallBar').append('<input type="button" class="sh-action-btn"  value="TN" title="Техническая неполадка (восстанавливает учетную запись, на которой вы сейчас находитесь с Relevantive items)" id="texNep" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
+//         ' <input type="button" class="sh-action-btn"  value="SP" title="SPAM (блокирует учетную запись, на которой вы сейчас находитесь с прекращением)" id="spamUsers" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
+//         ' <input type="button" class="sh-action-btn"  value="PM" title="Put a mark on users (простановка пометок, где активная и где заблокированная)" id="putMark" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">'+
+//         ' <input type="button" class="sh-action-btn"  value="SU" title="Swap Users Status (восстанавливает заблокированного и блокирует активного)" id="swapUsers" style="background:#CE93D8;font-weight:bold;padding:3px;font-size:13px;border-color:#BA68C8;">');
+//
+//     $('#user2,#user1').append('<div class="loadingBar sh-default-list" style="position:absolute;width:267px;height:440px;background:#e0e7e8;text-align:center;vertical-align:middle;color:red;padding-top:150px;">Loading...</div>');
+//
+//     $('#user2,#user1').append('<div class="forchekuser actionBar" style="display:block;width:267px;height:30px;"></div>');
+//     $('#user1 .actionBar').append('<div class="actionBarIN sh-default-list" style="background:#E0F2F1;width:200px;box-shadow: 0 1px 1px rgba(0,0,0,.175);float:left;padding:1px;text-align:left;"></div>');
+//     $('#user2 .actionBar').append('<div class="actionBarIN sh-default-list" style="background:#E0F2F1;width:200px;box-shadow: 0 1px 1px rgba(0,0,0,.175);float:right;padding:1px;text-align:right;"></div>');
+//
+//     $('#user2,#user1').append('<div class="forchekuser itemforcheknone sh-default-list" style="display:none;background:#eef5f7;width:267px;box-shadow: 0 1px 1px rgba(0,0,0,.175);height:200px;padding:5px;overflow:auto;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser itemforchek sh-default-list" style="display:none;background:#eef5f7;height:30px;box-shadow: 0 1px 1px rgba(0,0,0,.175);width:267px;padding:5px;overflow:auto;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser emailforchek sh-default-list" title="Email address" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser statusforchek sh-default-list" title="User status" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;font-weight:bold;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser registeredforchek sh-default-list" title="Registered time" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser nameforchek sh-default-list" title="User name" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser namemanagerforchek sh-default-list" title="User manager name" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser cityforchek sh-default-list"  title="User location" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser metroforchek sh-default-list" title="User Metro station" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:30px;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser tehforchek sh-default-list" title="Last auth user agent" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;height:200px;width:267px;padding:5px;overflow:auto;color:black;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser phoneforchek sh-default-list" title="User phones numbers" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;padding:5px;width:267px;height:200px;overflow:auto;"></div>');
+//     $('#user2,#user1').append('<div class="forchekuser ipforchek sh-default-list" title="Last auth IPs" style="display:block;box-shadow: 0 1px 1px rgba(0,0,0,.175);background:#eef5f7;height:200px;width:267px;padding:5px;overflow:auto;"></div>');
+//     $('.forchekuser').css("margin-bottom", "3px");
+//
+//     loadUsersForDoublesCheck('user1', url1);
+//     loadUsersForDoublesCheck('user2', url2);
+//
+//     var timerId = setInterval(function () {
+//         // if ($('#user1 .statusforchek').html() != '' && $('#user1 .ipforchek').html() != '' && $('#user1 .phoneforchek').html() != '' && $('#user2 .ipforchek').html() != '' && $('#user2 .phoneforchek').html() != '') {
+//
+// 		if ($('#result_result_box .loadingBar').length == 0) {
+//             $('#overallBar').show();
+//             chekresultQuicly(false);
+//             // compareButtonsListener();
+//             clearInterval(timerId);
+//         }
+//     },10);
+// }
 
 function loadUsersForDoublesCheck(divID, userURL) {
     var url = 'https://adm.avito.ru/users/user/info/'+userURL;
@@ -670,158 +699,158 @@ function shinglChek(title1, title2){
 }
 
 
-function compareButtonsListener() {
-    $('.activeUserCompare').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
+// function compareButtonsListener() {
+//     $('.activeUserCompare').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         unblockUser('activate', id);
+//         smartChance('Activate', currentUser);
+//
+//         smartComments(currentUser, id, 'Active');
+//     });
+//     $('.activeUserItemCompare').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         unblockUser('unblock', id);
+//         smartChance('Activate', currentUser);
+//
+//         smartComments(currentUser, id, 'Active');
+//     });
+//     $('.activeUserReItemCompare').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         unblockUser('unblock_relevant', id);
+//         smartChance('Activate', currentUser);
+//
+//         smartComments(currentUser, id, 'Active');
+//     });
+//     $('.blockNes').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         blockUser(id, 'BN');
+//         smartChance('Blocked', currentUser);
+//
+//         smartComments(currentUser, id, 'Blocked');
+//     });
+//     $('.blockNesPov').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         blockUser(id, 'BP');
+//         smartChance('Blocked', currentUser);
+//
+//         smartComments(currentUser, id, 'Blocked');
+//     });
+//     $('.blockBlock').click(function () {
+//         var currentUser = $(this).attr('userNum');
+//         var id = $(this).attr('userID');
+//
+//         blockUser(id, 'BB');
+//         smartChance('Blocked', currentUser);
+//
+//         smartComments(currentUser, id, 'Blocked');
+//     });
+//     $('#texNep').click(function () {
+//         var id1 = $('#user1').attr('userID');
+//         var id2 = $('#user2').attr('userID');
+//
+//         var id1Status = $('#user1 .statusforchek').text();
+//
+//         if (id1Status == 'Blocked') {
+//             unblockUser('unblock_relevant', id1);
+//             commentOnUserSupport(id1, 'ТН');
+//             chekUserforDubles(id1, id2);
+//         } else alert('Учетная запись активна или удалена');
+//     });
+//     $('#spamUsers').click(function () {
+//         var id1 = $('#user1').attr('userID');
+//         var id2 = $('#user2').attr('userID');
+//
+//         var id1Status = $('#user1 .statusforchek').text();
+//
+//         var id1Shop = $('#user1 .actionBarIN').text();
+//         var id2Shop = $('#user2 .actionBarIN').text();
+//
+//         if (id1Shop != 'This is Shop' && id2Shop != 'This is Shop') {
+//             if (id1Status == 'Active') {
+//                 blockUser(id1, 'BN');
+//                 chanceUser(id1, '10');
+//                 commentOnUserSupport(id1, 'spam');
+//                 chekUserforDubles(id1, id2);
+//             } else alert('Учетная запись заблокированна.');
+//         } else alert('Данная функция недоступна, так как одна из учетных записей со статусом Магазин');
+//     });
+//     $('#putMark').click(function () {
+//         var id = $('#user1').attr('userID');
+//         var currentStatus = $('#user1 .statusforchek').text();
+//
+//         smartComments('user1', id, currentStatus);
+//     });
+//     $('#swapUsers').click(function () {
+//         var id1 = $('#user1').attr('userID');
+//         var id2 = $('#user2').attr('userID');
+//         var id1Status = $('#user1 .statusforchek').text();
+//         var id2Status = $('#user2 .statusforchek').text();
+//
+//         var id1Shop = $('#user1 .actionBarIN').text();
+//         var id2Shop = $('#user2 .actionBarIN').text();
+//
+//         if (id1Shop != 'This is Shop' && id2Shop != 'This is Shop') {
+//             if ((id1Status == 'Active' || id1Status == 'Unconfirmed') && (id2Status == 'Blocked' || id2Status == 'Removed')) {
+//                 blockUser(id1, 'BN');
+//
+//                 if (id2Status == 'Removed') unblockUser('activate', id2);
+//                 else unblockUser('unblock_relevant', id2);
+//
+//                 commentOnUserSupport(id1, 'https://adm.avito.ru/users/user/info/'+id2+' активная');
+//                 commentOnUserSupport(id2, 'https://adm.avito.ru/users/user/info/'+id1+' заблокированная');
+//                 chekUserforDubles(id1, id2);
+//             } else if ((id1Status == 'Blocked' || id1Status == 'Removed') && (id2Status == 'Active' || id2Status == 'Unconfirmed')) {
+//                 blockUser(id2, 'BN');
+//
+//                 if (id1Status == 'Removed') unblockUser('activate', id1);
+//                 else unblockUser('unblock_relevant', id1);
+//
+//                 commentOnUserSupport(id2, 'https://adm.avito.ru/users/user/info/'+id1+' активная');
+//                 commentOnUserSupport(id1, 'https://adm.avito.ru/users/user/info/'+id2+' заблокированная');
+//                 chekUserforDubles(id1, id2);
+//             } else alert('Статусы учетных записей одинаковые.');
+//         } else alert('Данная функция недоступна, так как одна из учетных записей со статусом Магазин');
+//     });
+// }
 
-        unblockUser('activate', id);
-        smartChance('Activate', currentUser);
-
-        smartComments(currentUser, id, 'Active');
-    });
-    $('.activeUserItemCompare').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
-
-        unblockUser('unblock', id);
-        smartChance('Activate', currentUser);
-
-        smartComments(currentUser, id, 'Active');
-    });
-    $('.activeUserReItemCompare').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
-
-        unblockUser('unblock_relevant', id);
-        smartChance('Activate', currentUser);
-
-        smartComments(currentUser, id, 'Active');
-    });
-    $('.blockNes').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
-
-        blockUser(id, 'BN');
-        smartChance('Blocked', currentUser);
-
-        smartComments(currentUser, id, 'Blocked');
-    });
-    $('.blockNesPov').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
-
-        blockUser(id, 'BP');
-        smartChance('Blocked', currentUser);
-
-        smartComments(currentUser, id, 'Blocked');
-    });
-    $('.blockBlock').click(function () {
-        var currentUser = $(this).attr('userNum');
-        var id = $(this).attr('userID');
-
-        blockUser(id, 'BB');
-        smartChance('Blocked', currentUser);
-
-        smartComments(currentUser, id, 'Blocked');
-    });
-    $('#texNep').click(function () {
-        var id1 = $('#user1').attr('userID');
-        var id2 = $('#user2').attr('userID');
-
-        var id1Status = $('#user1 .statusforchek').text();
-
-        if (id1Status == 'Blocked') {
-            unblockUser('unblock_relevant', id1);
-            commentOnUserSupport(id1, 'ТН');
-            chekUserforDubles(id1, id2);
-        } else alert('Учетная запись активна или удалена');
-    });
-    $('#spamUsers').click(function () {
-        var id1 = $('#user1').attr('userID');
-        var id2 = $('#user2').attr('userID');
-
-        var id1Status = $('#user1 .statusforchek').text();
-
-        var id1Shop = $('#user1 .actionBarIN').text();
-        var id2Shop = $('#user2 .actionBarIN').text();
-
-        if (id1Shop != 'This is Shop' && id2Shop != 'This is Shop') {
-            if (id1Status == 'Active') {
-                blockUser(id1, 'BN');
-                chanceUser(id1, '10');
-                commentOnUserSupport(id1, 'spam');
-                chekUserforDubles(id1, id2);
-            } else alert('Учетная запись заблокированна.');
-        } else alert('Данная функция недоступна, так как одна из учетных записей со статусом Магазин');
-    });
-    $('#putMark').click(function () {
-        var id = $('#user1').attr('userID');
-        var currentStatus = $('#user1 .statusforchek').text();
-
-        smartComments('user1', id, currentStatus);
-    });
-    $('#swapUsers').click(function () {
-        var id1 = $('#user1').attr('userID');
-        var id2 = $('#user2').attr('userID');
-        var id1Status = $('#user1 .statusforchek').text();
-        var id2Status = $('#user2 .statusforchek').text();
-
-        var id1Shop = $('#user1 .actionBarIN').text();
-        var id2Shop = $('#user2 .actionBarIN').text();
-
-        if (id1Shop != 'This is Shop' && id2Shop != 'This is Shop') {
-            if ((id1Status == 'Active' || id1Status == 'Unconfirmed') && (id2Status == 'Blocked' || id2Status == 'Removed')) {
-                blockUser(id1, 'BN');
-
-                if (id2Status == 'Removed') unblockUser('activate', id2);
-                else unblockUser('unblock_relevant', id2);
-
-                commentOnUserSupport(id1, 'https://adm.avito.ru/users/user/info/'+id2+' активная');
-                commentOnUserSupport(id2, 'https://adm.avito.ru/users/user/info/'+id1+' заблокированная');
-                chekUserforDubles(id1, id2);
-            } else if ((id1Status == 'Blocked' || id1Status == 'Removed') && (id2Status == 'Active' || id2Status == 'Unconfirmed')) {
-                blockUser(id2, 'BN');
-
-                if (id1Status == 'Removed') unblockUser('activate', id1);
-                else unblockUser('unblock_relevant', id1);
-
-                commentOnUserSupport(id2, 'https://adm.avito.ru/users/user/info/'+id1+' активная');
-                commentOnUserSupport(id1, 'https://adm.avito.ru/users/user/info/'+id2+' заблокированная');
-                chekUserforDubles(id1, id2);
-            } else alert('Статусы учетных записей одинаковые.');
-        } else alert('Данная функция недоступна, так как одна из учетных записей со статусом Магазин');
-    });
-}
-
-function smartComments(currentUser, currentUserID, currentStatus) {
-    var secondUserStatus;
-    var secondUserID;
-
-    if (currentUser == 'user1') {
-        secondUserStatus = $('#user2 .statusforchek').text();
-        secondUserID = $('#user2').attr('userID');
-        chekUserforDubles(currentUserID, secondUserID);
-    } else {
-        secondUserStatus = $('#user1 .statusforchek').text();
-        secondUserID = $('#user1').attr('userID');
-        chekUserforDubles(secondUserID, currentUserID);
-    }
-
-    if ((currentStatus == 'Blocked' || currentStatus == 'Removed') && (secondUserStatus == 'Blocked' || secondUserStatus == 'Removed')) {
-        commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID);
-        commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID);
-    } else if ((currentStatus == 'Active' || currentStatus == 'Unconfirmed') && (secondUserStatus == 'Active' || secondUserStatus == 'Unconfirmed')) {
-        commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' до пересечений');
-        commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' до пересечений');
-    } else if ((currentStatus == 'Active' || currentStatus == 'Unconfirmed') && (secondUserStatus == 'Blocked' || secondUserStatus == 'Removed')) {
-        commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' заблокированная');
-        commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' активная');
-    } else if ((currentStatus == 'Blocked' || currentStatus == 'Removed') && (secondUserStatus == 'Active' || secondUserStatus == 'Unconfirmed')) {
-        commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' активная');
-        commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' заблокированная');
-    }
-}
+// function smartComments(currentUser, currentUserID, currentStatus) {
+//     var secondUserStatus;
+//     var secondUserID;
+//
+//     if (currentUser == 'user1') {
+//         secondUserStatus = $('#user2 .statusforchek').text();
+//         secondUserID = $('#user2').attr('userID');
+//         chekUserforDubles(currentUserID, secondUserID);
+//     } else {
+//         secondUserStatus = $('#user1 .statusforchek').text();
+//         secondUserID = $('#user1').attr('userID');
+//         chekUserforDubles(secondUserID, currentUserID);
+//     }
+//
+//     if ((currentStatus == 'Blocked' || currentStatus == 'Removed') && (secondUserStatus == 'Blocked' || secondUserStatus == 'Removed')) {
+//         commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID);
+//         commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID);
+//     } else if ((currentStatus == 'Active' || currentStatus == 'Unconfirmed') && (secondUserStatus == 'Active' || secondUserStatus == 'Unconfirmed')) {
+//         commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' до пересечений');
+//         commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' до пересечений');
+//     } else if ((currentStatus == 'Active' || currentStatus == 'Unconfirmed') && (secondUserStatus == 'Blocked' || secondUserStatus == 'Removed')) {
+//         commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' заблокированная');
+//         commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' активная');
+//     } else if ((currentStatus == 'Blocked' || currentStatus == 'Removed') && (secondUserStatus == 'Active' || secondUserStatus == 'Unconfirmed')) {
+//         commentOnUserSupport(currentUserID, 'https://adm.avito.ru/users/user/info/'+secondUserID+' активная');
+//         commentOnUserSupport(secondUserID, 'https://adm.avito.ru/users/user/info/'+currentUserID+' заблокированная');
+//     }
+// }
 
 function smartChance(buttonStatus, currentUser) {
     var currentUserID = $('#'+currentUser).attr('userID');
@@ -964,8 +993,28 @@ function loadComperison(itemID, currentUserID) {
                 $('.compareUserOnComperison').click(function () {
                     var similarUserID = $(this).attr('userID');
 
-                    addBlock();
-                    chekUserforDubles(currentUserID, similarUserID);
+                    // addBlock();
+                    // chekUserforDubles(currentUserID, similarUserID);
+                    const btn = this;
+                    const users = {};
+                    users.compared = [similarUserID];
+                    users.abutment = currentUserID[4];
+                    const comparison = new UsersComparison(users, {
+                        getEntityRequest: getUserInfo,
+                        getEntityParams: getParamsUserInfo,
+                    });
+                    btnLoaderOn(btn);
+                    comparison.parseEntities()
+                        .then(response => {
+                                comparison.renderResultModal({
+                                    title: `Сравнение УЗ`,
+                                    class: 'ah-compare-modal-users'
+                                });
+                                comparison.renderEntities(response);
+
+                                $(comparison.modal).modal('show');
+                            }, error => alert(error)
+                        ).then(() => btnLoaderOff(btn));
                 });
 
                 $('[data-match-test="description"]').click(function () {
@@ -1030,7 +1079,7 @@ function compareItems(comperison) {
 
     for (var i = 0; i < tdlen; i++) {
         var userID = $(comperison).find('.user-login-wrap').slice(i,i+1).find('a').attr('href').split('/');
-        $(comperison).find('.user-login-wrap').slice(i,i+1).append('(<span class="pseudo-link compareUserOnComperison" userID="' + userID[4] + '" title="Сравнить учетные записи">&#8644</span>)');
+        $(comperison).find('.user-login-wrap').slice(i,i+1).append('(<button class="btn btn-link ah-pseudo-link compareUserOnComperison" userID="' + userID[4] + '" title="Сравнить учетные записи">&#8644</button>)');
 
         var itemName;
         if (i == 0) {

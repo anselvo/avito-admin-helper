@@ -42,7 +42,7 @@ function comparisonInfoOld() {
             }
 
             if (i > 0) {
-                $('.user-login-wrap').slice(i,i+1).append('<span style="margin-left:5px;">(<span class="pseudo-link compareUserOnComperison" userID="'+userID[4]+'" title="Сравнить учетные записи">&#8644</span>)</span>');
+                $('.user-login-wrap').slice(i,i+1).append('<span style="margin-left:5px;">(<button class="btn btn-link ah-pseudo-link compareUserOnComperison" userID="'+userID[4]+'" title="Сравнить учетные записи">&#8644</button>)</span>');
             }
 
             loadItem(i, item);
@@ -56,8 +56,29 @@ function comparisonInfoOld() {
     $('.compareUserOnComperison').click(function () {
         var similarUserID = $(this).attr('userID');
 
-        addBlock();
-        chekUserforDubles(currentUserID[4], similarUserID);
+        // addBlock();
+        // chekUserforDubles(currentUserID[4], similarUserID);
+
+        const btn = this;
+        const users = {};
+        users.compared = [similarUserID];
+        users.abutment = currentUserID[4];
+        const comparison = new UsersComparison(users, {
+            getEntityRequest: getUserInfo,
+            getEntityParams: getParamsUserInfo,
+        });
+        btnLoaderOn(btn);
+        comparison.parseEntities()
+            .then(response => {
+                    comparison.renderResultModal({
+                        title: `Сравнение УЗ`,
+                        class: 'ah-compare-modal-users'
+                    });
+                    comparison.renderEntities(response);
+
+                    $(comparison.modal).modal('show');
+                }, error => alert(error)
+            ).then(() => btnLoaderOff(btn));
     });
 
     $('.moсx').click(function () {

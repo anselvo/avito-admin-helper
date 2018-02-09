@@ -5168,8 +5168,13 @@ select.ah-form-control:focus {
     margin-top: 10px !important;
 }
 
+.ah-compare-modal__second {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 .ah-compare-modal .modal-header {
     padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .ah-compare-modal .modal-dialog {
@@ -5178,6 +5183,18 @@ select.ah-form-control:focus {
 
 .ah-compare-modal .modal-body {
     padding: 10px 20px;
+}
+
+.ah-compare-modal .modal-content {
+    border-radius: 6px;
+}
+
+.ah-compare-modal .ah-compare-label-abutment {
+    text-transform: none;
+    font-size: 75%;
+    border-radius: .25em;
+    padding: .2em .6em .3em;
+    font-weight: 700;
 }
 
 .ah-compare-container {
