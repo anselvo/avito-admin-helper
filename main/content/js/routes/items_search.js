@@ -307,6 +307,8 @@ function smartSNP(id) {
             data: 'email='+email+'&name='+name,
         }, function(response) {
             console.log(response);
+
+            if (response === 'error') alert('При создании обращения возникла ошибка.');
         });
 
         commentOnUserModer(id, '#SNP Отправил(а) новый пароль пользователю и уведомление о взломе');
