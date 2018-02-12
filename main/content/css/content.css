@@ -6127,3 +6127,11 @@ select.ah-form-control:focus {
 .ah-operation-info-table__col:first-child {
     font-weight: bold;
 }
+
+.ah-check-vas-usage-btn-holder {
+    padding: 4px 0;
+}
+
+.ah-check-vas-usage-popover .popover-content {
+    word-break: normal;
+}

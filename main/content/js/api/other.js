@@ -1812,3 +1812,62 @@ function getParamsOperationInfo(operationRow) {
 
     return result;
 }
+
+function handleCheckVasUsage(btn) {
+
+    btn.addEventListener('click', function() {
+        btnLoaderOn(this);
+
+        let maxDate = currentTime().split(' ')[0];
+        maxDate = maxDate.replace(/\./g, '/');
+        const today = new Date();
+        const threeYearsAgoMs = today.setFullYear(today.getFullYear() - 3);
+        const threeYearsAgo = new Date(threeYearsAgoMs);
+        let minDate = threeYearsAgo.toLocaleString("ru", {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+        });
+        minDate = minDate.replace(/\./g, '/');
+
+        const dateRange = `${minDate}+00:00+-+${maxDate}+23:59`;
+        const userId = this.dataset.userId;
+
+        const url = `https://adm.avito.ru/billing/walletlog/total?date=${dateRange}&userIds=${userId}&itemIds=&payerCode=&operationIds=&orderIds=&serviceTransactionIds=&externalIds=&fiscalIds=&payCode=0&personType=0&accountType=0&legalEntityIds[]=0&operationStatusIds[]=1&paymentMethodIds[]=0&userTypes[]=&operationTypeIds[]=vas_vip&operationTypeIds[]=vas_highlight&operationTypeIds[]=vas_pushup&operationTypeIds[]=vas_premium&operationTypeIds[]=vas_activation&operationTypeIds[]=vas_fast&operationTypeIds[]=vas_turbo&operationTypeIds[]=vas_domofond&operationTypeIds[]=vas_xl`;
+
+        getAdmWithSuperAcc(url)
+            .then(response => {
+                renderVasUsage(JSON.parse(response), userId);
+            }, error => {
+                alert(error);
+            })
+            .then(() => btnLoaderOff(this));
+    });
+
+    function renderVasUsage(json, userId) {
+        let contentClassName = 'text-muted';
+        if (json.count > 0) {
+            contentClassName = 'text-success';
+        }
+        const content = `
+            <div class="${contentClassName}"><b>${json.count}</b> VAS за последние 3 года</div>
+            ${(json.count === 0) ? `
+                <a target="_blank" class="ah-visitable-link" href="/users/account/info/${userId}">Перейти на счёт</a>
+            ` : ''}
+        `;
+
+        $(btn).popover({
+            html: true,
+            container: 'body',
+            placement: 'top',
+            content: `
+                ${content}
+            `,
+            template: `
+            <div class="popover ah-check-vas-usage-popover ah-popover-destroy-outclicking">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
+        }).popover('show');
+    }
+}
