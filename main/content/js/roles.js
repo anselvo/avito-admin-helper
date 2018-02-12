@@ -188,6 +188,11 @@ function handleRoles() {
         if (isAuthority('ROLE_HELPDESK_COPY_USER_NAME')) {
             roleHandler.helpdeskCopyUserName();
         }
+
+        // проверка использования VAS
+        if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
+            roleHandler.helpdeskCheckVasUsage();
+        }
     }
 
     // QUEUE INFO
@@ -352,6 +357,9 @@ function handleRoles() {
     }
     if (isAuthority('ROLE_USERS_SEARCH_COPY_PHONE')) {  // копирование телефона в буфер в формате, как на странице юзера
         roleHandler.usersSearchCopyPhone();
+    }
+    if (isAuthority('ROLE_CHECK_VAS_USAGE')) { // проверка использования пользователем VAS
+        roleHandler.userCheckVasUsage();
     }
 
     // ACCOUNT
@@ -1358,4 +1366,14 @@ RoleHandler.prototype.consultationCount = function () {
     if (global.admUrlPatterns.items_moder.test(global.currentUrl) ||
         global.admUrlPatterns.items_search.test(global.currentUrl))
         consultationCount();
+};
+
+RoleHandler.prototype.userCheckVasUsage = function() {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
+        addUserCheckVasUsage();
+    }
+};
+
+RoleHandler.prototype.helpdeskCheckVasUsage = function() {
+    addHelpdeskCheckVasUsage();
 };

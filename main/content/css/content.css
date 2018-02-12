@@ -6206,3 +6206,11 @@ select.ah-form-control:focus {
 .ah-radio-flex {
     display: flex;
 }
+
+.ah-check-vas-usage-btn-holder {
+    padding: 4px 0;
+}
+
+.ah-check-vas-usage-popover .popover-content {
+    word-break: normal;
+}
