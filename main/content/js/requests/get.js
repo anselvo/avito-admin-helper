@@ -191,3 +191,14 @@ function getShopManagers() {
         return response.json();
     });
 }
+
+function getGroupFilterCountHD(id) {
+    return fetch(`/helpdesk/api/1/filter/group/${id}/count`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}

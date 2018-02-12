@@ -215,7 +215,7 @@ function addChooseButton() {
         $(loginList[i])
             .parents('tr')
             .find('.description-cell')
-            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>Тех инфо:</b> <span userAgent="'+id+'"></span></div>');
+            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>User-Agent:</b> <span userAgent="'+id+'"></span></div>');
     }
 
     clickChooseButton();
@@ -307,6 +307,8 @@ function smartSNP(id) {
             data: 'email='+email+'&name='+name,
         }, function(response) {
             console.log(response);
+
+            if (response === 'error') alert('При создании обращения возникла ошибка.');
         });
 
         commentOnUserModer(id, '#SNP Отправил(а) новый пароль пользователю и уведомление о взломе');

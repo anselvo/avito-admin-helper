@@ -1379,7 +1379,7 @@ input[id ^= "sh-quick-theme-btn"]:active {
 .preTimer {
 	display: inline-block;
 	float: right;
-    margin: 0 11px;
+    margin-left: 11px;
     padding: 5px 14px;
     border: 1px solid #dedede;
     border-radius: 4px;
@@ -4300,7 +4300,6 @@ select.ah-form-control:focus {
 }
 
 .showUsers {
-    margin: 10px 10px 10px 0;
     background: #ffe4e8;
     color: #737373;
     font-family: Roboto, sans-serif;
@@ -6126,6 +6125,86 @@ select.ah-form-control:focus {
 
 .ah-operation-info-table__col:first-child {
     font-weight: bold;
+}
+
+.ah-radio {
+    margin: 0.5rem;
+}
+.ah-radio label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+.ah-radio input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+.ah-radio input[type="radio"] + .ah-radio-label:before {
+    content: '';
+    background: #f4f4f4;
+    border-radius: 100%;
+    border: 1px solid #b4b4b4;
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    position: relative;
+    margin-right: 3px;
+    vertical-align: top;
+    cursor: pointer;
+    text-align: center;
+    transition: all 250ms ease;
+}
+.ah-radio input[type="radio"]:checked + .ah-radio-label:before {
+    background-color: #3197EE;
+    box-shadow: inset 0 0 0 4px #f4f4f4;
+}
+.ah-radio input[type="radio"]:focus + .ah-radio-label:before {
+    outline: none;
+    border-color: #3197EE;
+}
+.ah-radio input[type="radio"]:disabled + .ah-radio-label:before {
+    box-shadow: inset 0 0 0 4px #f4f4f4;
+    border-color: #b4b4b4;
+    background: #b4b4b4;
+}
+.ah-radio input[type="radio"] + .ah-radio-label:empty:before {
+    margin-right: 0;
+}
+.ah-consultation {
+    display: inline-block;
+    position: relative;
+    float: right;
+    margin-left: 11px;
+}
+.ah-consultation-main {
+    font-size: 15px;
+    cursor: pointer;
+    padding: 5px 14px;
+    border: 1px solid #dedede;
+    border-image: initial;
+    border-radius: 4px;
+    background: rgb(241, 248, 255);;
+}
+.ah-consultation-selector {
+    position: absolute;
+    bottom: calc(100% + 20px);
+    background: rgb(241, 248, 255);;
+    border: 1px solid #dedede;
+    border-radius: 4px;
+}
+.ah-consultation-name {
+    flex-grow: 1;
+}
+.ah-consultation-count {
+    color: #3197EE;
+}
+.ah-consultation-count, .ah-consultation-link, .ah-consultation-name {
+    padding: 0 5px;
+}
+.ah-consultation-count, .ah-consultation-link {
+    border-left: 1px solid #dedede;
+}
+.ah-radio-flex {
+    display: flex;
 }
 
 .ah-check-vas-usage-btn-holder {

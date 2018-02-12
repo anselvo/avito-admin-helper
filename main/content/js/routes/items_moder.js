@@ -1,6 +1,60 @@
+function consultationCount() {
+    $('.fixed-bottom-toolbar').append(`<div class="ah-consultation">
+                                        <div class="ah-consultation-main ah-radio-flex">
+                                            <div class="ah-consultation-name">Выберите консультацию</div>
+                                            <div class="ah-consultation-count" style="display: none"></div>
+                                            <div class="ah-consultation-link" style="display: none"><a href="#" target="_blank">&#10132;</a></div>
+                                        </div>
+                                        <div class="ah-consultation-selector" style="display: none"></div>
+                                       </div>`);
+
+    const $consultationSelector = $('.ah-consultation-selector');
+    const $consultationName = $('.ah-consultation-name');
+
+    $consultationName.click(() => $consultationSelector.toggle());
+
+    for (let i = 0; i < global.consultation.length; ++i) {
+        $consultationSelector.append(`<div class="ah-radio" data-queue-id="${global.consultation[i].id}">
+                                           <input id="radio-${i}" name="radio" type="radio">
+                                           <label for="radio-${i}" class="ah-radio-label ah-radio-flex">
+                                               <div class="ah-consultation-name">${global.consultation[i].name}</div>
+                                               <div class="ah-consultation-count"></div>
+                                           </label>
+                                       </div>`);
+    }
+
+    const $radios = $consultationSelector.find('[name="radio"]');
+
+    $radios.change(radio => {
+        localStorage.consultation = $(radio.currentTarget).parent().data("queueId");
+        consultationNotificationSwap(localStorage.consultation);
+    });
+
+    getGroupFilterCountHD(301).then(response => {
+        for (let i = 0; i < response.length; ++i)
+            $(`[data-queue-id="${response[i].id}"]`).find('.ah-consultation-count').text(response[i].count);
+
+        if (localStorage.consultation) {
+            $(`.ah-radio[data-queue-id="${localStorage.consultation}"]`).find('[name="radio"]').prop('checked', true);
+            consultationNotificationSwap(localStorage.consultation);
+        }
+    });
+}
+
+function consultationNotificationSwap(id) {
+    const $radio = $(`.ah-radio[data-queue-id="${id}"]`);
+    const count = $radio.find('.ah-consultation-count').text();
+    const name = $radio.find('.ah-consultation-name').text();
+
+    const $consultationMain = $('.ah-consultation-main');
+
+    $consultationMain.find('.ah-consultation-count').show().text(count);
+    $consultationMain.find('.ah-consultation-name').show().text(name);
+    $consultationMain.find('.ah-consultation-link').show().find('a').attr('href', `https://adm.avito.ru/helpdesk?fid=${id}`);
+}
+
 function hideTestItemsSearch() {
-    // if (global.userInfo.division_name === "Moderator")
-        $('[name="isTest"]').parents('.form-group').hide();
+    $('[name="isTest"]').parents('.form-group').hide();
 }
 
 function abTest() {
