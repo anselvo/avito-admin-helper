@@ -502,8 +502,13 @@ function postBlockReasonList(reasonId) {
         if (i < usersListActive.length-2) commentActiveUsersLink += '\n';
     }
 
+    let reason = '';
+    if (reasonId === 91) reason = 'СПАМ';
+    if (reasonId === 593) reason = 'ВЗЛОМ';
+    if (reasonId === 128) reason = 'МОШЕННИК';
 
-    let comment = `СПАМ
+
+    const comment = `${reason}
     Ссылка открытая модератором при блокировке:
     ${url}
     

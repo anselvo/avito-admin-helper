@@ -145,6 +145,8 @@ function linksOnComments(tableClass, currentUserID) {
             let text = $(commentBlock).html();
 
             text = text.replace('СПАМ', '<b style="color: #ff4545">СПАМ</b>');
+            text = text.replace('СПАМ', '<b style="color: #9b3aff">МОШЕННИК</b>');
+            text = text.replace('СПАМ', '<b style="color: #61145c">ВЗЛОМ</b>');
             text = text.replace('Ссылка открытая модератором при блокировке:', '<b>Ссылка открытая модератором при блокировке:</b>');
             text = text.replace('Ссылка на активного пользователя:', '<b>Ссылка на активного пользователя:</b>');
             text = text.replace('Ссылка на заблокированных пользователей в items/search:', '<b>Ссылка на заблокированных пользователей в items/search:</b>');
