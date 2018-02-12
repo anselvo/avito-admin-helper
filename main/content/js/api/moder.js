@@ -95,7 +95,7 @@ function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
             {name: "Хобби и отдых", reason: ['Коллекционирование', 'Спорт и отдых', 'Книги и журналы', 'Велосипеды', 'Музыкальные инструменты', 'Охота и рыбалка', 'Билеты и путешествия']},
             {name: "Недвижимость", reason: ['Квартиры', 'Дома, дачи, коттеджи', 'Земельные участки', 'Коммерческая недвижимость', 'Гаражи и машиноместа', 'Комнаты', 'Недвижимость за рубежом']},
             {name: "Работа", reason: ['Резюме', 'Вакансии']},
-            {name: "Услуги", reason: ['Предложения услуг']},
+            {name: "Услуги", reason: ['Предложение услуг']},
             {name: "Животные", reason: ['Кошки', 'Собаки', 'Товары для животных', 'Другие животные', 'Аквариум', 'Птицы']},
             {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес']}
         ]
@@ -413,8 +413,7 @@ function clickActionButton() {
 
     $('.ah-postUserAgent').click(clickPostUserAgent);
 
-    if (isAuthority('ROLE_USERS_INFO_AUTOLOAD')
-    || ~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) clickPostUserAgent();
+    if (isAuthority('ROLE_USERS_INFO_AUTOLOAD') || ~global.currentUrl.indexOf("?phone=") || ~global.currentUrl.indexOf("?ip=")) clickPostUserAgent();
 
     $(document).keydown(function (e) {
         if (e.altKey && e.keyCode === 'U'.charCodeAt(0))
@@ -503,20 +502,21 @@ function postBlockReasonList(reasonId) {
         if (i < usersListActive.length-2) commentActiveUsersLink += '\n';
     }
 
+    let reason = '';
+    if (reasonId === '91') reason = 'СПАМ';
+    if (reasonId === '593') reason = 'ВЗЛОМ';
+    if (reasonId === '128') reason = 'МОШЕННИК';
 
-    let comment = `СПАМ
+
+    const comment = `${reason}
     Ссылка открытая модератором при блокировке:
     ${url}
-    
     Ссылка на активного пользователя:
     ${commentActiveUsersLink}
-    
     Ссылка на заблокированных пользователей в items/search:
     ${commentSearchLink}
-    
     Ссылки на заблокированные учетные записи:
-    ${commentUsersLink}
-    `;
+    ${commentUsersLink}`;
 
     for (let i = 0; i < usersListBlock.length-1; i++) {
         postBlockRequest(usersListBlock[i], reasonId);
@@ -578,7 +578,7 @@ function usersInfoForManyItems(id) {
         if (request.readyState === 4 && request.status === 200)  {
             let r = request.responseText;
 
-            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения)').text();
+            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения) .help-block').text();
             let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
             let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
@@ -1304,7 +1304,7 @@ function getSettings() {
         {
             name: "Услуги", color: '#9900FF', short_name: 'Услуги', show: "false",
             reason: [
-                { name: 'Предложения услуг', color: '#9933FF', short_name: 'Услуги_П', show: "false"  }
+                { name: 'Предложение услуг', color: '#9933FF', short_name: 'Услуги_П', show: "false"  }
             ]
         },
         {

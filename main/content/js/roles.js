@@ -491,6 +491,9 @@ function handleRoles() {
     if (isAuthority('ROLE_SNP')) { // Отправка письма пользователю о взломе и смена пароля
         roleHandler.snp();
     }
+    if (isAuthority('ROLE_CONSULTATION_COUNT')) { // Отправка письма пользователю о взломе и смена пароля
+        roleHandler.consultationCount();
+    }
 
     // общие функции
     function generalFunctions() {
@@ -1348,4 +1351,11 @@ RoleHandler.prototype.reservedOperations = function() {
     if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         reservedOperation('/billing/walletlog');
     }
+};
+
+
+RoleHandler.prototype.consultationCount = function () {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl) ||
+        global.admUrlPatterns.items_search.test(global.currentUrl))
+        consultationCount();
 };
