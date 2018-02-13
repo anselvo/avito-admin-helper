@@ -196,30 +196,25 @@ function addComparisonInfo() {
         $('.compareUserOnComparison[itemid='+itemid+']').click(function (e) {
             const similarUserID = $(this).attr('userid');
 
-            // addBlock();
-            // chekUserforDubles(mainUserId, similarUserID);
-
             const btn = this;
             const users = {};
             users.compared = [similarUserID];
             users.abutment = mainUserId;
-            const comparison = new UsersComparison(users, {
-                getEntityRequest: getUserInfo,
-                getEntityParams: getParamsUserInfo,
-            });
+
             btnLoaderOn(btn);
+            const comparison = new UsersComparison(users);
 
-            comparison.parseEntities()
-                .then(response => {
-                        if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
-                            comparison.renderResultModal({
-                                title: `Сравнение УЗ`,
-                                class: 'ah-compare-modal-users'
-                            });
-                            comparison.renderEntities(response);
+            if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
+                comparison.render()
+                    .then(() => btnLoaderOff(btn));
+            }
 
-                            $(comparison.modal).modal('show');
-                        } else { // items/moder
+            if (global.admUrlPatterns.items_moder.test(global.currentUrl)) { // items/moder
+                comparison.parseEntities({
+                    getEntityRequest: getUserInfo,
+                    getEntityParams: getParamsUserInfo,
+                    })
+                    .then(response => {
                             const existingBsModal = document.querySelector('.modal.in');
                             if (existingBsModal) {
                                 existingBsModal.removeAttribute('tabindex');
@@ -241,7 +236,6 @@ function addComparisonInfo() {
                                     existingBsModal.focus();
                                 }
                             });
-
 
                             comparison.modal.addEventListener('keydown', e => {
                                 // Предотвратить обработку хоткеев админского комперисона
@@ -275,9 +269,9 @@ function addComparisonInfo() {
                                     $(comparison.modal).trigger('hidden.bs.modal');
                                 }
                             });
-                        }
-                    }, error => alert(error)
-                ).then(() => btnLoaderOff(btn));
+                        }, error => alert(error)
+                    ).then(() => btnLoaderOff(btn));
+            }
         });
 
         $('.userInfoComparison[itemid='+itemid+']').click(function () {

@@ -75,23 +75,10 @@ function addCompareUsersUserInfo() {
 
         users.abutment = getParamsUserInfo().id.toString();
 
-        const comparison = new UsersComparison(users, {
-            getEntityRequest: getUserInfo,
-            getEntityParams: getParamsUserInfo,
-        });
-
         btnLoaderOn(btn);
-        comparison.parseEntities()
-            .then(response => {
-                    comparison.renderResultModal({
-                        title: `Сравнение УЗ`,
-                        class: 'ah-compare-modal-users'
-                    });
-                    comparison.renderEntities(response);
-
-                    $(comparison.modal).modal('show');
-                }, error => alert(error)
-            ).then(() => btnLoaderOff(btn));
+        const comparison = new UsersComparison(users);
+        comparison.render()
+            .then(() => btnLoaderOff(btn));
     });
 }
 

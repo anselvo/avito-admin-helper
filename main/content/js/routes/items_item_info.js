@@ -498,21 +498,10 @@ function addCompareItemsItemInfo() {
 
         items.abutment = getParamsItemInfo().id.toString();
 
-        const comparison = new ItemsComparison(items, {
-            getEntityRequest: getItemInfo,
-            getEntityParams: getParamsItemInfo,
-        });
-
         btnLoaderOn(btn);
-        comparison.parseEntities()
-            .then(response => {
-                    comparison.renderResultModal({
-                        title: `Сравнение объявлений`
-                    });
-                    comparison.renderEntities(response);
-                    $(comparison.modal).modal('show');
-                }, error => alert(error)
-            ).then(() => btnLoaderOff(btn));
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => btnLoaderOff(btn));
     });
 }
 

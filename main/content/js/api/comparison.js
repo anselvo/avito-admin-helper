@@ -1,8 +1,6 @@
-function AhComparison(ids, parseFunctions) {
+function AhComparison(ids) {
     this._ids = ids;
     this._maxCount = 30;
-
-    this._parseFunctions = parseFunctions;
 }
 
 AhComparison.prototype.getUnique = function(ids) {
@@ -37,9 +35,7 @@ AhComparison.prototype.getUnique = function(ids) {
     }
 };
 
-AhComparison.prototype.parseEntities = function() {
-    const self = this;
-
+AhComparison.prototype.parseEntities = function(parseFunctions) {
     const all = this._ids.compared;
     all.unshift(this._ids.abutment);
     const entities = this.getUnique(all);
@@ -53,9 +49,9 @@ AhComparison.prototype.parseEntities = function() {
             unique.forEach((id) => {
                 parsedEntities[`id_${id}`] = null; // хак с нечисловой строкой, чтобы сохранить порядок
 
-                self._parseFunctions.getEntityRequest(id)
+                parseFunctions.getEntityRequest(id)
                     .then(
-                        response => parsedEntities[`id_${id}`] = self._parseFunctions.getEntityParams(response),
+                        response => parsedEntities[`id_${id}`] = parseFunctions.getEntityParams(response),
                         error => {
                             outTextFrame(`Ошибка для №${id}: \n${error.status}\n${error.statusText}`);
                             delete parsedEntities[`id_${id}`];
@@ -272,7 +268,6 @@ ItemsComparison.prototype = Object.create(AhComparison.prototype);
 ItemsComparison.prototype.constructor = AhComparison;
 
 ItemsComparison.prototype.renderEntities = function(parsedEntities) {
-    // let modalContainer = $(this.modal).find('.ah-compare-container');
     let modalContainer = this.modal.querySelector('.ah-compare-container');
 
     let statusPatterns = {
@@ -562,6 +557,26 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     });
 
     this.compareStrict();
+};
+
+ItemsComparison.prototype.render = function() {
+    return new Promise(resolve => {
+        this.parseEntities({
+                getEntityRequest: getItemInfo,
+                getEntityParams: getParamsItemInfo,
+            })
+            .then(result => {
+                this.renderResultModal({
+                    title: `Сравнение объявлений`
+                });
+                this.renderEntities(result);
+                $(this.modal).modal('show');
+            }, error => {
+                alert(error);
+            })
+            .then(() => resolve());
+    });
+
 };
 
 function UsersComparison() {
@@ -988,4 +1003,26 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
             btn.setAttribute('data-similar-info', JSON.stringify(dataInfo));
         }
     });
+};
+
+UsersComparison.prototype.render = function() {
+    return new Promise(resolve => {
+        this.parseEntities({
+                getEntityRequest: getUserInfo,
+                getEntityParams: getParamsUserInfo,
+            })
+            .then(result => {
+                this.renderResultModal({
+                    title: `Сравнение УЗ`,
+                    class: 'ah-compare-modal-users'
+                });
+                this.renderEntities(result);
+
+                $(this.modal).modal('show');
+            }, error => {
+                alert(error);
+            })
+            .then(() => resolve());
+    });
+
 };
