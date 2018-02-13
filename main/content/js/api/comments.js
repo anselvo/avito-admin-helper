@@ -168,6 +168,9 @@ function linksOnComments(tableClass, currentUserID) {
         btnLoaderOn(btn);
         const comparison = new UsersComparison(users);
         comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
             .then(() => btnLoaderOff(btn));
 
     });
@@ -257,9 +260,13 @@ function loadComperison(itemID, currentUserID) {
                     const users = {};
                     users.compared = [similarUserID];
                     users.abutment = currentUserID[4];
-                    const comparison = new UsersComparison(users);
                     btnLoaderOn(btn);
+
+                    const comparison = new UsersComparison(users);
                     comparison.render()
+                        .then(() => {
+                            comparison.showModal();
+                        }, error => alert(error))
                         .then(() => btnLoaderOff(btn));
                 });
 

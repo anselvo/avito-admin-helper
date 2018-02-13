@@ -203,75 +203,37 @@ function addComparisonInfo() {
 
             btnLoaderOn(btn);
             const comparison = new UsersComparison(users);
+            comparison.render()
+                .then(() => {
+                    if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
+                        comparison.showModal();
+                    }
 
-            if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
-                comparison.render()
-                    .then(() => btnLoaderOff(btn));
-            }
+                    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) { // items/moder
+                        comparison.showModalSecond();
 
-            if (global.admUrlPatterns.items_moder.test(global.currentUrl)) { // items/moder
-                comparison.parseEntities({
-                    getEntityRequest: getUserInfo,
-                    getEntityParams: getParamsUserInfo,
-                    })
-                    .then(response => {
-                            const existingBsModal = document.querySelector('.modal.in');
-                            if (existingBsModal) {
-                                existingBsModal.removeAttribute('tabindex');
+                        // Предотвратить обработку хоткеев админского комперисона
+                        comparison.modal.addEventListener('keydown', e => {
+                            const admKeyCodes = [
+                                81, // q
+                                87, // w
+                                69, // e
+                                82, // r
+                            ];
+                            if (admKeyCodes.includes(e.keyCode)) {
+                                e.stopPropagation();
                             }
+                        });
 
-                            comparison.renderResultModal({
-                                title: `Сравнение УЗ`,
-                                class: 'ah-compare-modal-users ah-compare-modal__second'
-                            });
-                            comparison.renderEntities(response);
-
-                            comparison.modal.style.cssText = 'display: block;';
-                            $(comparison.modal).trigger('shown.bs.modal');
-                            comparison.modal.focus();
-
-                            $(comparison.modal).on('hidden.bs.modal', function () {
-                                if (existingBsModal) {
-                                    existingBsModal.setAttribute('tabindex', '-1');
-                                    existingBsModal.focus();
-                                }
-                            });
-
-                            comparison.modal.addEventListener('keydown', e => {
-                                // Предотвратить обработку хоткеев админского комперисона
-                                const admKeyCodes = [
-                                    81, // q
-                                    87, // w
-                                    69, // e
-                                    82, // r
-                                ];
-                                if (admKeyCodes.includes(e.keyCode)) {
-                                    e.stopPropagation();
-                                }
-
-                                // Закрывать сркиптовый комперисон по Escape
-                                if (e.keyCode === 27) { // Esc
-                                    comparison.modal.style.cssText = 'display: none;';
-                                    $(comparison.modal).trigger('hidden.bs.modal');
-                                }
-                            });
-
-                            // Предотвратить сабмит админского комперисона
-                            comparison.modal.addEventListener('keyup', e => {
-                                if (e.keyCode === 32) { // Space
-                                    e.stopPropagation();
-                                }
-                            });
-
-                            comparison.modal.addEventListener('click', e => {
-                                if (!e.target.closest('.modal-dialog')) {
-                                    comparison.modal.style.cssText = 'display: none;';
-                                    $(comparison.modal).trigger('hidden.bs.modal');
-                                }
-                            });
-                        }, error => alert(error)
-                    ).then(() => btnLoaderOff(btn));
-            }
+                        // Предотвратить сабмит админского комперисона
+                        comparison.modal.addEventListener('keyup', e => {
+                            if (e.keyCode === 32) { // Space
+                                e.stopPropagation();
+                            }
+                        });
+                    }
+                }, error => alert(error))
+                .then(() => btnLoaderOff(btn));
         });
 
         $('.userInfoComparison[itemid='+itemid+']').click(function () {

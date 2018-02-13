@@ -501,6 +501,9 @@ function addCompareItemsItemInfo() {
         btnLoaderOn(btn);
         const comparison = new ItemsComparison(items);
         comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
             .then(() => btnLoaderOff(btn));
     });
 }

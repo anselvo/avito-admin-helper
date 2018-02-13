@@ -64,6 +64,9 @@ function comparisonInfoOld() {
         btnLoaderOn(btn);
         const comparison = new UsersComparison(users);
         comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
             .then(() => btnLoaderOff(btn));
     });
 

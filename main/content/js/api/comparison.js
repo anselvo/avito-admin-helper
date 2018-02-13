@@ -79,12 +79,6 @@ AhComparison.prototype.renderResultModal = function(options) {
     const modalTitle = options.title || `Сравнение`;
     const modalClass = options.class || '';
 
-    const openedModal = document.querySelector('.ah-compare-modal');
-    if (openedModal) {
-        $(openedModal).modal("hide");
-        openedModal.remove();
-    }
-
     const modal = document.createElement('div');
     modal.className = `modal ah-dynamic-bs-modal ah-compare-modal ${modalClass}`;
     modal.setAttribute('tabindex', '-1');
@@ -141,10 +135,6 @@ AhComparison.prototype.renderResultModal = function(options) {
         let target = e.target;
 
         while (target !== this) {
-            if (target.classList.contains('close')) {
-                modal.style.cssText = 'display: none;';
-                $(modal).trigger('hidden.bs.modal');
-            }
             // collapse
             if (target.classList.contains('ah-compare-show-more')) {
                 const prev = target.previousElementSibling;
@@ -239,6 +229,61 @@ AhComparison.prototype.renderResultModal = function(options) {
     this.modal = modal;
 };
 
+// показ первой модалки
+AhComparison.prototype.showModal = function() {
+    const openedModal = document.querySelector('.ah-compare-modal');
+    if (openedModal) {
+        $(openedModal).modal("hide");
+        openedModal.remove();
+    }
+
+    $(this.modal).modal('show');
+};
+
+// показ модалки поверх первой
+AhComparison.prototype.showModalSecond = function() {
+    // удалить вторую скриптовую модалку, если есть
+    const existingSecondModal = document.querySelector('.ah-compare-modal__second');
+    if (existingSecondModal) {
+        existingSecondModal.remove();
+    }
+
+    // проверить наличие первой модалки
+    const existingBsModal = document.querySelector('.modal.in');
+    if (existingBsModal) {
+        existingBsModal.removeAttribute('tabindex');
+    }
+
+    this.modal.style.cssText = 'display: block;';
+    this.modal.classList.add('ah-compare-modal__second');
+    $(this.modal).trigger('shown.bs.modal');
+    this.modal.focus();
+
+    $(this.modal).on('hidden.bs.modal', function() {
+        if (existingBsModal) {
+            existingBsModal.setAttribute('tabindex', '-1');
+            existingBsModal.focus();
+            this.remove();
+        }
+    });
+
+    this.modal.addEventListener('keydown', e => {
+        // Закрывать сркиптовый комперисон по Escape
+        if (e.keyCode === 27) { // Esc
+            this.modal.style.cssText = 'display: none;';
+            $(this.modal).trigger('hidden.bs.modal');
+        }
+    });
+
+    this.modal.addEventListener('click', e => {
+        if (!e.target.closest('.modal-dialog')
+            || e.target.closest('.close')) {
+            this.modal.style.cssText = 'display: none;';
+            $(this.modal).trigger('hidden.bs.modal');
+        }
+    });
+};
+
 // строгое сравнение
 AhComparison.prototype.compareStrict = function() {
     const allCompareNodes = this.modal.querySelectorAll('[data-compare]');
@@ -259,6 +304,7 @@ AhComparison.prototype.compareStrict = function() {
         });
     });
 };
+
 
 function ItemsComparison() {
     AhComparison.apply(this, arguments);
@@ -290,6 +336,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         sellerName: '',
         user: ''
     };
+
+    const abutmentId = this._ids.abutment;
+    let abutmentUserId = null;
 
     for (let key in parsedEntities) {
         if (!parsedEntities.hasOwnProperty(key)) continue;
@@ -436,10 +485,17 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
                     <span class="ah-compare-items-label">Пользователь:</span>
                     <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userMail" data-entity-id="${item.id}">
-                        ${item.userMail}</a>, 
-                    <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a>
+                    ${item.userMail}</a>
+                    ${(abutmentId !== item.id && abutmentUserId !== item.userId) ? `
+                        (<button class="btn btn-link ah-pseudo-link ah-compare-users-btn" data-user-id="${item.userId}" title="Сравнить УЗ">&#8644</button>)
+                    ` : ``}
+                    <div><span class="ah-compare-items-label">Объявления:</span> <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a></div>
                 </div>
             `;
+
+        if (abutmentId === item.id) {
+            abutmentUserId = item.userId;
+        }
     }
 
     modalContainer.innerHTML = `
@@ -482,12 +538,10 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         <div class="ah-compare-row">
             ${rows.sellerName}
         </div>
-        <div class="ah-compare-row">
+        <div class="ah-compare-row ah-compare-items-row-user">
             ${rows.user}
         </div>
     `;
-
-    const abutmentId = this._ids.abutment;
 
     // опорное
     const abutmentItemIdNode = this.modal.querySelector(`.ah-compare-items-item-id[data-entity-id="${abutmentId}"]`);
@@ -556,11 +610,34 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
     });
 
+    // Пользователь
+    const userRow = this.modal.querySelector('.ah-compare-items-row-user');
+    userRow.addEventListener('click', e => {
+        const target = e.target;
+
+        if (target.classList.contains('ah-compare-users-btn')) {
+            const users = {};
+            users.compared = [target.dataset.userId];
+            users.abutment = abutmentUserId;
+
+            btnLoaderOn(target);
+
+            const comparison = new UsersComparison(users);
+            comparison.render()
+                .then(() => {
+                    comparison.showModalSecond();
+                }, error => alert(error))
+                .then(() => {
+                    btnLoaderOff(target);
+                });
+        }
+    });
+
     this.compareStrict();
 };
 
 ItemsComparison.prototype.render = function() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         this.parseEntities({
                 getEntityRequest: getItemInfo,
                 getEntityParams: getParamsItemInfo,
@@ -570,11 +647,10 @@ ItemsComparison.prototype.render = function() {
                     title: `Сравнение объявлений`
                 });
                 this.renderEntities(result);
-                $(this.modal).modal('show');
+                resolve();
             }, error => {
-                alert(error);
-            })
-            .then(() => resolve());
+                reject(error);
+            });
     });
 
 };
@@ -964,7 +1040,6 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
     similarBtns.forEach(btn => {
         const entityId = btn.dataset.entityId;
         const cells = modalContainer.querySelectorAll(`.ah-compare-cell[data-entity-id="${entityId}"]`);
-        // const similars = [].map.call(cells, cell => cell.querySelectorAll('.ah-compare-similar'));
 
         const similars = [].reduce.call(cells, (res, cell) => {
             const nodesArr = [].slice.call(cell.querySelectorAll('.ah-compare-similar'));
@@ -1006,7 +1081,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 };
 
 UsersComparison.prototype.render = function() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         this.parseEntities({
                 getEntityRequest: getUserInfo,
                 getEntityParams: getParamsUserInfo,
@@ -1017,12 +1092,9 @@ UsersComparison.prototype.render = function() {
                     class: 'ah-compare-modal-users'
                 });
                 this.renderEntities(result);
-
-                $(this.modal).modal('show');
+                resolve();
             }, error => {
-                alert(error);
-            })
-            .then(() => resolve());
+                reject(error);
+            });
     });
-
 };
