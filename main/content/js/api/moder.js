@@ -147,45 +147,48 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
     let content = '';
     let inReasons = [];
 
-    for (let i = 0; i < reasons.length; ++i) {
-        let progress = '';
-        if (typeof reasons[i] === "object") {
-            if (prob) progress = addOtherReasonProb(reasons[i].name, prob);
+    if (reasons) {
+        for (let i = 0; i < reasons.length; ++i) {
+            let progress = '';
+            if (typeof reasons[i] === "object") {
+                if (prob) progress = addOtherReasonProb(reasons[i].name, prob);
 
-            content += '<div class="ah-other-reason-block ah-has-children">' +
+                content += '<div class="ah-other-reason-block ah-has-children">' +
                     '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i].name + progress + '</span></label>' +
-                '</div>';
+                    '</div>';
 
-            inReasons.push(reasons[i]);
-        } else {
-            if (prob) progress = addOtherReasonProb(reasons[i], prob);
+                inReasons.push(reasons[i]);
+            } else {
+                if (prob) progress = addOtherReasonProb(reasons[i], prob);
 
-            content += '<div class="ah-other-reason-block">' +
+                content += '<div class="ah-other-reason-block">' +
                     '<label><input type="checkbox" name="ah-other-reasons"/><span>' + reasons[i] + progress + '</span></label>' +
-                '</div>';
+                    '</div>';
+            }
         }
+
+
+        const template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
+
+        $(reasonSelectorContain)
+            .append(template)
+            .mouseenter(function () {
+                let blockItem = $(this).find('>.ah-other-reasons');
+
+                $(blockItem).show();
+
+                const width = $(blockItem).width();
+                const offset = $(blockItem).offset();
+
+                const rightPoint = offset.left + width;
+                if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
+            })
+            .mouseleave(function () {
+                const blockItem = $(this).find('>.ah-other-reasons');
+
+                $(blockItem).hide();
+            });
     }
-
-    const template = '<div class="ah-other-reasons"><div class="popover-content">' + content + '</div></div>';
-
-    $(reasonSelectorContain)
-        .append(template)
-        .mouseenter(function () {
-            let blockItem = $(this).find('>.ah-other-reasons');
-
-            $(blockItem).show();
-
-            const width = $(blockItem).width();
-            const offset = $(blockItem).offset();
-
-            const rightPoint = offset.left + width;
-            if (rightPoint > $(window).width()) $(blockItem).css('transform', 'translate(-100%, -60%)');
-        })
-        .mouseleave(function () {
-            const blockItem = $(this).find('>.ah-other-reasons');
-
-            $(blockItem).hide();
-        });
 
     $(reasonSelectorContain)
         .find('[type="checkbox"]')
