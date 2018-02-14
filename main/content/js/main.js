@@ -45,21 +45,17 @@ $(function () {
     global.currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-        try {
-            global.connectInfo = result.connectInfo;
-            global.authorities = result.authorities;
-            global.userInfo = result.connectInfo.spring_user.principal;
+        global.connectInfo = result.connectInfo;
+        global.authorities = result.authorities;
+        global.userInfo = result.connectInfo.spring_user.principal;
 
 
-            if (result.script) {
-                startNotification(result.notifications);
+        if (result.script) {
+            startNotification(result.notifications);
 
-                holidays();
+            holidays();
 
-                handleRoles();
-            }
-        } catch (e) {
-            console.log(e);
+            handleRoles();
         }
     });
 
