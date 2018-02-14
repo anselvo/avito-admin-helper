@@ -269,6 +269,8 @@ function errorListener(response) {
 }
 
 function errorMessage(status, error) {
+    const previousError = connectInfo.error;
+
     switch (status) {
         case null:
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
@@ -301,7 +303,7 @@ function errorMessage(status, error) {
             connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
     }
 
-    addChromeNotification("Ошибка: " + connectInfo.error);
+    if (previousError !== connectInfo.error) addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
 function setConnectInfoToStorage() {
