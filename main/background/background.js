@@ -34,7 +34,6 @@ chrome.runtime.onInstalled.addListener(details => {
 
     if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\nДля корректной работы расширения, рекомендуется обновить страницы в браузере");
     if (details.reason === 'install') addChromeNotification("Installed " + version);
-
 });
 
 // ЛОВИТ БУДИЛЬНИК
