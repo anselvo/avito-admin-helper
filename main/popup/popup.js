@@ -25,7 +25,6 @@ $(function() {
 
         if (changes.authorities) {
             authorities = changes.authorities.newValue;
-            console.log(authorities);
         }
     });
 });
