@@ -84,42 +84,17 @@ function autoOtherReasons() {
 
 function optionOtherReasons(blockSelector, reasonSelector, textSelector, prob) {
     $('.ah-other-reasons').remove();
-
-    const otherReasonsCategory = {
-        name: "Неправильная категория",
-        reason: [
-            {name: "Личные вещи", reason: ['Одежда, обувь, аксессуары', 'Детская одежда и обувь', 'Товары для детей и игрушки', 'Красота и здоровье', 'Часы и украшения']},
-            {name: "Транспорт", reason: ['Запчасти и аксессуары', 'Автомобили', 'Грузовики и спецтехника', 'Мотоциклы и мототехника', 'Водный транспорт']},
-            {name: "Для дома и дачи", reason: ['Ремонт и строительство', 'Мебель и интерьер', 'Бытовая техника', 'Посуда и товары для кухни', 'Растения', 'Продукты питания']},
-            {name: "Бытовая электроника", reason: ['Телефоны', 'Аудио и видео', 'Товары для компьютера', 'Фототехника', 'Оргтехника и расходники', 'Игры, приставки и программы', 'Ноутбуки', 'Планшеты и электронные книги', 'Настольные компьютеры']},
-            {name: "Хобби и отдых", reason: ['Коллекционирование', 'Спорт и отдых', 'Книги и журналы', 'Велосипеды', 'Музыкальные инструменты', 'Охота и рыбалка', 'Билеты и путешествия']},
-            {name: "Недвижимость", reason: ['Квартиры', 'Дома, дачи, коттеджи', 'Земельные участки', 'Коммерческая недвижимость', 'Гаражи и машиноместа', 'Комнаты', 'Недвижимость за рубежом']},
-            {name: "Работа", reason: ['Резюме', 'Вакансии']},
-            {name: "Услуги", reason: ['Предложение услуг']},
-            {name: "Животные", reason: ['Кошки', 'Собаки', 'Товары для животных', 'Другие животные', 'Аквариум', 'Птицы']},
-            {name: "Для бизнеса", reason: ['Оборудование для бизнеса', 'Готовый бизнес']}
-        ]
-    };
-
-    const otherReasonsService = {
-        name: "Вид услуги",
-        reason: ['IT, интернет, телеком', 'Бытовые услуги', 'Деловые услуги', 'Искусство', 'Красота, здоровье', 'Курьерские поручения',
-            'Мастер на час', 'Няни, сиделки', 'Оборудование, производство', 'Обучение, курсы', 'Охрана, безопасность', 'Питание, кейтеринг',
-            'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство',
-            'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
-    };
-
     const block = $(blockSelector);
 
     for (let i = 0; i < block.length; ++i) {
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsCategory, prob);
-        addOtherReasons(block[i], reasonSelector, textSelector, otherReasonsService, prob);
+        addOtherReasons(block[i], reasonSelector, textSelector, global.otherReasonsCategory, prob);
+        addOtherReasons(block[i], reasonSelector, textSelector, global.otherReasonsService, prob);
 
         if (localStorage.autoCheckOtherReason === 'true')
             addAutoCheckSuggestReason(block[i], reasonSelector);
     }
 
-    $('.ah-other-reasons').click(function (event) {
+    $('.ah-other-reasons').click((event) => {
         event.stopPropagation();
     });
 

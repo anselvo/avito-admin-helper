@@ -58,17 +58,8 @@ function hideTestItemsSearch() {
 }
 
 function abTest() {
-    let abTestInfo = [
-        { categoryID: "10", locationID: "660710" },
-        { categoryID: "10", locationID: "660300" },
-        { categoryID: "10", locationID: "628780" },
-        { categoryID: "10", locationID: "625670" },
-        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" },
-        { categoryID: "24", locationID: "653240", containsOption: "Квартиры / Сдам  / Посуточно" }
-    ];
-
-    for (let i = 0; i < abTestInfo.length; ++i) {
-        markTestItems(abTestInfo[i].categoryID, abTestInfo[i].locationID, abTestInfo[i].containsOption);
+    for (let i = 0; i < global.abTestInfo.length; ++i) {
+        markTestItems(global.abTestInfo[i].categoryID, global.abTestInfo[i].locationID, global.abTestInfo[i].containsOption);
     }
 }
 
@@ -93,7 +84,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 }
 
 function abTestHighlight(categoryID, locationID, containsOption) {
-    let $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+    const $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
     $items.find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
 
