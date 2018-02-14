@@ -1279,7 +1279,7 @@ function getSettings() {
         {
             name: "Услуги", color: '#9900FF', short_name: 'Услуги', show: "false",
             reason: [
-                { name: 'Предложение услуг', color: '#9933FF', short_name: 'Услуги_П', show: "false"  }
+                { name: 'Вид услуги', color: '#9933FF', short_name: 'Услуги_П', show: "false"  }
             ]
         },
         {
