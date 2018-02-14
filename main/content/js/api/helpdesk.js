@@ -1273,3 +1273,31 @@ function createTicket(data) {
 function getHdLeftPanelHeaders() {
     return document.querySelectorAll('.col-xs-3:first-child h4');
 }
+
+// проверка оверлея в хелпдеске
+function helpdeskLoadingEnd() {
+    const timeLimitMs = 10000;
+    const start = Date.now();
+
+    return new Promise(function (resolve, reject) {
+        const timer = setInterval(() => {
+            const loader = document.querySelector('.helpdesk-loading');
+            if (!loader) {
+                clearInterval(timer);
+                reject('No Loader');
+                return;
+            }
+
+            if (!loader.classList.contains('helpdesk-loading_visible')) {
+                clearInterval(timer);
+                resolve();
+            }
+
+            const now = Date.now();
+            if ((now - start) > timeLimitMs) {
+                clearInterval(timer);
+                reject('Timeout');
+            }
+        }, 50);
+    });
+}
