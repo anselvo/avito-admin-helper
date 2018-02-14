@@ -10,6 +10,17 @@ let connectInfo = {
     error: null
 };
 
+$(function () {
+    // забираем необходимую инфу со стореджа для старта расширения
+    getStorageInfo();
+
+    // определяем кто залогинен в админку
+    getCookieInfo();
+
+    // запускаем чекер дня
+    chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
+});
+
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
 chrome.runtime.onUpdateAvailable.addListener(() => {
     // принудительное обновление расширения
@@ -24,14 +35,6 @@ chrome.runtime.onInstalled.addListener(details => {
     if (details.reason === 'update') addChromeNotification("Updated "+ version + "\n\nДля корректной работы расширения, рекомендуется обновить страницы в браузере");
     if (details.reason === 'install') addChromeNotification("Installed " + version);
 
-    // забираем необходимую инфу со стореджа для старта расширения
-    getStorageInfo();
-
-	// определяем кто залогинен в админку
-	getCookieInfo();
-
-	// запускаем чекер дня
-    chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
 });
 
 // ЛОВИТ БУДИЛЬНИК
