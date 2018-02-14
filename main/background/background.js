@@ -223,13 +223,8 @@ function disconnect() {
 }
 
 function reconnect() {
-    if (connectInfo.spring_reconnect) {
-        chrome.alarms.create('reconnect', {delayInMinutes: 1, periodInMinutes: 1});
-        console.log("start reconnect");
-    } else {
-        chrome.alarms.clear('reconnect');
-        console.log("stop reconnect");
-    }
+    if (connectInfo.spring_reconnect) chrome.alarms.create('reconnect', {delayInMinutes: 1, periodInMinutes: 1});
+    else chrome.alarms.clear('reconnect');
 }
 
 function login(username, password) {
@@ -307,7 +302,6 @@ function setAuthoritiesToStorage(authorities) {
 
 function setConnectInfoToStorage() {
     chrome.storage.local.set({ connectInfo: connectInfo });
-    console.log({ connectInfo: connectInfo });
 }
 
 function errorListener(response) {
@@ -457,9 +451,6 @@ function moderationListener(details) {
 	if (details.url === `${connectInfo.adm_url}/items/moder/submit`) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
-
-
-        console.log(formData['action']);
 
         if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, items_id);
 		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, items_id);
