@@ -680,7 +680,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         },
         ips: {
             hasShowMore: true,
-            showMoreText: 'IP-адреса'
+            showMoreText: 'IP-адреса',
+            class: 'ah-compare-row-ips'
         },
         control: {
             class: 'ah-compare-row-controls'
