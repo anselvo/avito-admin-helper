@@ -368,7 +368,7 @@ function reservedOperation(route) {
             break;
 
         case '/billing/walletlog':
-            elems = $('table.table-striped tr');
+            elems = $('.billing table.table-striped tr');
             break;
     }
 
