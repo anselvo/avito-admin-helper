@@ -6,6 +6,7 @@ let connectInfo = {
     spring_auth: false,
     spring_user: null,
     spring_url: "http://spring.avitoadm.ru",
+    spring_reconnect: false,
     status: null,
     error: null
 };
@@ -39,6 +40,7 @@ chrome.runtime.onInstalled.addListener(details => {
 // ЛОВИТ БУДИЛЬНИК
 chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
+    if (alarm.name === 'reconnect') connect();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
@@ -103,9 +105,8 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
             return false;
 
         case "connect":
-            if (request.password) {
-                chrome.storage.local.set({ password: request.password });
-            }
+            if (request.password) chrome.storage.local.set({ password: request.password });
+            else chrome.storage.local.set({ password: null });
 
             connect();
             return false;
@@ -125,10 +126,12 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
+        setConnectInfo(result.connectInfo);
     });
 
-    chrome.storage.onChanged.addListener(result => {
-        if (result.script) setBudgetIcon(result.script.newValue);
+    chrome.storage.onChanged.addListener(changes => {
+        if (changes.script) setBudgetIcon(changes.script.newValue);
+        if (changes.connectInfo) setConnectInfo(changes.connectInfo.newValue);
     });
 }
 
@@ -179,6 +182,7 @@ function connect() {
             login(connectInfo.adm_username, password)
                 .then(() => {
                     connectInfo.spring_auth = true;
+                    connectInfo.spring_reconnect = false;
                     connectInfo.error = null;
 
                     startWebSocket();
@@ -187,7 +191,10 @@ function connect() {
                     connectInfo.spring_auth = false;
 
                     if (error.message === 'No message available') error.message = error.error;
-                    if (error.message === 'Failed to fetch') error.status = "(failed)";
+                    if (error.message === 'Failed to fetch') {
+                        error.status = "(failed)";
+                        connectInfo.status = null;
+                    }
                     if (error.message === 'Authentication with ajax is failure') {
                         if (password) error.status = 4012;
                         else error.status = 4011;
@@ -200,20 +207,29 @@ function connect() {
 }
 
 function disconnect() {
-    if (!connectInfo.adm_auth)
-        logout()
-            .then(() => {
-                connectInfo.spring_auth = false;
-                connectInfo.spring_user = null;
+    if (!connectInfo.adm_auth) {
+        logout();
+        connectInfo.spring_auth = false;
+        connectInfo.spring_user = null;
 
-                connectInfo.status = null;
+        connectInfo.status = null;
 
-                chrome.storage.local.set({ script: null });
-                chrome.storage.local.set({ authorities: null });
+        chrome.storage.local.set({script: null});
+        chrome.storage.local.set({authorities: null});
 
-                errorMessage(connectInfo.status);
-            })
-            .then(() => setConnectInfoToStorage());
+        errorMessage(connectInfo.status);
+        setConnectInfoToStorage();
+    }
+}
+
+function reconnect() {
+    if (connectInfo.spring_reconnect) {
+        chrome.alarms.create('reconnect', {delayInMinutes: 1, periodInMinutes: 1});
+        console.log("start reconnect");
+    } else {
+        chrome.alarms.clear('reconnect');
+        console.log("stop reconnect");
+    }
 }
 
 function login(username, password) {
@@ -255,6 +271,29 @@ function getPrincipal() {
         }, error => errorMessage(error.status, error.error));
 }
 
+function setBudgetIcon(script) {
+    switch (script) {
+        case true:
+            chrome.browserAction.setBadgeText({text: 'On'});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#e2442c'});
+
+            console.log('Content scripts - On');
+            break;
+        case false:
+            chrome.browserAction.setBadgeText({text: "Off"});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#595959'});
+
+            console.log('Content scripts - Off');
+            break;
+        default:
+            chrome.browserAction.setBadgeText({text: ''});
+    }
+}
+
+function setConnectInfo(connectInfo) {
+    this.connectInfo = connectInfo;
+}
+
 function setAuthoritiesToStorage(authorities) {
     chrome.storage.local.get('authorities', result => {
         const tmp = result.authorities ? result.authorities : {};
@@ -264,6 +303,11 @@ function setAuthoritiesToStorage(authorities) {
 
         chrome.storage.local.set({ authorities: authorities });
     });
+}
+
+function setConnectInfoToStorage() {
+    chrome.storage.local.set({ connectInfo: connectInfo });
+    console.log({ connectInfo: connectInfo });
 }
 
 function errorListener(response) {
@@ -276,40 +320,49 @@ function errorMessage(status, error) {
     switch (status) {
         case null:
             connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
+            connectInfo.spring_reconnect = false;
             break;
         case "(failed)":
             connectInfo.error = "Отсутствует соединение с сервером\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
+            connectInfo.spring_reconnect = true;
             break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
+            connectInfo.spring_reconnect = false;
             break;
         case 4011:
             connectInfo.error = "Вас нет в списке пользователей или у вас установлен персональный пароль";
+            connectInfo.spring_reconnect = false;
             break;
         case 401:
             connectInfo.error = status + " " + error + "\nПроблемы с аутентификацией\nСообщите о проблеме тимлидеру";
+            connectInfo.spring_reconnect = false;
             break;
         case 403:
             connectInfo.error = status + " " + error + "\nС вашего IP адреса отсутствует доступ к расширению";
+            connectInfo.spring_reconnect = true;
             break;
         case 500:
             connectInfo.error = status + " " + error + "\nК сожалению, произошла техническая ошибка\nПопробуйте закрыть окно расширения и открыть его заново";
+            connectInfo.spring_reconnect = true;
             break;
         case 502:
             connectInfo.error = status + " " + error + "\nНа сервере проводятся технические работы\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
+            connectInfo.spring_reconnect = true;
             break;
         case 504:
             connectInfo.error = status + " " + error + "\nСервер не может получить ответ вовремя\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
+            connectInfo.spring_reconnect = true;
             break;
         default:
             connectInfo.error = status + " " + error + "\nСообщите о проблеме тимлидеру";
+            connectInfo.spring_reconnect = true;
     }
 
-    if (previousError !== connectInfo.error) addChromeNotification("Ошибка: " + connectInfo.error);
-}
-
-function setConnectInfoToStorage() {
-    chrome.storage.local.set({ connectInfo: connectInfo });
+    if (previousError !== connectInfo.error) {
+        reconnect();
+        addChromeNotification("Ошибка: " + connectInfo.error);
+    }
 }
 
 function startWebSocket() {
@@ -693,33 +746,4 @@ function requestListener(tabId, url) {
 
 function sendMessage(tabId, msg) {	
 	chrome.tabs.sendMessage(tabId, { onUpdated: msg });
-}
-
-function iconDisable(tabId) {
-	chrome.browserAction.disable(tabId);
-    chrome.browserAction.setBadgeBackgroundColor({color: "#c4c9c8"});
-}
-
-function iconEnable(tabId) {
-    chrome.browserAction.enable(tabId);
-    chrome.browserAction.setBadgeBackgroundColor({color: "#fbbc05"});
-}
-
-function setBudgetIcon(script) {
-    switch (script) {
-        case true:
-            chrome.browserAction.setBadgeText({text: 'On'});
-            chrome.browserAction.setBadgeBackgroundColor({color: '#e2442c'});
-
-            console.log('Content scripts - On');
-            break;
-        case false:
-            chrome.browserAction.setBadgeText({text: "Off"});
-            chrome.browserAction.setBadgeBackgroundColor({color: '#595959'});
-
-            console.log('Content scripts - Off');
-            break;
-        default:
-            chrome.browserAction.setBadgeText({text: ''});
-    }
 }
