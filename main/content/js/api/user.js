@@ -30,14 +30,20 @@ function userShowItems(userId, offset) {
     openInfoWindow(1000, offset);
 
     $('.userInfoMain')
-        .append('<div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div>')
+        .append(`<a href="/items/search?user_id=${userId}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
         .append('<div class="ah-user-show-item-body"></div>');
 
     const $body = $('.ah-user-show-item-body');
+    const $title = $('.ah-user-show-item-title');
 
     getUserShowItems(userId).then(response => {
+        const $responseTitle = $(response).find('.header__title');
         const $responseTable = $(response).find('.table');
         const $responseTableTR = $responseTable.find('tbody tr');
+
+        const userName = $responseTitle.text().split('«')[1].split('»')[0];
+
+        $title.text(userName);
 
         if ($responseTableTR.length === 0) {
             $body.append('<div style="font-weight: bold; text-align: center">Объявлений не найдено</div>');
@@ -54,15 +60,13 @@ function userShowItems(userId, offset) {
 
         closeLoadBarInfoWindow();
     });
-
-    closeLoadBarInfoWindow();
 }
 
 function userMessenger(userId, offset) {
     openInfoWindow(700, offset);
 
     $('.userInfoMain')
-        .append('<div class="ah-user-messenger-title" style="text-align: center; color: #5b89c8; font-weight: bold">Messenger</div>')
+        .append(`<a href="/messenger/user/${userId}" target="_blank"><div class="ah-user-messenger-title" style="text-align: center; color: #5b89c8; font-weight: bold">Messenger</div></a>`)
         .append('<div class="ah-user-messenger-body"></div>');
 
     const $body = $('.ah-user-messenger-body');
