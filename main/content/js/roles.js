@@ -197,10 +197,8 @@ function handleRoles() {
 
     // QUEUE INFO
     function helpdeskQueueInfoEvent() {
-        const timer = setInterval(() => {
-            const loadingVisible = $('.helpdesk-loading')
-                .hasClass('helpdesk-loading_visible');
-            if (!loadingVisible) {
+        helpdeskLoadingEnd().
+            then(() => {
                 // открывать тикеты в новой вкладке
                 if (isAuthority('ROLE_HELPDESK_QUEUE_OPEN_TICKET')) {
                     roleHandler.helpdeskQueueOpenTicket();
@@ -211,9 +209,9 @@ function handleRoles() {
                     roleHandler.helpdeskQueueEmployeeLabels();
                 }
 
-                clearInterval(timer);
-            }
-        }, 50);
+            }, error => {
+                console.log(`Error:\n${error}`);
+            });
     }
 
     // TICKET HOLD
@@ -743,9 +741,12 @@ RoleHandler.prototype.helpdeskTlHelpHold = function() {
     if ($btn.hasClass('sh-active-btn')) {
         $('#sh-loading-layer').show();
 
-        setTimeout(function () {
-            checkAdmUserIdAttendantTL();
-        }, 100);
+        helpdeskLoadingEnd().
+            then(() => checkAdmUserIdAttendantTL(),
+                error => {
+                    alert(`Error:\n${error}`);
+                    $('#sh-loading-layer').hide();
+                });
     }
 };
 
@@ -757,9 +758,12 @@ RoleHandler.prototype.helpdeskTlHelpComment = function() {
         if ($btn.hasClass('sh-active-btn')) {
             $('#sh-loading-layer').show();
 
-            setTimeout(function () {
-                checkAdmUserIdAttendantTL();
-            }, 100);
+            helpdeskLoadingEnd().
+                then(() => checkAdmUserIdAttendantTL(),
+                    error => {
+                        alert(`Error:\n${error}`);
+                        $('#sh-loading-layer').hide();
+                    });
         }
     }
 };
