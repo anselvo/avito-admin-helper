@@ -214,13 +214,13 @@ function addComparisonInfo() {
             $comparisonUserListParent
                 .prepend('<span class="userWalletActionButton userWalletComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
 
-        // if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
-        $comparisonUserListParent
-            .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+        if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
+            $comparisonUserListParent
+                .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
-        // if (isAuthority('ROLE_USER_MESSENGER')) {
-        $comparisonUserListParent
-            .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+        if (isAuthority('ROLE_USER_MESSENGER')) {
+            $comparisonUserListParent
+                .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
 
         if (i === 0) var mainUserId = userid;
@@ -315,15 +315,13 @@ function addSomeElementsNew() {
         if (isAuthority('ROLE_USER_INFO_WL'))
             $itemInfoName.prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 
-        // if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
-        $itemInfoName
-            .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
-        // }
+        if (isAuthority('ROLE_USER_SHOW_ITEMS'))
+            $itemInfoName
+                .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
-        // if (isAuthority('ROLE_USER_MESSENGER')) {
-        $itemInfoName
-            .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
-        // }
+        if (isAuthority('ROLE_USER_MESSENGER'))
+            $itemInfoName
+                .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
         // кнопки блокировки
         if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)

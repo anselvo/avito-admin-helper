@@ -178,16 +178,15 @@ function userInfoForPost() {
                 .prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 		}
 
-        // if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
+        if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
             $(itemList[i])
                 .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
-        // }
+        }
 
-        // if (isAuthority('ROLE_USER_MESSENGER')) {
+        if (isAuthority('ROLE_USER_MESSENGER')) {
             $(itemList[i])
                 .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
-        // }
-
+        }
     }
 
     usersInfoAction();
