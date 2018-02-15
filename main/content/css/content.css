@@ -5960,6 +5960,100 @@ select.ah-form-control:focus {
     min-height: 250px;
     white-space: pre-wrap;
     height: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    z-index: 1;
+    position: relative;
+    border-bottom-color: transparent;
+}
+
+.ah-shop-moderation-mail-form .ah-btn-toolbar__overlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.ah-shop-moderation-mail-form .ah-message-text-input:focus + .ah-btn-toolbar .ah-btn-toolbar__overlay {
+    display: none;
+}
+
+.ah-shop-moderation-mail-form .ah-btn-toolbar {
+    border: 1px solid #ccc;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: #efefef;
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn {
+    background-color: transparent;
+    border-color: transparent;
+    margin-bottom: -1px;
+    margin-top: -1px;
+}
+
+.ah-shop-moderation-mail-form .btn-group {
+    z-index: 0;
+}
+
+.ah-shop-moderation-mail-form .btn-group .ah-text-format-btn {
+    width: 40px;
+}
+
+.ah-shop-moderation-mail-form .btn-group .ah-text-format-btn:first-child {
+    border-top-left-radius: 0;
+    margin-left: -1px;
+}
+
+.ah-shop-moderation-mail-form .btn-group .ah-text-format-btn:last-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command_removeFormat {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-right: -1px;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-bold {
+    font-weight: bold;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-italic {
+    font-style: italic;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-underline,
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-underline:hover,
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-underline:focus {
+    text-decoration: underline;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-strikeThrough {
+    position: relative;
+}
+
+.ah-shop-moderation-mail-form .ah-text-format-btn__command-strikeThrough::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1px;
+    width: 12px;
+    background-color: #000000;
+    font-weight: bold;
 }
 
 .ah-shop-moderation-mail-form .ah-shop-moderation__manager-input-group {
