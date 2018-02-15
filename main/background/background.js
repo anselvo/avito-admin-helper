@@ -185,6 +185,7 @@ function connect() {
                     connectInfo.spring_reconnect = false;
                     connectInfo.error = null;
 
+                    reconnect();
                     startWebSocket();
                     return getPrincipal();
                 }, error => {
