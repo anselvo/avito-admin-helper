@@ -216,11 +216,11 @@ function addComparisonInfo() {
 
         // if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
         $comparisonUserListParent
-            .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+            .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
         // if (isAuthority('ROLE_USER_MESSENGER')) {
         $comparisonUserListParent
-            .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+            .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
 
         if (i === 0) var mainUserId = userid;
@@ -263,6 +263,16 @@ function addComparisonInfo() {
         $('.userWalletComparison[itemid='+itemid+']').click(function () {
             let offset = $(this).offset();
             usersWallet($(this).attr("userid"), offset);
+        });
+
+        $('.userShowItemsComparison[itemid='+itemid+']').click(function () {
+            let offset = $(this).offset();
+            userShowItems($(this).attr("userid"), offset);
+        });
+
+        $('.userMessengerComparison[itemid='+itemid+']').click(function () {
+            let offset = $(this).offset();
+            userMessenger($(this).attr("userid"), offset);
         });
     }
 }
