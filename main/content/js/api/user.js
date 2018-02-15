@@ -1,18 +1,91 @@
 
 function usersInfoAction() {
     $('.userInfoActionButton').click(function () {
-        let offset = $(this).offset();
+        const offset = $(this).offset();
         usersInfo($(this).attr("userid"), $(this).attr("itemid"), offset, $(this).attr("infoQuery"));
     });
 
     $('.userAbuseActionButton').click(function () {
-        let offset = $(this).offset();
+        const offset = $(this).offset();
         usersAbuses($(this).attr("useridab"), $(this).attr("itemidab"), offset);
     });
 
     $('.userWalletActionButton').click(function () {
-        let offset = $(this).offset();
+        const offset = $(this).offset();
         usersWallet($(this).attr("userid"), offset);
+    });
+
+    $('.userShowItemsActionButton').click(function () {
+        const offset = $(this).offset();
+        userShowItems($(this).attr("userid"), offset);
+    });
+
+    $('.userMessengerActionButton').click(function () {
+        const offset = $(this).offset();
+        userMessenger($(this).attr("userid"), offset);
+    });
+}
+
+function userShowItems(userId, offset) {
+    openInfoWindow(1000, offset);
+
+    $('.userInfoMain')
+        .append(`<a href="/items/search?user_id=${userId}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
+        .append('<div class="ah-user-show-item-body"></div>');
+
+    const $body = $('.ah-user-show-item-body');
+    const $title = $('.ah-user-show-item-title');
+
+    getUserShowItems(userId).then(response => {
+        const $responseTitle = $(response).find('.header__title');
+        const $responseTable = $(response).find('.table');
+        const $responseTableTR = $responseTable.find('tbody tr');
+
+        const userName = $responseTitle.text().split('«')[1].split('»')[0];
+
+        $title.text(userName);
+
+        if ($responseTableTR.length === 0) {
+            $body.append('<div style="font-weight: bold; text-align: center">Объявлений не найдено</div>');
+        } else {
+            const $clone = $responseTable.clone();
+            $clone.find('tr').find('th:eq(5)').remove();
+            $clone.find('tr').find('td:eq(5)').remove();
+
+            $clone.find('tr').find('th:eq(0)').remove();
+            $clone.find('tr').find('td:eq(0)').remove();
+
+            $body.append($clone);
+        }
+
+        closeLoadBarInfoWindow();
+    });
+}
+
+function userMessenger(userId, offset) {
+    openInfoWindow(700, offset);
+
+    $('.userInfoMain')
+        .append(`<a href="/messenger/user/${userId}" target="_blank"><div class="ah-user-messenger-title" style="text-align: center; color: #5b89c8; font-weight: bold">Messenger</div></a>`)
+        .append('<div class="ah-user-messenger-body"></div>');
+
+    const $body = $('.ah-user-messenger-body');
+
+    getUserMessenger(userId).then(response => {
+        const $responseTable = $(response).find('.table');
+        const $responseTableTR = $responseTable.find('tbody tr');
+
+        if ($responseTableTR.length === 0) {
+            $body.append('<div style="font-weight: bold; text-align: center">Сообщений не найдено</div>');
+        } else {
+            const $clone = $responseTable.clone();
+            $clone.find('.js-messenger-message-toggle').remove();
+            $clone.find('a[href="?order=asc"]').parent().html('Время');
+
+            $body.append($clone);
+        }
+
+        closeLoadBarInfoWindow();
     });
 }
 
@@ -442,7 +515,7 @@ function usersAbuses(id, itemid, offset) {
 }
 
 function openInfoWindow(width, offset) {
-    $('body').append('<div class="ah-info" style="top: ' + (offset.top+24) + 'px; left: '+(offset.left-width/2)+'px;">' +
+    $('body').append('<div class="ah-info" style="top: ' + (offset.top+24) + 'px; left: '+(offset.left-(width/2+1))+'px;">' +
             '<div class="userInfo" style="width: '+width+'px">' +
                 '<div class="notificationArrow notificationArrowBorder" style="left: 50%;"></div>' +
                 '<div class="notificationArrow" style="left: 50%; border-bottom-color: white"></div>' +

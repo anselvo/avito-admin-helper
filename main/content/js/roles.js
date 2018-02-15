@@ -188,14 +188,17 @@ function handleRoles() {
         if (isAuthority('ROLE_HELPDESK_COPY_USER_NAME')) {
             roleHandler.helpdeskCopyUserName();
         }
+
+        // проверка использования VAS
+        if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
+            roleHandler.helpdeskCheckVasUsage();
+        }
     }
 
     // QUEUE INFO
     function helpdeskQueueInfoEvent() {
-        const timer = setInterval(() => {
-            const loadingVisible = $('.helpdesk-loading')
-                .hasClass('helpdesk-loading_visible');
-            if (!loadingVisible) {
+        helpdeskLoadingEnd().
+            then(() => {
                 // открывать тикеты в новой вкладке
                 if (isAuthority('ROLE_HELPDESK_QUEUE_OPEN_TICKET')) {
                     roleHandler.helpdeskQueueOpenTicket();
@@ -206,9 +209,9 @@ function handleRoles() {
                     roleHandler.helpdeskQueueEmployeeLabels();
                 }
 
-                clearInterval(timer);
-            }
-        }, 50);
+            }, error => {
+                console.log(`Error:\n${error}`);
+            });
     }
 
     // TICKET HOLD
@@ -353,6 +356,9 @@ function handleRoles() {
     if (isAuthority('ROLE_USERS_SEARCH_COPY_PHONE')) {  // копирование телефона в буфер в формате, как на странице юзера
         roleHandler.usersSearchCopyPhone();
     }
+    if (isAuthority('ROLE_CHECK_VAS_USAGE')) { // проверка использования пользователем VAS
+        roleHandler.userCheckVasUsage();
+    }
 
     // ACCOUNT
     if (isAuthority('ROLE_ACCOUNT_COMPENSATION_BTNS')) { // кнопки для компенсации ДС
@@ -490,6 +496,9 @@ function handleRoles() {
     }
     if (isAuthority('ROLE_SNP')) { // Отправка письма пользователю о взломе и смена пароля
         roleHandler.snp();
+    }
+    if (isAuthority('ROLE_CONSULTATION_COUNT')) { // Отправка письма пользователю о взломе и смена пароля
+        roleHandler.consultationCount();
     }
 
     // общие функции
@@ -732,9 +741,12 @@ RoleHandler.prototype.helpdeskTlHelpHold = function() {
     if ($btn.hasClass('sh-active-btn')) {
         $('#sh-loading-layer').show();
 
-        setTimeout(function () {
-            checkAdmUserIdAttendantTL();
-        }, 100);
+        helpdeskLoadingEnd().
+            then(() => checkAdmUserIdAttendantTL(),
+                error => {
+                    alert(`Error:\n${error}`);
+                    $('#sh-loading-layer').hide();
+                });
     }
 };
 
@@ -746,9 +758,12 @@ RoleHandler.prototype.helpdeskTlHelpComment = function() {
         if ($btn.hasClass('sh-active-btn')) {
             $('#sh-loading-layer').show();
 
-            setTimeout(function () {
-                checkAdmUserIdAttendantTL();
-            }, 100);
+            helpdeskLoadingEnd().
+                then(() => checkAdmUserIdAttendantTL(),
+                    error => {
+                        alert(`Error:\n${error}`);
+                        $('#sh-loading-layer').hide();
+                    });
         }
     }
 };
@@ -1348,4 +1363,21 @@ RoleHandler.prototype.reservedOperations = function() {
     if (global.admUrlPatterns.billing_walletlog.test(global.currentUrl)) {
         reservedOperation('/billing/walletlog');
     }
+};
+
+
+RoleHandler.prototype.consultationCount = function () {
+    if (global.admUrlPatterns.items_moder.test(global.currentUrl) ||
+        global.admUrlPatterns.items_search.test(global.currentUrl))
+        consultationCount();
+};
+
+RoleHandler.prototype.userCheckVasUsage = function() {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
+        addUserCheckVasUsage();
+    }
+};
+
+RoleHandler.prototype.helpdeskCheckVasUsage = function() {
+    addHelpdeskCheckVasUsage();
 };

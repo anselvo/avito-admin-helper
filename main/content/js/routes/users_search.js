@@ -165,7 +165,7 @@ function addChooseButtonUsersSearch() {
         if (!$(loginList[i]).parents('tr').hasClass('success'))
             $(loginList[i]).parent().append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">');
 
-        $(loginList[i]).parents('tr').after('<tr class="ah-post-userAgent" style="background: #f9f9f9"><td colspan="9"  style="border-top: none"><b>User agent:</b> <span userAgent="'+id+'"></span></td></tr>');
+        $(loginList[i]).parents('tr').after('<tr class="ah-post-userAgent" style="background: #f9f9f9"><td colspan="9"  style="border-top: none"><b>User-Agent:</b> <span userAgent="'+id+'"></span></td></tr>');
     }
 
     clickChooseButton();

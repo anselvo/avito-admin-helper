@@ -973,3 +973,28 @@ function feesAvailableModal() {
         openAllLink.href = `https://adm.avito.ru/items/search?query=${uniqueArr.join('|')}`;
     }
 }
+
+function addUserCheckVasUsage() {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-link ah-pseudo-link';
+    btn.innerHTML = 'Проверить VAS';
+    btn.type = 'button';
+
+    const form = document.querySelector('.js-user-info-form-user');
+    const allLabels = form.querySelectorAll('.control-label');
+    const accountLabel = [].find.call(allLabels, label => label.textContent === 'Счёт');
+    if (accountLabel) {
+        const userLink = form.querySelector('.js-user-id');
+        const userId = userLink.dataset.userId;
+        btn.setAttribute('data-user-id', userId);
+
+        const btnHolder = document.createElement('div');
+        btnHolder.className = 'ah-check-vas-usage-btn-holder';
+        btnHolder.appendChild(btn);
+
+        const helpBlock = accountLabel.nextElementSibling.querySelector('.help-block');
+        helpBlock.appendChild(btnHolder);
+    }
+
+    handleCheckVasUsage(btn);
+}

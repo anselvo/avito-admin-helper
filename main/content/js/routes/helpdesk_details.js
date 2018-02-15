@@ -2089,6 +2089,34 @@ function copyUserNameOnTicket() {
     });
 }
 
+// проверка использования VAS
+function addHelpdeskCheckVasUsage() {
+    const btnExisting = document.querySelector('.ah-check-vas-usage-btn');
+    if (btnExisting) return;
+
+    const additionalPanel = document.querySelector('.helpdesk-additional-info-panel');
+    const userLink = additionalPanel.querySelector('a[href^="/users/search?user_id"]');
+    if (!userLink) return;
+
+    const userId = userLink.textContent;
+    const itemsLink = additionalPanel.querySelector('a[href^="/items/search?user_id"]');
+    const itemsLinkHolder = itemsLink.closest('div');
+
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-link ah-pseudo-link ah-check-vas-usage-btn';
+    btn.innerHTML = 'Проверить VAS';
+    btn.type = 'button';
+    btn.setAttribute('data-user-id', userId);
+
+    const btnHolder = document.createElement('div');
+    btnHolder.className = 'ah-check-vas-usage-btn-holder';
+    btnHolder.appendChild(btn);
+
+    itemsLinkHolder.insertAdjacentElement('afterend', btnHolder);
+
+    handleCheckVasUsage(btn);
+}
+
 //---------- предполагаемая УЗ ----------//
 function infoAboutUser() {
     // console.log('infoAboutUser func');
@@ -2513,7 +2541,20 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 
     if (rightPanelSettings.indexOf('rp-acc')+1) {
         let wallet = $(response).find('.form-group:contains(Счёт) .help-block a:eq(0)').text();
-        $(mainTable).append('<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/'+id+'" target="_blank">'+wallet+'</a></td></tr>');
+
+        let checkVasUsageHtml = '';
+        if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
+            checkVasUsageHtml = `<span class="text-muted">|</span> <button class="btn btn-link ah-pseudo-link ah-rp-check-vas-usage-btn" type="button" data-user-id="${id}">Проверить VAS</button>`;
+        }
+
+        $(mainTable).append('<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/'+id+'" target="_blank">'+wallet+'</a> '+checkVasUsageHtml+'</td></tr>');
+
+        if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
+            const checkVasUsageBtn = document.querySelector('.ah-rp-check-vas-usage-btn');
+            if (checkVasUsageBtn) {
+                handleCheckVasUsage(checkVasUsageBtn);
+            }
+        }
     }
 
 
