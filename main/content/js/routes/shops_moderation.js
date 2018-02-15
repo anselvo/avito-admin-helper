@@ -59,12 +59,121 @@ ShopModeration.prototype.addMailForm = function () {
         </div>
     `;
 
+    // text formatting
+    const textFormatPanel = document.createElement('div');
+    textFormatPanel.className = 'ah-btn-toolbar';
+    textFormatPanel.innerHTML = `
+        <div class="btn-group"></div>
+        <div class="ah-btn-toolbar__overlay"></div>
+    `;
+    const textFormatButtons = [{
+        command: 'bold',
+        node: document.createElement('button'),
+        keyCode: 66,
+        className: 'ah-text-format-btn__command-bold',
+        title: 'Жирный (Ctrl + B)'
+    }, {
+        command: 'italic',
+        node: document.createElement('button'),
+        keyCode: 73,
+        className: 'ah-text-format-btn__command-italic',
+        title: 'Курсив (Ctrl + I)'
+    }, {
+        command: 'underline',
+        node: document.createElement('button'),
+        keyCode: 85,
+        className: 'ah-text-format-btn__command-underline',
+        title: 'Подчеркнутый (Ctrl + U)'
+    }, {
+        command: 'strikeThrough',
+        node: document.createElement('button'),
+        keyCode: 83,
+        className: 'ah-text-format-btn__command-strikeThrough',
+        title: 'Зачеркнутый (Ctrl + S)'
+    }];
+
+    textFormatButtons.forEach(button => {
+        button.node.type = 'button';
+        button.node.className = `btn btn-default ah-text-format-btn ${button.className}`;
+        button.node.setAttribute('data-command', button.command);
+        button.node.setAttribute('title', button.title);
+        button.node.setAttribute('tabindex', '-1');
+        button.node.innerHTML = button.command.charAt(0).toLocaleUpperCase();
+        textFormatPanel.querySelector('.btn-group').append(button.node);
+    });
+
+    // кнопка очистки форматирования
+    const clearFormatButton = document.createElement('button');
+    clearFormatButton.type = 'button';
+    clearFormatButton.className = 'btn btn-default pull-right ah-text-format-btn ah-text-format-btn__command_removeFormat';
+    clearFormatButton.innerHTML = `Очистить форматирование`;
+    clearFormatButton.setAttribute('data-command', 'removeFormat');
+    clearFormatButton.setAttribute('title', 'Ctrl + /');
+    clearFormatButton.setAttribute('tabindex', '-1');
+    textFormatPanel.appendChild(clearFormatButton);
+
     modal.querySelector('.modal-body').appendChild(form);
     this.mainBlock.appendChild(modal);
     document.body.appendChild(fixedContainer);
     setFixedElemUnderFooter(fixedContainer, 0);
 
     const messageInput = form.querySelector('.ah-message-text-input');
+
+    // text formatting
+    messageInput.after(textFormatPanel);
+    textFormatPanel.addEventListener('click', e => {
+        const target = e.target;
+
+        if (target.closest('.ah-text-format-btn')) {
+            const btn = target.closest('.ah-text-format-btn');
+            const command = btn.dataset.command;
+            document.execCommand(command);
+            if (!btn.classList.contains('ah-text-format-btn__command_removeFormat')) {
+                btn.classList.toggle('active');
+            }
+        }
+    });
+
+    // не терять фокус поля по клику на панель форматирования
+    textFormatPanel.addEventListener('mousedown', e => {
+        if (document.activeElement === messageInput) {
+            e.preventDefault();
+        }
+    });
+
+    // отследить изменения каретки
+    document.addEventListener("selectionchange", function() {
+        if (document.activeElement === messageInput) {
+            textFormatButtons.forEach(button => {
+                if (document.queryCommandState(button.command)) {
+                    button.node.classList.add('active');
+                } else {
+                    button.node.classList.remove('active');
+                }
+            });
+        }
+    });
+
+    // горячие клавиши
+    messageInput.addEventListener('keydown', e => {
+        textFormatButtons.forEach(button => {
+            if ((e.ctrlKey || e.metaKey) && e.keyCode === button.keyCode) {
+                e.preventDefault();
+                button.node.dispatchEvent(new Event('click', {bubbles: true}));
+            }
+        });
+
+        if ((e.ctrlKey || e.metaKey) && e.keyCode === 191) { // Ctrl + /
+            document.execCommand('removeFormat');
+        }
+    });
+
+    // снять активный класс при потере фокуса
+    messageInput.addEventListener('blur', () => {
+        textFormatButtons.forEach(button => {
+            button.node.classList.remove('active');
+        });
+    });
 
     getShopModerationTemplates()
         .then(response => {
