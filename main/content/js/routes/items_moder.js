@@ -214,11 +214,11 @@ function addComparisonInfo() {
             $comparisonUserListParent
                 .prepend('<span class="userWalletActionButton userWalletComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
 
-        if (isAuthority('ROLE_USER_SHOW_ITEMS')) {
+        if (isAuthority('ROLE_USER_SHOW_ITEMS'))
             $comparisonUserListParent
                 .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
-        if (isAuthority('ROLE_USER_MESSENGER')) {
+        if (isAuthority('ROLE_USER_MESSENGER'))
             $comparisonUserListParent
                 .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
