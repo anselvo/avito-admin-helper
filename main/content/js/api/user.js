@@ -36,7 +36,7 @@ function userShowItems(userId, offset) {
     const $body = $('.ah-user-show-item-body');
     const $title = $('.ah-user-show-item-title');
 
-    getUserShowItems(userId).then(response => {
+    getUserItems(userId).then(response => {
         const $responseTitle = $(response).find('.header__title');
         const $responseTable = $(response).find('.table');
         const $responseTableTR = $responseTable.find('tbody tr');

@@ -41,6 +41,7 @@
 				"main/content/js/api/moder.js",
 				"main/content/js/api/helpdesk.js",
 				"main/content/js/api/comments.js",
+				"main/content/js/api/comparison.js",
 				"main/content/js/api/count_money.js",
 				"main/content/js/api/assistant.js",
 				"main/content/js/api/indicators.js",

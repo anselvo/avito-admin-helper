@@ -466,40 +466,45 @@ function renderTotalRefundInfo(responseBody, data) {
 
 // Сравнение айтемов
 function addCompareItemsItemInfo() {
-    $('.col-xs-5').prepend(`
-        <div class="input-group form-group ah-compare-items-input-group">
-            <span class="input-group-btn">
-                <button class="btn btn-primary btn-sm" type="button" id="compare-items-btn">Сравнить с</button>
-            </span>
-            <input type="text" class="form-control input-sm" placeholder="Объявления" name="compareItems">
-            <span class="input-group-addon" id="compare-items-info" data-toggle="tooltip" data-placement="left" 
-                title="Вставьте ID объявлений, разделенные нечислом">
-                <span class="glyphicon glyphicon-info-sign"></span>
-            </span>
-        </div>
+    const $comparisonForm = $(`
+        <form>
+            <div class="input-group form-group ah-compare-items-input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary btn-sm" name="submit">Сравнить с</button>
+                </span>
+                <input type="text" class="form-control input-sm" placeholder="Объявления" name="ids">
+                <span class="input-group-addon" id="compare-items-info" data-toggle="tooltip" data-placement="left" 
+                    title="Вставьте ID объявлений, разделенные нечислом">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </span>
+            </div>
+        </form>
     `);
+    $('.col-xs-5').prepend($comparisonForm);
 
-    $('#compare-items-info').tooltip();
-    $('#compare-items-btn').click(function() {
-        let value = $('[name="compareItems"]').val();
-        let items = value.match(/\d{5,}/g);
+    $('#compare-items-info').tooltip({
+        container: 'body'
+    });
 
-        if (!items) return;
+    $comparisonForm.submit(function(e) {
+        e.preventDefault();
+        const items = {};
+        const input = this.elements.ids;
+        const btn = this.elements.submit;
+        const value = input.value;
 
-        items.unshift(getParamsItemInfo().id.toString());
-        let btn = $(this);
-        btnLoaderOn($(btn));
+        items.compared = value.match(/\d{5,}/g);
+        if (!items.compared) return;
 
-        ahComparison(items, {
-            callback: function() {
-                btnLoaderOff($(btn));
-            },
-            getEntityRequest: getItemInfo,
-            getEntityParams: getParamsItemInfo,
-            renderEntities: renderCompareItems
-        },{
-            title: 'Сравнение объявлений'
-        });
+        items.abutment = getParamsItemInfo().id.toString();
+
+        btnLoaderOn(btn);
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(btn));
     });
 }
 

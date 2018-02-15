@@ -225,10 +225,10 @@ function addComparisonInfo() {
 
         if (i === 0) var mainUserId = userid;
         else {
-            if (mainUserId !== userid)
+            if (mainUserId !== userid)  // disable for test
                 $(comparisonUserList[i])
                     .parents('.'+tmp[2])
-                    .append('<span class="pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</span>');
+                    .append('<button class="btn btn-link ah-pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</button>');
         }
 
         if (localStorage.imageSearchComparison === 'true') {
@@ -243,11 +243,47 @@ function addComparisonInfo() {
             }
         }
 
-        $('.compareUserOnComparison[itemid='+itemid+']').click(function () {
-            let similarUserID = $(this).attr('userid');
+        $('.compareUserOnComparison[itemid='+itemid+']').click(function (e) {
+            const similarUserID = $(this).attr('userid');
 
-            addBlock();
-            chekUserforDubles(mainUserId, similarUserID);
+            const btn = this;
+            const users = {};
+            users.compared = [similarUserID];
+            users.abutment = mainUserId;
+
+            btnLoaderOn(btn);
+            const comparison = new UsersComparison(users);
+            comparison.render()
+                .then(() => {
+                    if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) { // comparison/archive
+                        comparison.showModal();
+                    }
+
+                    if (global.admUrlPatterns.items_moder.test(global.currentUrl)) { // items/moder
+                        comparison.showModalSecond();
+
+                        // Предотвратить обработку хоткеев админского комперисона
+                        comparison.modal.addEventListener('keydown', e => {
+                            const admKeyCodes = [
+                                81, // q
+                                87, // w
+                                69, // e
+                                82, // r
+                            ];
+                            if (admKeyCodes.includes(e.keyCode)) {
+                                e.stopPropagation();
+                            }
+                        });
+
+                        // Предотвратить сабмит админского комперисона
+                        comparison.modal.addEventListener('keyup', e => {
+                            if (e.keyCode === 32) { // Space
+                                e.stopPropagation();
+                            }
+                        });
+                    }
+                }, error => alert(error))
+                .then(() => btnLoaderOff(btn));
         });
 
         $('.userInfoComparison[itemid='+itemid+']').click(function () {

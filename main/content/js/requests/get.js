@@ -192,6 +192,18 @@ function getShopManagers() {
     });
 }
 
+// user items
+function getUserItems(userId, page) {
+    return fetch(`/items/search?p=${page || 1}&user_id=${userId}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.text();
+    });
+}
+
 function getGroupFilterCountHD(id) {
     return fetch(`/helpdesk/api/1/filter/group/${id}/count`, {
         credentials: 'include'
@@ -200,17 +212,6 @@ function getGroupFilterCountHD(id) {
             return Promise.reject(response);
         }
         return response.json();
-    });
-}
-
-function getUserShowItems(id) {
-    return fetch(`/items/search?user_id=${id}`, {
-        credentials: 'include'
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.text();
     });
 }
 
