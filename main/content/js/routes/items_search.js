@@ -165,19 +165,28 @@ function userInfoForPost() {
 
         if (isAuthority('ROLE_USER_INFO_INFO')) {
             $(itemList[i])
-                .prepend('<span class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px; float: right;">Info</span>');
+                .prepend('<span class="userInfoActionButton ah-user-api" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_ABUSES')) {
             $(itemList[i])
-                .prepend('<span class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px; float: right">Abuses</span>');
+                .prepend('<span class="userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_WL')) {
             $(itemList[i])
-                .prepend('<span class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
+                .prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 		}
 
+        if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
+            $(itemList[i])
+                .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+        }
+
+        if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
+            $(itemList[i])
+                .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+        }
     }
 
     usersInfoAction();

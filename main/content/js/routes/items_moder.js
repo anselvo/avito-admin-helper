@@ -58,17 +58,8 @@ function hideTestItemsSearch() {
 }
 
 function abTest() {
-    let abTestInfo = [
-        { categoryID: "10", locationID: "660710" },
-        { categoryID: "10", locationID: "660300" },
-        { categoryID: "10", locationID: "628780" },
-        { categoryID: "10", locationID: "625670" },
-        { categoryID: "24", locationID: "654070", containsOption: "Квартиры / Сдам  / Посуточно" },
-        { categoryID: "24", locationID: "653240", containsOption: "Квартиры / Сдам  / Посуточно" }
-    ];
-
-    for (let i = 0; i < abTestInfo.length; ++i) {
-        markTestItems(abTestInfo[i].categoryID, abTestInfo[i].locationID, abTestInfo[i].containsOption);
+    for (let i = 0; i < global.abTestInfo.length; ++i) {
+        markTestItems(global.abTestInfo[i].categoryID, global.abTestInfo[i].locationID, global.abTestInfo[i].containsOption);
     }
 }
 
@@ -93,7 +84,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 }
 
 function abTestHighlight(categoryID, locationID, containsOption) {
-    let $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
+    const $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
     $items.find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
 
@@ -210,21 +201,26 @@ function addComparisonInfo() {
         let tmp = $(comparisonUserList[i]).parent().attr('class').split(' ');
         let userid = tmp[3].split('-')[2];
         let itemid = tmp[2].split('-')[2];
-
-        if (isAuthority('ROLE_USER_INFO_WL'))
-            $(comparisonUserList[i])
-                .parents('.'+tmp[2])
-                .append('<span class="userWalletActionButton userWalletComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right">WL</span>');
-
-        if (isAuthority('ROLE_USER_INFO_ABUSES'))
-            $(comparisonUserList[i])
-                .parents('.'+tmp[2])
-                .append('<span class="userAbuseActionButton userAbuseComparison" useridab="'+userid+'" itemidab="'+itemid+'" style="margin-left: 10px;  float: right;">Abuses</span>');
+        const $comparisonUserListParent = $(comparisonUserList[i]).parents('.'+tmp[2]);
 
         if (isAuthority('ROLE_USER_INFO_INFO'))
-            $(comparisonUserList[i])
-                .parents('.'+tmp[2])
-                .append('<span class="userInfoActionButton userInfoComparison" userid="'+userid+'" itemid="'+itemid+'" style="margin-left: 10px; float: right;">Info</span>');
+            $comparisonUserListParent.prepend('<span class="userInfoActionButton userInfoComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_ABUSES'))
+            $comparisonUserListParent
+                .prepend('<span class="userAbuseActionButton userAbuseComparison ah-user-api" useridab="'+userid+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_WL'))
+            $comparisonUserListParent
+                .prepend('<span class="userWalletActionButton userWalletComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
+            $comparisonUserListParent
+                .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_MESSENGER'))
+            $comparisonUserListParent
+                .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
 
         if (i === 0) var mainUserId = userid;
@@ -268,6 +264,16 @@ function addComparisonInfo() {
             let offset = $(this).offset();
             usersWallet($(this).attr("userid"), offset);
         });
+
+        $('.userShowItemsComparison[itemid='+itemid+']').click(function () {
+            let offset = $(this).offset();
+            userShowItems($(this).attr("userid"), offset);
+        });
+
+        $('.userMessengerComparison[itemid='+itemid+']').click(function () {
+            let offset = $(this).offset();
+            userMessenger($(this).attr("userid"), offset);
+        });
     }
 }
 
@@ -297,17 +303,25 @@ function addSomeElementsNew() {
         // USER INFO and USER ABUSE
         const $itemInfoName = $(trList[i]).find('.item-info-name');
 
-        if (isAuthority('ROLE_USER_INFO_WL'))
-            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'">WL</a></span>')
-
-        if (isAuthority('ROLE_USER_INFO_ABUSES'))
-            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;"><a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'">Abuses</a></span>')
-
         if (isAuthority('ROLE_USER_INFO_INFO'))
-            $itemInfoName.append('<span class="item-info-row-item" style="margin-left: 10px; float: right; font-size: 14px;">' +
-                '<a class="userInfoActionButton" infoQuery cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'">Info</a> ' +
+            $itemInfoName.prepend('<span class="ah-user-api">' +
+                '<span class="userInfoActionButton" infoQuery cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span> ' +
                 '<i class="infoSearchIcon glyphicon  glyphicon-search" title="Поисковый запрос для ссылок в Info"></i> ' +
                 '<input type="text" placeholder="Info query" class="infoQuery"></span>');
+
+        if (isAuthority('ROLE_USER_INFO_ABUSES'))
+            $itemInfoName.prepend('<span class="userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_WL'))
+            $itemInfoName.prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
+            $itemInfoName
+                .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+
+        if (isAuthority('ROLE_USER_INFO_MESSENGER'))
+            $itemInfoName
+                .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
         // кнопки блокировки
         if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)

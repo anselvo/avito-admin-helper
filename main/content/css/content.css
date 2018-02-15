@@ -3030,37 +3030,55 @@ body:hover #shop-side-panel {
     animation: gb__a 0.2s;
 }
 
+.ah-user-api {
+    margin-left: 10px;
+    float: right;
+    font-size: 14px;
+}
+
 .userInfoActionButton {
     color: #ffa500;
     cursor: pointer;
-    text-decoration: none;
 }
 
 .userAbuseActionButton {
     color: #BA68C8;
     cursor: pointer;
-    text-decoration: none;
 }
 
 .userWalletActionButton {
     color: #2b8932;
     cursor: pointer;
-    text-decoration: none;
+}
+
+.userShowItemsActionButton {
+    color: #009c96;
+    cursor: pointer;
+}
+
+.userMessengerActionButton {
+    color: #5b89c8;
+    cursor: pointer;
 }
 
 .userInfoActionButton:hover {
     color: #ffb900;
-    text-decoration: underline;
 }
 
 .userAbuseActionButton:hover {
     color: #ed91ff;
-    text-decoration: underline;
 }
 
 .userWalletActionButton:hover {
     color: #37bc3e;
-    text-decoration: underline;
+}
+
+.userShowItemsActionButton:hover {
+    color: #00d6cf;
+}
+
+.userMessengerActionButton:hover {
+    color: #68a8f3;
 }
 
 .userInfoDiv {
