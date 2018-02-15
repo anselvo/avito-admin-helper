@@ -328,7 +328,7 @@ function handleRoles() {
     if (isAuthority('ROLE_USER_PHONES_VERIFICATION_LINK')) { // линк на Phones verification
         roleHandler.userPhonesVerificationLink();
     }
-    if (isAuthority('ROLE_USER_MESSENGER_LINK')) { // линк на Мессенджер
+    if (isAuthority('ROLE_USER_INFO_MESSENGER_LINK')) { // линк на Мессенджер
         roleHandler.userMessengerLink();
     }
     if (isAuthority('ROLE_CREATE_TICKET')) { // создание тикета на юзере

@@ -214,11 +214,11 @@ function addComparisonInfo() {
             $comparisonUserListParent
                 .prepend('<span class="userWalletActionButton userWalletComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
 
-        if (isAuthority('ROLE_USER_SHOW_ITEMS'))
+        if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
             $comparisonUserListParent
                 .prepend('<span class="userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
-        if (isAuthority('ROLE_USER_MESSENGER'))
+        if (isAuthority('ROLE_USER_INFO_MESSENGER'))
             $comparisonUserListParent
                 .prepend('<span class="userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
@@ -315,11 +315,11 @@ function addSomeElementsNew() {
         if (isAuthority('ROLE_USER_INFO_WL'))
             $itemInfoName.prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 
-        if (isAuthority('ROLE_USER_SHOW_ITEMS'))
+        if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
             $itemInfoName
                 .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
-        if (isAuthority('ROLE_USER_MESSENGER'))
+        if (isAuthority('ROLE_USER_INFO_MESSENGER'))
             $itemInfoName
                 .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
