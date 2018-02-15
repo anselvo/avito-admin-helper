@@ -215,17 +215,6 @@ function getGroupFilterCountHD(id) {
     });
 }
 
-function getUserShowItems(id) {
-    return fetch(`/items/search?user_id=${id}`, {
-        credentials: 'include'
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.text();
-    });
-}
-
 function getUserMessenger(id) {
     return fetch(`/messenger/user/${id}`, {
         credentials: 'include'
