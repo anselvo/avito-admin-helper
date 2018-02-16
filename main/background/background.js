@@ -185,6 +185,7 @@ function connect() {
                     connectInfo.spring_reconnect = false;
                     connectInfo.error = null;
 
+                    reconnect();
                     startWebSocket();
                     return getPrincipal();
                 }, error => {
@@ -379,8 +380,6 @@ function startWebSocket() {
 
     function stompFailureCallback() {
         chrome.storage.local.set({notifications: {}});
-
-        connect();
     }
 
     function addNotificationToStorage(response) {
