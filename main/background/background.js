@@ -380,8 +380,6 @@ function startWebSocket() {
 
     function stompFailureCallback() {
         chrome.storage.local.set({notifications: {}});
-
-        connect();
     }
 
     function addNotificationToStorage(response) {
