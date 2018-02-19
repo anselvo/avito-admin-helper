@@ -119,7 +119,7 @@ function comparePhotoPre() {
         var item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
         var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
 
-        photoSelector.slice(i, i+1).before(' <span class="comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
     }
 
     clickComparePhoto();
@@ -134,7 +134,7 @@ function comparePhotoPreNew() {
         var item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
         var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
 
-        photoSelector.slice(i, i+1).before(' <span class="comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
     }
 
     clickComparePhoto();
@@ -149,58 +149,58 @@ function comparePhotoPost() {
         var item1id = photoSelector.slice(i, i+1).parents('tr').attr('data-id');
         var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
 
-        photoSelector.slice(i, i+1).before(' <span class="comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
     }
 
     clickComparePhoto();
 }
 
 function clickComparePhoto() {
-    $('.comparePhotoPre').click(function () {
+    $('.ah-comparePhotoPre').click(function () {
         global.comparePhotoLoadItemsCount = 0;
         var item1id = $(this).attr('item1id');
         var item2id = $(this).attr('item2id');
 
-        $('body').append('<div id="comparePhotoBackground"><div id="comparePhotoWindow"><div id="comparePhotoItems"><div id="comparePhotoItem1"></div><div id="comparePhotoItem2"></div></div><div id="comparePhotoButton"></div></div></div>');
-        $('#comparePhotoWindow').append('<div class="comparePhotoLoadingWindow"></div>');
+        $('body').append('<div id="ah-comparePhotoBackground"><div id="ah-comparePhotoWindow"><div id="comparePhotoItems"><div id="ah-comparePhotoItem1"></div><div id="ah-comparePhotoItem2"></div></div><div id="ah-comparePhotoButton"></div></div></div>');
+        $('#ah-comparePhotoWindow').append('<div class="ah-comparePhotoLoadingWindow"></div>');
 
-        loadingBar('.comparePhotoLoadingWindow', 0);
-        $('.cssload-loader').css({'top': '50%', 'transform': 'translateY(-50%)'});
+        loadingBar('.ah-comparePhotoLoadingWindow', 0);
+        $('.ah-cssload-loader').css({'top': '50%', 'transform': 'translateY(-50%)'});
 
-        $('#comparePhotoButton').append('<input id="comparePhotoDuplicate" type="button" class="btn btn-primary" value="Photo Duplicates" title="В зависимости от категории и старт тайма данная кнопка принимает соответствующее действия с объявлением нарушителя">');
+        $('#ah-comparePhotoButton').append('<input id="comparePhotoDuplicate" type="button" class="btn btn-primary" value="Photo Duplicates" title="В зависимости от категории и старт тайма данная кнопка принимает соответствующее действия с объявлением нарушителя">');
 
 
-        showComparePhotosPre(item1id, 'comparePhotoItem1');
-        showComparePhotosPre(item2id, 'comparePhotoItem2');
+        showComparePhotosPre(item1id, 'ah-comparePhotoItem1');
+        showComparePhotosPre(item2id, 'ah-comparePhotoItem2');
 
         $('#comparePhotoDuplicate').click(function () {
             comparePhotoActionWithButtons(item1id, item2id);
         });
 
         $(document).mouseup(function(e) {
-            var div = $('div#comparePhotoWindow');
+            var div = $('div#ah-comparePhotoWindow');
             if (!div.is(e.target) && div.has(e.target).length === 0) {
                 div.detach();
-                $('div#comparePhotoBackground').detach();
+                $('div#ah-comparePhotoBackground').detach();
             }
         });
     });
 }
 
 function showComparePhotosPre(id, appendID) {
-    $('#'+appendID).append('<div id="login'+appendID+'" class="infoBlockOnPopupWindow" title="Логин">' +
+    $('#'+appendID).append('<div id="login'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Логин">' +
         '<div class="">' +
-        '<input type="button" class="sh-action-btn comparePhotoBlockUser blockUser'+appendID+'" value="MC" title="Block: Нарушение условий пользовательского соглашения">' +
-        '<input type="button" class="sh-action-btn comparePhotoBlockUser blockUser'+appendID+'" value="PA" title="Block: Подозрительная активность">' +
-        '<input type="button" class="sh-action-btn comparePhotoBlockUser blockUser'+appendID+'" value="BN" title="Block: Несколько учетных записей">' +
+        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="MC" title="Block: Нарушение условий пользовательского соглашения">' +
+        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="PA" title="Block: Подозрительная активность">' +
+        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="BN" title="Block: Несколько учетных записей">' +
         '</div>' +
         '</div>');
 
-    $('#'+appendID).append('<div id="items'+appendID+'" class="infoBlockOnPopupWindow" title="Кол-во активных объявлений"></div><hr class="coolHR">');
-    $('#'+appendID).append('<div id="head'+appendID+'" class="infoBlockOnPopupWindow" title="Тема объявления"></div>');
-    $('#'+appendID).append('<div id="startTime'+appendID+'" class="infoBlockOnPopupWindow" title="Start Time"></div>');
-    $('#'+appendID).append('<div id="price'+appendID+'" class="infoBlockOnPopupWindow" title="Цена"></div>');
-    $('#'+appendID).append('<div id="photo'+appendID+'" class="itemPhotosBlock infoBlockOnPopupWindow"></div>');
+    $('#'+appendID).append('<div id="items'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Кол-во активных объявлений"></div><hr class="ah-coolHR">');
+    $('#'+appendID).append('<div id="head'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Тема объявления"></div>');
+    $('#'+appendID).append('<div id="startTime'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Start Time"></div>');
+    $('#'+appendID).append('<div id="price'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Цена"></div>');
+    $('#'+appendID).append('<div id="photo'+appendID+'" class="ah-itemPhotosBlock ah-infoBlockOnPopupWindow"></div>');
 
     var href = 'https://adm.avito.ru/items/item/info/'+id;
 
@@ -234,10 +234,10 @@ function showComparePhotosPre(id, appendID) {
             $('.blockUser'+appendID).attr('itemID', userID);
 
             if (bleach.length != 0) {
-                $('#head'+appendID).addClass('bleach');
-                $('#startTime'+appendID).addClass('bleach');
-                $('#price'+appendID).addClass('bleach');
-                $('#photo'+appendID).addClass('bleach');
+                $('#head'+appendID).addClass('ah-bleach');
+                $('#startTime'+appendID).addClass('ah-bleach');
+                $('#price'+appendID).addClass('ah-bleach');
+                $('#photo'+appendID).addClass('ah-bleach');
             }
             if (status.indexOf('Blocked')+1) {
                 comparePhotoRemoveButton('Item '+id+' is blocked');
@@ -257,12 +257,12 @@ function showComparePhotosPre(id, appendID) {
 
             $('#'+appendID+' a').attr('target','_blank');
             for (var i = 0; i < jsonParsePhotos.length; ++i) {
-                $('#photo'+appendID).append('<div class="photo-component-image-border"><a class="photo-component-link" href="'+jsonParsePhotos[i].url+'" target="_blank"><img class="photo-component-image js-image" alt="" src="'+jsonParsePhotos[i].thumbUrl+'"></a></div>');
+                $('#photo'+appendID).append('<div class="ah-photo-component-image-border"><a class="ah-photo-component-link" href="'+jsonParsePhotos[i].url+'" target="_blank"><img class="ah-photo-component-image js-image" alt="" src="'+jsonParsePhotos[i].thumbUrl+'"></a></div>');
             }
 
             ++global.comparePhotoLoadItemsCount;
             if (global.comparePhotoLoadItemsCount == 2) {
-                $('.comparePhotoLoadingWindow').detach();
+                $('.ah-comparePhotoLoadingWindow').detach();
                 comparePhotoItemCategory();
             }
         }
@@ -275,10 +275,10 @@ function showComparePhotosPre(id, appendID) {
         outTextFrame('Вы заблокировали пользователя '+userID);
         blockUser(userID, val);
 
-        $('#comparePhotoWindow').detach();
-        $('#comparePhotoBackground').detach();
+        $('#ah-comparePhotoWindow').detach();
+        $('#ah-comparePhotoBackground').detach();
 
-        if (appendID == 'comparePhotoItem1') {
+        if (appendID == 'ah-comparePhotoItem1') {
             $('#item_'+id).detach();
         }
     });
@@ -289,8 +289,8 @@ function comparePhotoItemCategory() {
     var item2 = $('#headcomparePhotoItem2');
     var item1Category = $(item1).attr('category');
     var item2Category = $(item2).attr('category');
-    var item1Bleach = $(item1).hasClass('bleach');
-    var item2Bleach = $(item2).hasClass('bleach');
+    var item1Bleach = $(item1).hasClass('ah-bleach');
+    var item2Bleach = $(item2).hasClass('ah-bleach');
 
     if (item1Category != item2Category) comparePhotoRemoveButton('Объявления размещены в разных категориях');
     if (item1Bleach && item2Bleach) comparePhotoRemoveButton('Оба объявления отбелены');
@@ -305,8 +305,8 @@ function comparePhotoActionWithButtons(item1id, item2id) {
     var item2Type = $(item2).attr('type');
     var item1Category = $(item1).attr('category');
     var item2Category = $(item2).attr('category');
-    var item1Bleach = $(item1).hasClass('bleach');
-    var item2Bleach = $(item2).hasClass('bleach');
+    var item1Bleach = $(item1).hasClass('ah-bleach');
+    var item2Bleach = $(item2).hasClass('ah-bleach');
     var blockItemBlock = comparePhotoTimeChecker(st1 , st2);
 
     if (item1Bleach && !item2Bleach) blockItemBlock = 'second';
@@ -330,8 +330,8 @@ function comparePhotoActionWithButtons(item1id, item2id) {
         outTextFrame('Второстепенное объявление было<br>заблокировано/отклонено');
     }
 
-    $('#comparePhotoWindow').detach();
-    $('#comparePhotoBackground').detach();
+    $('#ah-comparePhotoWindow').detach();
+    $('#ah-comparePhotoBackground').detach();
 }
 
 function comparePhotoDecideBlockReason(id, category, type) {
@@ -346,7 +346,7 @@ function comparePhotoRemoveButton(text) {
     $('#comparePhotoDuplicate').detach();
     $('#comparePhotoFake').detach();
 
-    $('#comparePhotoButton').append('<div style="color: red; font-weight: bold;">'+text+'</div>');
+    $('#ah-comparePhotoButton').append('<div style="color: red; font-weight: bold;">'+text+'</div>');
 }
 
 
@@ -408,8 +408,8 @@ function addsomeelements() {
 
         // USER INFO and USER ABUSE
         $('.user-actions').slice(i,i+1)
-            .append('<a class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>')
-            .append('<a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>');
+            .append('<a class="ah-userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>')
+            .append('<a class="ah-userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>');
 
         // кнопки блокировки
         if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1) $('.user-actions').slice(i,i+1).after('<input type="button" userID="'+id+'" class="btn btn-default btn-sm red" value="MC" title="Нарушение условий пользовательского соглашения">');
@@ -840,7 +840,7 @@ function submitItem(data) {
         if (xhr.readyState === 4 && xhr.status > 200) {
 
 
-            $('body').append('<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="mh-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>' + xhr.status  + ': ' + xhr.statusText + '</span></b><hr class="mh-default-hr"><span>Ссылка на объявление: <a href="https://adm.avito.ru/items/item/info/' + data.itemId + '" target="_blank">'+ data.itemId +'</a></span></div>');
+            $('body').append('<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="ah-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>' + xhr.status  + ': ' + xhr.statusText + '</span></b><hr class="ah-default-hr"><span>Ссылка на объявление: <a href="https://adm.avito.ru/items/item/info/' + data.itemId + '" target="_blank">'+ data.itemId +'</a></span></div>');
 
 
             hideElementOutClicking($('#mh-error-alert'));
@@ -870,7 +870,7 @@ function preTimer() {
     }
 
     $('body').append('<div id="preTimerLog" style="position:fixed; display:block; max-height:300px; overflow:auto;"></div>');
-    $('#apply_all').append('<div class="preTimer"><span id="minute">00</span>:<span id="seconds">00</span></div>');
+    $('#apply_all').append('<div class="ah-preTimer"><span id="minute">00</span>:<span id="seconds">00</span></div>');
     var minute = 0;
     var seconds = 0;
 
@@ -890,20 +890,20 @@ function preTimer() {
         localStorage.preTimer += $('#minute').text()+':'+$('#seconds').text()+'|';
     });
 
-    $('.preTimer').click(function() {
+    $('.ah-preTimer').click(function() {
         $('#preTimerLog').toggle();
         $('#preTimerLog').html('');
 
         if (localStorage.preTimer != '') {
             var log = localStorage.preTimer.split('|');
 
-            var offset = $('.preTimer').offset();
+            var offset = $('.ah-preTimer').offset();
             var left = parseInt(offset.left)-25;
 
             $('#preTimerLog').css({'left':left+'px','bottom':'75px'});
 
             for (var i = 0; i < log.length-1; ++i) {
-                $('#preTimerLog').append('<div class="preTimer">'+i+' - <span>'+log[i]+'</span></div><br>');
+                $('#preTimerLog').append('<div class="ah-preTimer">'+i+' - <span>'+log[i]+'</span></div><br>');
             }
         }
     });

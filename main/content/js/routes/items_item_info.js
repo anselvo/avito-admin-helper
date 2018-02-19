@@ -84,13 +84,13 @@ function userInfoOnItem() {
 
     const $blockUserInfo = $('.ah-item-user-info');
     if (isAuthority('ROLE_USER_INFO_INFO'))
-        $blockUserInfo.append('<a class="userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>');
+        $blockUserInfo.append('<a class="ah-userInfoActionButton" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" style="margin-left: 10px;">Info</a>');
 
     if (isAuthority('ROLE_USER_INFO_ABUSES'))
-        $blockUserInfo.append('<a class="userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>');
+        $blockUserInfo.append('<a class="ah-userAbuseActionButton" useridab="'+id+'" itemidab="'+itemid+'" style="margin-left: 10px;">Abuses</a>');
 
     if (isAuthority('ROLE_USER_INFO_WL'))
-        $blockUserInfo.append('<a class="userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px;">WL</a>');
+        $blockUserInfo.append('<a class="ah-userWalletActionButton" userid="'+id+'" itemid="'+itemid+'" style="margin-left: 10px;">WL</a>');
 
     usersInfoAction();
 }
@@ -241,8 +241,8 @@ function addRefundInfoBtns(table) {
         return;
     }
 
-    if ($(table).parents('.overlay-container').length === 0) {
-        $(table).parents('.table-scroll').wrap('<div class="overlay-container"></div>');
+    if ($(table).parents('.ah-overlay-container').length === 0) {
+        $(table).parents('.table-scroll').wrap('<div class="ah-overlay-container"></div>');
     }
 
     $(table).find('tbody tr').each(function () {
@@ -302,7 +302,7 @@ function renderRefundInfo(responseBody, data) {
         resultRows = ``,
         resultContent = `<h6>Дата: <span class="text-muted">${data.dateRange.split('-')[0]}</span></h6>`,
         userId = +$('[href^="/users/user/info/"]').attr('href').replace(/\D/g, ''),
-        overlayContainer = $(data.clickedElem).parents('.overlay-container'),
+        overlayContainer = $(data.clickedElem).parents('.ah-overlay-container'),
         hasMorePages = !!($(responseBody).find('ul.pagination').length);
 
     let total = {

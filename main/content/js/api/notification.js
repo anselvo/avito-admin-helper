@@ -39,7 +39,7 @@ function notificationAddWS(notifications) {
 }
 
 function notificationRemoveWS(notifications) {
-    $('#' + notifications.notification.uuid).parents('.notificationBarItem').remove();
+    $('#' + notifications.notification.uuid).parents('.ah-notificationBarItem').remove();
 
     notificationBarStatus();
 }
@@ -152,7 +152,7 @@ function parseAllowListCheckingItems(agentlogin) {
 
                     notificationBarStatus('on');
 				}
-				$('.oldItem').parents('.notificationBarItem').find('.notificationRemove').click();
+				$('.oldItem').parents('.ah-notificationBarItem').find('.ah-notificationRemove').click();
             } catch (e) {
 				console.log('allowListChecker have problem with JSON or server');
             }
@@ -184,11 +184,11 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 				window.open('https://adm.avito.ru/items/item/info/'+item+'?st='+encodeURIComponent(time));
 				changeAllowListItem(item, time, 'modAgentID', agentlogin);
 				changeAllowListItem(item, time, 'status', 'checking');
-				$('[item='+item+']').parents('.notificationBarItem').find('.notificationRemove').click();
+				$('[item='+item+']').parents('.ah-notificationBarItem').find('.ah-notificationRemove').click();
 				global.existGlobal = undefined;
 			} else {
 				alert('Данное объявление уже проверяется другим агентом.');
-				$('[item='+item+']').parents('.notificationBarItem').find('.notificationRemove').click();
+				$('[item='+item+']').parents('.ah-notificationBarItem').find('.ah-notificationRemove').click();
 				global.existGlobal = undefined;
 			}
 		}
@@ -213,40 +213,40 @@ function changeAllowListItem(item, time, reason, reasonText) {
 
 //---------- Notification Bar ----------//
 function notificationBar() {
-	$('div.navbar-fixed-top ul.navbar-nav:last').append('<div class="nb-wheel"></div>');
+	$('div.navbar-fixed-top ul.navbar-nav:last').append('<div class="ah-nb-wheel"></div>');
 
-	$('body').append('<div id="notifications"></div>');
+	$('body').append('<div id="ah-notifications"></div>');
 
-	const $notification = $('#notifications');
+	const $notification = $('#ah-notifications');
 
     $notification
-        .append('<div class="notificationArrow notificationArrowBorder" style="right:10px;"></div>')
-        .append('<div class="notificationArrow" style="right:10px;"></div>')
-        .append('<div id="notificationBar"></div>');
+        .append('<div class="ah-notificationArrow ah-notificationArrowBorder" style="right:10px;"></div>')
+        .append('<div class="ah-notificationArrow" style="right:10px;"></div>')
+        .append('<div id="ah-notificationBar"></div>');
 
-	$('#notificationBar')
+	$('#ah-notificationBar')
         .append('<div id="noNotifications" style="text-align: center; width: 100%">no notifications</div>')
-        .append('<div class="notificationBarCloseAll"><a id="notificationBarCloseAll">close all</a></div>');
+        .append('<div class="ah-notificationBarCloseAll"><a id="ah-notificationBarCloseAll">close all</a></div>');
 	
-	$('.nb-wheel').click(() => $notification.toggle());
+	$('.ah-nb-wheel').click(() => $notification.toggle());
 
-    $('#notificationBarCloseAll').click(() => {
-        $('.notificationBarCloseAll').hide();
-        $('.notificationBarItem span').click();
+    $('#ah-notificationBarCloseAll').click(() => {
+        $('.ah-notificationBarCloseAll').hide();
+        $('.ah-notificationBarItem span').click();
 
         notificationBarStatus()
     });
 }
 
 function notificationBarAdd(idRemove, classHeader, header, classBody, body) {
-	$('#notificationBar').append('<div class="notificationBarItem">' +
-            '<div class="notificationBarHeader ' + classHeader + '" style="font-weight:bold;">' + header +
-                '<span id="' + idRemove + '" class="notificationRemove">&#10060</span>' +
+	$('#ah-notificationBar').append('<div class="ah-notificationBarItem">' +
+            '<div class="ah-notificationBarHeader ' + classHeader + '" style="font-weight:bold;">' + header +
+                '<span id="' + idRemove + '" class="ah-notificationRemove">&#10060</span>' +
             '</div>' +
-            '<div class="notificationBarBody '+classBody+'">'+body+'</div>' +
+            '<div class="ah-notificationBarBody '+classBody+'">'+body+'</div>' +
         '</div>');
 
-    if ($('.notificationBarItem').length > 5) $('.notificationBarCloseAll').show();
+    if ($('.ah-notificationBarItem').length > 5) $('.ah-notificationBarCloseAll').show();
 
 	document.getElementById(idRemove).addEventListener('click', () => {
         chrome.runtime.sendMessage({
@@ -263,14 +263,14 @@ function notificationBarAdd(idRemove, classHeader, header, classBody, body) {
 }
 
 function notificationBarStatus() {
-    let $wheel = $('.nb-wheel');
-    let $notifications = $('.notificationBarItem');
+    let $wheel = $('.ah-nb-wheel');
+    let $notifications = $('.ah-notificationBarItem');
 
     if ($notifications.length > 0) {
-        $wheel.addClass('barOn').text($notifications.length);
+        $wheel.addClass('ah-barOn').text($notifications.length);
         $('#noNotifications').hide();
     } else {
-        $wheel.removeClass('barOn').text('');
+        $wheel.removeClass('ah-barOn').text('');
         $('#noNotifications').show();
     }
 }

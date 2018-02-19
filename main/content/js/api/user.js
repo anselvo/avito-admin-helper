@@ -1,26 +1,26 @@
 
 function usersInfoAction() {
-    $('.userInfoActionButton').click(function () {
+    $('.ah-userInfoActionButton').click(function () {
         const offset = $(this).offset();
         usersInfo($(this).attr("userid"), $(this).attr("itemid"), offset, $(this).attr("infoQuery"));
     });
 
-    $('.userAbuseActionButton').click(function () {
+    $('.ah-userAbuseActionButton').click(function () {
         const offset = $(this).offset();
         usersAbuses($(this).attr("useridab"), $(this).attr("itemidab"), offset);
     });
 
-    $('.userWalletActionButton').click(function () {
+    $('.ah-userWalletActionButton').click(function () {
         const offset = $(this).offset();
         usersWallet($(this).attr("userid"), offset);
     });
 
-    $('.userShowItemsActionButton').click(function () {
+    $('.ah-userShowItemsActionButton').click(function () {
         const offset = $(this).offset();
         userShowItems($(this).attr("userid"), offset);
     });
 
-    $('.userMessengerActionButton').click(function () {
+    $('.ah-userMessengerActionButton').click(function () {
         const offset = $(this).offset();
         userMessenger($(this).attr("userid"), offset);
     });
@@ -154,22 +154,22 @@ function usersInfo(id, itemid, offset, query) {
     let hrefitem = "https://adm.avito.ru/items/item/info/"+itemid;
 
     $('.userInfoMain')
-        .append('<div id="nameuser" class="userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>')
+        .append('<div id="nameuser" class="ah-userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>')
         .append('<div id="ah-info-break-in" show-status="false" class="ah-info-break-in ah-info-link" title="Информация о взломе"><i class="glyphicon glyphicon-resize-full"></i></div>')
-        .append('<div class="ah-info-break-in-title userInfoDiv">Проверка пользователя на взлом</div>');
+        .append('<div class="ah-info-break-in-title ah-userInfoDiv">Проверка пользователя на взлом</div>');
 
-    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="userInfoDiv"><b>Email:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="userInfoDiv"><b>Status:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('17')+1) $('.userInfoMain').append('<div id="ah-info-chance" class="userInfoDiv"><b>Chance:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="userInfoDiv"><b>Registered:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="userInfoDiv"><b>Items:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="userInfoDiv"><b>Last IP:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('4')+1) $('.userInfoMain').append('<div id="ipItem" class="userInfoDiv"><b>Item IP:</b> </div>');
-    if (localStorage.checkboxInfo.indexOf('13')+1) $('.userInfoMain').append('<div id="startTime" class="userInfoDiv"><b>Start Time:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="ah-info-email" class="ah-userInfoDiv"><b>Email:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('1')+1) $('.userInfoMain').append('<div id="status" class="ah-userInfoDiv"><b>Status:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('17')+1) $('.userInfoMain').append('<div id="ah-info-chance" class="ah-userInfoDiv"><b>Chance:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('2')+1) $('.userInfoMain').append('<div id="registeredTime" class="ah-userInfoDiv"><b>Registered:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('3')+1) $('.userInfoMain').append('<div id="activeItems" class="ah-userInfoDiv"><b>Items:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('5')+1) $('.userInfoMain').append('<div id="lastIP" class="ah-userInfoDiv"><b>Last IP:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('4')+1) $('.userInfoMain').append('<div id="ipItem" class="ah-userInfoDiv"><b>Item IP:</b> </div>');
+    if (localStorage.checkboxInfo.indexOf('13')+1) $('.userInfoMain').append('<div id="startTime" class="ah-userInfoDiv"><b>Start Time:</b> </div>');
     // Право собственности
-    if (localStorage.checkboxInfo.indexOf('6')+1) $('.userInfoMain').append('<div id="proprietary" class="userInfoDiv"><b>Proprietary:</b></div>');
-    if (localStorage.checkboxInfo.indexOf('7')+1) $('.userInfoMain').append('<div id="phoneHistory" class="userInfoDiv"><b>Phones:</b><br></div>');
-    if (localStorage.checkboxInfo.indexOf('12')+1) $('.userInfoMain').append('<div id="yanMap" class="userInfoDiv"><b>Address:</b></div>');
+    if (localStorage.checkboxInfo.indexOf('6')+1) $('.userInfoMain').append('<div id="proprietary" class="ah-userInfoDiv"><b>Proprietary:</b></div>');
+    if (localStorage.checkboxInfo.indexOf('7')+1) $('.userInfoMain').append('<div id="ah-phoneHistory" class="ah-userInfoDiv"><b>Phones:</b><br></div>');
+    if (localStorage.checkboxInfo.indexOf('12')+1) $('.userInfoMain').append('<div id="yanMap" class="ah-userInfoDiv"><b>Address:</b></div>');
 
     // Информация о взломе
     $('#ah-info-break-in').click(function () {
@@ -189,7 +189,7 @@ function usersInfo(id, itemid, offset, query) {
             $('#lastIP').show('slow');
             $('.ah-info-history-ip').show('slow');
             $('#startTime').show('slow');
-            $('#phoneHistory').show('slow');
+            $('#ah-phoneHistory').show('slow');
             $('.ah-info-break-in-title').show('slow');
 
             $('.ah-info-break-in .glyphicon').removeClass('glyphicon-resize-full').addClass('glyphicon-resize-small');
@@ -208,7 +208,7 @@ function usersInfo(id, itemid, offset, query) {
             $('#ah-info-email').show('slow');
             $('#lastIP').show('slow');
             $('#startTime').show('slow');
-            $('#phoneHistory').show('slow');
+            $('#ah-phoneHistory').show('slow');
 
             $('.ah-info-break-in .glyphicon').removeClass('glyphicon-resize-small').addClass('glyphicon-resize-full');
             $(this).attr('show-status', 'false');
@@ -248,7 +248,7 @@ function usersInfo(id, itemid, offset, query) {
             let colorChance = '#2e8b57';
             if (chance >= 7) {
                 colorChance = '#e00';
-                $('.userInfo').css({ 'box-shadow': 'rgb(255, 8, 8) 0px 0px 10px 0px' });
+                $('.ah-userInfo').css({ 'box-shadow': 'rgb(255, 8, 8) 0px 0px 10px 0px' });
             }
 
             $('#ah-info-email').append('<span>'+ email + '</span> ');
@@ -298,12 +298,12 @@ function usersInfo(id, itemid, offset, query) {
                         let verifyDate = '';
 
                         if ($(phoneList[i]).find('.i-verify').hasClass('i-verify-checked')) {
-                            verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
+                            verify = '<span class="ah-verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
                             verifyDate = $(phoneList[i]).find('.phone-verify-date').text();
-                        } else verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
+                        } else verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
-                        $('#phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
-                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append('<span class="phoneInItem"></span>' + verify + ' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'" target="_blank">'+number+'</a>');
+                        $('#ah-phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
+                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append('<span class="ah-phoneInItem"></span>' + verify + ' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'" target="_blank">'+number+'</a>');
                         if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&query='+query+'&date='+formatDate+'" target="_blank">city</a>');
                         if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&location_id[]='+regionItemID+'&is_company=2&query='+query+'&date='+formatDate+'" target="_blank">+private</a>');
                         if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(' <a href="https://adm.avito.ru/items/search?phone='+newNumber+'???&cid[]='+categoryItemID+'&params['+firstParam+']='+firstParamVal+'&query='+query+'&date='+formatDate+'" target="_blank">parameter</a>');
@@ -314,7 +314,7 @@ function usersInfo(id, itemid, offset, query) {
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
                     $('#ipItem').append('<a href="https://adm.avito.ru/items/search?ip='+ipItem+'&cid[]='+categoryItemID+'&query='+query+'&date='+formatDate+'" target="_blank">'+ipItem+'</a>');
-                    $(phoneInItem+" .phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
+                    $(phoneInItem+" .ah-phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);
 
@@ -493,7 +493,7 @@ function usersAbuses(id, itemid, offset) {
 
                     if ($('[ip="'+ip+'"]').length === 0 && comment !== '') {
                         $('#abuseWithCom').show();
-                        $('#abuseWithCom').append('<div class="abusesComment" ip="'+ip+'" style="padding:5px;"><div style="font-weight:bold;">'+reason+'</div>'+comment+'</div>');
+                        $('#abuseWithCom').append('<div class="ah-abusesComment" ip="'+ip+'" style="padding:5px;"><div style="font-weight:bold;">'+reason+'</div>'+comment+'</div>');
                     }
 
                     if (comment === '') {
@@ -516,19 +516,19 @@ function usersAbuses(id, itemid, offset) {
 
 function openInfoWindow(width, offset) {
     $('body').append('<div class="ah-info" style="top: ' + (offset.top+24) + 'px; left: '+(offset.left-(width/2+1))+'px;">' +
-            '<div class="userInfo" style="width: '+width+'px">' +
-                '<div class="notificationArrow notificationArrowBorder" style="left: 50%;"></div>' +
-                '<div class="notificationArrow" style="left: 50%; border-bottom-color: white"></div>' +
-                '<div id="userInfoLoadBar"></div>' +
+            '<div class="ah-userInfo" style="width: '+width+'px">' +
+                '<div class="ah-notificationArrow ah-notificationArrowBorder" style="left: 50%;"></div>' +
+                '<div class="ah-notificationArrow" style="left: 50%; border-bottom-color: white"></div>' +
+                '<div id="ah-userInfoLoadBar"></div>' +
                 '<div class="userInfoMain" style="display: none;"></div>' +
             '</div>' +
         '</div>');
-    loadingBar('#userInfoLoadBar', 0);
+    loadingBar('#ah-userInfoLoadBar', 0);
     hideElementOutClicking($('div.ah-info'));
 }
 
 function closeLoadBarInfoWindow() {
-    $('#userInfoLoadBar').hide();
+    $('#ah-userInfoLoadBar').hide();
     $('.userInfoMain').show();
 }
 

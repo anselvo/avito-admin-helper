@@ -1,15 +1,15 @@
 //---------- Tags ----------//
 function addTags() {
-    $('#sh-tags-btn').detach();
+    $('#ah-tags-btn').detach();
 
     let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
     let allLabels = $(classifHeader).next().find('tr td:first-child');
     let tagLabel = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Теги');
 
-    $(tagLabel).append('<button id="sh-tags-btn" type="button" class="sh-default-btn" style="" title="Выбрать теги">Выбор</button>');
+    $(tagLabel).append('<button id="ah-tags-btn" type="button" class="ah-default-btn" style="" title="Выбрать теги">Выбор</button>');
 
-    $('#sh-tags-btn').click(function() {
+    $('#ah-tags-btn').click(function() {
         if (!global.hdSettings.helpdeskTags) {
             alert('Теги еще не загрузились.\nПопробуйте подождать несколько секунд и повторить попытку.\nЕсли проблема сохраняется в течение длительного времени, попробуйте перезагрузить страницу.');
             return;
@@ -22,24 +22,24 @@ function addTags() {
     });
 }
 function showTagsPopup() {
-    var popup = $('div.sh-tags-popup');
+    var popup = $('div.ah-tags-popup');
 
-    $('#layer-blackout-popup').addClass('ah-layer-flex');
+    $('#ah-layer-blackout-popup').addClass('ah-layer-flex');
     $(popup).show();
     showModal();
 }
 
 function renderTagsPopup() {
     // console.log(set);
-    // $('div.sh-tags-popup').detach();
+    // $('div.ah-tags-popup').detach();
 
-    $('#layer-blackout-popup').append('<div class="sh-tags-popup ah-default-popup" style="display: none; min-width: 0px;"></div>');
+    $('#ah-layer-blackout-popup').append('<div class="ah-tags-popup ah-default-popup" style="display: none; min-width: 0px;"></div>');
 
     // хедер попапа тегов
-    $('div.sh-tags-popup').append('<div class="sh-tags-popup-header"></div>');
+    $('div.ah-tags-popup').append('<div class="ah-tags-popup-header"></div>');
 
     // Help
-    $('div.sh-tags-popup-header').append('<span class="sh-tooltip">Справка<ul></ul></span>');
+    $('div.ah-tags-popup-header').append('<span class="ah-tooltip">Справка<ul></ul></span>');
 
     var help = {
         list: [
@@ -51,32 +51,32 @@ function renderTagsPopup() {
     var itemEnd = ';'
     help.list.forEach(function(item, i, arr) {
         if (i == arr.length - 1) itemEnd = '.';
-        $('div.sh-tags-popup-header .sh-tooltip ul').append('<li>'+ item +''+ itemEnd +'</li>');
+        $('div.ah-tags-popup-header .ah-tooltip ul').append('<li>'+ item +''+ itemEnd +'</li>');
     });
-    $('div.sh-tags-popup-header').append('<button type="button" class="popup-close">x</button>');
+    $('div.ah-tags-popup-header').append('<button type="button" class="ah-tags-popup-close">x</button>');
 
-    $('.sh-tags-popup-header .popup-close').click(function() {
-        $('#layer-blackout-popup').removeClass('ah-layer-flex');
+    $('.ah-tags-popup-header .ah-tags-popup-close').click(function() {
+        $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
         $('div.ah-default-popup').hide();
         closeModal();
     });
     // контейнер для групп тегов
-    $('div.sh-tags-popup').append('<div class="sh-tags-group-container"></div>');
+    $('div.ah-tags-popup').append('<div class="ah-tags-group-container"></div>');
 
     global.hdSettings.helpdeskTags.set.popup.columns.forEach(function(column) {
-        $('div.sh-tags-group-container').append('<div class="sh-tags-column" data-column-id="'+ column.id +'"></div>');
+        $('div.ah-tags-group-container').append('<div class="ah-tags-column" data-column-id="'+ column.id +'"></div>');
         column.groups.forEach(function(group) {
 
             global.hdSettings.helpdeskTags.tagGroups.forEach(function(globalGroup) {
                 if (group.id == globalGroup.id && globalGroup.is_active) {
-                    $('div.sh-tags-column[data-column-id="'+ column.id +'"]').append('<div class="sh-tags-group" data-tags-group-id="'+ group.id +'"><ul class="sh-default-list"></ul></div>');
+                    $('div.ah-tags-column[data-column-id="'+ column.id +'"]').append('<div class="ah-tags-group" data-tags-group-id="'+ group.id +'"><ul class="ah-default-list"></ul></div>');
                 }
             });
             group.tags.forEach(function(tag) {
 
                 global.hdSettings.helpdeskTags.tags.forEach(function(globalTag) {
                     if (tag == globalTag.avito_desk_id && globalTag.is_active) {
-                        $('div.sh-tags-group-container [data-column-id="'+ column.id +'"] [data-tags-group-id="'+ group.id +'"] ul').append('<li class="sh-default-list-item" title="'+ globalTag.description +'"><input type="checkbox" id="popup-tag-'+ globalTag.avito_desk_id +'" value="'+ globalTag.avito_desk_id +'" class="sh-tags-checkbox"><label for="popup-tag-'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label><button class="sh-fast-tag-add-btn" data-tag-id="'+ globalTag.avito_desk_id +'" data-tag-name="'+ globalTag.name +'">+</button></li>');
+                        $('div.ah-tags-group-container [data-column-id="'+ column.id +'"] [data-tags-group-id="'+ group.id +'"] ul').append('<li class="ah-default-list-item" title="'+ globalTag.description +'"><input type="checkbox" id="popup-tag-'+ globalTag.avito_desk_id +'" value="'+ globalTag.avito_desk_id +'" class="ah-tags-checkbox"><label for="popup-tag-'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label><button class="ah-fast-tag-add-btn" data-tag-id="'+ globalTag.avito_desk_id +'" data-tag-name="'+ globalTag.name +'">+</button></li>');
                     }
                 });
             });
@@ -84,10 +84,10 @@ function renderTagsPopup() {
     });
 
     // футер попапа тегов
-    $('div.sh-tags-popup').append('<div class="sh-tags-popup-footer"></div>');
+    $('div.ah-tags-popup').append('<div class="ah-tags-popup-footer"></div>');
 
     // баттон добавления тегов
-    $('div.sh-tags-popup-footer').append('<button class="sh-action-btn" id="sh-add-tag-btn" title="" style="">Применить</button>');
+    $('div.ah-tags-popup-footer').append('<button class="ah-action-btn" id="sh-add-tag-btn" title="" style="">Применить</button>');
 
     // запоминаем состояния чекбоксов в локалсторадж
     if (!localStorage.getItem('/helpdesk/popupTags')) {
@@ -95,7 +95,7 @@ function renderTagsPopup() {
     }
     var LSObj = JSON.parse(localStorage.getItem('/helpdesk/popupTags'));
 
-    $('input.sh-tags-checkbox').each(function(i, input) {
+    $('input.ah-tags-checkbox').each(function(i, input) {
         LSObj.tags.forEach(function(tagId) {
             if (+$(input).val() == tagId) {
                 $(input).prop('checked', true);
@@ -104,7 +104,7 @@ function renderTagsPopup() {
     });
 
 
-    $('input.sh-tags-checkbox').click(function() {
+    $('input.ah-tags-checkbox').click(function() {
         var btnTagId = +$(this).val();
 
         if ( $(this).prop('checked') ) {
@@ -125,11 +125,11 @@ function renderTagsPopup() {
 
 function popupTagsAddListener() { // обработчик попапа тегов
     // быстрая простановка тегов
-    $('button.sh-fast-tag-add-btn').click(function() {
-		$('#sh-loading-layer').show();
+    $('button.ah-fast-tag-add-btn').click(function() {
+		$('#ah-loading-layer').show();
         checkTagInTicket($(this).data('tagId'));
-        $('#layer-blackout-popup').removeClass('ah-layer-flex');
-        $('div.sh-tags-popup').hide();
+        $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
+        $('div.ah-tags-popup').hide();
         closeModal();
     });
 
@@ -140,11 +140,11 @@ function popupTagsAddListener() { // обработчик попапа тего�
             currentTagsArr[i] = $('input[name ^= "tags"]:eq(' + i + ')').val();
         }
         // создаем массив из айдишников отмеченных тегов, айдишники хранятся в значениях value
-        var checkboxCount = $('input.sh-tags-checkbox:checked').length;
+        var checkboxCount = $('input.ah-tags-checkbox:checked').length;
 
         var newTagsArr = [];
         for (var i = 0; i < checkboxCount; i++) {
-            newTagsArr.push( $('input.sh-tags-checkbox:checked').slice(i, i + 1).val() );
+            newTagsArr.push( $('input.ah-tags-checkbox:checked').slice(i, i + 1).val() );
         }
         // console.log('newTagsArr ' + newTagsArr);
 
@@ -171,10 +171,10 @@ function popupTagsAddListener() { // обработчик попапа тего�
         newTagsArr = newTagsArr.join(', ');
 
         if (newTagsArr.length != 0) {
-			$('#sh-loading-layer').show();
+			$('#ah-loading-layer').show();
             addTagToTicket(newTagsArr);
-            $('div.sh-tags-popup').hide();
-            $('#layer-blackout-popup').removeClass('ah-layer-flex');
+            $('div.ah-tags-popup').hide();
+            $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
             closeModal();
         } else alert('Выберите теги');
 
@@ -191,9 +191,9 @@ function addQuickButtons() {
 
     $('div.sh-quick-btns-wrapper').append('<div class="sh-quick-btns-header" style=""></div>');
 
-    $('div.sh-quick-btns-header').append('<div class="ah-line-title"><button type="button" class="sh-default-btn ah-btn-small" id="sh-quick-btns-settings" style="">Quick buttons</button></div>');
+    $('div.sh-quick-btns-header').append('<div class="ah-line-title"><button type="button" class="ah-default-btn ah-btn-small" id="ah-quick-btns-settings" style="">Quick buttons</button></div>');
 
-    $('div.sh-quick-btns-wrapper').append('<div id="side-panel-qb-holder-wrapper"><div id="side-panel-qb-holder" class="qb-holder" style="margin-top: 4px;"></div></div>');
+    $('div.sh-quick-btns-wrapper').append('<div id="side-panel-qb-holder-wrapper"><div id="side-panel-qb-holder" class="ah-qb-holder" style="margin-top: 4px;"></div></div>');
 
     $('div.sh-quick-btns-wrapper').append('<hr class="sh-additional-line-bottom" style="margin-top: 4px; margin-bottom: 0;">');
 
@@ -214,7 +214,7 @@ function addQuickButtons() {
     // отрисовка кнопок
     var QBHolder = $('#side-panel-qb-holder');
     LSobj.buttons.forEach(function(btn) {
-        $(QBHolder).append('<button type="button" class="qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'" title="'+ btn.description +'"><span>'+ btn.name +'</span></button>');
+        $(QBHolder).append('<button type="button" class="ah-qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'" title="'+ btn.description +'"><span>'+ btn.name +'</span></button>');
     });
 
     // отображение QB
@@ -227,7 +227,7 @@ function addQuickButtons() {
 
     // обработчики
     // настройки
-    $('#sh-quick-btns-settings').click(function() {
+    $('#ah-quick-btns-settings').click(function() {
         if (!global.hdSettings.helpdeskTags) {
             alert('Теги еще не загрузились.\nПопробуйте подождать несколько секунд и повторить попытку.\nЕсли проблема сохраняется в течение длительного времени, попробуйте перезагрузить страницу.');
             return;
@@ -241,9 +241,9 @@ function addQuickButtons() {
     });
 
     // Кнопки
-    var btns = $(QBHolder).find('.qb-btn');
+    var btns = $(QBHolder).find('.ah-qb-btn');
     $(btns).unbind('click').click(function() {
-		$('#sh-loading-layer').show();
+		$('#ah-loading-layer').show();
         sidePanelQBHandler( JSON.parse($(this).attr('data-full-obj')) );
     });
 
@@ -252,7 +252,7 @@ function addQuickButtons() {
 
 function showQBWindow() {
     $('[data-modal-info="qb-modal-create"]').show();
-    $('#layer-blackout-modal').addClass('ah-layer-flex ah-layer-y-scroll');
+    $('#ah-layer-blackout-modal').addClass('ah-layer-flex ah-layer-y-scroll');
     showModal();
 
     var modal = $('[data-modal-info="qb-modal-create"]');
@@ -260,7 +260,7 @@ function showQBWindow() {
 
     $('.ah-modal-close').click(function() {
         $('[data-modal-info]').hide();
-        $('#layer-blackout-modal').removeClass('ah-layer-flex ah-layer-y-scroll');
+        $('#ah-layer-blackout-modal').removeClass('ah-layer-flex ah-layer-y-scroll');
         closeModal();
     });
 }
@@ -305,7 +305,7 @@ function changeThemeInTicket(btn, currentYOffset) {
         $(clickFog).click();
 
         window.scrollTo(0, offset);
-        $('#sh-loading-layer').hide();
+        $('#ah-loading-layer').hide();
     }, 10);
 }
 
@@ -380,13 +380,13 @@ function updateQBInfo() {
 }
 
 function renderQBWindow() {
-    $('#layer-blackout-modal').append('<div class="ah-modal-content" style="display: none; background-color: transparent; box-shadow: none; border: none" data-modal-info="qb-modal-create"><div class="ah-modal-container" style=""></div></div>');
+    $('#ah-layer-blackout-modal').append('<div class="ah-modal-content" style="display: none; background-color: transparent; box-shadow: none; border: none" data-modal-info="qb-modal-create"><div class="ah-modal-container" style=""></div></div>');
 
     $('[data-modal-info="qb-modal-create"] .ah-modal-container').append('<div id="sh-quick-btns-create" style="min-width: 450px; max-width: 550px;" class="ah-modal-column"></div>');
     // header
     $('#sh-quick-btns-create').append('<div class="ah-modal-header"><span class="ah-modal-title">Создание кнопки</span><button type="button" class="ah-modal-close">x</button></div>');
 
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="qb-modal-create"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="qb-modal-create"]');
     var closeBtn = $(modal).find('.ah-modal-close');
     $(closeBtn).click(function() {
         $('[data-modal-info="qb-modal-settings"]').detach();
@@ -396,7 +396,7 @@ function renderQBWindow() {
     $('#sh-quick-btns-create').append('<div class="ah-modal-body" style=""></div>');
 
     // ПРОБЛЕМЫ
-    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы</div><div class="ah-btn-group ah-field-flex" style=""><select class="ah-form-control ah-btn-group-left ah-flex-grow-extended" id="sh-qb-problems-select" style="margin-bottom: 0;"></select><button type="button" class="sh-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-selected-problem">✕</button></div></div>');
+    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы</div><div class="ah-btn-group ah-field-flex" style=""><select class="ah-form-control ah-btn-group-left ah-flex-grow-extended" id="sh-qb-problems-select" style="margin-bottom: 0;"></select><button type="button" class="ah-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-selected-problem">✕</button></div></div>');
 
     let helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
     if (!global.hdSettings.helpdeskProblemsJSON) {
@@ -417,7 +417,7 @@ function renderQBWindow() {
     });
 
     // ТЕГИ
-    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Теги</div><div class="ah-btn-group ah-field-flex" style=""><button type="button" class="sh-default-btn ah-btn-group-left ah-flex-grow-extended" id="sh-qb-tags-select-btn" style=""><span class="ah-btn-name-left">Не выбрано</span><b class="ah-caret-right"></b></button><button type="button" class="sh-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-all-selected-tags">✕</button><ul id="sh-qb-tags-multiselect" class="ah-dropdown-menu ah-multiselect" style="top: 35px; width: 100%;"></ul></div></div>');
+    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Теги</div><div class="ah-btn-group ah-field-flex" style=""><button type="button" class="ah-default-btn ah-btn-group-left ah-flex-grow-extended" id="sh-qb-tags-select-btn" style=""><span class="ah-btn-name-left">Не выбрано</span><b class="ah-caret-right"></b></button><button type="button" class="ah-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-all-selected-tags">✕</button><ul id="ah-qb-tags-multiselect" class="ah-dropdown-menu ah-multiselect" style="top: 35px; width: 100%;"></ul></div></div>');
 
     var allTagsSettingsGlobal = global.hdSettings.helpdeskTags;
     if (!global.hdSettings.helpdeskTags) {
@@ -426,14 +426,14 @@ function renderQBWindow() {
     allTagsSettingsGlobal.set.QB.groups.forEach(function(group) {
         allTagsSettingsGlobal.tagGroups.forEach(function(globalGroup) {
             if (group.id == globalGroup.id && globalGroup.is_active) {
-                $('#sh-qb-tags-multiselect').append('<li class="ah-group-list-item" data-tags-group-id="'+ globalGroup.id +'"><label data-value="'+ globalGroup.id +'">'+ globalGroup.name +'<span class="ah-caret"></span></label><ul class="ah-select-field-sub"></ul></li>');
+                $('#ah-qb-tags-multiselect').append('<li class="ah-group-list-item" data-tags-group-id="'+ globalGroup.id +'"><label data-value="'+ globalGroup.id +'">'+ globalGroup.name +'<span class="ah-caret"></span></label><ul class="ah-select-field-sub"></ul></li>');
             }
         });
 
         group.tags.forEach(function(tag) {
             allTagsSettingsGlobal.tags.forEach(function(globalTag) {
                 if (tag == globalTag.avito_desk_id && globalTag.is_active) {
-                    $('#sh-qb-tags-multiselect li[data-tags-group-id="'+ group.id +'"] ul').append('<li data-value="'+ globalTag.avito_desk_id +'"><label data-value="'+ globalTag.avito_desk_id +'"><input type="checkbox" value="'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label></li>');
+                    $('#ah-qb-tags-multiselect li[data-tags-group-id="'+ group.id +'"] ul').append('<li data-value="'+ globalTag.avito_desk_id +'"><label data-value="'+ globalTag.avito_desk_id +'"><input type="checkbox" value="'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label></li>');
                 }
             });
         });
@@ -446,14 +446,14 @@ function renderQBWindow() {
     });
 
     // скрыть/раскрыть подменю
-    $('#sh-qb-tags-multiselect .ah-group-list-item > label').click(function() {
+    $('#ah-qb-tags-multiselect .ah-group-list-item > label').click(function() {
         $(this).siblings('.ah-select-field-sub').toggle();
         $(this).toggleClass('ah-dropup');
     });
 
     // счетчик отмеченных
-    $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change(function() {
-        let count = $('#sh-qb-tags-multiselect [type="checkbox"]:checked').length;
+    $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change(function() {
+        let count = $('#ah-qb-tags-multiselect [type="checkbox"]:checked').length;
         if (count != 0) {
             $('#sh-qb-tags-select-btn span').text('Выбрано: '+ count +'');
         } else {
@@ -498,7 +498,7 @@ function renderQBWindow() {
         name: 'Свой',
         styleColor: styleColor.grey
     }];
-    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 10px 0 0; margin-bottom: 0;"><div class="ah-field-title" style="">Цвет фона</div><div class="ah-field-horizontal ah-field-flex"><input type="color" class="sh-default-btn" id="sh-qb-bg-color-input" value="#5cb85c" style=""><select class="ah-form-control ah-choose-color-select" id="sh-qb-bg-color-select" style=""></select></div></div>');
+    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 10px 0 0; margin-bottom: 0;"><div class="ah-field-title" style="">Цвет фона</div><div class="ah-field-horizontal ah-field-flex"><input type="color" class="ah-default-btn" id="sh-qb-bg-color-input" value="#5cb85c" style=""><select class="ah-form-control ah-choose-color-select" id="sh-qb-bg-color-select" style=""></select></div></div>');
 
     bgColors.forEach(function(color) {
         $('#sh-qb-bg-color-select').append('<option value="'+ color.value +'" style="color: '+ color.styleColor +'">'+ color.name +'</option>');
@@ -529,7 +529,7 @@ function renderQBWindow() {
         styleColor: styleColor.grey
     }];
 
-    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 0 0 10px; margin-bottom: 0;"><div class="ah-field-title" style="">Цвет текста</div><div class="ah-field-horizontal ah-field-flex"><input type="color" class="sh-default-btn" id="sh-qb-text-color-input" value="#ffffff" style=""><select class="ah-form-control ah-choose-color-select" id="sh-qb-text-color-select" style=""></select></div></div>');
+    $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 0 0 10px; margin-bottom: 0;"><div class="ah-field-title" style="">Цвет текста</div><div class="ah-field-horizontal ah-field-flex"><input type="color" class="ah-default-btn" id="sh-qb-text-color-input" value="#ffffff" style=""><select class="ah-form-control ah-choose-color-select" id="sh-qb-text-color-select" style=""></select></div></div>');
 
     textColors.forEach(function(color) {
         $('#sh-qb-text-color-select').append('<option value="'+ color.value +'" style="color: '+ color.styleColor +'">'+ color.name +'</option>');
@@ -555,16 +555,16 @@ function renderQBWindow() {
 
     // Футер
     $('#sh-quick-btns-create').append('<div class="ah-modal-footer"></div>');
-    $('#sh-quick-btns-create .ah-modal-footer').append('<button type="button" class="sh-default-btn" id="settings-qb" style="float: left;">К настройкам</button><button type="button" class="sh-action-btn" id="create-qb">Создать</button>');
+    $('#sh-quick-btns-create .ah-modal-footer').append('<button type="button" class="ah-default-btn" id="settings-qb" style="float: left;">К настройкам</button><button type="button" class="ah-action-btn" id="create-qb">Создать</button>');
 
     // PREVIEW
     addQBPreview();
 
-    var tagsPrev = $('#qb-preview-added-content [data-qb-preview-info="tags"]');
-    var problemPrev = $('#qb-preview-added-content [data-qb-preview-info="problem"]');
+    var tagsPrev = $('#ah-qb-preview-added-content [data-qb-preview-info="tags"]');
+    var problemPrev = $('#ah-qb-preview-added-content [data-qb-preview-info="problem"]');
     // сбросить все выбранные теги
     $('#qb-reset-all-selected-tags').click(function() {
-        $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').prop('checked', false);
+        $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').prop('checked', false);
         $('#sh-qb-tags-select-btn span').text('Не выбрано');
         $(tagsPrev).text('-');
     });
@@ -590,23 +590,23 @@ function addQBPreview() {
     var bgColorInput = $('#sh-qb-bg-color-input');
     var textColorInput = $('#sh-qb-text-color-input');
     var problemSelect = $('#sh-qb-problems-select');
-    var tagsList = $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]');
+    var tagsList = $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]');
 
     $('[data-modal-info="qb-modal-create"] .ah-modal-container').append('<div id="ah-qb-preview" class="ah-modal-column"></div>');
 
     // header
-    $('#ah-qb-preview').append('<div id="qb-preview-header">Превью</div>');
+    $('#ah-qb-preview').append('<div id="ah-qb-preview-header">Превью</div>');
 
-    $('#ah-qb-preview').append('<div id="qb-preview-btn-holder"><button type="button" class="qb-btn" id="ah-qb-preview-btn" style="background-color: '+ $(bgColorInput).val() +'; color: '+ $(textColorInput).val() +';"><span>-</span></button></div>');
+    $('#ah-qb-preview').append('<div id="ah-qb-preview-btn-holder"><button type="button" class="ah-qb-btn" id="ah-qb-preview-btn" style="background-color: '+ $(bgColorInput).val() +'; color: '+ $(textColorInput).val() +';"><span>-</span></button></div>');
 
-    $('#ah-qb-preview').append('<div class="ah-modal-table-holder" id="qb-preview-added-content"><table></table></div>');
-    $('#qb-preview-added-content table').append('<tr><td>Тема / Проблема</td><td data-qb-preview-info="problem">-</td></tr><tr><td>Теги</td><td data-qb-preview-info="tags">-</td></tr>');
+    $('#ah-qb-preview').append('<div class="ah-modal-table-holder" id="ah-qb-preview-added-content"><table></table></div>');
+    $('#ah-qb-preview-added-content table').append('<tr><td>Тема / Проблема</td><td data-qb-preview-info="problem">-</td></tr><tr><td>Теги</td><td data-qb-preview-info="tags">-</td></tr>');
 
     // Обработка Превью
     var btnPrev = $('#ah-qb-preview-btn');
     var btnPrevText = $(btnPrev).find('span');
-    var problemPrev = $('#qb-preview-added-content [data-qb-preview-info="problem"]');
-    var tagsPrev = $('#qb-preview-added-content [data-qb-preview-info="tags"]');
+    var problemPrev = $('#ah-qb-preview-added-content [data-qb-preview-info="problem"]');
+    var tagsPrev = $('#ah-qb-preview-added-content [data-qb-preview-info="tags"]');
 
     // название
     $(nameInput).keyup(function() {
@@ -647,7 +647,7 @@ function addQBPreview() {
 
     // теги
     $(tagsList).change(function() {
-        var checked = $('#sh-qb-tags-multiselect [type="checkbox"]:checked');
+        var checked = $('#ah-qb-tags-multiselect [type="checkbox"]:checked');
         if ($(checked).length == 0) {
             $(tagsPrev).text('-');
             return;
@@ -665,7 +665,7 @@ function addQBPreview() {
 function createQB() {
     // поля
     var problem = $('#sh-qb-problems-select option:selected');
-    var tags = $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]:checked');
+    var tags = $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]:checked');
     var name = $('#sh-qb-name-input');
     var descr = $('#sh-qb-description-input');
     var bgColor = $('#sh-qb-bg-color-input');
@@ -750,30 +750,30 @@ function isQBAlreadyExists(newBtn) {
 function showQBSettings() {
     $('[data-modal-info="qb-modal-create"]').hide();
 
-    $('#layer-blackout-modal').append('<div class="ah-modal-content" style="display: none; background-color: transparent; box-shadow: none; border: none" data-modal-info="qb-modal-settings"><div class="ah-modal-container" style=""></div></div>');
+    $('#ah-layer-blackout-modal').append('<div class="ah-modal-content" style="display: none; background-color: transparent; box-shadow: none; border: none" data-modal-info="qb-modal-settings"><div class="ah-modal-container" style=""></div></div>');
 
-    $('[data-modal-info="qb-modal-settings"] .ah-modal-container').append('<div id="sh-qb-settings-modal" style="min-width: 450px;" class="ah-modal-column"></div>');
+    $('[data-modal-info="qb-modal-settings"] .ah-modal-container').append('<div id="ah-qb-settings-modal" style="min-width: 450px;" class="ah-modal-column"></div>');
 
-    var contaiter = $('#sh-qb-settings-modal');
+    var contaiter = $('#ah-qb-settings-modal');
     // header
     $(contaiter).append('<div class="ah-modal-header"><span class="ah-modal-title">Настройки Quick Buttons</span><button type="button" class="ah-modal-close">x</button></div>');
     $('[data-modal-info="qb-modal-settings"] .ah-modal-close').click(function() {
         $('[data-modal-info="qb-modal-settings"]').detach();
-        $('#layer-blackout-modal').removeClass('ah-layer-flex ah-layer-y-scroll');
+        $('#ah-layer-blackout-modal').removeClass('ah-layer-flex ah-layer-y-scroll');
         closeModal();
         resetCreateQBModal();
     });
 
     // Тело
     // созданные кнопки
-    $(contaiter).append('<div class="ah-modal-body" style=""><div class="ah-field-group" data-filed-info="qb-all-created"><div class="ah-field-title ah-title-medium">Созданные кнопки</div><div id="created-qb-holder" class="qb-holder"></div></div></div>');
+    $(contaiter).append('<div class="ah-modal-body" style=""><div class="ah-field-group" data-filed-info="qb-all-created"><div class="ah-field-title ah-title-medium">Созданные кнопки</div><div id="ah-created-qb-holder" class="ah-qb-holder"></div></div></div>');
     setQBHolderWidth();
 
     checkQBObjKeys(); // добавление обязательных ключей, если их нет
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
     LSobj.buttons.forEach(function(btn) {
-        $('#created-qb-holder').append('<button type="button" class="qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'" title="'+ btn.description +'"><span>'+ btn.name +'</span></button>');
+        $('#ah-created-qb-holder').append('<button type="button" class="ah-qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'" title="'+ btn.description +'"><span>'+ btn.name +'</span></button>');
     });
     // выбор действия в тайтле
     var btnNamesCreated = {
@@ -849,17 +849,17 @@ function showQBSettings() {
 
     // Футер
     $(contaiter).append('<div class="ah-modal-footer"></div>');
-    $(contaiter).find('.ah-modal-footer').append('<button type="button" class="sh-default-btn" id="create-qb-modal" style="float: left;">К созданию</button><a id="export-qb" class="sh-link-btn" style="padding-right: 0;" title="Экспорт текущих настроек Quick Buttons в файл">Экспорт</a><input type="file" id="import-qb" class="sh-link-btn" style="display: none;" accept="text/plain"><label for="import-qb" class="sh-link-btn" style="padding-right: 0; margin-bottom: 0;" title="Импот настроек Quick Buttons из файла"><span>Импорт</span></label>');
+    $(contaiter).find('.ah-modal-footer').append('<button type="button" class="ah-default-btn" id="create-qb-modal" style="float: left;">К созданию</button><a id="export-qb" class="ah-link-btn" style="padding-right: 0;" title="Экспорт текущих настроек Quick Buttons в файл">Экспорт</a><input type="file" id="import-qb" class="ah-link-btn" style="display: none;" accept="text/plain"><label for="import-qb" class="ah-link-btn" style="padding-right: 0; margin-bottom: 0;" title="Импот настроек Quick Buttons из файла"><span>Импорт</span></label>');
 
     // обработчики
-    $('#created-qb-holder .qb-btn').click(function() {
+    $('#ah-created-qb-holder .ah-qb-btn').click(function() {
         createdQBClickListener($(this));
     });
 
     // дропдаун во всех созданных кнопках
     $('#qb-all-created-dropdown a').click(function() {
         $('#qb-all-created-dropdown').toggleClass('ah-dropped');
-        var allBtns = $('#created-qb-holder .qb-btn');
+        var allBtns = $('#ah-created-qb-holder .ah-qb-btn');
 
         switch ($(this).text()) {
             case btnNamesCreated.createdBtnOrder:
@@ -894,7 +894,7 @@ function showQBSettings() {
                 break;
 
             case btnNames.selBtnRemove:
-                let btnName = $('#created-qb-holder .qb-selected').text();
+                let btnName = $('#ah-created-qb-holder .ah-qb-selected').text();
                 let isProceed = confirm('Вы действительно хотите удалить кнопку "'+ btnName +'"?');
                 if (isProceed) removeSelectedQB();
 
@@ -940,29 +940,29 @@ function showQBSettings() {
 }
 
 function generateQBSettings() {
-    let allBtns = $('#created-qb-holder .qb-btn');
+    let allBtns = $('#ah-created-qb-holder .ah-qb-btn');
     if (allBtns.length == 0) {
         $('[data-filed-info="qb-params"]').hide();
-        $('#created-qb-holder').append('<div class="ah-notification-wrapper"><span>Созданных кнопок нет</span></div>');
+        $('#ah-created-qb-holder').append('<div class="ah-notification-wrapper"><span>Созданных кнопок нет</span></div>');
 
         // $('[data-filed-info="qb-all-created"]').find('.ah-pseudo-link-dropmenu-holder').hide();
         return;
     }
 
-    $('#created-qb-holder .qb-btn').addClass('qb-not-selected');
+    $('#ah-created-qb-holder .ah-qb-btn').addClass('ah-qb-not-selected');
 
-    let firstBtn = $('#created-qb-holder .qb-btn:eq(0)');
-    $(firstBtn).removeClass('qb-not-selected');
-    $(firstBtn).addClass('qb-selected');
+    let firstBtn = $('#ah-created-qb-holder .ah-qb-btn:eq(0)');
+    $(firstBtn).removeClass('ah-qb-not-selected');
+    $(firstBtn).addClass('ah-qb-selected');
     showSelectedQBParams(JSON.parse( $(firstBtn).attr('data-full-obj') ));
 }
 
 function createdQBClickListener(btn) {
-    $('#created-qb-holder .qb-btn').removeClass('qb-selected');
-    $('#created-qb-holder .qb-btn').addClass('qb-not-selected');
+    $('#ah-created-qb-holder .ah-qb-btn').removeClass('ah-qb-selected');
+    $('#ah-created-qb-holder .ah-qb-btn').addClass('ah-qb-not-selected');
 
-    $(btn).removeClass('qb-not-selected');
-    $(btn).addClass('qb-selected');
+    $(btn).removeClass('ah-qb-not-selected');
+    $(btn).addClass('ah-qb-selected');
 
     $('#qb-selected-btn-params [data-qb-selected-info]').html('');
 
@@ -1005,7 +1005,7 @@ function showSelectedQBParams(btnInfo) {
 }
 
 function showEditSelectedQBParams() {
-    var btn = $('#created-qb-holder .qb-selected');
+    var btn = $('#ah-created-qb-holder .ah-qb-selected');
     if (!btn.length) {
         alert('Ошибка: кнопка не выбрана.');
         return;
@@ -1028,8 +1028,8 @@ function showEditSelectedQBParams() {
 
     // теги
     selectedBtn.tags.forEach(function(tagId) {
-        $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"][value="'+ tagId +'"]').prop('checked', true);
-        $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change();
+        $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"][value="'+ tagId +'"]').prop('checked', true);
+        $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change();
     });
 
     // название
@@ -1070,7 +1070,7 @@ function showEditSelectedQBParams() {
 
     // подменяем футер
     $(modalCreate).find('.ah-modal-footer button').hide();
-    $(modalCreate).find('.ah-modal-footer').append('<button type="button" class="sh-link-btn" id="discard-qb-edit" data-btn-modal="edit-qb">Отмена</button><button type="button" class="sh-action-btn" id="apply-qb-edit" data-btn-modal="edit-qb">Сохранить</button>');
+    $(modalCreate).find('.ah-modal-footer').append('<button type="button" class="ah-link-btn" id="discard-qb-edit" data-btn-modal="edit-qb">Отмена</button><button type="button" class="ah-action-btn" id="apply-qb-edit" data-btn-modal="edit-qb">Сохранить</button>');
 
     $('#discard-qb-edit').click(function() {
         resetCreateQBModal(modalCreate);
@@ -1098,7 +1098,7 @@ function showEditSelectedQBParams() {
 function editQB() {
     // поля
     var problem = $('#sh-qb-problems-select option:selected');
-    var tags = $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]:checked');
+    var tags = $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]:checked');
     var name = $('#sh-qb-name-input');
     var descr = $('#sh-qb-description-input');
     var bgColor = $('#sh-qb-bg-color-input');
@@ -1117,7 +1117,7 @@ function editQB() {
     // Проверка полей +++
 
     var LSobj =  JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
-    var curBtnData = JSON.parse( $('#created-qb-holder .qb-selected').attr('data-full-obj') );
+    var curBtnData = JSON.parse( $('#ah-created-qb-holder .ah-qb-selected').attr('data-full-obj') );
 
     var checkedTagIds = [];
     $(tags).each(function(i, tag) {
@@ -1152,7 +1152,7 @@ function editQB() {
         }
     });
 
-    $('#created-qb-holder .qb-selected').attr( 'data-full-obj', JSON.stringify(changedBtn));
+    $('#ah-created-qb-holder .ah-qb-selected').attr( 'data-full-obj', JSON.stringify(changedBtn));
     localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
 
     outTextFrame('Кнопка "'+ changedBtn.name +'" отредактирована.');
@@ -1162,7 +1162,7 @@ function editQB() {
 function updateCreatedQBSettings() {
 
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
-    var allBtns = $('#created-qb-holder button');
+    var allBtns = $('#ah-created-qb-holder button');
 
     LSobj.buttons.forEach(function(btn) {
         $(allBtns).each(function(i, elem) {
@@ -1183,7 +1183,7 @@ function updateCreatedQBSettings() {
 
 function removeSelectedQB() {
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
-    var selectedBtn = $('#created-qb-holder .qb-selected');
+    var selectedBtn = $('#ah-created-qb-holder .ah-qb-selected');
     var selectedBtnInfo = JSON.parse( $(selectedBtn).attr('data-full-obj') );
 
     LSobj.buttons.forEach(function(btn, i, arr) {
@@ -1203,10 +1203,10 @@ function removeSelectedQB() {
 function changeQBOrder() {
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
-    var allBtns = $('#created-qb-holder .qb-btn');
+    var allBtns = $('#ah-created-qb-holder .ah-qb-btn');
     $(allBtns).unbind('click');
-    $(allBtns).removeClass('qb-selected');
-    $(allBtns).addClass('qb-not-selected');
+    $(allBtns).removeClass('ah-qb-selected');
+    $(allBtns).addClass('ah-qb-not-selected');
     $('[data-filed-info="qb-params"]').hide();
     $('#qb-all-created-btn').hide();
 
@@ -1220,14 +1220,14 @@ function changeQBOrder() {
         if (action == 'choose first') {
             firstBtnObj = JSON.parse( $(this).attr('data-full-obj') );
             firstBtn = $(this);
-            $(firstBtn).removeClass('qb-not-selected');
-            $(firstBtn).addClass('qb-selected');
+            $(firstBtn).removeClass('ah-qb-not-selected');
+            $(firstBtn).addClass('ah-qb-selected');
             $(firstBtn).css('transform', 'translateY(-2px)');
             action = 'choose second';
         } else {
             secondBtnObj = JSON.parse( $(this).attr('data-full-obj') );
             secondBtn = $(this);
-            $(allBtns).removeClass('qb-selected');
+            $(allBtns).removeClass('ah-qb-selected');
             $(firstBtn).css('transform', 'translateY(0px)');
             action = 'choose first';
         }
@@ -1251,9 +1251,9 @@ function changeQBOrder() {
 
             LSobj.buttons.sort(compareObjByOrder);
 
-            $('#created-qb-holder button').remove();
+            $('#ah-created-qb-holder button').remove();
             LSobj.buttons.forEach(function(btn) {
-                $('#created-qb-holder').append('<button type="button" class="qb-btn qb-not-selected" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'"><span>'+ btn.name +'</span></button>');
+                $('#ah-created-qb-holder').append('<button type="button" class="ah-qb-btn ah-qb-not-selected" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'"><span>'+ btn.name +'</span></button>');
             });
 
             localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
@@ -1265,15 +1265,15 @@ function changeQBOrder() {
     });
 }
 function showChangeQBOrderHelp() {
-    if ($('#change-qb-order-help').length > 0) return;
+    if ($('#ah-change-qb-order-help').length > 0) return;
 
-    $('[data-modal-info="qb-modal-settings"]').append('<div id="change-qb-order-help" class="ah-modal-column"><div style="font-weight: 700; margin-bottom: 10px;">Включен режим изменения порядка</div><div style="margin-bottom: 10px;"><p>Нажимайте на кнопки, чтобы поменять их местами.</p><p>Также можно изменять порядок кнопок, в зависимости от ширины их названий. Для этого нажимайте кнопку "По ширине".</p><p>Изменения вступают в силу после каждого действия.</p></div><div class=""><button type="button" class="sh-action-btn" id="qb-change-order-by-width" data-sort="asc" title="">По ширине <span class="ah-thin-arrow-symbol">↑</span></button><button type="button" class="sh-link-btn" id="cancel-qb-change-order-mode" style="float: right; padding-right: 0;">Отключить режим</button><div class="ah-clearfix"></div></div></div>');
+    $('[data-modal-info="qb-modal-settings"]').append('<div id="ah-change-qb-order-help" class="ah-modal-column"><div style="font-weight: 700; margin-bottom: 10px;">Включен режим изменения порядка</div><div style="margin-bottom: 10px;"><p>Нажимайте на кнопки, чтобы поменять их местами.</p><p>Также можно изменять порядок кнопок, в зависимости от ширины их названий. Для этого нажимайте кнопку "По ширине".</p><p>Изменения вступают в силу после каждого действия.</p></div><div class=""><button type="button" class="ah-action-btn" id="qb-change-order-by-width" data-sort="asc" title="">По ширине <span class="ah-thin-arrow-symbol">↑</span></button><button type="button" class="ah-link-btn" id="cancel-qb-change-order-mode" style="float: right; padding-right: 0;">Отключить режим</button><div class="ah-clearfix"></div></div></div>');
     $('#cancel-qb-change-order-mode').click(function() {
         $('[data-filed-info="qb-params"]').show();
         $('#qb-all-created-btn').show();
 
-        let allBtns = $('#created-qb-holder .qb-btn');
-        $(allBtns).removeClass('qb-selected');
+        let allBtns = $('#ah-created-qb-holder .ah-qb-btn');
+        $(allBtns).removeClass('ah-qb-selected');
         $(allBtns).unbind('click');
         $(allBtns).click(function() {
             createdQBClickListener($(this));
@@ -1281,7 +1281,7 @@ function showChangeQBOrderHelp() {
 
         generateQBSettings();
 
-        $('#change-qb-order-help').remove();
+        $('#ah-change-qb-order-help').remove();
     });
 
     // сортировка по ширине спанов
@@ -1289,10 +1289,10 @@ function showChangeQBOrderHelp() {
         let sortBy = $(this).attr('data-sort');
         if (sortBy == 'asc') {
             $(this).attr('data-sort', 'desc');
-            $('#change-qb-order-help .ah-thin-arrow-symbol').text('↓');
+            $('#ah-change-qb-order-help .ah-thin-arrow-symbol').text('↓');
         } else {
             $(this).attr('data-sort', 'asc');
-            $('#change-qb-order-help .ah-thin-arrow-symbol').text('↑');
+            $('#ah-change-qb-order-help .ah-thin-arrow-symbol').text('↑');
         }
         changeQBOrderByWidth(sortBy);
     });
@@ -1300,7 +1300,7 @@ function showChangeQBOrderHelp() {
 function changeQBOrderByWidth(sortBy) {
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
 
-    var list = $('#created-qb-holder .qb-btn');
+    var list = $('#ah-created-qb-holder .ah-qb-btn');
     list.sort(compareBtnsBySpanWidth);
     LSobj.buttons = [];
 
@@ -1317,9 +1317,9 @@ function changeQBOrderByWidth(sortBy) {
 
     LSobj.buttons.sort(compareObjByOrder);
 
-    $('#created-qb-holder button').remove();
+    $('#ah-created-qb-holder button').remove();
     LSobj.buttons.forEach(function(btn) {
-        $('#created-qb-holder').append('<button type="button" class="qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'"><span>'+ btn.name +'</span></button>');
+        $('#ah-created-qb-holder').append('<button type="button" class="ah-qb-btn" style="background-color: '+ btn.bgColor +'; color: '+ btn.textColor +';" data-full-obj="'+ JSON.stringify(btn).replace(/"/g, "&quot;") +'"><span>'+ btn.name +'</span></button>');
     });
 
     localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
@@ -1342,7 +1342,7 @@ function compareObjByOrder(a, b) {
 
 function removeAllQB() {
     var LSobj = JSON.parse(localStorage.getItem('/helpdesk/quickbuttons'));
-    var allBtns = $('#created-qb-holder button');
+    var allBtns = $('#ah-created-qb-holder button');
 
     LSobj.buttons = [];
     localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
@@ -1585,11 +1585,11 @@ function setQBHolderWidth() {
     var sidePanelHolder = $('#side-panel-qb-holder-wrapper');
 	if (!sidePanelHolder.length) {
 		outTextFrame('Не удалось определить ширину Quick Buttons на боковой панели.');
-        $('#created-qb-holder').css('width', ''+ 400 +'');
+        $('#ah-created-qb-holder').css('width', ''+ 400 +'');
 		return;
 	}
 	var sidePanelHolderWidth = $(sidePanelHolder)[0].getBoundingClientRect().width;
-    $('#created-qb-holder').css('width', ''+ sidePanelHolderWidth +'');
+    $('#ah-created-qb-holder').css('width', ''+ sidePanelHolderWidth +'');
 }
 // настройки +++
 
@@ -1648,8 +1648,8 @@ function resetCreateQBModal(modalCreate) {
     $('#sh-qb-problems-select option[value=""]').prop('selected', true);
     $('#sh-qb-problems-select').change();
 
-    $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').prop('checked', false);
-    $('#sh-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change();
+    $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').prop('checked', false);
+    $('#ah-qb-tags-multiselect .ah-select-field-sub [type="checkbox"]').change();
 
     $('#sh-qb-name-input').val('');
     $('#sh-qb-name-input').keyup();
@@ -1676,7 +1676,7 @@ function checkTagInTicket(tagId) {
         if (item.value == tagId) {
             alert('Этот тег уже есть в тикете.');
             isAdded = true;
-			$('#sh-loading-layer').hide();
+			$('#ah-loading-layer').hide();
             return;
         }
     });
@@ -1730,7 +1730,7 @@ function addTagToTicket(tags, btnQB) {
             window.scrollTo(0, currentYOffset);
         }
 		
-		$('#sh-loading-layer').hide();
+		$('#ah-loading-layer').hide();
 
     },10);
 }
@@ -1799,13 +1799,13 @@ function createHyperLinksInCommentsHeading() {
 //---------- Причина блокировки юзера ----------//
 function showReasonBlockedUser() {
     $('span.sh-reason-blocked-user').detach();
-    $('div.helpdesk-usersidebar-status:first').removeClass('sh-blocked-user');
+    $('div.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
 
     var startTicketId = getCurrentTicketId(window.location.href);
 
     if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1) {
         var blockedUserId = $('.helpdesk-additional-info-panel:eq(0) div div:eq(0) a').text();
-        $('div.helpdesk-usersidebar-status:first').addClass('sh-blocked-user');
+        $('div.helpdesk-usersidebar-status:first').addClass('ah-blocked-user');
 
         var url = "https://adm.avito.ru/users/user/info/" + blockedUserId;
 
@@ -1881,13 +1881,13 @@ function addCommentOnUserFromTicket() {
 			return;
 		}
 		
-		$('#sh-loading-layer').show();
+		$('#ah-loading-layer').show();
         commentOnUserSupport(userId, comment, 'fromTicket');
     });
 }
 
 function commentUserFromTicketHandler(userId, xhr) {
-	$('#sh-loading-layer').hide();
+	$('#ah-loading-layer').hide();
 	
 	if ((xhr.status >= 400 || xhr.status < 200) && xhr.responseURL == 'https://adm.avito.ru/comment') {
 		setTimeout(() => {
@@ -1923,7 +1923,7 @@ function unblockUserHD() {
 
         $('.sh-unblockUsers').detach();
         // $('.helpdesk-usersidebar-status:first').text('Active');
-        $('.helpdesk-usersidebar-status:first').removeClass('sh-blocked-user');
+        $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
         // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
@@ -1941,7 +1941,7 @@ function unblockUserHD() {
 
         $('.sh-unblockUsers').detach();
         // $('.helpdesk-usersidebar-status:first').text('Active');
-        $('.helpdesk-usersidebar-status:first').removeClass('sh-blocked-user');
+        $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
         // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
@@ -1959,7 +1959,7 @@ function unblockUserHD() {
 
         $('.sh-unblockUsers').detach();
         // $('.helpdesk-usersidebar-status:first').text('Active');
-        $('.helpdesk-usersidebar-status:first').removeClass('sh-blocked-user');
+        $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
         // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
@@ -1970,27 +1970,27 @@ function unblockUserHD() {
 function setAlternateSearchInTicketCorresp() {
     changeHrefs();
 
-    if ( $('#sh-alternate-search-checkbox').length == 0 ) {
-        $('div.hd-global-settings-wrapper').append('<input type="checkbox" class="sh-alternate-search-checkbox" id="sh-alternate-search-checkbox">');
-        $('div.hd-global-settings-wrapper').append('<label for="sh-alternate-search-checkbox" title="Если опция включена, все гиперссылки для E-mail в переписке (в среднем блоке) будут вести на поиск в /items/search"><span>Alternate search</span></label>');
+    if ( $('#ah-alternate-search-checkbox').length == 0 ) {
+        $('div.ah-hd-global-settings-wrapper').append('<input type="checkbox" class="ah-alternate-search-checkbox" id="ah-alternate-search-checkbox">');
+        $('div.ah-hd-global-settings-wrapper').append('<label for="ah-alternate-search-checkbox" title="Если опция включена, все гиперссылки для E-mail в переписке (в среднем блоке) будут вести на поиск в /items/search"><span>Alternate search</span></label>');
     }
 
-    if (localStorage.getItem('sh-alternate-search-checkbox') == "true") {
-        $("#sh-alternate-search-checkbox").prop("checked", true);
+    if (localStorage.getItem('ah-alternate-search-checkbox') == "true") {
+        $("#ah-alternate-search-checkbox").prop("checked", true);
         changeHrefs();
     }
     if (localStorage.getItem('shblockquoteHide') == "false" || !localStorage.getItem('shblockquoteHide')) {
-        $("#sh-alternate-search-checkbox").prop("checked", false);
+        $("#ah-alternate-search-checkbox").prop("checked", false);
     }
 
     // запоминаем состояние чекбокса в локалсторадже
-    $('#sh-alternate-search-checkbox').click(function() {
-        if(document.getElementById('sh-alternate-search-checkbox').checked) {
-            localStorage.setItem('sh-alternate-search-checkbox', "true");
+    $('#ah-alternate-search-checkbox').click(function() {
+        if(document.getElementById('ah-alternate-search-checkbox').checked) {
+            localStorage.setItem('ah-alternate-search-checkbox', "true");
             localStorage.shAlternateMode = '1';
             changeHrefs();
         } else {
-            localStorage.setItem('sh-alternate-search-checkbox', "false");
+            localStorage.setItem('ah-alternate-search-checkbox', "false");
             localStorage.shAlternateMode = '';
             changeHrefs();
         }
@@ -2050,18 +2050,18 @@ function addElementsTicketTitle() {
 
 // линк на мессенджер
 function addMessengerLinkInTicket() {
-	$('div.helpdesk-additional-info-panel a.sh-messenger-link').parent().remove();
+	$('div.helpdesk-additional-info-panel a.ah-messenger-link').parent().remove();
 	
 	var id = $('div.helpdesk-additional-info-panel a[href^="/users/search?user_id"]').text();
-    $('div.helpdesk-additional-info-panel a[href^="/users/search?user_id"]').after('<span style="" class="sh-messenger-link-wrapper"><a title="Мессенджер" class="sh-messenger-link" href="/messenger/user/'+id+'" target="_blank" style=""></a></span>');
+    $('div.helpdesk-additional-info-panel a[href^="/users/search?user_id"]').after('<span style="" class="ah-messenger-link-wrapper"><a title="Мессенджер" class="ah-messenger-link" href="/messenger/user/'+id+'" target="_blank" style=""></a></span>');
 }
 
 // копирование мыла юзера
 function addCopyUserMailInTicket() {
-	$('#sh-copy-mail-ticket-title, #sh-automail-ticket-title').remove();
+	$('#ah-copy-mail-ticket-title, #sh-automail-ticket-title').remove();
 	
 	var email = $('div.helpdesk-additional-info-panel div:eq(0) div.helpdesk-usersidebar-status').prev().text();
-    $('div.helpdesk-additional-info-panel div:eq(0) div.helpdesk-usersidebar-status').prev().append('<button id="sh-copy-mail-ticket-title" class="sh-default-btn" type="button" title="Скопировать E-mail" style="margin-left: 8px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;"><span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button><button id="sh-automail-ticket-title" class="sh-default-btn" type="button" title="Скопировать E-mail со звездочками" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="sh-button-label sh-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span></button>');
+    $('div.helpdesk-additional-info-panel div:eq(0) div.helpdesk-usersidebar-status').prev().append('<button id="ah-copy-mail-ticket-title" class="ah-default-btn" type="button" title="Скопировать E-mail" style="margin-left: 8px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button><button id="sh-automail-ticket-title" class="ah-default-btn" type="button" title="Скопировать E-mail со звездочками" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span></button>');
     $('#sh-automail-ticket-title').click(function () {
         var text = getMailForAnswer(email);
         localStorage.autoEmail = text;
@@ -2069,7 +2069,7 @@ function addCopyUserMailInTicket() {
         outTextFrame('Email '+ text +' скопирован!');
     });
 
-    $('#sh-copy-mail-ticket-title').click(function () {
+    $('#ah-copy-mail-ticket-title').click(function () {
         var text = email;
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
         outTextFrame('Email '+ text +' скопирован!');
@@ -2120,9 +2120,9 @@ function addHelpdeskCheckVasUsage() {
 //---------- предполагаемая УЗ ----------//
 function infoAboutUser() {
     // console.log('infoAboutUser func');
-    $('#rightPanel').detach();
+    $('#ah-rightPanel').detach();
     $('#sh-expected-hacked-userid').detach();
-    $('.cssload-loader').detach();
+    $('.ah-cssload-loader').detach();
 
     var email = $('.hd-ticket-header-metadata:eq(0) a[href^="/helpdesk"]').text();
     email = email.replace(/[\(\)]/g, '');
@@ -2138,27 +2138,27 @@ function infoAboutUser() {
 
     $('.helpdesk-additional-info-panel').before('<div id="sh-expected-hacked-userid"><div>');
 
-    $('.helpdesk-additional-info-panel').before('<div id="rightPanel"><div>');
+    $('.helpdesk-additional-info-panel').before('<div id="ah-rightPanel"><div>');
 
     // ищем пользователя
     searchUser(email, currentTicketId);
 
     // ИЗМЕНЕНИЯ ПРАВОЙ ПАНЕЛИ
     if ($('#sh-AddRightPanel').length == 0) {
-        $('.hd-global-settings-wrapper').append('<br><input type="checkbox" class="sh-alternate-search-checkbox" id="sh-AddRightPanel">');
-        $('.hd-global-settings-wrapper').append('<label for="sh-AddRightPanel" title="Показывать правую панель из Скрипта">Add right Panel</label>');
+        $('.ah-hd-global-settings-wrapper').append('<br><input type="checkbox" class="ah-alternate-search-checkbox" id="sh-AddRightPanel">');
+        $('.ah-hd-global-settings-wrapper').append('<label for="sh-AddRightPanel" title="Показывать правую панель из Скрипта">Add right Panel</label>');
     }
 
     if (localStorage.shAddRightPanel == "true") {
         $("#sh-AddRightPanel").prop("checked", true);
         $('.helpdesk-additional-info-panel').hide();
         $('#sh-expected-hacked-userid').hide();
-        $('#rightPanel').show();
+        $('#ah-rightPanel').show();
     }
 
     if (localStorage.shAddRightPanel == "false" || !localStorage.shAddRightPanel) {
         $("#sh-AddRightPanel").prop("checked", false);
-        $('#rightPanel').hide();
+        $('#ah-rightPanel').hide();
         $('.helpdesk-additional-info-panel').show();
         $('#sh-expected-hacked-userid').show();
     }
@@ -2168,10 +2168,10 @@ function infoAboutUser() {
             localStorage.shAddRightPanel = 'true';
             $('.helpdesk-additional-info-panel').hide();
             $('#sh-expected-hacked-userid').hide();
-            $('#rightPanel').show();
+            $('#ah-rightPanel').show();
         } else {
             localStorage.shAddRightPanel = 'false';
-            $('#rightPanel').hide();
+            $('#ah-rightPanel').hide();
             $('.helpdesk-additional-info-panel').show();
             $('#sh-expected-hacked-userid').show();
         }
@@ -2179,66 +2179,65 @@ function infoAboutUser() {
 }
 
 function addRightPanelSettings(response, assume, currentTicketId) {
-    $('#rightPanelSettings').detach();
-    $('#rightPanelSettingsBody').detach();
-    $('#rightPanel').append('<div id="rightPanelSettings">&#9776;</div>');
+    $('#ah-rightPanelSettings').detach();
+    $('#ah-rightPanelSettingsBody').detach();
+    $('#ah-rightPanel').append('<div id="ah-rightPanelSettings">&#9776;</div>');
 
     addRightPanelSettingsBody(response, assume, currentTicketId);
 
-    $('#rightPanelSettings').click(function () {
+    $('#ah-rightPanelSettings').click(function () {
         $('#rightPanelBody').hide();
-        $('#rightPanelSettings').hide();
-        $('#rightPanelSettingsBody').show();
+        $('#ah-rightPanelSettings').hide();
+        $('#ah-rightPanelSettingsBody').show();
     });
 }
 
 function addRightPanelSettingsBody(response, assume, currentTicketId) {
-    $('#rightPanel').append('<div id="rightPanelSettingsBody"></div>');
+    $('#ah-rightPanel').append('<div id="ah-rightPanelSettingsBody"></div>');
 
-    $('#rightPanelSettingsBody').append('<div title="Замечание: чем больше информации вы загружаете, тем дольше загрузка панели." style="text-align:center; color: rgb(0, 136, 204); font-weight:bold;">Right panel settings</div>');
+    $('#ah-rightPanelSettingsBody').append('<div title="Замечание: чем больше информации вы загружаете, тем дольше загрузка панели." style="text-align:center; color: rgb(0, 136, 204); font-weight:bold;">Right panel settings</div>');
 
-    $('#rightPanelSettingsBody').append('<div id="rightPanelSettingsList"></div>');
-    $('#rightPanelSettingsList').append('<ul class="sh-panelSettingsLeft"></ul>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-name" value="rp-name" class="sh-dafault-checkbox"><label for="sh-rightPanel-name"><span>Name</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-id" value="rp-id" class="sh-dafault-checkbox"><label for="sh-rightPanel-id"><span>ID</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-login" value="rp-login" class="sh-dafault-checkbox"><label for="sh-rightPanel-login"><span>Login</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-email" value="rp-email" class="sh-dafault-checkbox"><label for="sh-rightPanel-email"><span>E-mail</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-reg" value="rp-reg" class="sh-dafault-checkbox"><label for="sh-rightPanel-reg"><span>Registered</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-stat" value="rp-stat" class="sh-dafault-checkbox"><label for="sh-rightPanel-stat"><span>Status</span></label></li>');
-    $('.sh-panelSettingsLeft').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-item" value="rp-item" class="sh-dafault-checkbox"><label for="sh-rightPanel-item"><span>Items</span></label></li>');
+    $('#ah-rightPanelSettingsBody').append('<div id="ah-rightPanelSettingsList"></div>');
+    $('#ah-rightPanelSettingsList').append('<ul class="ah-panelSettingsLeft"></ul>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-name" value="rp-name" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-name"><span>Name</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-id" value="rp-id" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-id"><span>ID</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-login" value="rp-login" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-login"><span>Login</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-email" value="rp-email" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-email"><span>E-mail</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-reg" value="rp-reg" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-reg"><span>Registered</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-stat" value="rp-stat" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-stat"><span>Status</span></label></li>');
+    $('.ah-panelSettingsLeft').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-item" value="rp-item" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-item"><span>Items</span></label></li>');
 
-    $('#rightPanelSettingsList').append('<ul class="sh-panelSettingsRight"></ul>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-acc" value="rp-acc" class="sh-dafault-checkbox"><label for="sh-rightPanel-acc"><span>Account</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-loc" value="rp-loc" class="sh-dafault-checkbox"><label for="sh-rightPanel-loc"><span>Location</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-ip" value="rp-ip" class="sh-dafault-checkbox"><label for="sh-rightPanel-ip"><span>Last IP</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-ti" value="rp-ti" class="sh-dafault-checkbox"><label for="sh-rightPanel-ti"><span>Tex Info</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-type" value="rp-type" class="sh-dafault-checkbox"><label for="sh-rightPanel-type"><span>Type</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-manager" value="rp-manager" class="sh-dafault-checkbox"><label for="sh-rightPanel-manager"><span>Manager</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-phone" value="rp-phone" class="sh-dafault-checkbox"><label for="sh-rightPanel-phone"><span>Phone</span></label></li>');
-    $('.sh-panelSettingsRight').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-subscription" value="rp-subscription" class="sh-dafault-checkbox"><label for="sh-rightPanel-subscription"><span>Subscription</span></label></li>');
+    $('#ah-rightPanelSettingsList').append('<ul class="ah-panelSettingsRight"></ul>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-acc" value="rp-acc" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-acc"><span>Account</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-loc" value="rp-loc" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-loc"><span>Location</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-ip" value="rp-ip" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-ip"><span>Last IP</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-ti" value="rp-ti" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-ti"><span>Tex Info</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-type" value="rp-type" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-type"><span>Type</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-manager" value="rp-manager" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-manager"><span>Manager</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-phone" value="rp-phone" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-phone"><span>Phone</span></label></li>');
+    $('.ah-panelSettingsRight').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-subscription" value="rp-subscription" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-subscription"><span>Subscription</span></label></li>');
 
-    $('#rightPanelSettingsBody').append('<div id="rightPanelSettingsListOpt"></div>');
-    $('#rightPanelSettingsListOpt').append('<ul class="sh-panelSettingsCenter" style="list-style: none; padding:8px 0px;"></ul>');
-    $('.sh-panelSettingsCenter').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-com" value="rp-com" class="sh-dafault-checkbox"><label for="sh-rightPanel-com"><span>Comments</span></label><input id="rp-com-val" class="rightPanelSetInput" type="text" title="Введите кол-во отображаемых элементов (по-умолчанию оно равно 3)"></li>');
-    //$('.sh-panelSettingsCenter').append('<li class="sh-default-list-item"><input type="checkbox" id="sh-rightPanel-abuse" value="rp-abuse" class="sh-dafault-checkbox"><label for="sh-rightPanel-abuse"><span>Abuse</span></label><input id="rp-abuse-val" class="rightPanelSetInput" type="text" title="Введите кол-во отображаемых элементов (по-умолчанию оно равно 3)"></li>');
+    $('#ah-rightPanelSettingsBody').append('<div id="ah-rightPanelSettingsListOpt"></div>');
+    $('#ah-rightPanelSettingsListOpt').append('<ul class="ah-panelSettingsCenter" style="list-style: none; padding:8px 0px;"></ul>');
+    $('.ah-panelSettingsCenter').append('<li class="ah-default-list-item"><input type="checkbox" id="sh-rightPanel-com" value="rp-com" class="ah-support-dafault-checkbox"><label for="sh-rightPanel-com"><span>Comments</span></label><input id="rp-com-val" class="ah-rightPanelSetInput" type="text" title="Введите кол-во отображаемых элементов (по-умолчанию оно равно 3)"></li>');
 
-    $('#rightPanelSettingsBody').append('<div id="rightPanelSettingsButton" style="text-align:center;"></div>');
-    $('#rightPanelSettingsButton').append('<input id="rightPanelSettingsButtonSave" type="button" class="sh-action-btn" value="Save">');
-    $('#rightPanelSettingsButton').append('<input id="rightPanelSettingsButtonCancel" type="button" class="sh-action-btn" value="Cancel" style="margin-left:20px;">');
+    $('#ah-rightPanelSettingsBody').append('<div id="rightPanelSettingsButton" style="text-align:center;"></div>');
+    $('#rightPanelSettingsButton').append('<input id="rightPanelSettingsButtonSave" type="button" class="ah-action-btn" value="Save">');
+    $('#rightPanelSettingsButton').append('<input id="rightPanelSettingsButtonCancel" type="button" class="ah-action-btn" value="Cancel" style="margin-left:20px;">');
 
     // отображения какие настройки включены
     displayRightPanelSettings();
 
     $('#rightPanelSettingsButtonCancel').click(function () {
         $('#rightPanelBody').show();
-        $('#rightPanelSettings').show();
-        $('#rightPanelSettingsBody').hide();
+        $('#ah-rightPanelSettings').show();
+        $('#ah-rightPanelSettingsBody').hide();
     });
 
     $('#rightPanelSettingsButtonSave').click(function () {
         $('#rightPanelBody').show();
-        $('#rightPanelSettings').show();
-        $('#rightPanelSettingsBody').hide();
+        $('#ah-rightPanelSettings').show();
+        $('#ah-rightPanelSettingsBody').hide();
 
         changeRightPanelSettings();
         displayUserInfoOnRightPanel(response, assume, currentTicketId);
@@ -2267,19 +2266,19 @@ function changeRightPanelSettings() {
         list: [],
         listOpt: {}
     };
-    var lenList = $('#rightPanelSettingsList input[type=checkbox]').length;
+    var lenList = $('#ah-rightPanelSettingsList input[type=checkbox]').length;
 
     for (var i = 0; i < lenList; ++i) {
-        if ($('#rightPanelSettingsList input[type=checkbox]').slice(i,i+1).prop('checked')) {
-            rightPanelSettings.list.push($('#rightPanelSettingsBody input[type=checkbox]').slice(i,i+1).val());
+        if ($('#ah-rightPanelSettingsList input[type=checkbox]').slice(i,i+1).prop('checked')) {
+            rightPanelSettings.list.push($('#ah-rightPanelSettingsBody input[type=checkbox]').slice(i,i+1).val());
         }
     }
 
-    var lenListOpt = $('#rightPanelSettingsListOpt input[type=checkbox]').length;
+    var lenListOpt = $('#ah-rightPanelSettingsListOpt input[type=checkbox]').length;
 
     for (var i = 0; i < lenListOpt; ++i) {
-        if ($('#rightPanelSettingsListOpt input[type=checkbox]').slice(i,i+1).prop('checked')) {
-            rightPanelSettings.listOpt[$('#rightPanelSettingsListOpt input[type=checkbox]').slice(i,i+1).val()] = $('.rightPanelSetInput').slice(i,i+1).val();
+        if ($('#ah-rightPanelSettingsListOpt input[type=checkbox]').slice(i,i+1).prop('checked')) {
+            rightPanelSettings.listOpt[$('#ah-rightPanelSettingsListOpt input[type=checkbox]').slice(i,i+1).val()] = $('.ah-rightPanelSetInput').slice(i,i+1).val();
         }
     }
 
@@ -2288,7 +2287,7 @@ function changeRightPanelSettings() {
 
 function searchUser(email, currentTicketId) {
     // анимация загрузки
-    loadingBar('#rightPanel', 80);
+    loadingBar('#ah-rightPanel', 80);
 
     var href = 'https://adm.avito.ru/users/search?email='+email;
     
@@ -2390,13 +2389,13 @@ function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
 }
 
 function displayUserNotFound() {
-    $('.sh-user-not-found').detach();
+    $('.ah-user-not-found').detach();
 
-    $('#rightPanel').append('<div id="rightPanelBody"></div>');
-    $('#rightPanelBody').append('<div class="sh-user-not-found">Учетная запись не найдена</div>');
-    $('#sh-expected-hacked-userid').append('<div class="sh-user-not-found">Учетная запись не найдена</div>');
+    $('#ah-rightPanel').append('<div id="rightPanelBody"></div>');
+    $('#rightPanelBody').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
+    $('#sh-expected-hacked-userid').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
 
-    $('.cssload-loader').detach();
+    $('.ah-cssload-loader').detach();
 }
 
 function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhrase) {
@@ -2415,13 +2414,13 @@ function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhra
 
 function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     $('#rightPanelBody').detach();
-    $('#rightPanel').append('<div id="rightPanelBody"></div>');
-    $('#rightPanelBody').append('<table id="userInfoTable"><tbody></tbody></table>');
+    $('#ah-rightPanel').append('<div id="rightPanelBody"></div>');
+    $('#rightPanelBody').append('<table id="ah-userInfoTable"><tbody></tbody></table>');
 
     let rightPanelSettings = localStorage.rightPanelSettings;
     let rightPanelSettingsParse = JSON.parse(rightPanelSettings);
 
-    let mainTable = $('#userInfoTable');
+    let mainTable = $('#ah-userInfoTable');
 
     if (assume) $(mainTable).before('<div style="text-align:center; color: #FFC107; font-weight:bold;" title="Внимание! Данная учетная запись является предполагаемой и была найдена с помощию созданного алгоритма поиска.">Предполагаемая УЗ</div>');
 
@@ -2438,7 +2437,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
-        $(mainTable).append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank">'+id+'</a><span style="" class="sh-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="sh-messenger-link"></a></span></td></tr>');
+        $(mainTable).append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank">'+id+'</a><span style="" class="ah-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="ah-messenger-link"></a></span></td></tr>');
     }
 
     if (rightPanelSettings.indexOf('rp-login')+1) {
@@ -2453,11 +2452,11 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 '<td><div id="ah-rp-email">' +
                     '<a href="https://adm.avito.ru/users/search?email='+email+'" target="_blank">'+email+'</a> ' +
                     '<span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span>' +
-                    '<button id="sh-copy-mail-right-panel" class="sh-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">' +
-                        '<span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>' +
+                    '<button id="sh-copy-mail-right-panel" class="ah-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">' +
+                        '<span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>' +
                     '</button>' +
-                    '<button id="sh-automail-right-panel" class="sh-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;">' +
-                        '<span class="sh-button-label sh-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span>' +
+                    '<button id="sh-automail-right-panel" class="ah-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;">' +
+                        '<span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span>' +
                     '</button>' +
                 '</div></td>' +
             '</tr>');
@@ -2498,20 +2497,20 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         let colorChance = '#65a947';
         if (chance === '10') colorChance = '#b3263c';
 
-        $(mainTable).append('<tr class="grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser" style="float:right;"></div></td></tr>');
+        $(mainTable).append('<tr class="ah-grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser" style="float:right;"></div></td></tr>');
 
 
         if (status === 'Blocked') {
             rightPanelUnblockUser();
 
             let reason = $(response).find('.form-group:contains(Причины) .form-control-static').text();
-            $(mainTable).append('<tr class="grayBlock"><td>Reasons</td><td class="reasonStyle">'+reason+'</td></tr>');
+            $(mainTable).append('<tr class="ah-grayBlock"><td>Reasons</td><td class="ah-reasonStyle">'+reason+'</td></tr>');
 
             let blockTime = $(response).find('h4:contains(История админки)').next().find('tr:contains(User is blocked):eq(0) td:eq(0)').text();
             if (!blockTime) {
                 blockTime = '<span class="ah-pseudo-link" id="get-user-block-time-from-history-rp" title="Показать дату">> 1,5 месяца назад</span>';
             }
-            $(mainTable).append('<tr class="grayBlock"><td>Blocked at</td><td>'+blockTime+'</td></tr>');
+            $(mainTable).append('<tr class="ah-grayBlock"><td>Blocked at</td><td>'+blockTime+'</td></tr>');
 
             $('#get-user-block-time-from-history-rp').click(function () {
                 btnLoaderOn($(this));
@@ -2520,7 +2519,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 
             if (reason.indexOf("Нарушение условий пользовательского соглашения")+1) {
                 let calls = $(response).find('.form-group:contains(Звонки) .form-control-static').html();
-                $(mainTable).append('<tr class="grayBlock"><td>Calls</td><td>'+calls+'</td></tr>');
+                $(mainTable).append('<tr class="ah-grayBlock"><td>Calls</td><td>'+calls+'</td></tr>');
             }
         }
     }
@@ -2562,7 +2561,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     if (rightPanelSettings.indexOf('rp-loc')+1) {
         let location =  $(response).find('#region option:selected').text();
         if (location !== "-- Select location --") {
-            $(mainTable).append('<tr class="grayBlock"><td>Location</td><td>'+location+'</td></tr>');
+            $(mainTable).append('<tr class="ah-grayBlock"><td>Location</td><td>'+location+'</td></tr>');
         }
     }
 
@@ -2570,7 +2569,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         let lastIP = $(response).find('.ip-info-list li:eq(0)').html();
         if (lastIP !== undefined) {
             lastIP = lastIP.split('(');
-            $(mainTable).append('<tr class="grayBlock">' +
+            $(mainTable).append('<tr class="ah-grayBlock">' +
                     '<td>Last IP</td>' +
                     '<td><div id="ah-rp-ip">'+lastIP[0]+'</div></td>' +
                 '</tr>');
@@ -2583,7 +2582,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     if (rightPanelSettings.indexOf('rp-ti')+1) {
         let lastTInfo =  $(response).find('.form-group:contains(User-Agent последнего посещения) .help-block').html();
         if (lastTInfo !== undefined) {
-            $(mainTable).append('<tr class="grayBlock"><td>Tex Info</td><td>'+lastTInfo+'</td></tr>');
+            $(mainTable).append('<tr class="ah-grayBlock"><td>Tex Info</td><td>'+lastTInfo+'</td></tr>');
         }
     }
 
@@ -2625,7 +2624,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 
     if (rightPanelSettings.indexOf('rp-phone')+1) {
         let phoneList = $(response).find('.controls-phone');
-        $(mainTable).append('<tr class="grayBlock"><td style="vertical-align: top;">Phone</td><td><div><span class="ah-show-unverify-phone">show unverify phone</span></div><div id="phoneHistory"></div></td></tr>');
+        $(mainTable).append('<tr class="ah-grayBlock"><td style="vertical-align: top;">Phone</td><td><div><span class="ah-show-unverify-phone">show unverify phone</span></div><div id="ah-phoneHistory"></div></td></tr>');
 
         for (let i = 0; i < phoneList.length; i++) {
             let phoneInfo = phoneList[i];
@@ -2640,14 +2639,14 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             if ($(phoneInfo).find('.i-verify').hasClass('i-verify-checked')) {
                 statusPhone = 'verify';
                 phoneVerifyDate = $(phoneInfo).find('.phone-verify-date').text().replace(' ', '');
-                verify = '<span class="verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
-                unVerify = '<span type="button" class="sh-default-btn sh-unverify-phones-multi" style="" data-phone="' + number + '" title="Формирование списка телефонных номеров для открепления">&#10060;</span>';
+                verify = '<span class="ah-verify" style="color: green;" title="Телефон верифицирован">&#10003;</span>';
+                unVerify = '<span type="button" class="ah-default-btn ah-unverify-phones-multi" style="" data-phone="' + number + '" title="Формирование списка телефонных номеров для открепления">&#10060;</span>';
             } else {
                 statusPhone = 'unverify';
-                verify = '<span class="verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
+                verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
             }
 
-            $('#phoneHistory').append('<div id="'+number+'" ah-phone-status="'+statusPhone+'" style="padding: 3px">' +
+            $('#ah-phoneHistory').append('<div id="'+number+'" ah-phone-status="'+statusPhone+'" style="padding: 3px">' +
                 verify +
                 ' <a href="https://adm.avito.ru/users/search?phone='+number+'" target="_blank">'+number+'</a> ' +
                 '<span class="ah-phone-verify-date" title="Время верификации">('+ phoneVerifyDate + ')</span> ' +
@@ -2673,7 +2672,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 
     // КОММЕНТАРИИ
     if (rightPanelSettings.indexOf('rp-com')+1) {
-        $('#rightPanelBody').append('<div id="userComments"><div class="commentsNameStyle">Comments:</div></div>');
+        $('#rightPanelBody').append('<div id="userComments"><div class="ah-commentsNameStyle">Comments:</div></div>');
 
         rightPanelAddComment(id);
 
@@ -2692,7 +2691,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 var username = tmp.slice(i,i+1).find('td:eq(1)').text();
                 var comment = tmp.slice(i,i+1).find('td:eq(2)').text().replace(/&/g, '&amp;');
 
-                $('.ah-commentList').append('<div class="commentBlockStyle"><div class="commentStyle">'+comment+'</div><div class="commentInfoStyle"><span>'+username+'</span><span style="float: right;">'+date+'</span></div></div>');
+                $('.ah-commentList').append('<div class="ah-commentBlockStyle"><div class="ah-commentStyle">'+comment+'</div><div class="ah-commentInfoStyle"><span>'+username+'</span><span style="float: right;">'+date+'</span></div></div>');
             }
 
             linksOnComments('.commentStyle', id);
@@ -2707,7 +2706,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 		searchBySocialBtnHandler($(this));
     });
 	
-    $('.cssload-loader').detach();
+    $('.ah-cssload-loader').detach();
 }
 
 function rightPanelAddComment(id) {
@@ -2782,16 +2781,7 @@ function rightPanelUnblockUser() {
 
 //---------- Смена ассигни -----------//
 function changeAssignee() {
-    if ($('#change-assignee-wrapper').length > 0) return;
-    // let allowedSubdivisions = [
-    //     31, // Поддержка профессиональных пользователей
-    //     41, // Руководитель группы службы поддержки
-    //     48, // Руководитель группы поддержки профессиональных пользователей
-    //     49, // Поддержка профессиональных инструментов
-    //     30, // Developer
-    //     66, // Руководитель группы InfoDoc
-    //     43, // Руководитель отдела
-    // ];
+    if ($('#ah-change-assignee-wrapper').length > 0) return;
 
     let allPanelHeaders = getHdLeftPanelHeaders();
     let membersHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Участники');
@@ -2799,20 +2789,20 @@ function changeAssignee() {
     let assigneeBlock = [].find.call(allLabels, singleItem => singleItem.firstChild.data === 'Исполнитель');
     
     $(assigneeBlock).append(`
-        <div id="change-assignee-wrapper">
-            <button type="button" id="sh-chenge-assignee-to-me-btn" 
-                class="sh-default-btn change-assignee-btn" 
+        <div id="ah-change-assignee-wrapper">
+            <button type="button" id="ah-change-assignee-to-me-btn" 
+                class="ah-default-btn ah-change-assignee-btn" 
                 title="Назначить себя в качестве исполнителя">
             </button>
-            <button type="button" id="sh-clear-assignee-btn" 
-                class="sh-default-btn change-assignee-btn" 
+            <button type="button" id="ah-clear-assignee-btn" 
+                class="ah-default-btn ah-change-assignee-btn" 
                 title="Сбросить исполнителя">
                 <span class="glyphicon glyphicon-remove-circle"></span>
             </button>
         </div>
     `);
     
-    let changeBtns = $('#sh-chenge-assignee-to-me-btn, #sh-clear-assignee-btn');
+    let changeBtns = $('#ah-change-assignee-to-me-btn, #ah-clear-assignee-btn');
     $(changeBtns).click(function () {
         let ticketStatus = getTicketStatusText();
         if ((~ticketStatus.indexOf('закрытое')
@@ -2825,16 +2815,16 @@ function changeAssignee() {
         let btn = $(this).attr('id');
         let agentId;
         switch (btn) {
-            case 'sh-chenge-assignee-to-me-btn':
+            case 'ah-change-assignee-to-me-btn':
                 agentId = localStorage.agentID;
                 break;
                 
-            case 'sh-clear-assignee-btn':
+            case 'ah-clear-assignee-btn':
                 agentId = '';
                 break;
         }
         
-        $('#sh-loading-layer').show();
+        $('#ah-loading-layer').show();
         addExtraAssigneeId(agentId);
         helpDeskClickImitation();
     });
@@ -2842,9 +2832,9 @@ function changeAssignee() {
 //+++++++++++ Смена ассигни +++++++++++//
 
 function addTicketControlTools() {
-    $('#sh-ticket-control-tools-container').remove();
+    $('#ah-ticket-control-tools-container').remove();
 
-    $('.helpdesk-side-panel-setting-checkbox').after('<div id="sh-ticket-control-tools-container" style=""><div class="ah-clearfix"></div></div>');
+    $('.helpdesk-side-panel-setting-checkbox').after('<div id="ah-ticket-control-tools-container" style=""><div class="ah-clearfix"></div></div>');
 
     addSmiles();
 
@@ -2853,13 +2843,13 @@ function addTicketControlTools() {
 
 //---------- смайлы (пользователь похвалил или наругал нас) ----------//
 function addSmiles() {
-    $('#sh-ticket-control-tools-container').prepend('<div class="sh-class-ticket-container" style=""><b style="vertical-align : middle; line-height : 1; font-size : 13px; font-weight : 500; color : #959595;">Классифицировать: </b></div>');
+    $('#ah-ticket-control-tools-container').prepend('<div class="ah-class-ticket-container" style=""><b style="vertical-align : middle; line-height : 1; font-size : 13px; font-weight : 500; color : #959595;">Классифицировать: </b></div>');
 
-    $('div.sh-class-ticket-container').append('<input type="button" class="sh-default-btn sh-img-btn" id="sh-smile-btn-up" style="margin: 0; border-radius: 0;" title="Положительный тикет от пользователя - нас похвалили за что-то" data-tag-id="1000" data-tag-name="user_joy">');
-    $('div.sh-class-ticket-container').append('<input type="button" class="sh-default-btn sh-img-btn" id="sh-smile-btn-down" style="margin: 0; border-radius: 0;" title="Отрицательный тикет от пользователя - нас поругали за что-то" data-tag-id="999" data-tag-name="user_pain">');
+    $('div.ah-class-ticket-container').append('<input type="button" class="ah-default-btn ah-img-btn" id="ah-smile-btn-up" style="margin: 0; border-radius: 0;" title="Положительный тикет от пользователя - нас похвалили за что-то" data-tag-id="1000" data-tag-name="user_joy">');
+    $('div.ah-class-ticket-container').append('<input type="button" class="ah-default-btn ah-img-btn" id="ah-smile-btn-down" style="margin: 0; border-radius: 0;" title="Отрицательный тикет от пользователя - нас поругали за что-то" data-tag-id="999" data-tag-name="user_pain">');
 
     $('input[id^="sh-smile-btn"]').click(function() {
-		$('#sh-loading-layer').show();
+		$('#ah-loading-layer').show();
         checkTagInTicket($(this).data('tagId'));
     });
 }
@@ -2870,13 +2860,13 @@ function addSmiles() {
 function attendantTL() {
 	 $('#attendant-tl-notification').remove();
 	 
-    $('#sh-ticket-control-tools-container').prepend('<button type="button" class="sh-default-btn ah-btn-small sh-attendant-tl-btn" style="" id="sh-attendant-tl-btn" title="Отправка обращения дежурному тимлидеру">Помощь ТЛ </button>');
+    $('#ah-ticket-control-tools-container').prepend('<button type="button" class="ah-default-btn ah-btn-small ah-attendant-tl-btn" style="" id="ah-attendant-tl-btn" title="Отправка обращения дежурному тимлидеру">Помощь ТЛ </button>');
 
 	var commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
 	var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 	$(openAnswerInput).unbind('click');
 	
-    $('#sh-attendant-tl-btn').click(function() {
+    $('#ah-attendant-tl-btn').click(function() {
         attendantTLBtnHandler($(this));
     });
 }
@@ -2904,11 +2894,11 @@ function attendantTLBtnHandler(btn) {
         return;
     }
 	
-    if (!$(btn).hasClass('sh-active-btn')) {
-        $('#sh-loading-layer').show();
+    if (!$(btn).hasClass('ah-active-btn')) {
+        $('#ah-loading-layer').show();
         getAttendantTL(btn);
     } else {
-        $(btn).toggleClass('sh-active-btn');
+        $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
 		outTextFrame('Отключен режим отправки обращения дежурному тимлидеру');
 		
@@ -2929,7 +2919,7 @@ function getAttendantTL(btn) {
 
         function(response) {
             global.attendantTlInfo = {};
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             if (response == 'error') {
                 setTimeout(function() {
                     alert('Произошла техническая ошибка.');
@@ -2962,7 +2952,7 @@ function getAttendantTL(btn) {
 }
 
 function setInternalNoteMode(btn) {
-    $(btn).toggleClass('sh-active-btn');
+    $(btn).toggleClass('ah-active-btn');
 
     var commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
     var input = $(commentsToggleBlock).find('[name="type-selector"][value="3"]');
@@ -2970,7 +2960,7 @@ function setInternalNoteMode(btn) {
 
     if (!label.length) {
         alert('Ошибка: не удалось переключиться в режим внутреннего примечания.');
-        $(btn).toggleClass('sh-active-btn');
+        $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
 		global.attendantTlInfo = {};
         return;
@@ -2982,7 +2972,7 @@ function setInternalNoteMode(btn) {
         var usersSelect = $(commentForm).find('.helpdesk-select-typeahead-value');
         if (!usersSelect.length) {
             alert('Ошибка: не удалось выбрать тимлидера в качестве адресата.');
-            $(btn).toggleClass('sh-active-btn');
+            $(btn).toggleClass('ah-active-btn');
             $('#attendant-tl-notification').remove();
 			global.attendantTlInfo = {};
             return;
@@ -3008,8 +2998,8 @@ function setInternalNoteMode(btn) {
 			
 			var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 			$(openAnswerInput).unbind('click').click(function() {
-				if (!$(btn).hasClass('sh-active-btn')) return;
-				$(btn).toggleClass('sh-active-btn');
+				if (!$(btn).hasClass('ah-active-btn')) return;
+				$(btn).toggleClass('ah-active-btn');
 				$('#attendant-tl-notification').remove();
 				outTextFrame('Отключен режим отправки обращения дежурному тимлидеру');
 			});
@@ -3036,7 +3026,7 @@ function showAttendantTlNotification() {
             notifBody = '<b>Включен режим отправки обращения дежурному тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "На удержании", если статус тикета "Открытый", или кнопку "Отправить", если статус тикета "На удержании". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>"agent_help"</i>.<br>Изменять получателя внутреннего примечания не нужно.';
             break;
     }
-    $(detailsPanel).before('<div id="attendant-tl-notification" class="sh-helpdesk-notification ah-alert-warning"></div>');
+    $(detailsPanel).before('<div id="attendant-tl-notification" class="ah-sh-helpdesk-notification ah-alert-warning"></div>');
     var notifBlock = $('#attendant-tl-notification');
     $(notifBlock).html(notifBody);
     $(notifBlock).fadeIn(100);
@@ -3045,7 +3035,7 @@ function showAttendantTlNotification() {
 function checkAdmUserIdAttendantTL() {
     var teamLeadName = global.attendantTlInfo.name +' '+ global.attendantTlInfo.surname;
     if (!global.attendantTlInfo.adm_user_id) {
-		$('#sh-loading-layer').hide();
+		$('#ah-loading-layer').hide();
 		setTimeout(() => {
 			alert('Не удалось назначить тимлидера "'+ teamLeadName +'" в качестве исполнителя. Пожалуйста, сообщите о данной ошибке вашему тимлидеру.');
 		}, 100);
@@ -3078,7 +3068,7 @@ function addTagAttendantTL() {
 			
 	    document.querySelector('.helpdesk-click-fog').click();
 		window.scrollTo(0, currentYOffset);
-		$('#sh-loading-layer').hide();
+		$('#ah-loading-layer').hide();
     },10);
 }
 //++++++++++ дежурный тимлид ++++++++++//
@@ -3120,7 +3110,7 @@ function parseIPInDetailsPanel(block, className) {
                 <button type="button" class="btn btn-default btn-sm copy-ip-ticket-details" data-copy-text="${ipText}">
                     <span class="glyphicon glyphicon-copy"></span> Скопировать
                 </button>
-                <button type="button" class="btn btn-default btn-sm sh-sanction-ip-btn" data-ip="${ipText}">
+                <button type="button" class="btn btn-default btn-sm ah-sanction-ip-btn" data-ip="${ipText}">
                     <span class="glyphicon glyphicon-ok"></span> Одобрить
                 </button>
             </div>
@@ -3157,7 +3147,7 @@ function parseIPInDetailsPanel(block, className) {
                     outTextFrame(`IP ${text} скопирован!`);
                 });
 
-                let sanctionBtn = $(popover).find('.sh-sanction-ip-btn');
+                let sanctionBtn = $(popover).find('.ah-sanction-ip-btn');
                 $(sanctionBtn).unbind('click').click(function() {
                     let ip = $(this).attr('data-ip');
                     let ticketLink = window.location.href;
@@ -3171,7 +3161,7 @@ function parseIPInDetailsPanel(block, className) {
 
 // Одобрение IP в техинфо
 function sanctionIPTechInfo() {
-    $('#tech-info-sanction-ip-btn').remove();
+    $('#ah-tech-info-sanction-ip-btn').remove();
 
     var regForIp = /((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/g;
 
@@ -3184,9 +3174,9 @@ function sanctionIPTechInfo() {
 
     if ( ~ipInfoText.search(regForIp)) {
         var ip = ipInfoText.match(regForIp);
-        $(ipLabel).append('<button id="tech-info-sanction-ip-btn" type="button" class="sh-default-btn sh-sanction-ip-btn" style="" title="" data-ip="'+ ip +'">Одобрить</button>');
+        $(ipLabel).append('<button id="ah-tech-info-sanction-ip-btn" type="button" class="ah-default-btn ah-sanction-ip-btn" style="" title="" data-ip="'+ ip +'">Одобрить</button>');
 
-        $('#tech-info-sanction-ip-btn').click(function() {
+        $('#ah-tech-info-sanction-ip-btn').click(function() {
             var ip = $(this).attr('data-ip');
             var ticketLink = window.location.href;
             renderSanctionIPPopup(ip, ticketLink);
@@ -3218,8 +3208,8 @@ function copyCurrentTicketLink() {
     $('#copyCurrentTicketLink').remove();
 
    let ticketHeaderTitle = $('.hd-ticket-header-title');
-   $(ticketHeaderTitle).before(`<button id="copyCurrentTicketLink" class="sh-default-btn ah-btn-small" type="button" style="margin-bottom: 6px;">
-        <span class="sh-button-label sh-copy-img" style="border-radius: 0; font-size: 12px; top: 2px; line-height: 16px;"></span>
+   $(ticketHeaderTitle).before(`<button id="copyCurrentTicketLink" class="ah-default-btn ah-btn-small" type="button" style="margin-bottom: 6px;">
+        <span class="ah-support-button-label ah-copy-img" style="border-radius: 0; font-size: 12px; top: 2px; line-height: 16px;"></span>
         Скопировать ссылку на обращение
         </button>`);
 
@@ -3510,8 +3500,8 @@ function blockquoteClear() {
 
 function blockquoteHide() {
     if ( $('#sh-blockquoteHide').length == 0 ) {
-        $('.hd-global-settings-wrapper').append('<br><input type="checkbox" class="sh-alternate-search-checkbox" id="sh-blockquoteHide">');
-        $('.hd-global-settings-wrapper').append('<label for="sh-blockquoteHide" title="Скрывает все цитаты в обращении">Hide quotes</label>');
+        $('.ah-hd-global-settings-wrapper').append('<br><input type="checkbox" class="ah-alternate-search-checkbox" id="sh-blockquoteHide">');
+        $('.ah-hd-global-settings-wrapper').append('<label for="sh-blockquoteHide" title="Скрывает все цитаты в обращении">Hide quotes</label>');
     }
 
     if (localStorage.getItem('shblockquoteHide') == "false" || !localStorage.getItem('shblockquoteHide')) {
@@ -3540,7 +3530,7 @@ function blockquoteHide() {
 
 //++++++++++ Показывать линию саппортов в HD ++++++++++//
 function showAgentInfoTicket() {
-    $('#sh-line-sup').remove();
+    $('#ah-line-sup').remove();
     $('#customer-claim-notification').remove();
 
     let allPanelHeaders = getHdLeftPanelHeaders();
@@ -3556,7 +3546,7 @@ function showAgentInfoTicket() {
         return;
     }
     if (global.allUsersInfo === 'FatalError') {
-        $(assigneeBlockSpan).before('<span id="sh-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
+        $(assigneeBlockSpan).before('<span id="ah-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
     }
 
@@ -3574,7 +3564,7 @@ function showAgentInfoTicket() {
             // console.log(user);
             let teamleadLogin = user.teamlead_login;
             claimReevaluation(teamleadLogin); // переоценка претензионщиками
-            $(assigneeBlockSpan).before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
+            $(assigneeBlockSpan).before('<span id="ah-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
         }
         let userSubdId = +user.subdivision_id;
         if (userSubdId === 76 && user.username == currentLogin[0]) {
@@ -3583,7 +3573,7 @@ function showAgentInfoTicket() {
     }
     
     // если не нашло по логину, пробуем по нейму (логины иногда не совпадают с мылом)
-    if ($('#sh-line-sup').length === 0) {
+    if ($('#ah-line-sup').length === 0) {
         try {
             var assigneeNameText = tmp[0].replace(/(^ | $)/g, '');
         } catch(e) {
@@ -3598,12 +3588,12 @@ function showAgentInfoTicket() {
             if (assigneeNameText === userFullName) {
                 let teamleadLogin = user.teamlead_login;
                 claimReevaluation(teamleadLogin); // переоценка претензионщиками
-                $(assigneeBlockSpan).before('<span id="sh-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
+                $(assigneeBlockSpan).before('<span id="ah-line-sup"><span class="label" title="'+user.subdivision_name+' ('+user.teamlead+')\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  style="background:#'+user.sub_color+';">'+user.subdivision+'</span></span> ');
             }
         }
     }
 
-    if ($('#sh-line-sup').length === 0) {
+    if ($('#ah-line-sup').length === 0) {
         claimReevaluation();
     }
 }
@@ -3613,7 +3603,7 @@ function showAgentInfoTicket() {
 function customerClaimNotif() {
     var detailsPanel = $('.helpdesk-details-panel');
     var notifBody = '<b>В текущем обращении исполнителем назначен агент претензионной линии.</b>';
-    $(detailsPanel).before('<div id="customer-claim-notification" class="sh-helpdesk-notification ah-alert-danger"></div>');
+    $(detailsPanel).before('<div id="customer-claim-notification" class="ah-sh-helpdesk-notification ah-alert-danger"></div>');
     var notifBlock = $('#customer-claim-notification');
     $(notifBlock).html(notifBody);
     $(notifBlock).show();
@@ -3643,7 +3633,7 @@ function claimReevaluation(teamleadLogin) {
     let btnContainer = $('#reevaluate-ticket-container');
     if ($(starsFired).length >= 1 && $(starsFired).length <=3 && teamleadLogin) {
         $(btn).prop('disabled', false).click(function() {
-            $('#sh-loading-layer').show();
+            $('#ah-loading-layer').show();
             getReevaluateTLTagId(teamleadLogin);
         });
     } else {
@@ -3662,7 +3652,7 @@ function getReevaluateTLTagId(leaderLogin) {
         },
 
         function(response) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             let error = false;
             if (response === 'error') {
                 error = true;
@@ -3724,7 +3714,7 @@ function parseItemIdsInTicket() {
         trueMatches = unique(trueMatches);
 
         var commentBlock = $(comment).parents('.helpdesk-ticket-single-comment');
-        $(commentBlock).append('<div class="sh-parsing-tools-holder sh-comment-parsing-tools" style="margin-top: 4px;"><button type="button" class="sh-default-btn ah-btn-small sh-get-item-ids" style="" data-item-ids="'+ trueMatches.join(', ') +'">'+ btnName +'</button></div>');
+        $(commentBlock).append('<div class="sh-parsing-tools-holder sh-comment-parsing-tools" style="margin-top: 4px;"><button type="button" class="ah-default-btn ah-btn-small ah-get-item-ids" style="" data-item-ids="'+ trueMatches.join(', ') +'">'+ btnName +'</button></div>');
     });
 
     // описание
@@ -3743,10 +3733,10 @@ function parseItemIdsInTicket() {
 
         trueMatches = unique(trueMatches);
 
-        $(desciption).after('<div class="sh-parsing-tools-holder sh-description-parsing-tools" style="margin-top: 10px;"><button type="button" class="sh-default-btn ah-btn-small sh-get-item-ids" style="" data-item-ids="'+ trueMatches.join(', ') +'">'+ btnName +'</button></div>');
+        $(desciption).after('<div class="sh-parsing-tools-holder sh-description-parsing-tools" style="margin-top: 10px;"><button type="button" class="ah-default-btn ah-btn-small ah-get-item-ids" style="" data-item-ids="'+ trueMatches.join(', ') +'">'+ btnName +'</button></div>');
     }
 
-    $('.sh-get-item-ids').click(function() {
+    $('.ah-get-item-ids').click(function() {
         var ids = $(this).attr('data-item-ids').split(', ');
         showParsedItemIdsInTicket(ids);
     });
@@ -3768,21 +3758,21 @@ function showParsedItemIdsInTicket(ids) {
     var body = $(popup).find('.ah-popup-body');
     var footer = $(popup).find('.ah-popup-footer');
 
-    $(header).append('<span class="ah-popup-title">Проверка объявлений <span class="parsed-item-checked-counter"></span></span><button type="button" class="sh-default-btn ah-btn-small ah-popup-close">x</button>');
+    $(header).append('<span class="ah-popup-title">Проверка объявлений <span class="ah-parsed-item-checked-counter"></span></span><button type="button" class="ah-default-btn ah-btn-small ah-popup-close">x</button>');
     (header).append('<div class="ah-clearfix"></div>');
 
-    $(body).append('<div class="all-parsed-items"></div>');
-    var parsedContainer = $(body).find('.all-parsed-items');
+    $(body).append('<div class="ah-all-parsed-items"></div>');
+    var parsedContainer = $(body).find('.ah-all-parsed-items');
     ids.forEach(function(id) {
-        $(parsedContainer).append('<div class="parsed-item-row"><div class="single-parsed-item-header" data-item-id="'+ id +'"><span class="single-parsed-item"><input class="ah-transparent-checkbox" type="checkbox" id="parsed-item-'+ id +'" value="'+ id +'" checked><label for="parsed-item-'+ id +'"><a target="_blank" href="https://adm.avito.ru/items/item/info/'+ id +'">'+ id +'</a><span class="parsed-item-info"></span></label></span></div><div class="parsed-item-user-info-details ah-popover" style="left: calc(100% + 10px);"></div></div>');
+        $(parsedContainer).append('<div class="ah-parsed-item-row"><div class="single-parsed-item-header" data-item-id="'+ id +'"><span class="ah-single-parsed-item"><input class="ah-transparent-checkbox" type="checkbox" id="parsed-item-'+ id +'" value="'+ id +'" checked><label for="parsed-item-'+ id +'"><a target="_blank" href="https://adm.avito.ru/items/item/info/'+ id +'">'+ id +'</a><span class="parsed-item-info"></span></label></span></div><div class="ah-parsed-item-user-info-details ah-popover" style="left: calc(100% + 10px);"></div></div>');
     });
 
-    $(footer).append('<a target="_blank" class="sh-link-btn" data-btn-info="items-search" href="https://adm.avito.ru/items/search?query='+ ids.join('%7C') +'" title="Поиск отмеченных объявлений в items/search">Найти</a><button type="button" class="sh-default-btn" style="" data-btn-info="check-users" title="Получение информации об учетных записях, на которых размещены отмеченные объявления">Проверить УЗ</button>');
+    $(footer).append('<a target="_blank" class="ah-link-btn" data-btn-info="items-search" href="https://adm.avito.ru/items/search?query='+ ids.join('%7C') +'" title="Поиск отмеченных объявлений в items/search">Найти</a><button type="button" class="ah-default-btn" style="" data-btn-info="check-users" title="Получение информации об учетных записях, на которых размещены отмеченные объявления">Проверить УЗ</button>');
 
 
     // обработчики
     var checkboxes = $(body).find('[id^="parsed-item"]');
-    var counter = $(header).find('.parsed-item-checked-counter');
+    var counter = $(header).find('.ah-parsed-item-checked-counter');
     var checked = $(body).find('[id^="parsed-item"]:checked');
     $(counter).text( '('+ $(checked).length +' из '+ $(checkboxes).length+')' );
 
@@ -3824,15 +3814,15 @@ function showParsedItemIdsInTicket(ids) {
             return;
         }
 
-        $('#sh-loading-layer').show();
+        $('#ah-loading-layer').show();
 
         var labels = $(checked).next();
         $(labels).find('.parsed-item-info').html('');
 
-        var userInfoBlocks = $(checked).parents('.parsed-item-row').find('.parsed-item-user-info-details');
+        var userInfoBlocks = $(checked).parents('.ah-parsed-item-row').find('.ah-parsed-item-user-info-details');
         $(userInfoBlocks).html('');
 
-        $(labels).find('.parsed-item-info').append('<span class="loading-indicator-text" style="margin-left: 6px;">Загрузка...</span>');
+        $(labels).find('.parsed-item-info').append('<span class="ah-loading-indicator-text" style="margin-left: 6px;">Загрузка...</span>');
 
         checkedIds.forEach(function(itemId, i) {
             setTimeout(getUserIdByItem, i * 250, itemId);
@@ -3867,7 +3857,7 @@ function getUserIdByItem(itemId) {
             }
 
             if (xhr.status >= 400) {
-                $(parsedItemInfo).find('.loading-indicator-text').remove();
+                $(parsedItemInfo).find('.ah-loading-indicator-text').remove();
                 $(parsedItemInfo).append('<span style="color: #d9534f; margin-left: 4px; font-weight: 700;">- '+ xhr.status +', '+ xhr.statusText +'</span>');
             }
 
@@ -3899,9 +3889,9 @@ function getUserIdByItem(itemId) {
             }
 
             // скрываем оверлей, если нет индикаторов
-            var indicators = $(popup).find('.parsed-item-info .loading-indicator-text');
+            var indicators = $(popup).find('.parsed-item-info .ah-loading-indicator-text');
             if ( $(indicators).length == 0 ) {
-                $('#sh-loading-layer').hide();
+                $('#ah-loading-layer').hide();
             }
         }
     }
@@ -3942,12 +3932,12 @@ function getUserInfoByItem(userId) {
                 });
             }
 
-            $(label).find('.parsed-item-info .loading-indicator-text').remove();
+            $(label).find('.parsed-item-info .ah-loading-indicator-text').remove();
 
             if (isFinite(userId)) {
-                $(itemInfo).append('<span style="margin-left: 4px;">| <b>УЗ</b>: <a target="_blank" href="https://adm.avito.ru/users/user/info/'+ userId +'">'+ userId +'</a><span class="parsed-item-user-info" style="margin-left: 4px;"><i>инфо</i></span></span>');
+                $(itemInfo).append('<span style="margin-left: 4px;">| <b>УЗ</b>: <a target="_blank" href="https://adm.avito.ru/users/user/info/'+ userId +'">'+ userId +'</a><span class="ah-parsed-item-user-info" style="margin-left: 4px;"><i>инфо</i></span></span>');
 
-                var userInfo = $(itemInfo).find('.parsed-item-user-info');
+                var userInfo = $(itemInfo).find('.ah-parsed-item-user-info');
                 if (!shopValue || !subscriptionValue || !persManagerValue) {
                     $(userInfo).html('<i>error</i>');
                 }
@@ -3973,10 +3963,10 @@ function getUserInfoByItem(userId) {
                     $(userInfo).css('color', '#d9534f');
                 }
 
-                var infoElem = $(itemInfo).find('.parsed-item-user-info');
+                var infoElem = $(itemInfo).find('.ah-parsed-item-user-info');
                 $(infoElem).hover(function() {
-                    var detailsParent = $(this).parents('.parsed-item-row');
-                    var detailsBlock = $(detailsParent).find('.parsed-item-user-info-details');
+                    var detailsParent = $(this).parents('.ah-parsed-item-row');
+                    var detailsBlock = $(detailsParent).find('.ah-parsed-item-user-info-details');
                     var parentOffset = $(detailsParent)[0].offsetTop;
                     var body = $(popup).find('.ah-popup-body');
                     var bodyScrollTop = $(body)[0].scrollTop;
@@ -3985,13 +3975,13 @@ function getUserInfoByItem(userId) {
 
                     $(detailsBlock).show();
                 }, function() {
-                    var detailsParent = $(this).parents('.parsed-item-row');
-                    var detailsBlock = $(detailsParent).find('.parsed-item-user-info-details');
+                    var detailsParent = $(this).parents('.ah-parsed-item-row');
+                    var detailsBlock = $(detailsParent).find('.ah-parsed-item-user-info-details');
 
                     $(detailsBlock).hide();
                 });
 
-                var userInfoBlock = $(itemInfo).parents('.parsed-item-row').find('.parsed-item-user-info-details');
+                var userInfoBlock = $(itemInfo).parents('.ah-parsed-item-row').find('.ah-parsed-item-user-info-details');
                 $(userInfoBlock).append('<table></table>');
 
                 var userInfoTable = $(userInfoBlock).find('table');
@@ -4001,9 +3991,9 @@ function getUserInfoByItem(userId) {
             }
 
             // скрываем оверлей, если нет индикаторов
-            var indicators = $(popup).find('.parsed-item-info .loading-indicator-text');
+            var indicators = $(popup).find('.parsed-item-info .ah-loading-indicator-text');
             if ( $(indicators).length == 0 ) {
-                $('#sh-loading-layer').hide();
+                $('#ah-loading-layer').hide();
             }
         }
     }

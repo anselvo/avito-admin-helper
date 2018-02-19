@@ -305,12 +305,12 @@ function addInfoToItems() {
 
 function addActionButton() {
     $('#apply_all')
-        .append('<input type="button" class="btn btn-default red" id="postBlockChoose" value="Block" title="Choose reason for Block users">')
-        .append('<span class="showUsers" title="Show users list">Users: <span class="digit">0</span></span>');
+        .append('<input type="button" class="btn btn-default red" id="ah-postBlockChoose" value="Block" title="Choose reason for Block users">')
+        .append('<span class="ah-showUsers" title="Show users list">Users: <span class="ah-digit">0</span></span>');
 
 
     $('body')
-        .append('<div class="postBlockChoose ah-post-block-user" style="display: none;">' +
+        .append('<div class="ah-postBlockChoose ah-post-block-user" style="display: none;">' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активност</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
@@ -318,7 +318,7 @@ function addActionButton() {
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
             '<hr style="margin-bottom: 10px; margin-top: 0">' +
-            '<table id="postBlockTable">' +
+            '<table id="ah-postBlockTable">' +
             '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
             '<tbody></tbody>' +
             '</table>' +
@@ -339,13 +339,13 @@ function addActionButton() {
 function clickActionButton() {
     realHideElementOutClicking($('.ah-post-block-user'));
 
-    $('#postBlockChoose').click(function () {
+    $('#ah-postBlockChoose').click(function () {
         var position = $(this).position();
 
-        $('.postBlockChoose').css({bottom: 83, left: position.left - 50}).show();
+        $('.ah-postBlockChoose').css({bottom: 83, left: position.left - 50}).show();
     });
 
-    $('.showUsers').click(function () {
+    $('.ah-showUsers').click(function () {
         var position = $(this).position();
 
         $('.postBlockInfo').css({bottom: 83, left: position.left - 50}).show();
@@ -354,8 +354,8 @@ function clickActionButton() {
     $('.ah-postBlockReason').click(function () {
         var reasonId = $(this).attr('reasonId');
 
-        $('.postBlockChoose').hide();
-        $('.showUsers').click();
+        $('.ah-postBlockChoose').hide();
+        $('.ah-showUsers').click();
 
         postBlockReasonList(reasonId);
     });
@@ -401,7 +401,7 @@ function clickActionButton() {
 }
 
 function clickChooseButton() {
-    $('.postBlockButton').click(function () {
+    $('.ah-postBlockButton').click(function () {
         let val = $(this).val();
 
         if (val === '+') addPlusBlockUser(this);
@@ -416,22 +416,22 @@ function usersListCheck() {
     let usersListBlock = sessionStorage.postBlockID.split(', ');
     let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
 
-    $('.digit').text(usersListBlock.length-1);
+    $('.ah-digit').text(usersListBlock.length-1);
 
-    $('.postBlockButton').removeClass('postStar').removeClass('postMinus').addClass('postPlus').val('+').parent().removeClass('postStarBlock').removeClass('postMinusBlock');
+    $('.ah-postBlockButton').removeClass('ah-postStar').removeClass('ah-postMinus').addClass('ah-postPlus').val('+').parent().removeClass('ah-postStarBlock').removeClass('ah-postMinusBlock');
 
     let postBlockTable = '';
     for (let i = 0; i < usersListBlock.length-1; i++) {
-        $('input[userid="'+usersListBlock[i]+'"]').removeClass('postPlus').addClass('postMinus').val('-').parent().addClass('postMinusBlock');
+        $('input[userid="'+usersListBlock[i]+'"]').removeClass('ah-postPlus').addClass('ah-postMinus').val('-').parent().addClass('ah-postMinusBlock');
 
         postBlockTable += '<tr name="'+usersListBlock[i]+'"><td><a href="/users/user/info/'+usersListBlock[i]+'" target="_blank">'+usersListBlock[i]+'</a></td><td>-</td><td>-</td></tr>';
     }
 
     for (let i = 0; i < usersListActive.length-1; i++) {
-        $('input[userid="' + usersListActive[i] + '"]').removeClass('postMinus').addClass('postStar').val('★').parent().removeClass('postMinusBlock').addClass('postStarBlock');
+        $('input[userid="' + usersListActive[i] + '"]').removeClass('ah-postMinus').addClass('ah-postStar').val('★').parent().removeClass('ah-postMinusBlock').addClass('ah-postStarBlock');
     }
 
-    $('#postBlockTable').find('tbody').html(postBlockTable);
+    $('#ah-postBlockTable').find('tbody').html(postBlockTable);
 
     if (usersListActive.length-1 !== 0 || usersListBlock.length-1 !== 0) {
         outTextFrame(`Выделено:\n‧ Активных пользователей - ${usersListActive.length - 1}\n‧ Заблокированных пользователей - ${usersListBlock.length - 1}`);
@@ -518,15 +518,15 @@ function postBlockRequest(id, reason){
     request.send('reasons%5B%5D='+reason+'&id='+id);
     request.onreadystatechange=function(){
         if (request.readyState === 4) {
-            $('#postBlockTable').find('tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
+            $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
 
             if (request.status === 200) {
-                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
+                $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
             } else {
-                $('#postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
+                $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
             }
         } else {
-            $('#postBlockTable')
+            $('#ah-postBlockTable')
                 .find('tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'})
                 .find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
         }
@@ -614,13 +614,13 @@ function searchByImageLinks1() {
 
         for (let i = 0; i < list.length; ++i) {
             let url = $(list[i]).find('a').attr('href').substr(2);
-            let existLinks = $(list[i]).find('.searchByImageLinks');
+            let existLinks = $(list[i]).find('.ah-searchByImageLinks');
 
-            if (existLinks.length === 0) $(list[i]).append('<div class="searchByImageLinks">' +
-                '<a class="google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
+            if (existLinks.length === 0) $(list[i]).append('<div class="ah-searchByImageLinks">' +
+                '<a class="ah-google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank">' +
                 '<span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>' +
                 '</a> ' +
-                '<a class="yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
+                '<a class="ah-yandex" href="https://yandex.ru/images/search?url=' + url + '&rpt=imageview" target="_blank">' +
                 '<span>Y</span><span>andex</span>' +
                 '</a> ' +
                 '</div>');
@@ -641,8 +641,8 @@ function settings() {
     $('.dropdown .dropdown-toggle:contains(Moderation)').parent().find('.dropdown-menu').append('<li id="ah-settings"><a href="#">AH Settings</a></li>');
 
     $('#ah-settings').click(function () {
-        $('#layer-blackout-popup').addClass('ah-layer-flex');
-        $('#divOptions').show();
+        $('#ah-layer-blackout-popup').addClass('ah-layer-flex');
+        $('#ah-divOptions').show();
         showModal();
     });
 }
@@ -654,7 +654,7 @@ function addWordsIllumination() {
     if (!localStorage.titleColor) localStorage.titleColor = '#ffaa1a';
 
     var chbx1 = $('<input/>',{
-        class: 'mycheckbox1 mh-dafault-checkbox',
+        class: 'mycheckbox1 ah-dafault-checkbox',
         type: 'checkbox',
         id: 'chbx1',
         checked: 'checked',
@@ -736,10 +736,10 @@ function addWordsIllumination() {
     $('div.illumination').append('<textarea class="textaclasstitle" id="textaclass1" placeholder="тут запрос на заголовок" style="width: 100%; height: 40px;resize: none;padding: 5px; margin-top: 6px; border-radius: 4px;">'+localStorage.title1+'</textarea>');
     $('div.illumination').append('<input id="highlight-color" type="color" value="' + localStorage.titleColor + '">');
 
-    $('div.illumination').append('<div class="illumination-btn-box" style="margin-top: 6px;"></div>');
-    $('div.illumination-btn-box').append(butSearch);
-    $('div.illumination-btn-box').append(butReload);
-    $('div.illumination-btn-box').append(butReloadFull);
+    $('div.illumination').append('<div class="ah-illumination-btn-box" style="margin-top: 6px;"></div>');
+    $('div.ah-illumination-btn-box').append(butSearch);
+    $('div.ah-illumination-btn-box').append(butReload);
+    $('div.ah-illumination-btn-box').append(butReloadFull);
     $('div.illumination').append('<div class="mh-chbx-field" style="margin-top: 8px;"></div>')
     $('div.mh-chbx-field').append(chbx1,'<label style="" for="chbx1">Искать в названии</label>');
 
@@ -755,12 +755,12 @@ function getSettings() {
     if (!localStorage.checkboxInfo) localStorage.checkboxInfo = '';
 
     // попап с затемнением
-    $('body').append('<div id="layer-blackout-popup"></div>');
-    $('#layer-blackout-popup').append('<div id="divOptions" class="divOptions ah-default-popup" style="display: none; font-size: 12px;"></div>');
+    $('body').append('<div id="ah-layer-blackout-popup"></div>');
+    $('#ah-layer-blackout-popup').append('<div id="ah-divOptions" class="ah-divOptions ah-default-popup" style="display: none; font-size: 12px;"></div>');
 
-    $('#layer-blackout-popup').click(function (e) {
+    $('#ah-layer-blackout-popup').click(function (e) {
         if (!$('div.ah-default-popup').is(e.target) && $('div.ah-default-popup').has(e.target).length === 0) {
-            $('#layer-blackout-popup').removeClass('ah-layer-flex');
+            $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
             $('div.ah-default-popup').hide();
             closeModal();
         }
@@ -768,42 +768,42 @@ function getSettings() {
 
     //RK Отклонение описание
     var chbxDescrContacts = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDescrContacts',
         action: 'reject',
         value: '106'
     });
     var chbxDescrTags = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDescrTags',
         action: 'reject',
         value: '16'
     });
     var chbxDescrNonDetailed = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDescrNonDetailed',
         action: 'reject',
         value: '14'
     });
     var chbxDescrInCorrect = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDescrInCorrect',
         action: 'reject',
         value: '177'
     });
     var chbxDescrDiscrimination = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDescrDiscrimination',
         action: 'reject',
         value: '117'
     });
     var chbxVacancyNonDetailed = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxVacancyNonDetailed',
         action: 'reject',
@@ -812,49 +812,49 @@ function getSettings() {
 
     //RK Отклонение фото
     var chbxPhotoContacts = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoContacts',
         action: 'reject',
         value: '167'
     });
     var chbxPhotoFocus = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoFocus',
         action: 'reject',
         value: '168'
     });
     var chbxPhotoMark = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoMark',
         action: 'reject',
         value: '169'
     });
     var chbxPhotoInCorrect = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoInCorrect',
         action: 'reject',
         value: '112'
     });
     var chbxPhotoWrong = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoWrong',
         action: 'reject',
         value: '15'
     });
     var chbxPhotoNonPhoto = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoNonPhoto',
         action: 'reject',
         value: '171'
     });
     var chbxPhotoNonLogo = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPhotoNonLogo',
         action: 'reject',
@@ -863,14 +863,14 @@ function getSettings() {
 
     //RK Отклонение Цена
     var chbxPriceUnreal = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPriceUnreal',
         action: 'reject',
         value: '11'
     });
     var chbxPriceWrong = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPriceWrong',
         action: 'reject',
@@ -879,28 +879,28 @@ function getSettings() {
 
     //RK Отклонение название
     var chbxTitlePrice = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTitlePrice',
         action: 'reject',
         value: '4'
     });
     var chbxTitleFocus = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTitleFocus',
         action: 'reject',
         value: '12'
     });
     var chbxTitleContacts = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTitleContacts',
         action: 'reject',
         value: '161'
     });
     var chbxTitleInCorrect = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTitleInCorrect',
         action: 'reject',
@@ -909,28 +909,28 @@ function getSettings() {
 
     //RK Отклонение общее
     var chbxManyItems = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxManyItems',
         action: 'reject',
         value: '13'
     });
     var chbxNoneItems = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxNoneItems',
         action: 'reject',
         value: '122'
     });
     var chbxKategor = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxKategor',
         action: 'reject',
         value: '178'
     });
     var chbxDocumentation = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxDocumentation',
         action: 'reject',
@@ -938,7 +938,7 @@ function getSettings() {
     });
 
     var chbxPointOnMap = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPointOnMap',
         action: 'reject',
@@ -946,7 +946,7 @@ function getSettings() {
     });
 
     var chbxParamAddress = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxParamAddress',
         action: 'reject',
@@ -955,98 +955,98 @@ function getSettings() {
 
     //RK Блокировка Общее
     var chbxPovtorka = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxPovtorka',
         action: 'block',
         value: '20'
     });
     var chbxWork = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxWork',
         action: 'block',
         value: '145'
     });
     var chbxMedikam = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxMedikam',
         action: 'block',
         value: '136'
     });
     var chbxCity = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxCity',
         action: 'block',
         value: '25'
     });
     var chbxReklama = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxReklama',
         action: 'block',
         value: '125'
     });
     var chbxReplica = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxReplica',
         action: 'block',
         value: '119'
     });
     var chbxTypal = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTypal',
         action: 'block',
         value: '131'
     });
     var chbxUserAbuse = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxUserAbuse',
         action: 'block',
         value: '23'
     });
     var chbxRightHolderAbuse = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxRightHolderAbuse',
         action: 'block',
         value: '129'
     });
     var chbxAutoupload = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxAutoupload',
         action: 'block',
         value: '256'
     });
     var chbxFraudScheme = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxFraudScheme',
         action: 'block',
         value: '130'
     });
     var chbxFake = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxFake',
         action: 'block',
         value: '384'
     });
     var chbxTaboo = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTaboo',
         action: 'block',
         value: '21'
     });
     var chbxBuy = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxBuy',
         action: 'block',
@@ -1055,91 +1055,91 @@ function getSettings() {
 
     // RK Блокировка запрещенка
     var chbxNarc = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxNarc',
         action: 'block',
         value: '134'
     });
     var chbxGuns = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxGuns',
         action: 'block',
         value: '135'
     });
     var chbxAlcohol = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxAlcohol',
         action: 'block',
         value: '137'
     });
     var chbxSex = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxSex',
         action: 'block',
         value: '138'
     });
     var chbxFinancial = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxFinancial',
         action: 'block',
         value: '139'
     });
     var chbxRedBook = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxRedBook',
         action: 'block',
         value: '140'
     });
     var chbxAward = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxAward',
         action: 'block',
         value: '141'
     });
     var chbxTechSpecifics = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxTechSpecifics',
         action: 'block',
         value: '142'
     });
     var chbxSpam = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxSpam',
         action: 'block',
         value: '143'
     });
     var chbxGamesBus = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxGamesBus',
         action: 'block',
         value: '144'
     });
     var chbxQueerItem = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxQueerItem',
         action: 'block',
         value: '146'
     });
     var chbxParamVidYsl = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxParamVidYsl',
         action: 'reject',
         value: '175_716'
     });
     var chbxParamProb = $('<input/>',{
-        class: 'divOptions mh-default-checkbox addOld-button-checkbox',
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
         type: 'checkbox',
         id: 'chbxParamProb',
         action: 'reject',
@@ -1147,59 +1147,59 @@ function getSettings() {
     });
 
     //RK Отклонение общее
-    $('#divOptions').append('<div class="reject-chbx mh-options-group btncheck" style=""></div>');
+    $('#ah-divOptions').append('<div class="reject-chbx ah-options-group btncheck" style=""></div>');
 
     $('.reject-chbx').append('<div class="reject-chbx-common" style="display: inline-block; vertical-align: top;"></div>');
     $('.reject-chbx-common').append('<span style="color:red; font-size:17px;">Reject Common</span><br>');
-    $('.reject-chbx-common').append(chbxManyItems,'<label for="chbxManyItems" class="mh-default-label">Несколько товаров</label>','<br>');
-    $('.reject-chbx-common').append(chbxNoneItems,'<label for="chbxNoneItems" class="mh-default-label">Отсутствие товара</label>','<br>');
-    $('.reject-chbx-common').append(chbxKategor,'<label for="chbxKategor" class="mh-default-label">Неправильная Категория</label>','<br>');
-    $('.reject-chbx-common').append(chbxDocumentation,'<label for="chbxDocumentation" class="mh-default-label">Ссылка на документацию</label>','<br>');
-    $('.reject-chbx-common').append(chbxPointOnMap,'<label for="chbxPointOnMap" class="mh-default-label">Точка на карте</label>','<br>');
-    $('.reject-chbx-common').append(chbxParamAddress,'<label for="chbxParamAddress" class="mh-default-label">Параметр "Адрес"</label>','<br>');
-    $('.reject-chbx-common').append(chbxParamVidYsl,'<label for="chbxParamVidYsl" class="mh-default-label">Параметр "Вид услуги"</label>','<br>');
-    $('.reject-chbx-common').append(chbxParamProb,'<label for="chbxParamProb" class="mh-default-label">Параметр "Пробег"</label>','<br>');
+    $('.reject-chbx-common').append(chbxManyItems,'<label for="chbxManyItems" class="ah-default-label">Несколько товаров</label>','<br>');
+    $('.reject-chbx-common').append(chbxNoneItems,'<label for="chbxNoneItems" class="ah-default-label">Отсутствие товара</label>','<br>');
+    $('.reject-chbx-common').append(chbxKategor,'<label for="chbxKategor" class="ah-default-label">Неправильная Категория</label>','<br>');
+    $('.reject-chbx-common').append(chbxDocumentation,'<label for="chbxDocumentation" class="ah-default-label">Ссылка на документацию</label>','<br>');
+    $('.reject-chbx-common').append(chbxPointOnMap,'<label for="chbxPointOnMap" class="ah-default-label">Точка на карте</label>','<br>');
+    $('.reject-chbx-common').append(chbxParamAddress,'<label for="chbxParamAddress" class="ah-default-label">Параметр "Адрес"</label>','<br>');
+    $('.reject-chbx-common').append(chbxParamVidYsl,'<label for="chbxParamVidYsl" class="ah-default-label">Параметр "Вид услуги"</label>','<br>');
+    $('.reject-chbx-common').append(chbxParamProb,'<label for="chbxParamProb" class="ah-default-label">Параметр "Пробег"</label>','<br>');
 
     //RK Отклонение название
     $('.reject-chbx').append('<div class="reject-chbx-names" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
     $('.reject-chbx-names').append('<span style="color:red; font-size:17px;">Reject Names</span><br>');
-    $('.reject-chbx-names').append(chbxTitlePrice,'<label for="chbxTitlePrice" class="mh-default-label">Цена</label>','<br>');
-    $('.reject-chbx-names').append(chbxTitleFocus,'<label for="chbxTitleFocus" class="mh-default-label">Привлечение внимания</label>','<br>');
-    $('.reject-chbx-names').append(chbxTitleContacts,'<label for="chbxTitleContacts" class="mh-default-label">Контакты</label>','<br>');
-    $('.reject-chbx-names').append(chbxTitleInCorrect,'<label for="chbxTitleInCorrect" class="mh-default-label">Некорректное</label>','<br>');
+    $('.reject-chbx-names').append(chbxTitlePrice,'<label for="chbxTitlePrice" class="ah-default-label">Цена</label>','<br>');
+    $('.reject-chbx-names').append(chbxTitleFocus,'<label for="chbxTitleFocus" class="ah-default-label">Привлечение внимания</label>','<br>');
+    $('.reject-chbx-names').append(chbxTitleContacts,'<label for="chbxTitleContacts" class="ah-default-label">Контакты</label>','<br>');
+    $('.reject-chbx-names').append(chbxTitleInCorrect,'<label for="chbxTitleInCorrect" class="ah-default-label">Некорректное</label>','<br>');
 
     //RK Отклонение цена
     $('.reject-chbx').append('<div class="reject-chbx-price" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
     $('.reject-chbx-price').append('<span style="color:red; font-size:17px;">Reject Price</span><br>');
-    $('.reject-chbx-price').append(chbxPriceUnreal,'<label for="chbxPriceUnreal" class="mh-default-label">Нереалистичная</label>','<br>');
-    $('.reject-chbx-price').append(chbxPriceWrong,'<label for="chbxPriceWrong" class="mh-default-label">Несоответствующая</label>','<br>');
+    $('.reject-chbx-price').append(chbxPriceUnreal,'<label for="chbxPriceUnreal" class="ah-default-label">Нереалистичная</label>','<br>');
+    $('.reject-chbx-price').append(chbxPriceWrong,'<label for="chbxPriceWrong" class="ah-default-label">Несоответствующая</label>','<br>');
 
     //RK Отклонение фото
     $('.reject-chbx').append('<div class="reject-chbx-photo" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
     $('.reject-chbx-photo').append('<span style="color:red; font-size:17px;">Reject Photo</span><br>');
-    $('.reject-chbx-photo').append(chbxPhotoContacts,'<label for="chbxPhotoContacts" class="mh-default-label">Контакты</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoFocus,'<label for="chbxPhotoFocus" class="mh-default-label">Привлечение внимания</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoMark,'<label for="chbxPhotoMark" class="mh-default-label">Вотермарки и логотипы</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoNonPhoto,'<label for="chbxPhotoNonPhoto" class="mh-default-label">Не фото</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoNonLogo,'<label for="chbxPhotoNonLogo" class="mh-default-label">Не логотип</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoInCorrect,'<label for="chbxPhotoInCorrect" class="mh-default-label">Некорректное</label>','<br>');
-    $('.reject-chbx-photo').append(chbxPhotoWrong,'<label for="chbxPhotoWrong" class="mh-default-label">Несоответствующее</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoContacts,'<label for="chbxPhotoContacts" class="ah-default-label">Контакты</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoFocus,'<label for="chbxPhotoFocus" class="ah-default-label">Привлечение внимания</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoMark,'<label for="chbxPhotoMark" class="ah-default-label">Вотермарки и логотипы</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoNonPhoto,'<label for="chbxPhotoNonPhoto" class="ah-default-label">Не фото</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoNonLogo,'<label for="chbxPhotoNonLogo" class="ah-default-label">Не логотип</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoInCorrect,'<label for="chbxPhotoInCorrect" class="ah-default-label">Некорректное</label>','<br>');
+    $('.reject-chbx-photo').append(chbxPhotoWrong,'<label for="chbxPhotoWrong" class="ah-default-label">Несоответствующее</label>','<br>');
 
     //RK Отклонение описание
     $('.reject-chbx').append('<div class="reject-chbx-description" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
     $('.reject-chbx-description').append('<span style="color:red; font-size:17px;">Reject Description</span><br>');
-    $('.reject-chbx-description').append(chbxDescrContacts,'<label for="chbxDescrContacts" class="mh-default-label">Контакты</label>','<br>');
-    $('.reject-chbx-description').append(chbxDescrTags,'<label for="chbxDescrTags" class="mh-default-label">Ключевые слова</label>','<br>');
-    $('.reject-chbx-description').append(chbxDescrDiscrimination,'<label for="chbxDescrDiscrimination" class="mh-default-label">Дискриминация</label>','<br>');
-    $('.reject-chbx-description').append(chbxDescrNonDetailed,'<label for="chbxDescrNonDetailed" class="mh-default-label">Не подробное</label>','<br>');
-    $('.reject-chbx-description').append(chbxDescrInCorrect,'<label for="chbxDescrInCorrect" class="mh-default-label">Некорректное</label>','<br>');
-    $('.reject-chbx-description').append(chbxVacancyNonDetailed,'<label for="chbxVacancyNonDetailed" class="mh-default-label">Не подробное (вакансии)</label>','<br>');
+    $('.reject-chbx-description').append(chbxDescrContacts,'<label for="chbxDescrContacts" class="ah-default-label">Контакты</label>','<br>');
+    $('.reject-chbx-description').append(chbxDescrTags,'<label for="chbxDescrTags" class="ah-default-label">Ключевые слова</label>','<br>');
+    $('.reject-chbx-description').append(chbxDescrDiscrimination,'<label for="chbxDescrDiscrimination" class="ah-default-label">Дискриминация</label>','<br>');
+    $('.reject-chbx-description').append(chbxDescrNonDetailed,'<label for="chbxDescrNonDetailed" class="ah-default-label">Не подробное</label>','<br>');
+    $('.reject-chbx-description').append(chbxDescrInCorrect,'<label for="chbxDescrInCorrect" class="ah-default-label">Некорректное</label>','<br>');
+    $('.reject-chbx-description').append(chbxVacancyNonDetailed,'<label for="chbxVacancyNonDetailed" class="ah-default-label">Не подробное (вакансии)</label>','<br>');
 
     //RK Неправильная категория
-    $('#divOptions').append('<div class="ah-chbx-category mh-options-group" style="display: none; margin: 5px;"></div>');
+    $('#ah-divOptions').append('<div class="ah-chbx-category ah-options-group" style="display: none; margin: 5px;"></div>');
     $('.ah-chbx-category').append('' +
         '<span style="color:red; font-size:17px;">Отклонение "Неправильная категория с подписями"</span>' +
-        '<label class="mh-default-label" style="float: right; color: #9f0707">Авто кнопки с прогнозами <input class="mh-default-checkbox" type="checkbox" name="other" value="autoProbButtons" style="margin-right: 3px;"></label>' +
+        '<label class="ah-default-label" style="float: right; color: #9f0707">Авто кнопки с прогнозами <input class="ah-default-checkbox" type="checkbox" name="other" value="autoProbButtons" style="margin-right: 3px;"></label>' +
         '<div class="ah-chbx-category-body" style="white-space: nowrap; overflow: auto; width: 850px;"></div>');
 
     const jsonOtherReasonsCategoryBox = [
@@ -1315,7 +1315,7 @@ function getSettings() {
         else checked = '';
         let labels = '<div>' +
             '<span style="color:red; font-size:14px;">' + otherReasonsCategory[i].name + '</span><br>' +
-            '<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="reject-category" short-name="' + otherReasonsCategory[i].short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + otherReasonsCategory[i].name + '</label>' +
+            '<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="reject-category" short-name="' + otherReasonsCategory[i].short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + otherReasonsCategory[i].name + '</label>' +
             '</div>';
 
         for (let j = 0; j < otherReasonsCategory[i].reason.length; ++j) {
@@ -1324,82 +1324,82 @@ function getSettings() {
             if (reason.show === 'true') checked = 'checked';
             else checked = '';
 
-            labels += '<div><label class="mh-default-label"><input type="checkbox" class="mh-default-checkbox" name="reject-category" short-name="' + reason.short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + reason.name + '</label></div>';
+            labels += '<div><label class="ah-default-label"><input type="checkbox" class="ah-default-checkbox" name="reject-category" short-name="' + reason.short_name + '" value="178" style="margin-right: 3px;" '+ checked + '/>' + reason.name + '</label></div>';
         }
 
         $('.ah-chbx-category-body').append('<div style="display: inline-block; vertical-align: top; margin-right: 10px">' + labels + '</div>');
     }
 
     // RK Блокировка общее
-    $('#divOptions').append('<div class="chbx" style="margin-top: 10px;"></div>');
-    $('.chbx').append('<div class="block-chbx mh-options-group btncheck" style="display: inline-block; float: left; padding-bottom: 13px;"></div>');
+    $('#ah-divOptions').append('<div class="chbx" style="margin-top: 10px;"></div>');
+    $('.chbx').append('<div class="block-chbx ah-options-group btncheck" style="display: inline-block; float: left; padding-bottom: 13px;"></div>');
 
     $('.block-chbx').append('<div class="block-chbx-common" style="display: inline-block; vertical-align: top;"></div>');
     $('.block-chbx-common').append('<span style="color:red; font-size:17px;">Block Common</span><br>');
-    $('.block-chbx-common').append(chbxPovtorka,'<label for="chbxPovtorka" class="mh-default-label">Повторная подача объявлений</label>','<br>');
-    $('.block-chbx-common').append(chbxBuy,'<label for="chbxBuy" class="mh-default-label">Объявление о покупке</label>','<br>');
-    $('.block-chbx-common').append(chbxTaboo,'<label for="chbxTaboo" class="mh-default-label">Запрещённый товар</label>','<br>');
-    $('.block-chbx-common').append(chbxCity,'<label for="chbxCity" class="mh-default-label">Неправильный Город</label>','<br>');
-    $('.block-chbx-common').append(chbxReklama,'<label for="chbxReklama" class="mh-default-label">Реклама бизнеса и сайтов</label>','<br>');
-    $('.block-chbx-common').append(chbxReplica,'<label for="chbxReplica" class="mh-default-label">Копии товаров</label>','<br>');
-    $('.block-chbx-common').append(chbxTypal,'<label for="chbxTypal" class="mh-default-label">Типовой товар</label>','<br>');
-    $('.block-chbx-common').append(chbxUserAbuse,'<label for="chbxUserAbuse" class="mh-default-label">Жалобы пользователей</label>','<br>');
-    $('.block-chbx-common').append(chbxRightHolderAbuse,'<label for="chbxRightHolderAbuse" class="mh-default-label">Жалобы Парвообладателей</label>','<br>');
-    $('.block-chbx-common').append(chbxAutoupload,'<label for="chbxAutoupload" class="mh-default-label">Автовыгрузка</label>','<br>');
-    $('.block-chbx-common').append(chbxFraudScheme,'<label for="chbxFraudScheme" class="mh-default-label">Мошенническая схема</label>','<br>');
-    $('.block-chbx-common').append(chbxFake,'<label for="chbxFake" class="mh-default-label">Фейк</label>','<br>');
+    $('.block-chbx-common').append(chbxPovtorka,'<label for="chbxPovtorka" class="ah-default-label">Повторная подача объявлений</label>','<br>');
+    $('.block-chbx-common').append(chbxBuy,'<label for="chbxBuy" class="ah-default-label">Объявление о покупке</label>','<br>');
+    $('.block-chbx-common').append(chbxTaboo,'<label for="chbxTaboo" class="ah-default-label">Запрещённый товар</label>','<br>');
+    $('.block-chbx-common').append(chbxCity,'<label for="chbxCity" class="ah-default-label">Неправильный Город</label>','<br>');
+    $('.block-chbx-common').append(chbxReklama,'<label for="chbxReklama" class="ah-default-label">Реклама бизнеса и сайтов</label>','<br>');
+    $('.block-chbx-common').append(chbxReplica,'<label for="chbxReplica" class="ah-default-label">Копии товаров</label>','<br>');
+    $('.block-chbx-common').append(chbxTypal,'<label for="chbxTypal" class="ah-default-label">Типовой товар</label>','<br>');
+    $('.block-chbx-common').append(chbxUserAbuse,'<label for="chbxUserAbuse" class="ah-default-label">Жалобы пользователей</label>','<br>');
+    $('.block-chbx-common').append(chbxRightHolderAbuse,'<label for="chbxRightHolderAbuse" class="ah-default-label">Жалобы Парвообладателей</label>','<br>');
+    $('.block-chbx-common').append(chbxAutoupload,'<label for="chbxAutoupload" class="ah-default-label">Автовыгрузка</label>','<br>');
+    $('.block-chbx-common').append(chbxFraudScheme,'<label for="chbxFraudScheme" class="ah-default-label">Мошенническая схема</label>','<br>');
+    $('.block-chbx-common').append(chbxFake,'<label for="chbxFake" class="ah-default-label">Фейк</label>','<br>');
 
     // RK Блокировка запрещенка
     $('.block-chbx').append('<div class="block-chbx-taboo" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
     $('.block-chbx-taboo').append('<span style="color:red; font-size:17px;">Block Taboo</span><br>');
-    $('.block-chbx-taboo').append(chbxNarc,'<label for="chbxNarc" class="mh-default-label">Наркотики</label>','<br>');
-    $('.block-chbx-taboo').append(chbxGuns,'<label for="chbxGuns" class="mh-default-label">Оружие</label>','<br>');
-    $('.block-chbx-taboo').append(chbxMedikam,'<label for="chbxMedikam" class="mh-default-label">Медикаменты и оборудование</label>','<br>');
-    $('.block-chbx-taboo').append(chbxAlcohol,'<label for="chbxAlcohol" class="mh-default-label">Алкоголь и табак</label>','<br>');
-    $('.block-chbx-taboo').append(chbxSex,'<label for="chbxSex" class="mh-default-label">Интим</label>','<br>');
-    $('.block-chbx-taboo').append(chbxFinancial,'<label for="chbxFinancial" class="mh-default-label">Финансовые операции</label>','<br>');
-    $('.block-chbx-taboo').append(chbxRedBook,'<label for="chbxRedBook" class="mh-default-label">Красная книга и браконьерство</label>','<br>');
-    $('.block-chbx-taboo').append(chbxAward,'<label for="chbxAward" class="mh-default-label">Награды</label>','<br>');
-    $('.block-chbx-taboo').append(chbxTechSpecifics,'<label for="chbxTechSpecifics" class="mh-default-label">Специальные технические средства</label>','<br>');
-    $('.block-chbx-taboo').append(chbxSpam,'<label for="chbxSpam" class="mh-default-label">Спам-базы и БД</label>','<br>');
-    $('.block-chbx-taboo').append(chbxGamesBus,'<label for="chbxGamesBus" class="mh-default-label">Игорный бизнес</label>','<br>');
-    $('.block-chbx-taboo').append(chbxQueerItem,'<label for="chbxQueerItem" class="mh-default-label">Сомнительное объявление</label>','<br>');
-    $('.block-chbx-taboo').append(chbxWork,'<label for="chbxWork" class="mh-default-label">Сомнительная работа</label>','<br>');
+    $('.block-chbx-taboo').append(chbxNarc,'<label for="chbxNarc" class="ah-default-label">Наркотики</label>','<br>');
+    $('.block-chbx-taboo').append(chbxGuns,'<label for="chbxGuns" class="ah-default-label">Оружие</label>','<br>');
+    $('.block-chbx-taboo').append(chbxMedikam,'<label for="chbxMedikam" class="ah-default-label">Медикаменты и оборудование</label>','<br>');
+    $('.block-chbx-taboo').append(chbxAlcohol,'<label for="chbxAlcohol" class="ah-default-label">Алкоголь и табак</label>','<br>');
+    $('.block-chbx-taboo').append(chbxSex,'<label for="chbxSex" class="ah-default-label">Интим</label>','<br>');
+    $('.block-chbx-taboo').append(chbxFinancial,'<label for="chbxFinancial" class="ah-default-label">Финансовые операции</label>','<br>');
+    $('.block-chbx-taboo').append(chbxRedBook,'<label for="chbxRedBook" class="ah-default-label">Красная книга и браконьерство</label>','<br>');
+    $('.block-chbx-taboo').append(chbxAward,'<label for="chbxAward" class="ah-default-label">Награды</label>','<br>');
+    $('.block-chbx-taboo').append(chbxTechSpecifics,'<label for="chbxTechSpecifics" class="ah-default-label">Специальные технические средства</label>','<br>');
+    $('.block-chbx-taboo').append(chbxSpam,'<label for="chbxSpam" class="ah-default-label">Спам-базы и БД</label>','<br>');
+    $('.block-chbx-taboo').append(chbxGamesBus,'<label for="chbxGamesBus" class="ah-default-label">Игорный бизнес</label>','<br>');
+    $('.block-chbx-taboo').append(chbxQueerItem,'<label for="chbxQueerItem" class="ah-default-label">Сомнительное объявление</label>','<br>');
+    $('.block-chbx-taboo').append(chbxWork,'<label for="chbxWork" class="ah-default-label">Сомнительная работа</label>','<br>');
 
     // descriptionMode SETTINGS
-    $('.chbx').append('<div class="block-descriptionMode mh-options-group" style="float: right; padding: 14px; padding-right: 36px;"></div>');
+    $('.chbx').append('<div class="block-descriptionMode ah-options-group" style="float: right; padding: 14px; padding-right: 36px;"></div>');
 
     $('.chbx').append('<div style="clear: both;"></div>');
 
-    $('#divOptions').append('<div class="infoSetting-chbx mh-options-group" style=" margin-top: 10px;"></div>');
+    $('#ah-divOptions').append('<div class="ah-infoSetting-chbx ah-options-group" style=" margin-top: 10px;"></div>');
     // BLOCK USERS
-    $('.infoSetting-chbx').append('<div id="blockUsersOnPre" class="btncheck"><b style="color:red;">Block users:</b></div>');
-    $('#blockUsersOnPre').append('<label class="mh-default-label"><input class="mh-default-checkbox addOld-button-checkbox" id="bubn" action="blockUser" type="checkbox" name="blockUsers" value="BN" style="margin-right: 3px;">BN</label>');
-    $('#blockUsersOnPre').append('<label class="mh-default-label"><input class="mh-default-checkbox addOld-button-checkbox" id="bupa" action="blockUser" type="checkbox" name="blockUsers" value="PA" style="margin-right: 3px;">PA</label>');
-    $('#blockUsersOnPre').append('<label class="mh-default-label"><input class="mh-default-checkbox addOld-button-checkbox" id="bumc" action="blockUser" type="checkbox" name="blockUsers" value="MC" style="margin-right: 3px;">MC</label>');
+    $('.ah-infoSetting-chbx').append('<div id="blockUsersOnPre" class="btncheck"><b style="color:red;">Block users:</b></div>');
+    $('#blockUsersOnPre').append('<label class="ah-default-label"><input class="ah-default-checkbox addOld-button-checkbox" id="bubn" action="blockUser" type="checkbox" name="blockUsers" value="BN" style="margin-right: 3px;">BN</label>');
+    $('#blockUsersOnPre').append('<label class="ah-default-label"><input class="ah-default-checkbox addOld-button-checkbox" id="bupa" action="blockUser" type="checkbox" name="blockUsers" value="PA" style="margin-right: 3px;">PA</label>');
+    $('#blockUsersOnPre').append('<label class="ah-default-label"><input class="ah-default-checkbox addOld-button-checkbox" id="bumc" action="blockUser" type="checkbox" name="blockUsers" value="MC" style="margin-right: 3px;">MC</label>');
     // BLOCK USERS
 
     // INFO SETTINGS
-    $('.infoSetting-chbx').append('<div id="infoSetting"><b style="color:red;">Info settings:</b></div>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting16" style="margin-right: 3px;">Email</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting1" style="margin-right: 3px;">Status</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting17" style="margin-right: 3px;">Chance</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting2" style="margin-right: 3px;">Registered</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting3" style="margin-right: 3px;">Items</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting4" style="margin-right: 3px;">Item IP</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting13" style="margin-right: 3px;">Start Time</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting5" style="margin-right: 3px;">Last IP</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting6" style="margin-right: 3px;">Proprietary</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting12" style="margin-right: 3px;">Address</label>');
-    $('#infoSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting7" style="margin-right: 3px;">Phones</label>');
+    $('.ah-infoSetting-chbx').append('<div id="infoSetting"><b style="color:red;">Info settings:</b></div>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting16" style="margin-right: 3px;">Email</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting1" style="margin-right: 3px;">Status</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting17" style="margin-right: 3px;">Chance</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting2" style="margin-right: 3px;">Registered</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting3" style="margin-right: 3px;">Items</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting4" style="margin-right: 3px;">Item IP</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting13" style="margin-right: 3px;">Start Time</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting5" style="margin-right: 3px;">Last IP</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting6" style="margin-right: 3px;">Proprietary</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting12" style="margin-right: 3px;">Address</label>');
+    $('#infoSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting7" style="margin-right: 3px;">Phones</label>');
 
-    $('.infoSetting-chbx').append('<div id="phoneSetting" style="display:none;"><b style="color:red;">Phones settings:</b></div>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting8" style="margin-right: 3px;">Phone link ???</label>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting9" style="margin-right: 3px;">+city</label>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting10" style="margin-right: 3px;">+private</label>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting11" style="margin-right: 3px;">+param</label>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting14" style="margin-right: 3px;">+item ip</label>');
-    $('#phoneSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="info" value="infoSetting15" style="margin-right: 3px;">Verify date</label>');
+    $('.ah-infoSetting-chbx').append('<div id="phoneSetting" style="display:none;"><b style="color:red;">Phones settings:</b></div>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting8" style="margin-right: 3px;">Phone link ???</label>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting9" style="margin-right: 3px;">+city</label>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting10" style="margin-right: 3px;">+private</label>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting11" style="margin-right: 3px;">+param</label>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting14" style="margin-right: 3px;">+item ip</label>');
+    $('#phoneSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="info" value="infoSetting15" style="margin-right: 3px;">Verify date</label>');
 
     var checkboxStatus = localStorage.checkboxInfo.split('|');
     for (var i = 0; i < checkboxStatus.length; i++) {
@@ -1422,8 +1422,8 @@ function getSettings() {
     });
 
     // ABUSES SETTINGS
-    $('.infoSetting-chbx').append('<div id="abusesSetting"><b style="color:red;">Abuses settings:</b></div>');
-    $('#abusesSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="abuses" value="checkItems" style="margin-right: 3px;">Check only current item</label>');
+    $('.ah-infoSetting-chbx').append('<div id="abusesSetting"><b style="color:red;">Abuses settings:</b></div>');
+    $('#abusesSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="abuses" value="checkItems" style="margin-right: 3px;">Check only current item</label>');
 
     if (!localStorage.abusesSetting) localStorage.abusesSetting = 'false';
 
@@ -1439,10 +1439,10 @@ function getSettings() {
     // ABUSES SETTINGS
 
     // EYE SETTINGS
-    $('.infoSetting-chbx').append('<div id="eyeSetting"><b style="color:red;">Eye settings:</b></div>');
+    $('.ah-infoSetting-chbx').append('<div id="eyeSetting"><b style="color:red;">Eye settings:</b></div>');
     $('#eyeSetting')
         .append('<span style="margin-left: 10px;" title="Параметры необходимо вводить через запятую и пробел!\n\nОбращаю ваше внимание на то, что поиск будет построен четко по параметрам, независимо от настройки критериев поиска в items/search.">Список параметров: <input id="eyeParamList" type="text" style="margin-left: 5px; width: 400px" value=""></span>')
-        .append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="eye" value="eyeCity" style="margin-right: 3px;">City</label>');
+        .append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="eye" value="eyeCity" style="margin-right: 3px;">City</label>');
 
     if (!localStorage.eyeParamList) localStorage.eyeParamList = 'Марка, Модель, Год выпуска, Вид техники, Тип объявления, Количество комнат, Вид объекта, Срок аренды, Вид услуги, Тип услуги, Сфера деятельности, Вид одежды, Вид товара, Вид телефона, Производитель, Вид велосипеда, Порода, Вид животного, Вид бизнеса, Вид оборудования';
 
@@ -1462,10 +1462,10 @@ function getSettings() {
     // EYE SETTINGS
 
     // OTHER SETTINGS
-    $('.infoSetting-chbx').append('<div id="otherSetting"><b style="color:red;">Other settings:</b></div>');
-    $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="activeItemsPre" style="margin-right: 3px;">Active items on user</label>');
-    $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="imageSearchComparison" style="margin-right: 3px;">Image search in comparison</label>');
-    $('#otherSetting').append('<label class="mh-default-label"><input class="mh-default-checkbox" type="checkbox" name="other" value="autoCheckOtherReason" style="margin-right: 3px;">Auto check comment for "Other reason"</label>');
+    $('.ah-infoSetting-chbx').append('<div id="otherSetting"><b style="color:red;">Other settings:</b></div>');
+    $('#otherSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="other" value="activeItemsPre" style="margin-right: 3px;">Active items on user</label>');
+    $('#otherSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="other" value="imageSearchComparison" style="margin-right: 3px;">Image search in comparison</label>');
+    $('#otherSetting').append('<label class="ah-default-label"><input class="ah-default-checkbox" type="checkbox" name="other" value="autoCheckOtherReason" style="margin-right: 3px;">Auto check comment for "Other reason"</label>');
 
     if (!localStorage.addElementsForEachItem) localStorage.addElementsForEachItem = 'false';
     if (!localStorage.imageSearchComparison) localStorage.imageSearchComparison = 'false';
@@ -1505,10 +1505,10 @@ function getSettings() {
     // OTHER SETTINGS
 
     // кнопки
-    $('#divOptions').append('<div class="btn-ok-cancel" style="text-align: center; margin-top: 10px;"></div>');
+    $('#ah-divOptions').append('<div class="btn-ok-cancel" style="text-align: center; margin-top: 10px;"></div>');
     $('.btn-ok-cancel')
-        .append('<button id="butOkDivSettings" class="divOptions mh-default-btn" style="width:110px; margin-right: 6px;"><span class="mh-button-label mh-green-background">&#10003;</span>Ок</button>')
-        .append('<button id="butCanselDivSettings" class="divOptions mh-default-btn" style="width:110px;"><span class="mh-button-label mh-red-background">&#10007;</span>Отмена</button>');
+        .append('<button id="butOkDivSettings" class="ah-divOptions ah-moderation-default-btn" style="width:110px; margin-right: 6px;"><span class="ah-button-label ah-green-background">&#10003;</span>Ок</button>')
+        .append('<button id="butCanselDivSettings" class="ah-divOptions ah-moderation-default-btn" style="width:110px;"><span class="ah-button-label ah-red-background">&#10007;</span>Отмена</button>');
 
     $('#butOkDivSettings').click(function() {
         localStorage.eyeParamList = $('#eyeParamList').val();
@@ -1518,8 +1518,8 @@ function getSettings() {
 
     $('#butCanselDivSettings').click(function() {
 
-        $('#layer-blackout-popup').removeClass('ah-layer-flex');
-        $('#divOptions').hide();
+        $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
+        $('#ah-divOptions').hide();
         closeModal();
     });
 
@@ -1587,11 +1587,11 @@ function changeOtherReasonsBoxStatus(short_name, show) {
 function chekButton() {
     localStorage.createdButtons = '';
 
-    for (var i = 0; i < $('#divOptions input.addOld-button-checkbox').length; i++) {
-        if ( $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).prop("checked") ) {
-            localStorage.createdButtons += ' ' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('id').slice(4) + '|&|' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('action') + '|&|' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).val() + '';
+    for (var i = 0; i < $('#ah-divOptions input.addOld-button-checkbox').length; i++) {
+        if ( $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).prop("checked") ) {
+            localStorage.createdButtons += ' ' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('id').slice(4) + '|&|' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('action') + '|&|' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).val() + '';
         } else {
-            localStorage.createdButtons = localStorage.createdButtons.replace('' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('id').slice(4) + '|&|' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('action') + '|&|' + $('#divOptions input.addOld-button-checkbox').slice(i, i + 1).val() + '','');
+            localStorage.createdButtons = localStorage.createdButtons.replace('' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('id').slice(4) + '|&|' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).attr('action') + '|&|' + $('#ah-divOptions input.addOld-button-checkbox').slice(i, i + 1).val() + '','');
         }
     }
 }

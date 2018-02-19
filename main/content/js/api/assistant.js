@@ -1,7 +1,7 @@
 function addAssistant() {
     let body = $('body');
     $(body).append(`
-    <div class="assistant-bar">
+    <div class="ah-assistant-bar">
         <span>А</span>
         <span>с</span>
         <span>с</span>
@@ -14,31 +14,31 @@ function addAssistant() {
     </div>`);
 
     $(body).append(`
-    <div class="assistant-modal">
-        <div class="assistant-content">
-            <div class="overlay-container">
-                <div class="assistant-header">
-                    <span class="assistant-title"></span>
-                    <button class="close-assistant control" title="Закрыть">X</button>
-                    <button class="fold-assistant control" title="Свернуть">_</button>
+    <div class="ah-assistant-modal">
+        <div class="ah-assistant-content">
+            <div class="ah-overlay-container">
+                <div class="ah-assistant-header">
+                    <span class="ah-assistant-title"></span>
+                    <button class="close-assistant ah-assistant-control" title="Закрыть">X</button>
+                    <button class="fold-assistant ah-assistant-control" title="Свернуть">_</button>
                 </div>
-                <div class="assistant-body"></div>
+                <div class="ah-assistant-body"></div>
                 
-                <div class="assistant-overlay">
-                    <div class="assistant-overlay-text">Загрузка...</div>
+                <div class="ah-assistant-overlay">
+                    <div class="ah-assistant-overlay-text">Загрузка...</div>
                 </div>
             </div>
         </div>
     </div>
     `);
 
-    let modal = $('.assistant-modal');
+    let modal = $('.ah-assistant-modal');
     $(modal).draggable({
         containment: "window",
-        handle: ".assistant-header"
+        handle: ".ah-assistant-header"
     });
 
-    $('.assistant-bar').click(function() {
+    $('.ah-assistant-bar').click(function() {
         if (!localStorage['assistantCurrentVertex']) {
             getRegulations();
         }
@@ -81,7 +81,7 @@ function addAssistant() {
         }
     };
 
-    let modalHeader = $(modal).find('.assistant-header');
+    let modalHeader = $(modal).find('.ah-assistant-header');
     $(modalHeader).dblclick(function() {
         hideAssistant();
     });
@@ -111,17 +111,17 @@ function getRegulations() {
 }
 
 function renderRegulations(regulations) {
-    let modal = $('.assistant-modal');
-    let modalBody = $(modal).find('.assistant-body');
+    let modal = $('.ah-assistant-modal');
+    let modalBody = $(modal).find('.ah-assistant-body');
 
-    let modalHeader = $(modal).find('.assistant-header');
-    let modalTitle = $(modalHeader).find('.assistant-title');
+    let modalHeader = $(modal).find('.ah-assistant-header');
+    let modalTitle = $(modalHeader).find('.ah-assistant-title');
     $(modalTitle).text('Выбор регламента');
 
-    $(modalHeader).find('.regulation-control').remove();
+    $(modalHeader).find('.ah-regulation-control').remove();
 
-    $(modalBody).empty().append(`<ol class="regulations-list"></ol>`);
-    let regulationsList = $(modalBody).find('.regulations-list');
+    $(modalBody).empty().append(`<ol class="ah-regulations-list"></ol>`);
+    let regulationsList = $(modalBody).find('.ah-regulations-list');
     regulations.forEach((item) => {
         regulationsList.append(`
         <li class="regulations-item" title="${item.description}" data-regulation="${JSON.stringify(item).replace(/"/g, "&quot;")}">
@@ -165,10 +165,10 @@ function gerRegulationHead(regulation) {
 }
 
 function renderVertex(vertex) {
-    let modal = $('.assistant-modal');
+    let modal = $('.ah-assistant-modal');
 
-    let modalHeader = $(modal).find('.assistant-header');
-    let modalTitle = $(modalHeader).find('.assistant-title');
+    let modalHeader = $(modal).find('.ah-assistant-header');
+    let modalTitle = $(modalHeader).find('.ah-assistant-title');
 
     try {
         $(modalTitle).text(vertex.assistantGraphs.name);
@@ -177,12 +177,12 @@ function renderVertex(vertex) {
     }
 
 
-    $(modalHeader).find('.regulation-control').remove();
+    $(modalHeader).find('.ah-regulation-control').remove();
 
-    let modalBody = $(modal).find('.assistant-body');
+    let modalBody = $(modal).find('.ah-assistant-body');
     $(modalBody).empty().append(`
     <div class="regulation-vertex-metadata" data-current-vertex="${JSON.stringify(vertex).replace(/"/g, "&quot;")}"></div>
-    <div class="regulation-vertex-description">
+    <div class="ah-regulation-vertex-description">
         ${vertex.description}
     </div>
     `);
@@ -194,9 +194,9 @@ function renderVertex(vertex) {
 }
 
 function renderRegulationControls() {
-    let modal = $('.assistant-modal');
-    let modalHeader = $(modal).find('.assistant-header');
-    let modalBody = $(modal).find('.assistant-body');
+    let modal = $('.ah-assistant-modal');
+    let modalHeader = $(modal).find('.ah-assistant-header');
+    let modalBody = $(modal).find('.ah-assistant-body');
     let currentVertex = $(modalBody).find('.regulation-vertex-metadata').data('currentVertex');
 
     if (localStorage['assistantProgress']) {
@@ -205,7 +205,7 @@ function renderRegulationControls() {
             return item.uuid === currentVertex.uuid;
         });
         if (vertex[0]) {
-            $(modalHeader).append('<button class="regulation-back regulation-control"><</button>');
+            $(modalHeader).append('<button class="regulation-back ah-regulation-control"><</button>');
             let btnBack = $(modalHeader).find('.regulation-back');
             $(btnBack).click(function() {
                 renderVertex(vertex[0].comeFrom);
@@ -213,7 +213,7 @@ function renderRegulationControls() {
         }
     }
 
-    $(modalHeader).append('<button class="regulations-list-btn regulation-control">Регламенты</button>');
+    $(modalHeader).append('<button class="regulations-list-btn ah-regulation-control">Регламенты</button>');
 
     let btnList = $(modalHeader).find('.regulations-list-btn');
     $(btnList).click(function() {
@@ -243,13 +243,13 @@ function getVertexChildren(children) {
 }
 
 function renderVertexChildren(children) {
-    let modal = $('.assistant-modal');
-    let modalBody = $(modal).find('.assistant-body');
+    let modal = $('.ah-assistant-modal');
+    let modalBody = $(modal).find('.ah-assistant-body');
     $(modalBody).append(`
-        <ul class="regulation-vertex-children"></ul>
+        <ul class="ah-regulation-vertex-children"></ul>
     `);
 
-    let childrenList = $(modalBody).find('.regulation-vertex-children');
+    let childrenList = $(modalBody).find('.ah-regulation-vertex-children');
     $(childrenList).empty();
     children.forEach((item) => {
         $(childrenList).append(`
@@ -271,24 +271,24 @@ function renderVertexChildren(children) {
 
 /*Common*/
 function showAssistant() {
-    $('.assistant-modal').show();
-    $('.assistant-bar').hide();
+    $('.ah-assistant-modal').show();
+    $('.ah-assistant-bar').hide();
 }
 
 function hideAssistant() {
-    $('.assistant-modal').hide();
-    $('.assistant-bar').show();
+    $('.ah-assistant-modal').hide();
+    $('.ah-assistant-bar').show();
 }
 
 function assistantOverlayIn() {
-    let modal = $('.assistant-modal');
-    let overlay = $(modal).find('.assistant-overlay');
+    let modal = $('.ah-assistant-modal');
+    let overlay = $(modal).find('.ah-assistant-overlay');
     $(overlay).show();
 }
 
 function assistantOverlayOut() {
-    let modal = $('.assistant-modal');
-    let overlay = $(modal).find('.assistant-overlay');
+    let modal = $('.ah-assistant-modal');
+    let overlay = $(modal).find('.ah-assistant-overlay');
     $(overlay).fadeOut('fast');
 }
 
@@ -328,18 +328,18 @@ function resetAssistant() {
     delete localStorage['assistantCurrentVertex'];
     delete localStorage['assistantProgress'];
 
-    let modal = $('.assistant-modal');
-    let modalBody = $(modal).find('.assistant-body');
+    let modal = $('.ah-assistant-modal');
+    let modalBody = $(modal).find('.ah-assistant-body');
 
-    let modalHeader = $(modal).find('.assistant-header');
-    let modalTitle = $(modalHeader).find('.assistant-title');
+    let modalHeader = $(modal).find('.ah-assistant-header');
+    let modalTitle = $(modalHeader).find('.ah-assistant-title');
     $(modalTitle).text('Выбор регламента');
-    $(modalHeader).find('.regulation-control').remove();
+    $(modalHeader).find('.ah-regulation-control').remove();
     $(modalBody).empty();
 }
 
 function continueAssistant() {
-    let modal = $('.assistant-modal');
+    let modal = $('.ah-assistant-modal');
 
     let currentVertex = JSON.parse(localStorage['assistantCurrentVertex']);
     renderVertex(currentVertex);

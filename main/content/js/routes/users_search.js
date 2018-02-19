@@ -1,11 +1,11 @@
 // где верифицирован номер ---
 function findWherePhoneVerified() {
-    $('form[action="/users/search"] .form-row:first-child').append('<button type="button" class=" sh-default-btn" id="find-where-phone-verified" title="Данные берутся из лога верификации по кнопке \'Больше\'">Найти привязку</button>');
+    $('form[action="/users/search"] .form-row:first-child').append('<button type="button" class=" ah-default-btn" id="find-where-phone-verified" title="Данные берутся из лога верификации по кнопке \'Больше\'">Найти привязку</button>');
 
     var phone;
     $('#find-where-phone-verified').click(function() {
-        $('.info-container').remove();
-        $('.verified-icon').remove();
+        $('.ah-info-container').remove();
+        $('.ah-verified-icon').remove();
         phone = $(this).parents('form').find('[name="phone"]').val().replace(/\D/g, '');
         if (!phone) {
             alert('Ошибка: номер телефона не указан в соответствующем поле.');
@@ -13,7 +13,7 @@ function findWherePhoneVerified() {
         }
 
         phone = '7' + phone.slice(-10);
-        $('#sh-loading-layer').show();
+        $('#ah-loading-layer').show();
         getVerificationLog(phone);
     });
 }
@@ -27,13 +27,13 @@ function getVerificationLog(phone) {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             var html = xhr.responseText;
 
             findUserWithVerifiedPhone(html, phone);
         }
         if (xhr.readyState == 4 && xhr.status > 200) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             setTimeout(function() {
                 alert('Произошла техническая ошибка.\n'+ xhr.status +', '+ xhr.statusText +'');
             }, 100);
@@ -62,15 +62,15 @@ function findUserWithVerifiedPhone(html, phone) {
 function renderUserWithVerifiedPhoneInfo(elem, phone) {
     var userId = $(elem).find('td:eq(2) [href^="/users/user/info"]:eq(1)').text() || 'error';
 
-    $('body').append('<div class="info-container" style="z-index: 1050;"></div>');
-    $('.info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #2e8b57;">найдена</span></span><span class="sh-circle-close-btn"></span><hr class="sh-default-hr">');
+    $('body').append('<div class="ah-info-container" style="z-index: 1050;"></div>');
+    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #2e8b57;">найдена</span></span><span class="sh-circle-close-btn"></span><hr class="ah-default-hr">');
 
-    $('.info-container').append('<table></table>');
-    $('.info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
+    $('.ah-info-container').append('<table></table>');
+    $('.ah-info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
 
-    $('.info-container table').append(elem);
+    $('.ah-info-container table').append(elem);
 
-    $('.info-container').append('<hr class="sh-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone='+ phone +'">Перейти в лог верификации</a></span>');
+    $('.ah-info-container').append('<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone='+ phone +'">Перейти в лог верификации</a></span>');
 
     var tableUserId, tableRow;
     $('table.table-striped tr').each(function(i, elem) {
@@ -81,29 +81,29 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
         }
 
         if (tableUserId === userId) {
-            $(elem).find('td:eq(3)').append('<span class="verified-icon"></span>');
+            $(elem).find('td:eq(3)').append('<span class="ah-verified-icon"></span>');
         }
     });
 
     $('.sh-circle-close-btn').click(function() {
-        $('.info-container').detach();
-        $('tr .verified-icon').detach();
+        $('.ah-info-container').detach();
+        $('tr .ah-verified-icon').detach();
     });
 }
 
 function renderVerificationLog(html, phone) {
-    $('body').append('<div class="info-container" style=""></div>');
-    $('.info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #e00;">не найдена</span></span><span class="sh-circle-close-btn"></span><hr class="sh-default-hr">');
-    $('.info-container').append('<table></table>');
-    $('.info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
+    $('body').append('<div class="ah-info-container" style=""></div>');
+    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #e00;">не найдена</span></span><span class="sh-circle-close-btn"></span><hr class="ah-default-hr">');
+    $('.ah-info-container').append('<table></table>');
+    $('.ah-info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
 
-    $('.info-container table').append(html);
+    $('.ah-info-container table').append(html);
 
-    $('.info-container').append('<hr class="sh-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone='+ phone +'">Перейти в лог верификации</a></span>');
+    $('.ah-info-container').append('<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone='+ phone +'">Перейти в лог верификации</a></span>');
 
     $('.sh-circle-close-btn').click(function() {
-        $('.info-container').detach();
-        $('tr .verified-icon').detach();
+        $('.ah-info-container').detach();
+        $('tr .ah-verified-icon').detach();
     });
 }
 // где верифицирован номер +++
@@ -111,11 +111,11 @@ function renderVerificationLog(html, phone) {
 // копирование телефона в буфер в формате, как на странице юзера ---
 function copyPhoneToClipboard() {
     $('form[action="/users/search"] [name="phone"]')
-        .addClass('text-input-with-btn')
-        .after('<button type="button" class="sh-default-btn sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; height: 34px; width: 30px; margin-left: -1px; position: relative;" title="Скопировать телефон в буфер обмена в формате, как на странице пользователя"><span class="sh-button-label sh-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button>');
+        .addClass('ah-text-input-with-btn')
+        .after('<button type="button" class="ah-default-btn ah-sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; height: 34px; width: 30px; margin-left: -1px; position: relative;" title="Скопировать телефон в буфер обмена в формате, как на странице пользователя"><span class="ah-support-button-label ah-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button>');
 
     var phone;
-    $('.sh-copy-tel-to-clip').click(function() {
+    $('.ah-sh-copy-tel-to-clip').click(function() {
         phone = $('form[action="/users/search"] [name="phone"]').val().replace(/\D/g, '');
         if (!phone) {
             alert('Ошибка: номер телефона не указан в соответствующем поле.');
@@ -163,7 +163,7 @@ function addChooseButtonUsersSearch() {
         let id = $(loginList[i]).text();
 
         if (!$(loginList[i]).parents('tr').hasClass('success'))
-            $(loginList[i]).parent().append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">');
+            $(loginList[i]).parent().append('<input type="button" userid="' + id + '" class="ah-postBlockButton ah-postPlus" value="+">');
 
         $(loginList[i]).parents('tr').after('<tr class="ah-post-userAgent" style="background: #f9f9f9"><td colspan="9"  style="border-top: none"><b>User-Agent:</b> <span userAgent="'+id+'"></span></td></tr>');
     }
