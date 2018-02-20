@@ -2694,7 +2694,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 $('.ah-commentList').append('<div class="ah-commentBlockStyle"><div class="ah-commentStyle">'+comment+'</div><div class="ah-commentInfoStyle"><span>'+username+'</span><span style="float: right;">'+date+'</span></div></div>');
             }
 
-            linksOnComments('.commentStyle', id);
+            linksOnComments('.ah-commentStyle', id);
         }
     }
 	
