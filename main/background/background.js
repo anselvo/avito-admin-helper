@@ -365,7 +365,7 @@ function startWebSocket() {
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
     function stompSuccessCallback() {
-        chrome.storage.local.set({notifications: {}});
+        chrome.storage.local.set({notifications: { all: null, old: null }});
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -377,7 +377,7 @@ function startWebSocket() {
     }
 
     function stompFailureCallback() {
-        chrome.storage.local.set({notifications: null});
+        chrome.storage.local.set({notifications: { all: null, old: null }});
 
         connect();
     }
@@ -392,7 +392,9 @@ function startWebSocket() {
             if (notifications.all) {
                 notifications.all = notifications.all.concat(newNotifications);
                 notifications.new = newNotifications
-            } else notifications.all = newNotifications;
+            } else {
+                notifications.all = newNotifications;
+            }
 
             result.notifications = notifications;
             chrome.storage.local.set(result);
