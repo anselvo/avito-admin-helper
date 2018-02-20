@@ -1,7 +1,7 @@
 
 function startNotification(notifications) {
     notificationBar();
-    if (notifications) notificationsWS(notifications);
+    notificationsWS(notifications);
     setInterval(startAllowList, 180000);
 }
 
