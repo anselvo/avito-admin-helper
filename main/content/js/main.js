@@ -75,29 +75,13 @@ $(function () {
     global.currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-        try {
             global.connectInfo = result.connectInfo;
-        } catch (e) {
-            console.log(e);
-        }
-        try {
             global.authorities = result.authorities;
-        } catch (e) {
-            console.log(e);
-        }
-        try {
             global.userInfo = result.connectInfo.spring_user.principal;
-        } catch (e) {
-            console.log(e);
-        }
 
 
         if (result.script) {
-            try {
-                startNotification(result.notifications);
-            } catch (e) {
-                console.log(e);
-            }
+            startNotification(result.notifications);
 
             holidays();
 

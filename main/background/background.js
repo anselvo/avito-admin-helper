@@ -364,9 +364,8 @@ function startWebSocket() {
     stompClient.debug = null;
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
-    function stompSuccessCallback(e) {
-        console.log(e);
-        chrome.storage.local.set({notifications: {}});
+    function stompSuccessCallback() {
+        chrome.storage.local.set({notifications: });
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -377,10 +376,10 @@ function startWebSocket() {
         stompClient.send('/app/notification/unread', {});
     }
 
-    function stompFailureCallback(e) {
-        console.log(e);
-        chrome.storage.local.set({notifications: {}});
-        connectInfo.spring_reconnect = true;
+    function stompFailureCallback() {
+        chrome.storage.local.set({notifications: null});
+
+        connect();
     }
 
     function addNotificationToStorage(response) {
