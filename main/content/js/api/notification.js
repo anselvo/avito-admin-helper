@@ -19,22 +19,24 @@ function notificationsWS(notifications) {
 }
 
 function notificationAddWS(notifications) {
-    if (Array.isArray(notifications)) {
-        for (let i = 0; i < notifications.length; ++i) {
-            let name = notifications[i].notification.head.replace(' ', '').toLowerCase();
+	if (notifications) {
+        if (Array.isArray(notifications)) {
+            for (let i = 0; i < notifications.length; ++i) {
+                let name = notifications[i].notification.head.replace(' ', '').toLowerCase();
 
-            notificationBarAdd(notifications[i].notification.uuid,
+                notificationBarAdd(notifications[i].notification.uuid,
+                    name + 'Header',
+                    notifications[i].notification.head,
+                    name + 'Body',
+                    notifications[i].notification.body);
+            }
+        } else {
+            notificationBarAdd(notifications.notification.uuid,
                 name + 'Header',
-                notifications[i].notification.head,
+                notifications.notification.head,
                 name + 'Body',
-                notifications[i].notification.body);
+                notifications.notification.body);
         }
-    } else {
-        notificationBarAdd(notifications.notification.uuid,
-            name + 'Header',
-            notifications.notification.head,
-            name + 'Body',
-            notifications.notification.body);
     }
 }
 

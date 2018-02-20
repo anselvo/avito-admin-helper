@@ -19,7 +19,10 @@ $(function () {
     getCookieInfo();
 
     // запускаем чекер дня
-    chrome.alarms.create('day', {delayInMinutes: 1, periodInMinutes: 1});
+    chrome.alarms.create('day', { delayInMinutes: 1, periodInMinutes: 1 });
+
+    // пытаемся рекконектится, если нету коннекта к серверу
+    chrome.alarms.create('reconnect', { delayInMinutes: 1, periodInMinutes: 1 });
 });
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -40,7 +43,7 @@ chrome.runtime.onInstalled.addListener(details => {
 // ЛОВИТ БУДИЛЬНИК
 chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
-    if (alarm.name === 'reconnect') connect();
+    if (alarm.name === 'reconnect') reconnect();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
@@ -185,7 +188,6 @@ function connect() {
                     connectInfo.spring_reconnect = false;
                     connectInfo.error = null;
 
-                    reconnect();
                     startWebSocket();
                     return getPrincipal();
                 }, error => {
@@ -224,8 +226,7 @@ function disconnect() {
 }
 
 function reconnect() {
-    if (connectInfo.spring_reconnect) chrome.alarms.create('reconnect', {delayInMinutes: 1, periodInMinutes: 1});
-    else chrome.alarms.clear('reconnect');
+    if (connectInfo.spring_reconnect) connect();
 }
 
 function login(username, password) {
@@ -354,10 +355,7 @@ function errorMessage(status, error) {
             connectInfo.spring_reconnect = true;
     }
 
-    if (previousError !== connectInfo.error) {
-        reconnect();
-        addChromeNotification("Ошибка: " + connectInfo.error);
-    }
+    if (previousError !== connectInfo.error) addChromeNotification("Ошибка: " + connectInfo.error);
 }
 
 function startWebSocket() {
@@ -367,7 +365,7 @@ function startWebSocket() {
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
     function stompSuccessCallback() {
-        chrome.storage.local.set({notifications: {}});
+        defaultNotificationToStorage();
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -379,7 +377,9 @@ function startWebSocket() {
     }
 
     function stompFailureCallback() {
-        chrome.storage.local.set({notifications: {}});
+        defaultNotificationToStorage();
+
+        connectInfo.spring_reconnect = true;
     }
 
     function addNotificationToStorage(response) {
@@ -392,7 +392,9 @@ function startWebSocket() {
             if (notifications.all) {
                 notifications.all = notifications.all.concat(newNotifications);
                 notifications.new = newNotifications
-            } else notifications.all = newNotifications;
+            } else {
+                notifications.all = newNotifications;
+            }
 
             result.notifications = notifications;
             chrome.storage.local.set(result);
@@ -415,6 +417,10 @@ function startWebSocket() {
             result.notifications = notifications;
             chrome.storage.local.set(result);
         });
+    }
+
+    function defaultNotificationToStorage() {
+        chrome.storage.local.set({notifications: { all: null, old: null }});
     }
 }
 

@@ -75,9 +75,9 @@ $(function () {
     global.currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-        global.connectInfo = result.connectInfo;
-        global.authorities = result.authorities;
-        global.userInfo = result.connectInfo.spring_user.principal;
+            global.connectInfo = result.connectInfo;
+            global.authorities = result.authorities;
+            global.userInfo = result.connectInfo.spring_user.principal;
 
 
         if (result.script) {
