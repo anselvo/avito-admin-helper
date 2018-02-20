@@ -365,7 +365,7 @@ function startWebSocket() {
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
     function stompSuccessCallback() {
-        chrome.storage.local.set({notifications: });
+        chrome.storage.local.set({notifications: {}});
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
