@@ -5,7 +5,7 @@ let connectInfo = {
     adm_url: "https://adm.avito.ru",
     spring_auth: false,
     spring_user: null,
-    spring_url: "http://spring.avitoadm.ru",
+    spring_url: "http://localhost",
     spring_reconnect: false,
     status: null,
     error: null
@@ -365,7 +365,7 @@ function startWebSocket() {
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 
     function stompSuccessCallback() {
-        chrome.storage.local.set({notifications: { all: null, old: null }});
+        defaultNotificationToStorage();
 
         stompClient.subscribe('/user/queue/error', e => console.log(e));
 
@@ -377,9 +377,9 @@ function startWebSocket() {
     }
 
     function stompFailureCallback() {
-        chrome.storage.local.set({notifications: { all: null, old: null }});
+        defaultNotificationToStorage();
 
-        connect();
+        connectInfo.spring_reconnect = true;
     }
 
     function addNotificationToStorage(response) {
@@ -417,6 +417,10 @@ function startWebSocket() {
             result.notifications = notifications;
             chrome.storage.local.set(result);
         });
+    }
+
+    function defaultNotificationToStorage() {
+        chrome.storage.local.set({notifications: { all: null, old: null }});
     }
 }
 
