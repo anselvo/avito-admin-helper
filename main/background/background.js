@@ -211,7 +211,9 @@ function connect() {
 
 function disconnect() {
     if (!connectInfo.adm_auth) {
+        stompClient.disconnect();
         logout();
+
         connectInfo.spring_auth = false;
         connectInfo.spring_user = null;
 
