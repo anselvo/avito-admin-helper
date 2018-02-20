@@ -510,12 +510,12 @@ function handleRoles() {
         const $body = $('body');
 
         // закрытие попапа по клику на слой
-        $body.append('<div id="layer-blackout-popup"></div>');
-        $('#layer-blackout-popup').click(function (e) {
+        $body.append('<div id="ah-layer-blackout-popup"></div>');
+        $('#ah-layer-blackout-popup').click(function (e) {
             const $popup = $('div.ah-default-popup');
             if (!$popup.is(e.target)
                 && $popup.has(e.target).length === 0) {
-                $('#layer-blackout-popup').removeClass('ah-layer-flex');
+                $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
                 $popup.hide();
                 closeModal();
             }
@@ -523,14 +523,14 @@ function handleRoles() {
 
         // загрузка
         $body.append(`
-            <div id="sh-loading-layer">
-                <div class="sh-cssload-container">
-                    <div class="sh-cssload-whirlpool"></div>
+            <div id="ah-loading-layer">
+                <div class="ah-cssload-container">
+                    <div class="ah-cssload-whirlpool"></div>
                 </div>
             </div>
         `);
 
-        $body.append('<div id="layer-blackout-modal"></div>');
+        $body.append('<div id="ah-layer-blackout-modal"></div>');
 
         if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
             if (!localStorage.allowList) localStorage.allowList = '';
@@ -737,32 +737,32 @@ RoleHandler.prototype.helpdeskQueueEmployeeLabels = function() {
 };
 
 RoleHandler.prototype.helpdeskTlHelpHold = function() {
-    const $btn = $('#sh-attendant-tl-btn');
-    if ($btn.hasClass('sh-active-btn')) {
-        $('#sh-loading-layer').show();
+    const $btn = $('#ah-attendant-tl-btn');
+    if ($btn.hasClass('ah-active-btn')) {
+        $('#ah-loading-layer').show();
 
         helpdeskLoadingEnd().
             then(() => checkAdmUserIdAttendantTL(),
                 error => {
                     alert(`Error:\n${error}`);
-                    $('#sh-loading-layer').hide();
+                    $('#ah-loading-layer').hide();
                 });
     }
 };
 
 RoleHandler.prototype.helpdeskTlHelpComment = function() {
-    const $btn = $('#sh-attendant-tl-btn');
+    const $btn = $('#ah-attendant-tl-btn');
     // проверка на статус тикета - только для онхолдов
     const statusText = getTicketStatusText();
     if (statusText === 'на удержании') {
-        if ($btn.hasClass('sh-active-btn')) {
-            $('#sh-loading-layer').show();
+        if ($btn.hasClass('ah-active-btn')) {
+            $('#ah-loading-layer').show();
 
             helpdeskLoadingEnd().
                 then(() => checkAdmUserIdAttendantTL(),
                     error => {
                         alert(`Error:\n${error}`);
-                        $('#sh-loading-layer').hide();
+                        $('#ah-loading-layer').hide();
                     });
         }
     }

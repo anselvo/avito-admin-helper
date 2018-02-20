@@ -29,7 +29,7 @@ function helpDeskClickImitation() {
         existingTags[0].parentNode.appendChild(newInput);
         document.querySelector('.helpdesk-click-fog').click();
         window.scrollTo(0, currentYOffset);
-        $('#sh-loading-layer').hide();
+        $('#ah-loading-layer').hide();
     }, 10);
 }
 
@@ -186,9 +186,9 @@ function getNegativeUsers() {
 
 //++++++++++++++ Создание обращения ++++++++++++++//
 function renderCreateNewTicketWindow(route) {
-    $('#layer-blackout-modal').append('<div class="ah-modal-content" data-modal-info="modal-create-new-ticket" style="top: 30px;"><div class="ah-modal-container" style=""></div></div>');
+    $('#ah-layer-blackout-modal').append('<div class="ah-modal-content" data-modal-info="modal-create-new-ticket" style="top: 30px;"><div class="ah-modal-container" style=""></div></div>');
 
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var modalContainer = $(modal).find('.ah-modal-container');
     $(modalContainer).append('<div style="width: 600px;" class="ah-modal-column"></div>');
     var modalColumn = $(modalContainer).find('.ah-modal-column');
@@ -233,10 +233,10 @@ function renderCreateNewTicketWindow(route) {
     });
 
     // Инструменты
-    $(body).append('<div class="ah-field-group" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;"><div class="ah-field-horizontal"><label for="create-ticket-statusId-1" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-1" value="1" checked>Новое</label><label for="create-ticket-statusId-5" class="ah-radio-inline"><input type="radio"  name="create-ticket-statusId" id="create-ticket-statusId-5" value="5">В решено</label><label for="create-ticket-statusId-3" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-3" value="3">На ожидании</label></div><div class="ah-field-horizontal" style=""><div class="ah-dropmenu-holder btn-group" style="display: inline-block;"><input type="text" class="ah-form-control ah-btn-group-left" style="height: 30px; width: 200px; display: none;" id="create-ticket-search-templates-input"><button type="button" class="sh-default-btn ah-btn-small ah-btn-group-left" id="create-ticket-choose-templates" style="height: 30px;    padding: 1px 10px;" disabled>Шаблоны<span class="ah-caret"></span></button><ul class="ah-dropdown-menu-templates" style="width: 350px; max-height: 50vh; overflow: auto;"></ul></div><label class="sh-default-btn ah-btn-small ah-btn-group-right" style="line-height: 1; margin-bottom: 0; height: 30px;"><input type="file" multiple style="display: none;" name="create-ticket-attaches[]"><i class="ah-btn-icon ah-icon-paperclip"></i></label></div></div>');
+    $(body).append('<div class="ah-field-group" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;"><div class="ah-field-horizontal"><label for="create-ticket-statusId-1" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-1" value="1" checked>Новое</label><label for="create-ticket-statusId-5" class="ah-radio-inline"><input type="radio"  name="create-ticket-statusId" id="create-ticket-statusId-5" value="5">В решено</label><label for="create-ticket-statusId-3" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-3" value="3">На ожидании</label></div><div class="ah-field-horizontal" style=""><div class="ah-dropmenu-holder btn-group" style="display: inline-block;"><input type="text" class="ah-form-control ah-btn-group-left" style="height: 30px; width: 200px; display: none;" id="create-ticket-search-templates-input"><button type="button" class="ah-default-btn ah-btn-small ah-btn-group-left" id="ah-create-ticket-choose-templates" style="height: 30px;    padding: 1px 10px;" disabled>Шаблоны<span class="ah-caret"></span></button><ul class="ah-dropdown-menu-templates" style="width: 350px; max-height: 50vh; overflow: auto;"></ul></div><label class="ah-default-btn ah-btn-small ah-btn-group-right" style="line-height: 1; margin-bottom: 0; height: 30px;"><input type="file" multiple style="display: none;" name="create-ticket-attaches[]"><i class="ah-btn-icon ah-icon-paperclip"></i></label></div></div>');
 
     // Описание
-    $(body).append('<div class="alert alert-warning" style="position: absolute; top: 1px;left: calc(100% + 10px);width: 320px;border-radius: 0;"><strong>Данная форма не поддерживает Markdown. </strong>В случае необходимости, воспользуйтесь оригинальной формой <a target="_blank" href="https://adm.avito.ru/helpdesk">здесь</a>.</div><div class="ah-field-group" style="position: relative;"><div class="ah-form-control" style="min-height: 180px;" id="create-ticket-description-clone"></div></div><div class="ah-field-group"><textarea type="text" class="ah-form-control" style="min-height: 180px; resize: vertical; " name="create-ticket-description"></textarea></div>');
+    $(body).append('<div class="alert alert-warning" style="position: absolute; top: 1px;left: calc(100% + 10px);width: 320px;border-radius: 0;"><strong>Данная форма не поддерживает Markdown. </strong>В случае необходимости, воспользуйтесь оригинальной формой <a target="_blank" href="https://adm.avito.ru/helpdesk">здесь</a>.</div><div class="ah-field-group" style="position: relative;"><div class="ah-form-control" style="min-height: 180px;" id="ah-create-ticket-description-clone"></div></div><div class="ah-field-group"><textarea type="text" class="ah-form-control" style="min-height: 180px; resize: vertical; " name="create-ticket-description"></textarea></div>');
 
     // Почта и имя
     $(body).append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 10px 0 0; margin-bottom: 0;"><div class="ah-field-title" style="">Почта пользователя</div><div class="ah-field-horizontal ah-field-flex"><input type="text" class="ah-form-control" name="create-ticket-requesterEmail" pattern="^.+@.+\..+$"></div></div>');
@@ -250,14 +250,14 @@ function renderCreateNewTicketWindow(route) {
             'border-top-right-radius': '0',
             'border-bottom-right-radius': '0'
         });
-        $(requesterNameInput).after('<button class="sh-default-btn" style="border-top-left-radius: 0;border-bottom-left-radius: 0; margin-left: -1px; outline: none;" id="create-ticket-search-name" title="Поиск обращений в Helpdesk по e-mail, указанном в поле \'Почта пользователя\'. Если есть хотя бы один тикет, подставляет Инициатора, указанного в первом найденном тикете"><i class="glyphicon glyphicon-search" style="top: 2px;"></i></button>');
+        $(requesterNameInput).after('<button class="ah-default-btn" style="border-top-left-radius: 0;border-bottom-left-radius: 0; margin-left: -1px; outline: none;" id="create-ticket-search-name" title="Поиск обращений в Helpdesk по e-mail, указанном в поле \'Почта пользователя\'. Если есть хотя бы один тикет, подставляет Инициатора, указанного в первом найденном тикете"><i class="glyphicon glyphicon-search" style="top: 2px;"></i></button>');
 
         var requesterMailInput = $(body).find('[name="create-ticket-requesterEmail"]');
         $(requesterMailInput).css({
             'border-top-right-radius': '0',
             'border-bottom-right-radius': '0'
         });
-        $(requesterMailInput).after('<button class="sh-default-btn" style="border-top-left-radius: 0;border-bottom-left-radius: 0; margin-left: -1px; outline: none;" id="create-ticke-search-by-mail"><i class="glyphicon glyphicon-new-window" style="top: 2px;"></i></button>');
+        $(requesterMailInput).after('<button class="ah-default-btn" style="border-top-left-radius: 0;border-bottom-left-radius: 0; margin-left: -1px; outline: none;" id="create-ticke-search-by-mail"><i class="glyphicon glyphicon-new-window" style="top: 2px;"></i></button>');
 
         $('#create-ticket-search-name').click(function () {
             var mail = $(requesterMailInput).val();
@@ -284,13 +284,13 @@ function renderCreateNewTicketWindow(route) {
     // на странице юзера ---
 
     // Теги
-    $(body).append('<div class="ah-field-group" style="position: relative;"><div class="ah-field-title">Теги</div><div class="" style=""><div id="create-ticket-added-tag-ids"></div><div class="ah-form-control" style="position: relative; min-height: 32px;" id="create-ticket-choose-tags"><b class="ah-caret-right" style="top: 13px; transform: none;"></b></div><div class="ah-dropdown-menu create-ticket-choose-tags-menu" style=""><input type="text" class="ah-form-control" style="margin-bottom: 8px;"><ul class="create-ticket-choose-tags-list"></ul></div></div></div>');
+    $(body).append('<div class="ah-field-group" style="position: relative;"><div class="ah-field-title">Теги</div><div class="" style=""><div id="create-ticket-added-tag-ids"></div><div class="ah-form-control" style="position: relative; min-height: 32px;" id="create-ticket-choose-tags"><b class="ah-caret-right" style="top: 13px; transform: none;"></b></div><div class="ah-dropdown-menu ah-create-ticket-choose-tags-menu" style=""><input type="text" class="ah-form-control" style="margin-bottom: 8px;"><ul class="ah-create-ticket-choose-tags-list"></ul></div></div></div>');
 
 
     // ФУТЕР
     $(modalColumn).append('<div class="ah-modal-footer"></div>');
     var footer = $(modalColumn).find('.ah-modal-footer');
-    $(footer).append('<button type="button" class="sh-action-btn" style="letter-spacing: .1px; float: left;">Создать обращение</button>');
+    $(footer).append('<button type="button" class="ah-action-btn" style="letter-spacing: .1px; float: left;">Создать обращение</button>');
     $(footer).append('<div class="ah-clearfix" style=""></div>');
 
     // автозаполнение
@@ -419,12 +419,12 @@ function renderCreateNewTicketWindow(route) {
     var closeBtn = $(modal).find('.ah-modal-close');
     var attachesInput = $(modal).find('[name="create-ticket-attaches[]"]');
     var statusInputs = $('[name="create-ticket-statusId"]');
-    var chooseTemplateBtn = $('#create-ticket-choose-templates');
+    var chooseTemplateBtn = $('#ah-create-ticket-choose-templates');
 
     $(closeBtn).click(function () {
         $(modal).hide();
-        $('#layer-blackout-modal').removeClass('ah-layer-flex');
-        $('#layer-blackout-modal').removeClass('ah-layer-y-scroll');
+        $('#ah-layer-blackout-modal').removeClass('ah-layer-flex');
+        $('#ah-layer-blackout-modal').removeClass('ah-layer-y-scroll');
         closeModal();
 
         resetCreateTicketValues();
@@ -522,7 +522,7 @@ function renderCreateNewTicketWindow(route) {
             return false;
         }
 
-        var list = $(modal).find('.create-ticket-choose-tags-list');
+        var list = $(modal).find('.ah-create-ticket-choose-tags-list');
         if (!global.hdSettings.helpdeskTagsJSON) {
             $(list).append('<span id="create-ticket-loading-tags" style="text-align: center; width: 100%; display: inline-block; color: #c5c5c5; font-weight: 500;">Загрузка...</span>');
             getHDTags();
@@ -538,7 +538,7 @@ function renderCreateNewTicketWindow(route) {
     });
 
     var description = $(body).find('[name="create-ticket-description"]');
-    var descriptionClone = $('#create-ticket-description-clone');
+    var descriptionClone = $('#ah-create-ticket-description-clone');
     $(description).unbind('keyup').keyup(function (e) {
         var content = $(this).val();
 
@@ -555,7 +555,7 @@ function renderCreateNewTicketWindow(route) {
         createTicketResizeDescription();
     });
 
-    var createTicketBtn = $(footer).find('.sh-action-btn');
+    var createTicketBtn = $(footer).find('.ah-action-btn');
     $(createTicketBtn).click(function () {
         var errors = [];
 
@@ -647,7 +647,7 @@ function renderCreateNewTicketWindow(route) {
                 alert('Введите корректную почту пользователя.');
                 return;
             }
-            $('#sh-loading-layer').show();
+            $('#ah-loading-layer').show();
             createTicket(data);
         } else {
             alert('Пропущены следующие поля: \n-' + errors.join('\n-'));
@@ -680,7 +680,7 @@ function getHDTemplates() {
 
                 var templatesAll = global.hdSettings.helpdeskTemplatesJSON;
 
-                var btn = $('#create-ticket-choose-templates');
+                var btn = $('#ah-create-ticket-choose-templates');
                 var list = $(btn).next();
 
                 $(list).append('<li templatesListBack style="display: none;"><a style="font-weight: 700;">Назад</a></li>');
@@ -715,10 +715,10 @@ function getHDTemplates() {
                         templatesAll.forEach(function (temp) {
                             if (temp.id == tempClickedId) {
 
-                                var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+                                var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
                                 var body = $(modal).find('.ah-modal-body');
                                 var description = $(body).find('[name="create-ticket-description"]');
-                                var descriptionClone = $('#create-ticket-description-clone');
+                                var descriptionClone = $('#ah-create-ticket-description-clone');
 
                                 var curDescrVal = $(description).val();
 
@@ -734,7 +734,7 @@ function getHDTemplates() {
                                 $(list).hide();
 
                                 $('#create-ticket-search-templates-input').hide();
-                                $('#create-ticket-choose-templates').show();
+                                $('#ah-create-ticket-choose-templates').show();
 
                                 $('#create-ticket-search-templates-input').keyup();
 
@@ -816,24 +816,24 @@ function getHDTemplates() {
 }
 
 function createTicketResizeDescription() {
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var body = $(modal).find('.ah-modal-body');
     var description = $(body).find('[name="create-ticket-description"]');
-    var descriptionClone = $('#create-ticket-description-clone');
+    var descriptionClone = $('#ah-create-ticket-description-clone');
 
     var height = $(descriptionClone).outerHeight() + 20;
     $(description).css('height', '' + height + 'px');
 }
 
 function resetCreateTicketValues() {
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var attachesInput = $(modal).find('[name="create-ticket-attaches[]"]');
 
     $(attachesInput).val('');
     $(attachesInput).parent().find('.ah-icon-paperclip').show();
     $(attachesInput).parent().find('.create-ticket-attaches-count').remove();
 
-    var tagsList = $(modal).find('.create-ticket-choose-tags-list');
+    var tagsList = $(modal).find('.ah-create-ticket-choose-tags-list');
     var addedTagIds = $(modal).find('#create-ticket-added-tag-ids [name^="create-ticket-tags"]');
     var addedTags = $(modal).find('#create-ticket-choose-tags .ah-helpdesk-tag');
     $(tagsList).find('li').remove();
@@ -847,7 +847,7 @@ function resetCreateTicketValues() {
     $(userName).val('');
 
     var description = $(modal).find('[name="create-ticket-description"]');
-    var descriptionClone = $('#create-ticket-description-clone');
+    var descriptionClone = $('#ah-create-ticket-description-clone');
     $(description).val('');
     $(descriptionClone).text('');
     $(description).css('height', '180px');
@@ -884,8 +884,8 @@ function getHDTags() {
 function createTicketAddTagHandler() {
     var tagsAll = global.hdSettings.helpdeskTagsJSON;
 
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-    var list = $(modal).find('.create-ticket-choose-tags-list');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var list = $(modal).find('.ah-create-ticket-choose-tags-list');
     $(list).find('li').remove();
 
     var alreadyAdded = [];
@@ -903,7 +903,7 @@ function createTicketAddTagHandler() {
 
     createTicketRenderedTagsHandler();
 
-    var searchInput = $(modal).find('.create-ticket-choose-tags-menu [type="text"]');
+    var searchInput = $(modal).find('.ah-create-ticket-choose-tags-menu [type="text"]');
     $(searchInput).unbind('keyup').keyup(function (e) {
         var typedText = $(this).val();
         typedText = typedText.toLowerCase();
@@ -948,7 +948,7 @@ function createTicketAddTagHandler() {
 }
 
 function createTicketRenderedTagsHandler() {
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var addedTagIdsBlock = $('#create-ticket-added-tag-ids');
     var addedTagsBlock = $('#create-ticket-choose-tags');
 
@@ -972,7 +972,7 @@ function createTicketRenderedTagsHandler() {
 }
 
 function createTicketRemoveTagBtnHandler() {
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     var addedTagIdsBlock = $('#create-ticket-added-tag-ids');
 
     var removeTagBtn = $(modal).find('.ah-helpdesk-tag-remove');
@@ -1027,31 +1027,31 @@ function getTemplateListItem(temp) {
 }
 
 function addCreateTicketBtn(route) {
-    if ($('#sh-outgoing-mail-btn').length > 0)
+    if ($('#ah-outgoing-mail-btn').length > 0)
         return;
 
     switch (route) {
         case '/helpdesk/details':
-            $('div.helpdesk-side-panel div.btn-group:contains(Список)').after('<input type="button" class="sh-default-btn" id="sh-outgoing-mail-btn" value="" style="" title="Создать обращение">');
+            $('div.helpdesk-side-panel div.btn-group:contains(Список)').after('<input type="button" class="ah-default-btn" id="ah-outgoing-mail-btn" value="" style="" title="Создать обращение">');
             break;
 
         case '/users/user/info':
-            $('.header__title:eq(0)').append('<input type="button" class="sh-default-btn" id="sh-outgoing-mail-btn" value="" style="height: 34px;" title="Создать обращение">');
+            $('.header__title:eq(0)').append('<input type="button" class="ah-default-btn" id="ah-outgoing-mail-btn" value="" style="height: 34px;" title="Создать обращение">');
             break;
     }
 
-    var btnShow = $('#sh-outgoing-mail-btn');
+    var btnShow = $('#ah-outgoing-mail-btn');
 
     $(btnShow).click(function () {
         showCreateNewTicketWindow();
     });
 }
 function showCreateNewTicketWindow() {
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     substituteCreateTicketValues();
     $(modal).show();
-    $('#layer-blackout-modal').addClass('ah-layer-flex');
-    $('#layer-blackout-modal').addClass('ah-layer-y-scroll');
+    $('#ah-layer-blackout-modal').addClass('ah-layer-flex');
+    $('#ah-layer-blackout-modal').addClass('ah-layer-y-scroll');
     showModal();
 }
 function substituteCreateTicketValues() {
@@ -1088,7 +1088,7 @@ function substituteCreateTicketValues() {
 
     var requesterName = $('[href^="/helpdesk/client/"]').text();
 
-    var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     $(modal).find('[name="create-ticket-sourceId"]').val(sourceId);
     $(modal).find('[name="create-ticket-theme"]').val(theme).change();
     $(modal).find('[name="create-ticket-problem"]').val(problemId);
@@ -1103,7 +1103,7 @@ function substituteCreateTicketValues() {
 }
 
 function autoFillCreateTicket(fill) {
-    const modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+    const modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     const $addedTagIdsBlock = modal.find('#create-ticket-added-tag-ids');
     const $addedTagsBlock = modal.find('#create-ticket-choose-tags');
     const $dropdown = modal.find('.ah-create-ticket-dropdown');
@@ -1185,11 +1185,11 @@ function searchHDUserNameInTickets(mail) {
     xhr.open('GET', url, true);
     xhr.send();
 
-    $('#sh-loading-layer').show();
+    $('#ah-loading-layer').show();
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             var response = JSON.parse(xhr.responseText);
 
             if (response.tickets.length == 0) {
@@ -1203,7 +1203,7 @@ function searchHDUserNameInTickets(mail) {
         }
 
         if (xhr.readyState == 4 && xhr.status >= 400) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
             setTimeout(function () {
                 alert('Произошла техническая ошибка.\n' + xhr.status + ', ' + xhr.statusText + '');
             }, 100);
@@ -1234,7 +1234,7 @@ function createTicket(data) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
 
             if (xhr.status == 200) {
                 var response = JSON.parse(xhr.responseText);
@@ -1247,7 +1247,7 @@ function createTicket(data) {
                 }
                 var ticketId = response.id;
 
-                var modal = $('#layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+                var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
                 var closeBtn = $(modal).find('.ah-modal-close');
                 $(closeBtn).click();
 

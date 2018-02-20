@@ -4,10 +4,10 @@ function copyItemIdsComparisonPage() {
     $(itemTitles).each(function(i, title) {
         var itemTag = $(title).find('[href^="/items/item/info"]');
         var itemId = $(itemTag).attr('href').replace(/\D/g, '');
-        $(title).after('<div style="margin-top: 4px;"><button type="button" class="comparison-copy-item-id sh-default-btn ah-btn-small" data-item-id="'+ itemId +'" style="">Скопировать ID ('+ itemId +')</button></div>');
+        $(title).after('<div style="margin-top: 4px;"><button type="button" class="ah-comparison-copy-item-id ah-default-btn ah-btn-small" data-item-id="'+ itemId +'" style="">Скопировать ID ('+ itemId +')</button></div>');
     });
 
-    $('.comparison-copy-item-id').click(function() {
+    $('.ah-comparison-copy-item-id').click(function() {
         var itemId = $(this).data('itemId');
         chrome.runtime.sendMessage( { action: 'copyToClipboard', text: itemId } );
         outTextFrame('ID объявления '+ itemId +' скопирован!');

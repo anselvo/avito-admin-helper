@@ -181,7 +181,7 @@ function linksOnComments(tableClass, currentUserID) {
         var itemID = $(this).attr('itemID');
         if (!itemID) return;
 
-        $('#sh-loading-layer').show();
+        $('#ah-loading-layer').show();
 
         $('.images-preview-gallery').remove();
         $('body').append('<div class="images-preview-gallery" style="display: none; position:fixed; z-index: 1080; background-color: rgba(255, 255, 255, 0.95); text-align: center; border-radius: 0; padding: 10px; border: 1px solid rgba(153, 153, 153, 0.56);"></div>');
@@ -221,7 +221,7 @@ function loadComperison(itemID, currentUserID) {
     xhr.send(null);
     xhr.onreadystatechange=function() {
         if (xhr.readyState == 4) {
-            $('#sh-loading-layer').hide();
+            $('#ah-loading-layer').hide();
 
             if (xhr.status == 200) {
                 $('#comperison_box').detach();
@@ -233,7 +233,7 @@ function loadComperison(itemID, currentUserID) {
                 var comperison = $(response).find('.items-table').clone();
 
                 $(comperison).find('a').attr('target','_blank');
-                $(comperison).find('td').addClass('sh-default-list');
+                $(comperison).find('td').addClass('ah-default-list');
                 $(comperison).find('td').css({'background':'#eef5f7','min-width':'210px','padding':'5px', 'border-radius':'0px','box-shadow':'none'});
                 $(comperison).find('td td').css({'min-width':'0'});
 
@@ -290,7 +290,7 @@ function loadComperison(itemID, currentUserID) {
 
                     var imagePrev = $(this).find('.images-preview-img');
                     $(imagePrev).css('opacity', '0.4');
-                    $(this).append('<span class="loading-indicator-text loading-comparison-images">Загрузка</span>');
+                    $(this).append('<span class="ah-loading-indicator-text ah-loading-comparison-images">Загрузка</span>');
                     loadImageForItem(itemID[1], imagePrev);
 
                     $('.images-preview-gallery').mouseleave(function() {
@@ -303,7 +303,7 @@ function loadComperison(itemID, currentUserID) {
                     $('#comperison_box').detach();
                 });
 
-                $('.comparison-copy-item-id').click(function() {
+                $('.ah-comparison-copy-item-id').click(function() {
                     var itemId = $(this).data('itemId');
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: itemId } );
                     outTextFrame('ID объявления '+ itemId +' скопирован!');
@@ -368,7 +368,7 @@ function compareItems(comperison) {
     $(itemTitles).each(function(i, title) {
         var itemTag = $(title).find('[href^="/items/item/info"]');
         var itemId = $(itemTag).attr('href').replace(/\D/g, '');
-        $(title).after('<div style="margin-top: 4px;"><button type="button" class="comparison-copy-item-id sh-default-btn ah-btn-small" data-item-id="'+ itemId +'" style="">Скопировать ID ('+ itemId +')</button></div>');
+        $(title).after('<div style="margin-top: 4px;"><button type="button" class="ah-comparison-copy-item-id ah-default-btn ah-btn-small" data-item-id="'+ itemId +'" style="">Скопировать ID ('+ itemId +')</button></div>');
     });
 
     var itemImages = $(comperison).find('tr .item-image');
@@ -447,7 +447,7 @@ function loadImageForItem(itemID, imagePrev) {
                 }, 100);
             }
             $(imagePrev).css('opacity', '1');
-            $('.loading-comparison-images').remove();
+            $('.ah-loading-comparison-images').remove();
         }
     };
 }

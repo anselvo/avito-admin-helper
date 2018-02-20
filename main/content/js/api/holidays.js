@@ -17,13 +17,13 @@ function holidays() {
 
 // ОТКРЫТКА
 function postcardbody(url) {
-    $('body').append('<div class="holidays"></div>');
-    $('.holidays').append('<img id="newyaerImg" class="holidaysbody" src="'+url+'"/>');
-    $('.holidays').append('<div class="holidaysCR">&copy Avito Helper</div>');
-    $('.holidays').append('<div class="holidaysClose">&#x2716</div>');
+    $('body').append('<div class="ah-holidays"></div>');
+    $('.ah-holidays').append('<img id="newyaerImg" class="ah-holidaysbody" src="'+url+'"/>');
+    $('.ah-holidays').append('<div class="ah-holidaysCR">&copy Avito Helper</div>');
+    $('.ah-holidays').append('<div class="ah-holidaysClose">&#x2716</div>');
 
-    $('.holidaysClose').click(function () {
-        $('.holidays').detach();
+    $('.ah-holidaysClose').click(function () {
+        $('.ah-holidays').detach();
         localStorage.holidays = 'true';
     });
 }

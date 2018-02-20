@@ -13,8 +13,8 @@ function countMoneyAccount() {
 
     renderMoneyCounter();
 
-    let moneyCounterBlock = $('#money-counter-block');
-    let moneyCounterToggler = $('#money-counter-toggler');
+    let moneyCounterBlock = $('#ah-money-counter-block');
+    let moneyCounterToggler = $('#ah-money-counter-toggler');
 
     let rightPos = 2;
     if (countMoneyObj.counterVisibility === 'hidden') {
@@ -75,8 +75,8 @@ function countMoneyWalletlog() {
 
     renderMoneyCounter();
 
-    let moneyCounterBlock = $('#money-counter-block');
-    let moneyCounterToggler = $('#money-counter-toggler');
+    let moneyCounterBlock = $('#ah-money-counter-block');
+    let moneyCounterToggler = $('#ah-money-counter-toggler');
 
     let rightPos = 2;
     if (countMoneyObj.counterVisibilityWalletlog === 'hidden') {
@@ -141,8 +141,8 @@ function countMoneyWalletlog() {
 function renderMoneyCounter() {
     let countMoneyObj = JSON.parse(localStorage['users/account/info/countMoney']);
 
-    $('body').append('<div id="money-counter-block" class="alert alert-info money-counter-visible" style="right: 2px; visibility: hidden; z-index: 1050;"></div>');
-    let moneyCounterBlock = $('#money-counter-block');
+    $('body').append('<div id="ah-money-counter-block" class="alert alert-info money-counter-visible" style="right: 2px; visibility: hidden; z-index: 1050;"></div>');
+    let moneyCounterBlock = $('#ah-money-counter-block');
 
     let wrapperMinWidth = '300px';
     let operationsInfoDisplay = 'none';
@@ -153,14 +153,14 @@ function renderMoneyCounter() {
 
     let operationsText = getMoneyCounterOperationsCounterText();
 
-    $(moneyCounterBlock).append('<button type="button" class="sh-default-btn" id="money-counter-toggler" title="Переключить режим отображения счетчика"><span class="glyphicon glyphicon-menu-right"></span></button><div id="money-counter-wrapper" style="line-height: 1; padding: 10px; vertical-align: middle; position: relative; display: inline-block; transition: all .15s; min-width: ' + wrapperMinWidth + ';">Отмечено: <span id="money-counter-value" style="font-weight: 700;">' + countMoneyObj.value + '</span><span style="font-weight: 700;"> руб., <span class="operations-counter pseudo-link" style="font-weight: 400; user-select: none;" id="money-counter-show-more">' + operationsText + '</span></span><span class="glyphicon glyphicon-remove" id="money-counter-set-to-zero" title="Обнулить" style="top: 2px; float: right;"></span><span class="glyphicon glyphicon-refresh" id="money-counter-refresh" title="Обновить" style="top: 2px; float: right;"></span></div>');
+    $(moneyCounterBlock).append('<button type="button" class="ah-default-btn" id="ah-money-counter-toggler" title="Переключить режим отображения счетчика"><span class="glyphicon glyphicon-menu-right"></span></button><div id="money-counter-wrapper" style="line-height: 1; padding: 10px; vertical-align: middle; position: relative; display: inline-block; transition: all .15s; min-width: ' + wrapperMinWidth + ';">Отмечено: <span id="money-counter-value" style="font-weight: 700;">' + countMoneyObj.value + '</span><span style="font-weight: 700;"> руб., <span class="operations-counter pseudo-link" style="font-weight: 400; user-select: none;" id="money-counter-show-more">' + operationsText + '</span></span><span class="glyphicon glyphicon-remove" id="ah-money-counter-set-to-zero" title="Обнулить" style="top: 2px; float: right;"></span><span class="glyphicon glyphicon-refresh" id="ah-money-counter-refresh" title="Обновить" style="top: 2px; float: right;"></span></div>');
 
     let moneyCounterWrapper = $('#money-counter-wrapper');
-    $(moneyCounterWrapper).append('<div id="money-counter-marked-operations-info" style="display: ' + operationsInfoDisplay + '; position: absolute;bottom: calc(100% + 6px); right: 0; background-color: white; width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #bce8f1;"><button id="count-money-open-all-operations" type="button" class="btn btn-info btn-block" style="outline: none; border-radius: 4px; margin-bottom: 4px;">Открыть все в Wallet log</button><div class="table-scroll" style="margin-bottom: 0; max-height: 400px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px;"><table class="table table-condensed table-striped around-bordered-table" style=""><thead></thead><tbody></tbody></table></div><button type="butotn" class="btn btn-default btn-block"" style="padding: 2px 12px; border-radius: 4px; outline: none;" id="money-counter-hide-more">Скрыть операции</button></div>');
+    $(moneyCounterWrapper).append('<div id="money-counter-marked-operations-info" style="display: ' + operationsInfoDisplay + '; position: absolute;bottom: calc(100% + 6px); right: 0; background-color: white; width: 100%; padding: 4px; border-radius: 4px; border: 1px solid #bce8f1;"><button id="count-money-open-all-operations" type="button" class="btn btn-info btn-block" style="outline: none; border-radius: 4px; margin-bottom: 4px;">Открыть все в Wallet log</button><div class="table-scroll" style="margin-bottom: 0; max-height: 400px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px;"><table class="table table-condensed table-striped ah-around-bordered-table" style=""><thead></thead><tbody></tbody></table></div><button type="butotn" class="btn btn-default btn-block"" style="padding: 2px 12px; border-radius: 4px; outline: none;" id="money-counter-hide-more">Скрыть операции</button></div>');
     let markedOperationsInfoBlock = $('#money-counter-marked-operations-info');
 
     $(moneyCounterWrapper).append(`
-        <div class="money-counter-current-user">
+        <div class="ah-money-counter-current-user">
             Пользователь: <a target="_blank" id="money-counter-user-id"></a>, 
             <i><a target="_blank" id="money-counter-user-account"></a></i>
         </div>
@@ -170,18 +170,18 @@ function renderMoneyCounter() {
         showMoneyCounterCurrentUser();
     }
 
-    setFixedElemUnderFooter($('#money-counter-block'), 2);
+    setFixedElemUnderFooter($('#ah-money-counter-block'), 2);
 
     let moneyCounterValue = $('#money-counter-value');
 
     renderMoneyCounterMoreTable();
 
-    var setToZeroBtn = $('#money-counter-set-to-zero');
+    var setToZeroBtn = $('#ah-money-counter-set-to-zero');
     $(setToZeroBtn).click(function () {
         resetLocalStorageCountMoney();
     });
 
-    var refreshBtn = $('#money-counter-refresh');
+    var refreshBtn = $('#ah-money-counter-refresh');
     $(refreshBtn).click(function () {
         var lsObj = JSON.parse(localStorage['users/account/info/countMoney']);
         var allOids = lsObj.operations.map(function (operation) {
@@ -215,7 +215,7 @@ function renderMoneyCounter() {
         }, 100);
 
         if (lsObj.operations.length === 0) {
-            $('.money-counter-current-user').hide();
+            $('.ah-money-counter-current-user').hide();
         } else {
             showMoneyCounterCurrentUser();
         }
@@ -299,7 +299,7 @@ function getCountMoneyAmountType(amountClassList) {
 
 function getCountMoneyBtn(data) {
     let countMoneyObj = JSON.parse(localStorage['users/account/info/countMoney']);
-    let moneyCounterBlock = $('#money-counter-block');
+    let moneyCounterBlock = $('#ah-money-counter-block');
     let allOids = countMoneyObj.operations.map(function (operation) {
         return operation.id;
     });
@@ -405,7 +405,7 @@ function resetLocalStorageCountMoney() {
     };
     localStorage['users/account/info/countMoney'] = JSON.stringify(lsObj);
 
-    let moneyCounterBlock = $('#money-counter-block');
+    let moneyCounterBlock = $('#ah-money-counter-block');
     let moneyCounterValue = $('#money-counter-value');
 
     $(moneyCounterValue).css('visibility', 'hidden');
@@ -423,7 +423,7 @@ function resetLocalStorageCountMoney() {
         $(moneyCounterValue).css('visibility', 'visible');
     }, 100);
 
-    $('.money-counter-current-user').hide();
+    $('.ah-money-counter-current-user').hide();
 }
 
 function showMoneyCounterCurrentUser() {
@@ -435,7 +435,7 @@ function showMoneyCounterCurrentUser() {
     $('#money-counter-user-account').attr('href', `https://adm.avito.ru/users/account/info/${userId}`)
         .text(`Счёт`);
 
-    $('.money-counter-current-user').show();
+    $('.ah-money-counter-current-user').show();
 }
 
 function getMoneyCounterOperationsCounterText() {
@@ -447,8 +447,8 @@ function getMoneyCounterOperationsCounterText() {
 }
 
 function hideMoneyCounter() {
-    var moneyCounterBlock = $('#money-counter-block');
-    var moneyCounterToggler = $('#money-counter-toggler');
+    var moneyCounterBlock = $('#ah-money-counter-block');
+    var moneyCounterToggler = $('#ah-money-counter-toggler');
     $(moneyCounterBlock).removeClass('money-counter-visible');
     var width = $(moneyCounterBlock)[0].getBoundingClientRect().width;
     var rightPos = width - 28;
@@ -553,7 +553,7 @@ function addMoneyCounterMoreRow(operation) {
     });
 }
 function addMoneyCounterOperation(operation) {
-    let moneyCounterBlock = $('#money-counter-block');
+    let moneyCounterBlock = $('#ah-money-counter-block');
     let moneyCounterValue = $('#money-counter-value');
     let operationsCounters = $(moneyCounterBlock).find('.operations-counter');
 
@@ -590,7 +590,7 @@ function addMoneyCounterOperation(operation) {
     $(operationsCounters).text(operationsText);
 }
 function removeMoneyCounterOperation(operation) {
-    let moneyCounterBlock = $('#money-counter-block');
+    let moneyCounterBlock = $('#ah-money-counter-block');
     let moneyCounterValue = $('#money-counter-value');
     let markedOperationsInfoBlock = $('#money-counter-marked-operations-info');
     let markedOperationsInfoTableBody = $(markedOperationsInfoBlock).find('tbody');
@@ -636,7 +636,7 @@ function removeMoneyCounterOperation(operation) {
         $(addedRow).fadeIn('slow');
         $(addedRow).css('transform', 'translateX(0)');
 
-        $('.money-counter-current-user').hide();
+        $('.ah-money-counter-current-user').hide();
     }
 
     $('.calculate[oid="' + operation.id + '"]').attr('value', '+').removeClass('btn-danger').addClass('btn-success');

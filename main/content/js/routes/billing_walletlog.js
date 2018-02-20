@@ -1,9 +1,9 @@
 function addShowItemStatusBtn() {
     $('.billing-walletlog-result').append(`
-        <button class="btn btn-primary btn-xs show-unactive-items" title="Показать только операции для неактивных объявлений и статусы объявлений">Неактивные объяввленя</button>
+        <button class="btn btn-primary btn-xs ah-show-unactive-items" title="Показать только операции для неактивных объявлений и статусы объявлений">Неактивные объяввленя</button>
     `);
 
-    $('.show-unactive-items').click(function() {
+    $('.ah-show-unactive-items').click(function() {
         $('.parsed-item-info').remove();
         statusItemWalletlog({unactiveOnly: true});
     });
@@ -23,14 +23,14 @@ function statusItemWalletlog(options) {
             if (!isFinite(itemId))
                 return;
 
-            $(itemLinkNode).after('<div data-item-id="' + itemId + '" class="parsed-item-info"><span class="loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
+            $(itemLinkNode).after('<div data-item-id="' + itemId + '" class="parsed-item-info"><span class="ah-loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
             allItems.push(itemId);
         }
     });
 
-    if ($('.parsed-item-info .loading-indicator-text').length !== 0) {
-        $('#sh-loading-layer').show();
-        $('.show-unactive-items').prop('disabled', true);
+    if ($('.parsed-item-info .ah-loading-indicator-text').length !== 0) {
+        $('#ah-loading-layer').show();
+        $('.ah-show-unactive-items').prop('disabled', true);
 
         allItems = unique(allItems);
         allItems.forEach(function (id) {

@@ -14,7 +14,7 @@ function statusItem() {
             if (!isFinite(itemId))
                 return;
 
-            $(itemLinkNode).after('<div data-item-id="' + itemId + '" class="parsed-item-info"><span class="loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
+            $(itemLinkNode).after('<div data-item-id="' + itemId + '" class="parsed-item-info"><span class="ah-loading-indicator-text" style="color: rgb(149, 149, 149);">Загрузка...</span></div>');
             allItems.push(itemId);
         }
     });
@@ -83,10 +83,10 @@ function getItemInfoRequest(itemId, options) {
                 $('.parsed-item-info[data-item-id="' + itemId + '"]').html('<span style="color: #e00; font-weight:bold;">' + xhr.status + '</span> <span>' + xhr.statusText + '</span> <span></span>');
             }
 
-            if ($('.parsed-item-info .loading-indicator-text').length === 0) {
-                let btn = $('.show-unactive-items');
+            if ($('.parsed-item-info .ah-loading-indicator-text').length === 0) {
+                let btn = $('.ah-show-unactive-items');
                 $(btn).prop('disabled', false);
-                $('#sh-loading-layer').hide();
+                $('#ah-loading-layer').hide();
 
                 if (options.unactiveOnly) {
                     $('.billing .table tbody tr').each(function() {
@@ -178,7 +178,7 @@ function addCompensationBtns() {
     // автозаполнение полей в форме пэй ин ---
 
     // Комментирование айтемов +++
-    $('#payin').append('<div style="position: relative; display: inline-block;"><button id="comment-items-for-compensation" type="button" class="sh-action-btn btn-xs" title="" style="margin-left: 8px; font-size: 13px; margin-top: -2px; padding: 1px 8px;">Комментировать объявления</button><span class="glyphicon glyphicon-question-sign" style="top: 3px; margin-left: 4px; font-size: 17px;"></span><div style="position: absolute; top: calc(-50% - 20px); left: calc(100% + 4px); display: none; min-width: 300px; background-color: black; border: 1px solid rgb(204, 204, 204); padding: 8px; z-index: 1050; color: white; border-radius: 4px; font-size: 13px; text-align: center;"><span>Оставить комментарий "За данное объявление была произведена компенсация" на объявлениях, которые отмечены для компенсации. Комментарии начинают проставляться сразу после нажатия кнопки.</span></div></div>');
+    $('#payin').append('<div style="position: relative; display: inline-block;"><button id="comment-items-for-compensation" type="button" class="ah-action-btn btn-xs" title="" style="margin-left: 8px; font-size: 13px; margin-top: -2px; padding: 1px 8px;">Комментировать объявления</button><span class="glyphicon glyphicon-question-sign" style="top: 3px; margin-left: 4px; font-size: 17px;"></span><div style="position: absolute; top: calc(-50% - 20px); left: calc(100% + 4px); display: none; min-width: 300px; background-color: black; border: 1px solid rgb(204, 204, 204); padding: 8px; z-index: 1050; color: white; border-radius: 4px; font-size: 13px; text-align: center;"><span>Оставить комментарий "За данное объявление была произведена компенсация" на объявлениях, которые отмечены для компенсации. Комментарии начинают проставляться сразу после нажатия кнопки.</span></div></div>');
 
     let commentBtn = $('#comment-items-for-compensation');
 
@@ -225,7 +225,7 @@ function addCompensationBtns() {
 function renderCommentItemsCompensation(allItems) {
     $('#comment-items-compensation-modal').remove();
 
-    $('#layer-blackout-modal').append('<div class="ah-modal-content" style="background-color: transparent; box-shadow: none; border: none" id="comment-items-compensation-modal"><div class="ah-modal-container" style=""></div></div>');
+    $('#ah-layer-blackout-modal').append('<div class="ah-modal-content" style="background-color: transparent; box-shadow: none; border: none" id="comment-items-compensation-modal"><div class="ah-modal-container" style=""></div></div>');
     var modal = $('#comment-items-compensation-modal');
     var modalContainer = $(modal).find('.ah-modal-container');
 
@@ -253,7 +253,7 @@ function renderCommentItemsCompensation(allItems) {
         delay = 500;
 
     allItems.forEach(function (id, i) {
-        $(table).find('tbody').append('<tr><td><a target="_blank" href="https://adm.avito.ru/items/item/info/' + id + '" class="ah-visitable-link">' + id + '</a></td><td class="loading-indicator-text" data-item-id="' + id + '" ><span style="color: rgb(149, 149, 149);">Выполняется...</span></td></tr>');
+        $(table).find('tbody').append('<tr><td><a target="_blank" href="https://adm.avito.ru/items/item/info/' + id + '" class="ah-visitable-link">' + id + '</a></td><td class="ah-loading-indicator-text" data-item-id="' + id + '" ><span style="color: rgb(149, 149, 149);">Выполняется...</span></td></tr>');
 
         setTimeout(commentOnItem, i * delay, id, commentText, action);
     });
@@ -262,14 +262,14 @@ function renderCommentItemsCompensation(allItems) {
 
     $(footer).append('<button type="button" class="btn btn-info btn-sm" style="outline: none; font-size: 14px;" id="open-all-items-in-new-window"><span class="glyphicon glyphicon-new-window"></span> Открыть объявления (' + allItems.length + ')</button>');
 
-    $('#layer-blackout-modal').addClass('ah-layer-flex');
+    $('#ah-layer-blackout-modal').addClass('ah-layer-flex');
     $(modal).show();
     showModal();
 
     // Обработчики
     var closeBtn = $(modal).find('.ah-modal-close');
     $(closeBtn).click(function () {
-        $('#layer-blackout-modal').removeClass('ah-layer-flex');
+        $('#ah-layer-blackout-modal').removeClass('ah-layer-flex');
         $(modal).remove();
         closeModal();
     });
@@ -298,9 +298,9 @@ function commentItemCompensationHandler(itemId, xhr) {
         $(table).find('[data-item-id="' + itemId + '"]').parent().addClass('danger');
     }
 
-    $(table).find('[data-item-id="' + itemId + '"].loading-indicator-text').removeClass('loading-indicator-text');
+    $(table).find('[data-item-id="' + itemId + '"].ah-loading-indicator-text').removeClass('ah-loading-indicator-text');
 
-    var indicators = $(table).find('.loading-indicator-text');
+    var indicators = $(table).find('.ah-loading-indicator-text');
     if ($(indicators).length == 0) {
         var errors = $(table).find('[data-error]');
         if ($(errors).length) {
@@ -369,7 +369,7 @@ function userViewOperations() {
     $(rows).each(function(i, row) {
         let text = $(row).text();
         if (reg.test(text)) {
-            $(row).addClass('user-view-operaion');
+            $(row).addClass('ah-user-view-operaion');
         }
     });
     
@@ -378,7 +378,7 @@ function userViewOperations() {
 
 function toggleUserViewOperations() {
     var isCheckedAttr;
-    var rows = $('table .user-view-operaion:not(.table-background-highlight)');
+    var rows = $('table .ah-user-view-operaion:not(.ah-table-background-highlight)');
     var lsItem = 'userViewOperations';
     var lsObj = JSON.parse(localStorage.getItem(lsItem));
 

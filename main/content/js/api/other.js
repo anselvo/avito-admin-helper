@@ -18,15 +18,15 @@ function DDMMYYY() {
 }
 
 function outTextFrame(text) {
-    $('#outputTextFrame').detach();
-    $('body').append('<div id="outputTextFrame">' + text + '</div>');
+    $('#ah-outputTextFrame').detach();
+    $('body').append('<div id="ah-outputTextFrame">' + text + '</div>');
 }
 
 function loadingBar(attr, top) {
-    $(attr).append('<div class="cssload-loader" style="top:' + top + 'px;">' +
-            '<div class="cssload-inner cssload-one"></div>' +
-            '<div class="cssload-inner cssload-two"></div>' +
-            '<div class="cssload-inner cssload-three"></div>' +
+    $(attr).append('<div class="ah-cssload-loader" style="top:' + top + 'px;">' +
+            '<div class="ah-cssload-inner cssload-one"></div>' +
+            '<div class="ah-cssload-inner cssload-two"></div>' +
+            '<div class="ah-cssload-inner cssload-three"></div>' +
             '</div>');
 }
 
@@ -196,7 +196,7 @@ function searchBySocialBtnHandler(btn) {
 
     renderSearchUserBySocialPopup(avitoSocialInfo);
 
-    $('#sh-loading-layer').show();
+    $('#ah-loading-layer').show();
     avitoSocialInfo.forEach(function (prefix, iter, arr) {
         setTimeout(getSocialSearchResults, 250, prefix, socialId);
     });
@@ -204,7 +204,7 @@ function searchBySocialBtnHandler(btn) {
 function renderSearchUserBySocialPopup(avitoSocialInfo) {
     $('#search-user-by-social-popup').remove();
 
-    $('#layer-blackout-popup').append('<div class="ah-default-popup" id="search-user-by-social-popup" style="min-width: 300px;"></div>');
+    $('#ah-layer-blackout-popup').append('<div class="ah-default-popup" id="search-user-by-social-popup" style="min-width: 300px;"></div>');
     var popup = $('#search-user-by-social-popup');
     $(popup).append('<div class="ah-popup-container"></div>');
     var container = $(popup).find('.ah-popup-container');
@@ -216,18 +216,18 @@ function renderSearchUserBySocialPopup(avitoSocialInfo) {
     var body = $(popup).find('.ah-popup-body');
     var footer = $(popup).find('.ah-popup-footer');
 
-    $(header).append('<span class="ah-popup-title">Результаты поиска</span><button type="button" class="sh-default-btn ah-btn-small ah-popup-close">x</button>');
+    $(header).append('<span class="ah-popup-title">Результаты поиска</span><button type="button" class="ah-default-btn ah-btn-small ah-popup-close">x</button>');
     $(body).append('<div class="search-user-by-social-container"><table class="ah-default-table"></table></div>');
     var searchTable = $(body).find('.search-user-by-social-container table');
 
     avitoSocialInfo.forEach(function (prefix) {
-        $(searchTable).append('<tr class="ah-default-table-row" data-prefix-id="' + prefix.id + '"><td class="ah-default-table-td ah-default-table-td-label">' + prefix.name + '</td><td class="ah-default-table-td loading-indicator-text">Загрузка...</td></tr>');
+        $(searchTable).append('<tr class="ah-default-table-row" data-prefix-id="' + prefix.id + '"><td class="ah-default-table-td ah-default-table-td-label">' + prefix.name + '</td><td class="ah-default-table-td ah-loading-indicator-text">Загрузка...</td></tr>');
     });
 
     // Обработчики
     var closeBtn = $(popup).find('.ah-popup-close');
     $(closeBtn).click(function () {
-        $('#layer-blackout-popup').removeClass('ah-layer-flex');
+        $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
         $('div.ah-default-popup').hide();
         closeModal();
     });
@@ -247,22 +247,22 @@ function getSocialSearchResults(prefix, socialId) {
             var response = xhr.responseText;
             var alertWarninig = $(response).find('.alert-warning').text().toLowerCase();
             if (~alertWarninig.indexOf('пользователей не найдено')) {
-                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html('<em>не найдено</em>').removeClass('loading-indicator-text');
+                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html('<em>не найдено</em>').removeClass('ah-loading-indicator-text');
             } else {
                 var userId = $(response).find('.js-user-id').text();
                 if (!userId)
                     userId = 'error';
-                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html('<a target="_blank" class="ah-nocontent-default-link" href="https://adm.avito.ru/users/user/info/' + userId + '">' + userId + '</a>').removeClass('loading-indicator-text');
+                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html('<a target="_blank" class="ah-nocontent-default-link" href="https://adm.avito.ru/users/user/info/' + userId + '">' + userId + '</a>').removeClass('ah-loading-indicator-text');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(0)').css('color', 'black');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"]').css('font-weight', '700');
             }
 
-            var indicators = $(searchTable).find('.loading-indicator-text');
+            var indicators = $(searchTable).find('.ah-loading-indicator-text');
             if ($(indicators).length == 0) {
-                $('#layer-blackout-popup').addClass('ah-layer-flex');
+                $('#ah-layer-blackout-popup').addClass('ah-layer-flex');
                 showModal();
 
-                $('#sh-loading-layer').hide();
+                $('#ah-loading-layer').hide();
             }
         }
     }
@@ -379,7 +379,7 @@ function reservedOperation(route) {
 
         $(elem).hide();
         addBindedWLLink(elem, toDay, route);
-        $(elem).addClass('table-background-highlight');
+        $(elem).addClass('ah-table-background-highlight');
     });
 
     toggleReservedOperations(route); // переключатель отображения резервированных
@@ -417,7 +417,7 @@ function addBindedWLLink(elem, toDay, route) {
 
 function toggleReservedOperations(route) {
     var isCheckedAttr;
-    var rows = $('table .table-background-highlight');
+    var rows = $('table .ah-table-background-highlight');
     var lsItem = 'reservedOperations';
     var lsObj = JSON.parse(localStorage.getItem(lsItem));
 
@@ -504,12 +504,12 @@ function scrollToElem(elem) {
 
 function banana() {
     if (!localStorage.banana) localStorage.banana = 0;
-    $('body').append('<div class="banana banana-animation"><img src="http://animagehub.com/wp-content/uploads/2016/11/Banana-vector-14.png" width="30" height="30" title="SPY BANANA"></div>');
+    $('body').append('<div class="ah-banana ah-banana-animation"><img src="http://animagehub.com/wp-content/uploads/2016/11/Banana-vector-14.png" width="30" height="30" title="SPY BANANA"></div>');
 
     let pageHeight = $(window).height();
     let pageWidth = $(window).width();
 
-    $('.banana').click(function () {
+    $('.ah-banana').click(function () {
         let bananaCount = localStorage.banana;
 
         if ($('#bananaCount').length === 0) {
@@ -523,7 +523,7 @@ function banana() {
         let randomBottom = getRandomArbitary(10, pageHeight-35);
         let randomRight = getRandomArbitary(10, pageWidth-35);
 
-        $('.banana').css({bottom: randomBottom, right: randomRight});
+        $('.ah-banana').css({bottom: randomBottom, right: randomRight});
     });
 }
 
@@ -556,17 +556,17 @@ function addFixedTools(elem, tools) {
 function addHdSettings() {
     let holder = $('#ah-fixed-tools-holder');
 
-    $(holder).append('<div class="hd-global-settings-wrapper"></div>');
+    $(holder).append('<div class="ah-hd-global-settings-wrapper"></div>');
 
     $(holder).append(''+
         '<button type="button" '+
-        'class="sh-default-btn sh-settings-btn-bottom-right" '+
-        'id="sh-settings-bottom-right-btn">Настройки'+
+        'class="ah-default-btn sh-settings-btn-bottom-right" '+
+        'id="ah-settings-bottom-right-btn">Настройки'+
         '</button>');
 
-    $('#sh-settings-bottom-right-btn').click(function() {
-        $('div.hd-global-settings-wrapper').toggle();
-        $(this).toggleClass('sh-active-btn');
+    $('#ah-settings-bottom-right-btn').click(function() {
+        $('div.ah-hd-global-settings-wrapper').toggle();
+        $(this).toggleClass('ah-active-btn');
     });
 }
 // показывать/скрывать настройки HD ---
@@ -576,7 +576,7 @@ function addScrollTopBtn() {
     let holder = $('#ah-fixed-tools-holder');
     $(holder).append('' +
         '<button type="button" ' +
-        'class="sh-default-btn" id="ah-scrolltop-btn" ' +
+        'class="ah-default-btn" id="ah-scrolltop-btn" ' +
         'title="Прокрутить страницу вверх">↑' +
         '</button>');
 

@@ -2,7 +2,7 @@
 function messengerLinkOnUser() {
     var userId = getParamOnUserInfo('user-id');
 
-    $('.form-group:contains(ID) .help-inline').append('<span style="margin-left: 0;" class="sh-messenger-link-wrapper"><a title="Мессенджер" class="sh-messenger-link" href="/messenger/user/' + userId + '" target="_blank" style=""></a></span>');
+    $('.form-group:contains(ID) .help-inline').append('<span style="margin-left: 0;" class="ah-messenger-link-wrapper"><a title="Мессенджер" class="ah-messenger-link" href="/messenger/user/' + userId + '" target="_blank" style=""></a></span>');
 }
 
 // информацио о том какой мадератор относиться к какой категории
@@ -223,7 +223,7 @@ function copyDataToClipboard(data) {
 
     // url
     if (~data.indexOf('url')) {
-        $('.form-group:contains(ID) .help-inline').append('<button id="copyurl" class="sh-default-btn" type="button" title="Скопировать URL страницы" style="margin-left:26px;position: absolute; padding: 1px 5px; font-size: 12px;"><span class="sh-button-label sh-copy-img" style="border-radius: 0; font-size: 12px; top: 2px; line-height: 16px;"></span>Скопировать URL</button>');
+        $('.form-group:contains(ID) .help-inline').append('<button id="copyurl" class="ah-default-btn" type="button" title="Скопировать URL страницы" style="margin-left:26px;position: absolute; padding: 1px 5px; font-size: 12px;"><span class="ah-support-button-label ah-copy-img" style="border-radius: 0; font-size: 12px; top: 2px; line-height: 16px;"></span>Скопировать URL</button>');
 
         $('#copyurl').click(function () {
             var href = window.location.href;
@@ -235,8 +235,8 @@ function copyDataToClipboard(data) {
 
     // e-mail
     if (~data.indexOf('e-mail')) {
-        $('.js-fakeemail-field').after('<button id="autoEmail" class="sh-default-btn" type="button" title="Скопировать E-mail со звездочками" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="sh-button-label sh-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">О</span>В ответ</button>');
-        $('#autoEmail').click(function () {
+        $('.js-fakeemail-field').after('<button id="ah-autoEmail" class="ah-default-btn" type="button" title="Скопировать E-mail со звездочками" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">О</span>В ответ</button>');
+        $('#ah-autoEmail').click(function () {
             var emailText = $('.js-fakeemail-field').text();
             var text = getMailForAnswer(emailText);
 
@@ -247,8 +247,8 @@ function copyDataToClipboard(data) {
 
         });
 
-        $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="copyEmailJH" class="sh-default-btn" type="button" title="Скопировать E-mail" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; margin-left: -30px; position: relative;"><span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
-        $('#copyEmailJH').click(function () {
+        $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="ah-copyEmailJH" class="ah-default-btn" type="button" title="Скопировать E-mail" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; margin-left: -30px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
+        $('#ah-copyEmailJH').click(function () {
             var text = $(this).prev().text();
             chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
             outTextFrame('Email ' + text + ' скопирован!');
@@ -264,23 +264,23 @@ function copyDataToClipboard(data) {
             telNumber = $('div.phones-list tr.controls-phone div.input-group input.form-control').slice(i, i + 1).val();
 
             if (telNumber) {
-                $('div.phones-list tr.controls-phone').slice(i, i + 1).append('<td style="padding-right: 0px;"><button type="button" class="sh-default-btn sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px;" title="Скопировать телефон в буфер обмена" data-tel-number="' + telNumber + '"><span class="sh-button-label sh-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button></td>');
+                $('div.phones-list tr.controls-phone').slice(i, i + 1).append('<td style="padding-right: 0px;"><button type="button" class="ah-default-btn ah-sh-copy-tel-to-clip" style="padding: 8px 2px; float: right; font-size: 12px;" title="Скопировать телефон в буфер обмена" data-tel-number="' + telNumber + '"><span class="ah-support-button-label ah-orange-background"  style="cursor: pointer; display: inline-block; border-radius: 0; text-align: center; min-width: 15px; font-size: 12px; vertical-align: middle; margin-right: 0; top: 0px; line-height: 16px;">Б</span></button></td>');
             }
         }
 
-        $('.sh-copy-tel-to-clip').click(function () {
+        $('.ah-sh-copy-tel-to-clip').click(function () {
             var text = String($(this).data('telNumber'));
 
             chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
             outTextFrame('Телефон ' + text + ' скопирован!');
         });
 
-        $('.sh-copy-tel-to-clip').hover(
+        $('.ah-sh-copy-tel-to-clip').hover(
             function () {
-                $(this).parents('tr').addClass('sh-tr-hover-background');
+                $(this).parents('tr').addClass('ah-tr-hover-background');
             },
             function () {
-                $(this).parents('tr').removeClass('sh-tr-hover-background');
+                $(this).parents('tr').removeClass('ah-tr-hover-background');
             });
     }
     
@@ -299,15 +299,15 @@ function copyDataToClipboard(data) {
         
             let btnGroup = $(emailInput).parent().find('.input-group-btn');
             $(btnGroup).append(''+
-                '<button type="button" class="sh-btn sh-default-btn" '+
+                '<button type="button" class="ah-btn ah-default-btn" '+
                 'title="Скопировать E-mail" '+
                 'id="copy-bookkeeperEmail-full">'+
-                    '<span class="sh-button-label sh-orange-background">Б</span>'+
+                    '<span class="ah-support-button-label ah-orange-background">Б</span>'+
                 '</button>'+
-                '<button type="button" class="sh-btn sh-default-btn" '+
+                '<button type="button" class="ah-btn ah-default-btn" '+
                 'title="Скопировать E-mail со звездочками" '+
                 'id="copy-bookkeeperEmail-stars">'+
-                    '<span class="sh-button-label sh-green-background">О</span>'+
+                    '<span class="ah-support-button-label ah-support-green-background">О</span>'+
                 '</button>');
             
             $('#copy-bookkeeperEmail-full').click(function() {
@@ -346,7 +346,7 @@ function copyDataToClipboard(data) {
                 <button type="button" class="btn btn-default"
                 title="Скопировать E-mail"
                 id="copy-inn">
-                    <span class="sh-button-label sh-orange-background">Б</span>
+                    <span class="ah-support-button-label ah-orange-background">Б</span>
                 </button>
             `);
                 
@@ -366,10 +366,10 @@ function addUnverifyPhonesButtons() {
             if ($(this).attr('value').length && !$(this).parents('tr').find('.i-verify-unchecked').length) {
                 var phone = $(this).parents('tr').next('tr').find('button[data-verify-text="Верифицировать"]').data('phone');
 
-                $(this).parents('tr').next('tr').find('button[data-verify-text="Верифицировать"]').after('<button type="button" class="sh-default-btn sh-unverify-phone-btn" style="float: left; margin-right: 4px;" data-phone="' + phone + '" title="">Отвязать для...</button>');
+                $(this).parents('tr').next('tr').find('button[data-verify-text="Верифицировать"]').after('<button type="button" class="ah-default-btn sh-unverify-phone-btn" style="float: left; margin-right: 4px;" data-phone="' + phone + '" title="">Отвязать для...</button>');
 
 
-                $(this).parents('tr').find('table.phone-verify td:eq(0)').append('<span type="button" class="sh-default-btn sh-unverify-phones-multi" data-phone="' + phone + '" title="Формирование списка телефонных номеров для открепления">&#10060;</span>');
+                $(this).parents('tr').find('table.phone-verify td:eq(0)').append('<span type="button" class="ah-default-btn ah-unverify-phones-multi" data-phone="' + phone + '" title="Формирование списка телефонных номеров для открепления">&#10060;</span>');
 
             }
         });
@@ -383,17 +383,17 @@ function addUnverifyPhonesButtons() {
 // отвязка номеров с комментами
 function unverifyPhones(id) {
     // попап с затемнением
-    $('body').append('<div id="sh-popup-layer-blackout-btn"></div>');
+    $('body').append('<div id="ah-popup-layer-blackout-btn"></div>');
 
     $('.sh-unverify-phone-btn').unbind().click(function () {
         var phone = $(this).data('phone');
 
-        $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номера</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="sh-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
+        $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номера</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
 
-        $('#sh-popup-layer-blackout-btn').show();
+        $('#ah-popup-layer-blackout-btn').show();
 
         $('#sh-unverify-url-container span.sh-circle-close-btn').click(function () {
-            $('#sh-popup-layer-blackout-btn').hide();
+            $('#ah-popup-layer-blackout-btn').hide();
             $('#sh-unverify-url-container').detach();
             return;
         });
@@ -451,7 +451,7 @@ function unverifyPhones(id) {
     });
 
     // мультиотвязка
-    $('.sh-unverify-phones-multi').click(function () {
+    $('.ah-unverify-phones-multi').click(function () {
         var TEL_LIMIT = 10; // лимит на кол-во номеров
 
         if ($('#sh-unverify-phones-multi-container').length == 0) {
@@ -459,9 +459,9 @@ function unverifyPhones(id) {
             if (!navbarHeight) {
                 navbarHeight = 50;
             }
-            $('body').append('<div id="sh-unverify-phones-multi-container" style="position: fixed; top: ' + (navbarHeight + 10) + 'px; right: 10px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 2;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="sh-default-hr"><span>Добавленные номера:</span><ul id="sh-added-phone-multi-unverify-list" style="padding-left: 20px; margin-top: 4px;"></ul><hr class="sh-default-hr"><div id="sh-multi-unverify-action-btns"></div></div>');
-            $('#sh-multi-unverify-action-btns').append('<div><button type="button" class="sh-default-btn sh-multi-unverify-btn" style="width: 100%;" title="">Отвязать для...</button><br><button type="button" class="sh-default-btn sh-multi-unverify-btn" style="width: 100%; margin-top: 4px;" title="Отвязывает добавленные номера и проставляет на текущей УЗ введенный комментарий">Просто отвязать</button><div>');
-            $('#sh-multi-unverify-action-btns').append('<button type="button" class="sh-default-btn" style="width: 100%; display: none" title="" id="sh-close-and-reboot-btn">Перезагрузить страницу</button>');
+            $('body').append('<div id="sh-unverify-phones-multi-container" style="position: fixed; top: ' + (navbarHeight + 10) + 'px; right: 10px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 2;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span>Добавленные номера:</span><ul id="sh-added-phone-multi-unverify-list" style="padding-left: 20px; margin-top: 4px;"></ul><hr class="ah-default-hr"><div id="sh-multi-unverify-action-btns"></div></div>');
+            $('#sh-multi-unverify-action-btns').append('<div><button type="button" class="ah-default-btn sh-multi-unverify-btn" style="width: 100%;" title="">Отвязать для...</button><br><button type="button" class="ah-default-btn sh-multi-unverify-btn" style="width: 100%; margin-top: 4px;" title="Отвязывает добавленные номера и проставляет на текущей УЗ введенный комментарий">Просто отвязать</button><div>');
+            $('#sh-multi-unverify-action-btns').append('<button type="button" class="ah-default-btn" style="width: 100%; display: none" title="" id="sh-close-and-reboot-btn">Перезагрузить страницу</button>');
 
 
             $('#sh-close-and-reboot-btn').click(function () {
@@ -474,8 +474,8 @@ function unverifyPhones(id) {
             });
         }
 
-        if ($(this).hasClass('sh-active-btn')) {
-            $(this).removeClass('sh-active-btn');
+        if ($(this).hasClass('ah-active-btn')) {
+            $(this).removeClass('ah-active-btn');
             $('#sh-unverify-phones-multi-container li:contains(' + $(this).data('phone') + ')').detach();
 
             if ($('.sh-added-phone-multi-unverify').length == 0) {
@@ -488,13 +488,13 @@ function unverifyPhones(id) {
                 return;
             }
 
-            $(this).addClass('sh-active-btn');
+            $(this).addClass('ah-active-btn');
             $('#sh-added-phone-multi-unverify-list').append('<li><span class="sh-added-phone-multi-unverify">' + $(this).data('phone') + '</span></li>');
         }
 
         $('#sh-unverify-phones-multi-container span.sh-circle-close-btn').click(function () {
             $('#sh-unverify-phones-multi-container').detach();
-            $('.sh-unverify-phones-multi').removeClass('sh-active-btn');
+            $('.ah-unverify-phones-multi').removeClass('ah-active-btn');
         });
 
         // action btns
@@ -512,14 +512,14 @@ function unverifyPhones(id) {
 
             if ($(this).text() == 'Просто отвязать') {
 
-                $('body').append('<div id="sh-multi-unverify-comment-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 400px; height: 180px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="display: block; font-weight: bold;">Ваш комментарий:</span><textarea id="sh-multi-unverify-comment-textarea" style="width: 100%; height: 100px; resize: none; padding: 4px;" onkeydown="if(event.keyCode == 13){ return false;}"></textarea><div style="margin-top: 4px;"><button type="button" class="sh-default-btn" id="sh-multi-unverify-comment-ok-btn" style="margin-right: 8px;"><span class="sh-button-label sh-green-background">&#10003;</span>Ок</button><button type="button" class="sh-default-btn" id="sh-multi-unverify-comment-close-btn"><span class="sh-button-label sh-red-background">&#10007;</span>Отмена</button></div></div>');
+                $('body').append('<div id="sh-multi-unverify-comment-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 400px; height: 180px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="display: block; font-weight: bold;">Ваш комментарий:</span><textarea id="sh-multi-unverify-comment-textarea" style="width: 100%; height: 100px; resize: none; padding: 4px;" onkeydown="if(event.keyCode == 13){ return false;}"></textarea><div style="margin-top: 4px;"><button type="button" class="ah-default-btn" id="sh-multi-unverify-comment-ok-btn" style="margin-right: 8px;"><span class="ah-support-button-label ah-support-green-background">&#10003;</span>Ок</button><button type="button" class="ah-default-btn" id="sh-multi-unverify-comment-close-btn"><span class="ah-support-button-label ah-red-background">&#10007;</span>Отмена</button></div></div>');
 
                 $('#sh-multi-unverify-comment-textarea').val(telStr + ' ' + phrase + ' ');
 
-                $('#sh-popup-layer-blackout-btn').show();
+                $('#ah-popup-layer-blackout-btn').show();
 
                 $('#sh-multi-unverify-comment-close-btn').click(function () {
-                    $('#sh-popup-layer-blackout-btn').hide();
+                    $('#ah-popup-layer-blackout-btn').hide();
                     $('#sh-multi-unverify-comment-container').detach();
                     return;
                 });
@@ -527,10 +527,10 @@ function unverifyPhones(id) {
                 $('#sh-multi-unverify-comment-ok-btn').click(function () {
                     var comment = $('#sh-multi-unverify-comment-textarea').val();
 
-                    $('#sh-popup-layer-blackout-btn').hide();
+                    $('#ah-popup-layer-blackout-btn').hide();
                     $('#sh-multi-unverify-comment-container').detach();
 
-                    $('#sh-loading-layer').show();
+                    $('#ah-loading-layer').show();
 
                     commentOnUserSupport(id, comment);
 
@@ -543,12 +543,12 @@ function unverifyPhones(id) {
                 });
 
             } else {
-                $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="sh-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
+                $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
 
-                $('#sh-popup-layer-blackout-btn').show();
+                $('#ah-popup-layer-blackout-btn').show();
 
                 $('#sh-unverify-url-container span.sh-circle-close-btn').click(function () {
-                    $('#sh-popup-layer-blackout-btn').hide();
+                    $('#ah-popup-layer-blackout-btn').hide();
                     $('#sh-unverify-url-container').detach();
                     return;
                 });
@@ -561,11 +561,11 @@ function unverifyPhones(id) {
                         return;
                     }
 
-                    $('#sh-popup-layer-blackout-btn').hide();
+                    $('#ah-popup-layer-blackout-btn').hide();
                     $('#sh-unverify-url-container').detach();
 
                     if (url != null) {
-                        $('#sh-loading-layer').show();
+                        $('#ah-loading-layer').show();
 
                         var obj = {id: id, phone: phone};
                         var reloadPage = false;
@@ -617,7 +617,7 @@ function unverifyPhones(id) {
                             }
                         }
 
-                        $('#sh-loading-layer').hide();
+                        $('#ah-loading-layer').hide();
                         alert('Ошибка: данные введены некорректно.');
                     }
                 });
@@ -652,7 +652,7 @@ function unverify(obj, reloadPage) {
                 $('#sh-added-phone-multi-unverify-list li:contains(' + obj.phone + ')').append('<span class="sh-multi-unverify-status-chacker" style="margin-left: 8px; color: green;">Ok</span>');
 
                 if ($('.sh-multi-unverify-status-chacker').length == $('.sh-added-phone-multi-unverify').length) {
-                    $('#sh-loading-layer').hide();
+                    $('#ah-loading-layer').hide();
 
                     $('#sh-multi-unverify-action-btns div').detach();
                     $('#sh-close-and-reboot-btn').show();
@@ -667,7 +667,7 @@ function unverify(obj, reloadPage) {
                 $('#sh-added-phone-multi-unverify-list li:contains(' + obj.phone + ')').append('<span class="sh-multi-unverify-status-chacker" style="margin-left: 8px; color: red;">Fail</span>');
 
                 if ($('.sh-multi-unverify-status-chacker').length == $('.sh-added-phone-multi-unverify').length) {
-                    $('#sh-loading-layer').hide();
+                    $('#ah-loading-layer').hide();
 
                     $('#sh-multi-unverify-action-btns div').detach();
                     $('#sh-close-and-reboot-btn').show();
@@ -745,8 +745,8 @@ function addIPSystemAccessLink() {
 
 // элементы на странице юзера (траффики)
 function usersInfoElements() {
-    $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="copyEmailJH" class="sh-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="height:30px;padding: 5px 10px; font-size: 12px; margin-left: -30px; position: relative;"><span class="sh-button-label sh-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
-    $('#copyEmailJH').click(function () {
+    $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="ah-copyEmailJH" class="ah-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="height:30px;padding: 5px 10px; font-size: 12px; margin-left: -30px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
+    $('#ah-copyEmailJH').click(function () {
         var text = $(this).prev().text();
         chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
         outTextFrame('Email ' + text + ' скопирован');

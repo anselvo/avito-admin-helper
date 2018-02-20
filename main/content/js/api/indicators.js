@@ -293,7 +293,7 @@ function AhIndicators(indicatorsArr, container) {
     }
 
     function addLoader(indicator) {
-        indicator.node.html(`<span class="loading-indicator-text">Загрузка...</span>`);
+        indicator.node.html(`<span class="ah-loading-indicator-text">Загрузка...</span>`);
     }
 
     function showError(indicator) {
@@ -492,11 +492,11 @@ function addIndicatorsUserInfo(indicatorsArr) {
 }
 
 function addIndicatorsHelpdeskDetails(indicatorsArr, response) {
-    $('#rightPanelBody').append(`<div id="companyInfo"></div>`);
-    let container = $('#companyInfo');
+    $('#rightPanelBody').append(`<div id="ah-companyInfo"></div>`);
+    let container = $('#ah-companyInfo');
 
     container.append(`
-        <div id="companyInfo" class="ah-helpdesk-details-indicators">
+        <div id="ah-companyInfo" class="ah-helpdesk-details-indicators">
             <table>
                 <tr>
                     <td data-indicator="inn"></td>

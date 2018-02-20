@@ -1,6 +1,6 @@
 
 function chooseItem() {
-    $('.item-checkbox').click(function () {
+    $('.ah-item-checkbox').click(function () {
         $(this).find('input[type="checkbox"]').click();
     }).on('click', '[type="checkbox"]', function (e) {
         e.stopPropagation();
@@ -165,27 +165,27 @@ function userInfoForPost() {
 
         if (isAuthority('ROLE_USER_INFO_INFO')) {
             $(itemList[i])
-                .prepend('<span class="userInfoActionButton ah-user-api" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+                .prepend('<span class="ah-userInfoActionButton ah-user-api" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_ABUSES')) {
             $(itemList[i])
-                .prepend('<span class="userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+                .prepend('<span class="ah-userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_WL')) {
             $(itemList[i])
-                .prepend('<span class="userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+                .prepend('<span class="ah-userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 		}
 
         if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
             $(itemList[i])
-                .prepend('<span class="userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
             $(itemList[i])
-                .prepend('<span class="userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+                .prepend('<span class="ah-userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
         }
     }
 
@@ -214,7 +214,7 @@ function addChooseButton() {
         $(loginList[i]).parent()
 			.css('padding', '5px')
 			.after('<hr class="ah-separate-line">')
-			.append('<input type="button" userid="' + id + '" class="postBlockButton postPlus" value="+">')
+			.append('<input type="button" userid="' + id + '" class="ah-postBlockButton ah-postPlus" value="+">')
             .append('<br><span  class="ah-post-userAgent" title="User chance">' +
                 '<b>Chance:</b> ' +
                 '<span ah-post-block-chance="'+id+'" style="color:#65a947">?</span>/<span style="color:red;">10</span>' +
@@ -235,8 +235,8 @@ function addChooseButton() {
 
 // Отправка письма пользователю о взломе и смена пароля
 function smartSNP(id) {
-    $('.pull-right').append('<span id="isEmailChange" class="wheelSNP" title="Информирует о смене email:\n- СЕРЫЙ - email не был изменен\n- ЗЕЛЕНЫЙ - на учетной записи уже менялся email адрес">EML</span>' +
-        '<span id="isUseSNP" class="wheelSNP" title="Информирует о смене пароля:\n- СЕРЫЙ - пароль (snp) был отправлен менее 3 раз\n- КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз">SNP</span>' +
+    $('.pull-right').append('<span id="isEmailChange" class="ah-wheelSNP" title="Информирует о смене email:\n- СЕРЫЙ - email не был изменен\n- ЗЕЛЕНЫЙ - на учетной записи уже менялся email адрес">EML</span>' +
+        '<span id="isUseSNP" class="ah-wheelSNP" title="Информирует о смене пароля:\n- СЕРЫЙ - пароль (snp) был отправлен менее 3 раз\n- КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз">SNP</span>' +
         '<input id="snp" type="button" class="btn btn-primary" value="SNP" title="Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана" style="margin-left: 5px;" disabled/>');
 
     var href = 'https://adm.avito.ru/users/user/info/'+id;
@@ -508,19 +508,19 @@ function addSearchInformTogglers() {
 	
 	var formBlock = $('#itemsearchform');
 	var rowBlock = $(formBlock).find('.form-row:eq(1)');
-	$(rowBlock).append('<div class="btn-group"><button type="button" class="btn btn-primary sh-search-inform-toggler" style="outline: none;" id="search-inform-blocked">Блокированные</button><button type="button" class="btn btn-primary sh-search-inform-toggler" style="outline: none;" id="search-inform-inp">АВ 97-100</button></div><div style="display: none;"><input type="hidden" name="search_inform_link" value=""></div>');
+	$(rowBlock).append('<div class="btn-group"><button type="button" class="btn btn-primary ah-search-inform-toggler" style="outline: none;" id="search-inform-blocked">Блокированные</button><button type="button" class="btn btn-primary ah-search-inform-toggler" style="outline: none;" id="search-inform-inp">АВ 97-100</button></div><div style="display: none;"><input type="hidden" name="search_inform_link" value=""></div>');
 	
 	var btnBlocked = $('#search-inform-blocked');
 	var btnInp = $('#search-inform-inp');
 	
 	if (~url.indexOf('status%5B%5D=blocked')) {
-		$(btnBlocked).addClass('sh-active-btn');
+		$(btnBlocked).addClass('ah-active-btn');
 	}
 	if (~url.indexOf('block_id%5B%5D=256') 
 		&& ~url.indexOf('percent_min=97') 
 		&& ~url.indexOf('percent_max=100')) {
 		
-		$(btnInp).addClass('sh-active-btn');
+		$(btnInp).addClass('ah-active-btn');
 	}
 	
 	var blockedInpTogglerBtns = $('#search-inform-blocked, #search-inform-inp');
@@ -548,8 +548,8 @@ function addSearchInformTogglers() {
 	}
 	var locationId = $(regionOpt).val();
 	
-	$(regionSelectParent).find('.multiselect-toggle').after('<button type="button" class="btn btn-primary" id="search-inform-region-toggler" style="display: none;"><i class="glyphicon glyphicon-transfer" style="top: 3px;"></i> Регион</button><div style="display: none;"><input type="hidden" name="search_inform_location_id" value="'+ globalLocationId +'"></div>');
-	var regionTogglerBtn = $('#search-inform-region-toggler');
+	$(regionSelectParent).find('.multiselect-toggle').after('<button type="button" class="btn btn-primary" id="ah-search-inform-region-toggler" style="display: none;"><i class="glyphicon glyphicon-transfer" style="top: 3px;"></i> Регион</button><div style="display: none;"><input type="hidden" name="search_inform_location_id" value="'+ globalLocationId +'"></div>');
+	var regionTogglerBtn = $('#ah-search-inform-region-toggler');
 	
 	if ( (optionSelectedIndex == 2 
 		&& selectedLocationId != 637640 
@@ -567,7 +567,7 @@ function addSearchInformTogglers() {
 	// обработчики
 	var newUrl;
 	$(blockedInpTogglerBtns).click(function() {
-		var isPressed = $(this).hasClass('sh-active-btn');
+		var isPressed = $(this).hasClass('ah-active-btn');
 		var btn = $(this).attr('id');
 		if (isPressed) {
 			switch (btn) {
@@ -595,7 +595,6 @@ function addSearchInformTogglers() {
 		
 		newUrl = newUrl.replace(/&{2,}/g, '&');
 		window.location.assign(newUrl);
-		// $('#sh-loading-layer').show();
 	});
 	
 	$(regionTogglerBtn).click(function() {
@@ -603,7 +602,6 @@ function addSearchInformTogglers() {
 		newUrl = url.replace(/&location_id%5B%5D=\d+/g, '');
 		newUrl += '&location_id%5B%5D='+ locationId;
 		window.location.assign(newUrl);
-		// $('#sh-loading-layer').show();
 	});
 }
 // поиск информ агентств ---

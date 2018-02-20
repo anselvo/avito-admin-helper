@@ -19,7 +19,7 @@ function shopsInfoElements() {
 
     // для переключателя
     $('body').append('<div id="switch-wrapper" style="position: fixed; bottom: 10px; left: 15px; background-color: white; z-index: 3; padding: 4px; box-shadow: 0 0 10px 6px white;"></div>');
-    $('#switch-wrapper').append('<input type="checkbox" class="default-switch" id="side-panel-switch" checked>');
+    $('#switch-wrapper').append('<input type="checkbox" class="ah-default-switch" id="side-panel-switch" checked>');
     $('#switch-wrapper').append('<label for="side-panel-switch" title="" style="margin-bottom: 0;"><span style="vertical-align: middle; font-weight: normal;">Боковая панель<span style="color: rgb(149, 149, 149);"> (Alt+S)</span></span></label>');
 
     $('body').append('<div id="shop-side-panel" style="position: fixed; top: 0px; padding-top: ' + (navbarHeight + 10) + 'px; right: 0; background-color: white; z-index: 2; width: 42%; height: 100%; border-left: 1px solid #ccc;"></div>');
@@ -27,7 +27,7 @@ function shopsInfoElements() {
     $('#shop-side-panel').append('<div id="shop-menu-container" style="padding: 0 17px 40px 10px; width: 103%; height: 100%; overflow-y: scroll;"></div>');
 
     // для переключателя
-    $('#shop-menu-container').append('<div id="shop-header" style="line-height: 30px;"><div class="main-info"><span id="shop-moderation-status">Проверка...</span></div><div class="shop-header-notification" style="padding-top: 4px;"><span id="non-editalbe-notification" class="shop-notofication-item" style=""></span></div><hr class="default-hr"></div>');
+    $('#shop-menu-container').append('<div id="shop-header" style="line-height: 30px;"><div class="main-info"><span id="ah-shop-moderation-status">Проверка...</span></div><div class="shop-header-notification" style="padding-top: 4px;"><span id="non-editalbe-notification" class="ah-shop-notofication-item" style=""></span></div><hr class="ah-default-hr"></div>');
 
     // горячие клавиши переключателя
     document.onkeydown = function(e) {
@@ -76,8 +76,8 @@ function shopsInfoElements() {
 }
 
 function showFields() {
-    $('#shop-menu-container').append('<div id="shop-fields"><h4>Поля</h4></div>');
-    $('#shop-fields').append('<table width="100%"></table>');
+    $('#shop-menu-container').append('<div id="ah-shop-fields"><h4>Поля</h4></div>');
+    $('#ah-shop-fields').append('<table width="100%"></table>');
 
     var fields = [{name: 'Название', isLink: false, fieldNameAttr: 'name'}, {name: 'Домен', isLink: false, fieldNameAttr: 'domain'}, {name: 'Видео URL', isLink: true, fieldNameAttr: 'videoUrl'}, {name: 'Сайт', isLink: true, fieldNameAttr: 'url'}];
 
@@ -90,30 +90,30 @@ function showFields() {
         value = value == '' ? '<i>Отсутствует</i>' : value;
 
         if (fields[i].isLink && value != '<i>Отсутствует</i>') {
-            $('#shop-fields table').append('<tr width="100%" data-containter-label="'+ label +'"><td class="shop-field-name"><a style="" title="">'+ fields[i].name +'</a></td><td class="shop-field-value"><span style=""><a href="'+ value +'" target="_blank">'+ value +'</a></span></td></tr>');
+            $('#ah-shop-fields table').append('<tr width="100%" data-containter-label="'+ label +'"><td class="ah-shop-field-name"><a style="" title="">'+ fields[i].name +'</a></td><td class="ah-shop-field-value"><span style=""><a href="'+ value +'" target="_blank">'+ value +'</a></span></td></tr>');
         } else {
-            $('#shop-fields table').append('<tr width="100%" data-containter-label="'+ label +'"><td class="shop-field-name"><a style="" title="">'+ fields[i].name +'</a></td><td class="shop-field-value"><span style="">'+ value +'</span></td></tr>');
+            $('#ah-shop-fields table').append('<tr width="100%" data-containter-label="'+ label +'"><td class="ah-shop-field-name"><a style="" title="">'+ fields[i].name +'</a></td><td class="ah-shop-field-value"><span style="">'+ value +'</span></td></tr>');
         }
     }
 
     var regApple = /(apple|i\W{0,2}phone|i\W{0,2}pod|i\W{0,2}pad)/gi;
-    var domain = $('#shop-fields tr:contains(Домен) .shop-field-value')[0];
+    var domain = $('#ah-shop-fields tr:contains(Домен) .ah-shop-field-value')[0];
     var result;
     if ($(domain).text().match(regApple)) {
         result = $(domain).text().match(regApple);
-        $(domain).append('<span class="field-alert" data-matched="'+ result +'"></span>');
+        $(domain).append('<span class="ah-field-alert" data-matched="'+ result +'"></span>');
     }
 
     var regDomain = /([a-zA-Z0-9а-яёА-ЯЁ]([a-zA-Z0-9а-яёА-ЯЁ\-]{0,61}[a-zA-Z0-9а-яёА-ЯЁ])?\.)+[a-zA-Zа-яёА-ЯЁ]{2,6}/gi;
-    var name = $('#shop-fields tr:contains(Название) .shop-field-value')[0];
+    var name = $('#ah-shop-fields tr:contains(Название) .ah-shop-field-value')[0];
     var result;
     if ($(name).text().match(regDomain)) {
         result = $(name).text().match(regDomain);
-        $(name).append('<span class="field-alert" data-matched="'+ result +'"></span>');
+        $(name).append('<span class="ah-field-alert" data-matched="'+ result +'"></span>');
     }
 
     var matched;
-    $('span.field-alert').hover(
+    $('span.ah-field-alert').hover(
         function() {
             matched = $(this).data('matched');
             matched = matched.split(',');
@@ -135,7 +135,7 @@ function showFields() {
     var userMail = $(anotherFieldObj).find('a[href^="/users/user/info/"]')[0].nextSibling;
     userMail = userMail.data.replace(/[\s\(\)]/g, '');
 
-    $('#shop-fields table').append('<tr width="100%" data-containter-label="'+ anotherField +'"><td class="shop-field-name"><a style="" title="">'+ anotherField +'</a></td><td class="shop-field-value"><span style=""><a href="/users/user/info/'+ userId +'" target="_blank">'+ userId +'</a></span><button data-content="ID" id="" class="default-btn text-to-clipboard" type="button" title="Скопировать ID в буфер обмена" style="margin: 0 4px; padding: 2px; font-size: 12px; position: relative;"><span class="button-label orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button>|<span style="margin-left: 4px;">'+ userMail +'</span><button data-content="E-mail" id="" class="default-btn text-to-clipboard" type="button" title="Скопировать E-mail в буфер обмена" style="margin: 0 4px; padding: 2px; font-size: 12px; position: relative;"><span class="button-label orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button></td></tr>');
+    $('#ah-shop-fields table').append('<tr width="100%" data-containter-label="'+ anotherField +'"><td class="ah-shop-field-name"><a style="" title="">'+ anotherField +'</a></td><td class="ah-shop-field-value"><span style=""><a href="/users/user/info/'+ userId +'" target="_blank">'+ userId +'</a></span><button data-content="ID" id="" class="ah-shop-default-btn text-to-clipboard" type="button" title="Скопировать ID в буфер обмена" style="margin: 0 4px; padding: 2px; font-size: 12px; position: relative;"><span class="ah-shop-button-label ah-shop-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button>|<span style="margin-left: 4px;">'+ userMail +'</span><button data-content="E-mail" id="" class="ah-shop-default-btn text-to-clipboard" type="button" title="Скопировать E-mail в буфер обмена" style="margin: 0 4px; padding: 2px; font-size: 12px; position: relative;"><span class="ah-shop-button-label ah-shop-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span></button></td></tr>');
 
     $('.text-to-clipboard').click(function() {
         var text = $(this).prev('span').text();
@@ -144,7 +144,7 @@ function showFields() {
     });
 
     var scrollElem;
-    $('#shop-fields table tr').click(function(e) {
+    $('#ah-shop-fields table tr').click(function(e) {
         // console.log(e);
         if (e.target.target == '_blank' || e.target.innerText == 'Б') return;
         var scrollElemLabel = $(this).data('containterLabel');
@@ -159,7 +159,7 @@ function showFields() {
 
 function getRexExp(refresh) {
     if (!refresh) {
-        $('#shop-menu-container').append('<hr class="default-hr"><div id="shop-keywords"><h4>Ключевые слова и фразы<span class="shop-searching-indicator">Загрузка...</span></h4></div>');
+        $('#shop-menu-container').append('<hr class="ah-default-hr"><div id="shop-keywords"><h4>Ключевые слова и фразы<span class="ah-shop-searching-indicator">Загрузка...</span></h4></div>');
     }
 
     chrome.runtime.sendMessage({
@@ -167,8 +167,8 @@ function getRexExp(refresh) {
         method: "GET",
         url: "http://avitoadm.ru/traffic_helper/getRegExp.php",
     }, function(response) {
-        $('#shop-keywords .shop-searching-indicator').detach();
-        $('#shop-keywords h4').append('<span class="refresh-btn" style="float: right; margin-left: 4px;" title="Обновить"></span>');
+        $('#shop-keywords .ah-shop-searching-indicator').detach();
+        $('#shop-keywords h4').append('<span class="ah-refresh-btn" style="float: right; margin-left: 4px;" title="Обновить"></span>');
         $('#shop-keywords').append('<table width="100%"></table>');
 
         if (~response.indexOf('Неверный запрос') || response == 'error') {
@@ -190,12 +190,12 @@ function getRexExp(refresh) {
         }
         // console.log(regs);
 
-        $('#shop-keywords .refresh-btn').click(function() {
+        $('#shop-keywords .ah-refresh-btn').click(function() {
 
             var refresh = true;
             $('#shop-keywords table').detach();
             $('#shop-keywords').append('<table width="100%"></table>');
-            $('.form-control').removeClass('bad-text-highlighting-key');
+            $('.form-control').removeClass('ah-bad-text-highlighting-key');
             searchKeywords(regs, refresh);
         });
         // поиск слов
@@ -246,9 +246,9 @@ function searchKeywords(regs, refresh) {
         if (result.length) {
             label = $(fields[i]).closest('.form-group').find('label').text();
 
-            $('#shop-keywords table').append('<tr data-containter-label="'+ label +'" class="words-selection-result"><td style=""><a style="cursor: default;" title="">'+ label +'</a></td><td class="shops-words-result" style="">'+ result.join('|') +'</td></tr>');
+            $('#shop-keywords table').append('<tr data-containter-label="'+ label +'" class="ah-words-selection-result"><td style=""><a style="cursor: default;" title="">'+ label +'</a></td><td class="ah-shops-words-result" style="">'+ result.join('|') +'</td></tr>');
 
-            $(fields[i]).addClass('bad-text-highlighting-key');
+            $(fields[i]).addClass('ah-bad-text-highlighting-key');
 
             tmpRes = null, result = [];
         }
@@ -260,24 +260,24 @@ function searchKeywords(regs, refresh) {
     }
 
     // разбиваем на спаны каждое ключевое слово
-    var singleKeyWords = $('#shop-keywords table td.shops-words-result');
+    var singleKeyWords = $('#shop-keywords table td.ah-shops-words-result');
     var singleText;
     for (var i = 0; i < singleKeyWords.length; i++) {
         singleText = $(singleKeyWords[i]).text();
-        singleText = singleText.replace(/\|/g, '</span><span class="words-separator">|</span><span class="single-word">');
+        singleText = singleText.replace(/\|/g, '</span><span class="ah-words-separator">|</span><span class="ah-single-word">');
 
-        $(singleKeyWords[i]).html('<span class="single-word">'+ singleText +'</span>');
+        $(singleKeyWords[i]).html('<span class="ah-single-word">'+ singleText +'</span>');
     }
 
     var elem, textInput, start, end;
     var posStart, posEnd, parentElem, textField, resArr = [];
-    var singleWordArr = $('#shop-keywords td.shops-words-result');
+    var singleWordArr = $('#shop-keywords td.ah-shops-words-result');
 
-    $('#shop-keywords table span.single-word').click(function() {
+    $('#shop-keywords table span.ah-single-word').click(function() {
         // добавляем атрибуты позиции для каждого спана
         for (var i = 0; i < singleWordArr.length; i++) {
-            parentElem = $(singleWordArr[i]).closest('.words-selection-result').attr('data-containter-label');
-            textField = $('.form-group:contains('+ parentElem +') .bad-text-highlighting-key')[0];
+            parentElem = $(singleWordArr[i]).closest('.ah-words-selection-result').attr('data-containter-label');
+            textField = $('.form-group:contains('+ parentElem +') .ah-bad-text-highlighting-key')[0];
             resArr =  $(singleWordArr[i]).text().split('|');
 
             // console.log(resArr);
@@ -287,13 +287,13 @@ function searchKeywords(regs, refresh) {
 
                 // console.log(posStart, posEnd);
 
-                $(singleWordArr[i]).find('span.single-word').slice(j, j + 1).attr('data-pos-start', ''+ posStart +'');
-                $(singleWordArr[i]).find('span.single-word').slice(j, j + 1).attr('data-pos-end', ''+ posEnd +'');
+                $(singleWordArr[i]).find('span.ah-single-word').slice(j, j + 1).attr('data-pos-start', ''+ posStart +'');
+                $(singleWordArr[i]).find('span.ah-single-word').slice(j, j + 1).attr('data-pos-end', ''+ posEnd +'');
             }
         }
 
-        elem = $(this).closest('.words-selection-result').data('containterLabel');
-        textInput = $('.form-group:contains('+ elem +') .bad-text-highlighting-key')[0];
+        elem = $(this).closest('.ah-words-selection-result').data('containterLabel');
+        textInput = $('.form-group:contains('+ elem +') .ah-bad-text-highlighting-key')[0];
         start =  +$(this).attr('data-pos-start');
         end =  +$(this).attr('data-pos-end');
 
@@ -306,7 +306,7 @@ function searchKeywords(regs, refresh) {
     });
 
     var scrollElem;
-    $('tr.words-selection-result').click(function() {
+    $('tr.ah-words-selection-result').click(function() {
         var scrollElemLabel = $(this).data('containterLabel');
         scrollElem = $('.form-group:contains('+ scrollElemLabel +')');
 
@@ -320,15 +320,15 @@ function searchKeywords(regs, refresh) {
 
 function searchForeignText(refresh) {
     if (!refresh) {
-        $('#shop-menu-container').append('<hr class="default-hr"><div id="shop-foreign-words"><h4>Латиница</h4></span></div>');
+        $('#shop-menu-container').append('<hr class="ah-default-hr"><div id="shop-foreign-words"><h4>Латиница</h4></span></div>');
     }
 
-    $('#shop-foreign-words h4').append('<span class="refresh-btn" style="float: right; margin-left: 4px;" title="Обновить"></span>');
+    $('#shop-foreign-words h4').append('<span class="ah-refresh-btn" style="float: right; margin-left: 4px;" title="Обновить"></span>');
     $('#shop-foreign-words').append('<table width="100%"></table>');
 
-    $('#shop-foreign-words .refresh-btn').click(function() {
-        $('#shop-foreign-words .refresh-btn, #shop-foreign-words table').detach();
-        $('.form-control').removeClass('bad-text-highlighting-foreign');
+    $('#shop-foreign-words .ah-refresh-btn').click(function() {
+        $('#shop-foreign-words .ah-refresh-btn, #shop-foreign-words table').detach();
+        $('.form-control').removeClass('ah-bad-text-highlighting-foreign');
 
         var refresh = true;
         searchForeignText(refresh);
@@ -361,9 +361,9 @@ function searchForeignText(refresh) {
 
             color = resTextVol < 30 ? '#5cb85c;' : '#d9534f;';
 
-            $('#shop-foreign-words table').append('<tr data-containter-label="'+ label +'" class="words-selection-result"><td style=""><a style="cursor: default;" title="">'+ label +'</a><span class="shops-words-volume" style="color:'+ color +'">('+ resTextVol +'%)</span></td><td class="shops-words-result" style="">'+ result.join('|') +'</td></tr>');
+            $('#shop-foreign-words table').append('<tr data-containter-label="'+ label +'" class="ah-words-selection-result"><td style=""><a style="cursor: default;" title="">'+ label +'</a><span class="ah-shops-words-volume" style="color:'+ color +'">('+ resTextVol +'%)</span></td><td class="ah-shops-words-result" style="">'+ result.join('|') +'</td></tr>');
 
-            $(fields[i]).addClass('bad-text-highlighting-foreign');
+            $(fields[i]).addClass('ah-bad-text-highlighting-foreign');
 
             tmpRes = null, result = [];
         }
@@ -375,23 +375,23 @@ function searchForeignText(refresh) {
     }
 
     // разбиваем на спаны каждое ключевое слово
-    var singleKeyWords = $('#shop-foreign-words table td.shops-words-result');
+    var singleKeyWords = $('#shop-foreign-words table td.ah-shops-words-result');
     var singleText;
     for (var i = 0; i < singleKeyWords.length; i++) {
         singleText = $(singleKeyWords[i]).text();
-        singleText = singleText.replace(/\|/g, '</span><span class="words-separator">|</span><span class="single-word">');
-        $(singleKeyWords[i]).html('<span class="single-word">'+ singleText +'</span>');
+        singleText = singleText.replace(/\|/g, '</span><span class="ah-words-separator">|</span><span class="ah-single-word">');
+        $(singleKeyWords[i]).html('<span class="ah-single-word">'+ singleText +'</span>');
     }
 
     var elem, textInput, start, end;
     var posStart, posEnd, parentElem, textField, resArr = [];
-    var singleWordArr = $('#shop-foreign-words td.shops-words-result');
+    var singleWordArr = $('#shop-foreign-words td.ah-shops-words-result');
 
-    $('#shop-foreign-words table span.single-word').click(function() {
+    $('#shop-foreign-words table span.ah-single-word').click(function() {
         // добавляем атрибуты позиции для каждого спана
         for (var i = 0; i < singleWordArr.length; i++) {
-            parentElem = $(singleWordArr[i]).closest('.words-selection-result').attr('data-containter-label');
-            textField = $('.form-group:contains('+ parentElem +') .bad-text-highlighting-foreign')[0];
+            parentElem = $(singleWordArr[i]).closest('.ah-words-selection-result').attr('data-containter-label');
+            textField = $('.form-group:contains('+ parentElem +') .ah-bad-text-highlighting-foreign')[0];
             resArr =  $(singleWordArr[i]).text().split('|');
 
             // console.log(resArr);
@@ -401,13 +401,13 @@ function searchForeignText(refresh) {
 
                 // console.log(posStart, posEnd);
 
-                $(singleWordArr[i]).find('span.single-word').slice(j, j + 1).attr('data-pos-start', ''+ posStart +'');
-                $(singleWordArr[i]).find('span.single-word').slice(j, j + 1).attr('data-pos-end', ''+ posEnd +'');
+                $(singleWordArr[i]).find('span.ah-single-word').slice(j, j + 1).attr('data-pos-start', ''+ posStart +'');
+                $(singleWordArr[i]).find('span.ah-single-word').slice(j, j + 1).attr('data-pos-end', ''+ posEnd +'');
             }
         }
 
-        elem = $(this).closest('.words-selection-result').data('containterLabel');
-        textInput = $('.form-group:contains('+ elem +') .bad-text-highlighting-foreign')[0];
+        elem = $(this).closest('.ah-words-selection-result').data('containterLabel');
+        textInput = $('.form-group:contains('+ elem +') .ah-bad-text-highlighting-foreign')[0];
         start =  +$(this).attr('data-pos-start');
         end =  +$(this).attr('data-pos-end');
 
@@ -420,7 +420,7 @@ function searchForeignText(refresh) {
     });
 
     var scrollElem;
-    $('tr.words-selection-result').click(function() {
+    $('tr.ah-words-selection-result').click(function() {
         var scrollElemLabel = $(this).data('containterLabel');
         scrollElem = $('.form-group:contains('+ scrollElemLabel +')');
 
@@ -441,8 +441,8 @@ function checkPass() {
 
 
     if ($(moderField).find('a[href$="moderate"]').length > 0) {
-        $('#shop-moderation-status').text('Модерация не пройдена');
-        $('#shop-moderation-status').addClass('shop-not-moderated');
+        $('#ah-shop-moderation-status').text('Модерация не пройдена');
+        $('#ah-shop-moderation-status').addClass('ah-shop-not-moderated');
 
         $('#shop-header .main-info').append('<a id="shop-moderate" style="margin-left: 8px; cursor: pointer; vertical-align: middle;" class="" value="">Pass</a>');
 
@@ -462,11 +462,11 @@ function checkPass() {
         });
 
     } else if ($(moderField).find('.label-success').length > 0) {
-        $('#shop-moderation-status').text('Модерация пройдена');
-        $('#shop-moderation-status').addClass('shop-moderated');
+        $('#ah-shop-moderation-status').text('Модерация пройдена');
+        $('#ah-shop-moderation-status').addClass('ah-shop-moderated');
     } else {
-        $('#shop-moderation-status').text('Ошибка: не удалось определить статус модерации');
-        $('#shop-moderation-status').addClass('shop-error-notification-item');
+        $('#ah-shop-moderation-status').text('Ошибка: не удалось определить статус модерации');
+        $('#ah-shop-moderation-status').addClass('ah-shop-error-notification-item');
     }
 }
 
@@ -494,7 +494,7 @@ function checkNoneditableFields() {
 
     if (!shopStatusText) {
         var fieldNotification = $('#non-editalbe-notification');
-        $(fieldNotification).addClass('shop-error-notification-item');
+        $(fieldNotification).addClass('ah-shop-error-notification-item');
         $(fieldNotification).text('Ошибка: не удалось определить статус Магазина');
         $(fieldNotification).show();
         return false;
@@ -528,8 +528,8 @@ function indicateNoneditableFields() {
         });
     });
 
-    $(fieldsTextElems).addClass('noneditable-text-field-highlighting');
-    $(fieldLabels).append('<span class="icon-lock" style="margin-left: 2px;" title="Клиент не может редактировать это поле"></span>');
+    $(fieldsTextElems).addClass('ah-noneditable-text-field-highlighting');
+    $(fieldLabels).append('<span class="ah-icon-lock" style="margin-left: 2px;" title="Клиент не может редактировать это поле"></span>');
 }
 
 function showPremiumUsers(userId) {
@@ -571,13 +571,13 @@ function showPremiumUsers(userId) {
 // добавление/удаление детачнутых элементов на правой панели
 function fromToSideBar(elem, action) {
     if (action == 'addOld') {
-        $(elem).addClass('modified-original-shop-side-bar');
-        $('#shop-menu-container').append('<hr class="variable-default-hr">', $(elem));
+        $(elem).addClass('ah-modified-original-shop-side-bar');
+        $('#shop-menu-container').append('<hr class="ah-variable-default-hr">', $(elem));
     }
 
     if (action == 'removeOld') {
-        $(elem).removeClass('modified-original-shop-side-bar');
-        $('hr.variable-default-hr').detach();
+        $(elem).removeClass('ah-modified-original-shop-side-bar');
+        $('hr.ah-variable-default-hr').detach();
         $('div.row').append($(elem));
     }
 

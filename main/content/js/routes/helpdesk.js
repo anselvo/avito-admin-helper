@@ -1,12 +1,12 @@
 //++++++++++++++ Открывать тикеты из очереди в новой вкладке ++++++++++++++ //
 function openTicketInNewTab() {
-    $('.sh-open-in-new-tab-link').remove();
+    $('.ah-open-in-new-tab-link').remove();
     var rows = $('.helpdesk-main-section table tbody tr');
 
     $(rows).each(function (i, item) {
         var ticketId = $(item).find('td:eq(2)').text().split(' ')[0];
         $(item).before(''+
-        '<a class="sh-open-in-new-tab-link" style=""'+
+        '<a class="ah-open-in-new-tab-link" style=""'+
         'href="https://adm.avito.ru/helpdesk/details/' + ticketId + '" target="_blank" '+
         'title="Открыть тикет в новой вкладке">&#x21b7'+
         '</a>');
@@ -15,7 +15,7 @@ function openTicketInNewTab() {
 //-------------- Открывать тикеты из очереди в новой вкладке -------------- //
 
 function showAgentInfoQueue() {
-    $('.agent-info-sign').remove();
+    $('.ah-agent-info-sign').remove();
     
     let table = $('table');
     let rows = $(table).find('tr');
@@ -30,7 +30,7 @@ function showAgentInfoQueue() {
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             if (assigneeNameText === agentFullName) {
                 $(assigneeNameBlock).prepend(''+
-                '<span class="agent-info-sign" style="margin-right: 4px;">'+
+                '<span class="ah-agent-info-sign" style="margin-right: 4px;">'+
                     '<span class="label" title="'+user.subdivision_name+' '+
                     '('+user.teamlead+')'+
                     '\nСмена: '+user.shift+'\nВыходные: '+user.weekend+'"  '+
