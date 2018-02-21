@@ -1728,7 +1728,29 @@ span.ah-words-separator {
 	font-size: 16px;
 	font-weight: 700;
 }
-.ah-info-container .sh-circle-close-btn {
+
+.ah-circle-close-btn {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAUklEQVQ4T2NkoBAwUqifYRAawMzM/B/krb9//6K4Dpc4hhdgCpENwSYGCzusYYCsATmQ0V0FksMZiOiGYNNMOwMo8gLFgUhxNJKatAdhUibVCwCxODARJmvdmQAAAABJRU5ErkJggg==);
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 50% center;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin: 5px 5px 0 0;
+}
+.ah-circle-close-btn:hover {
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.ah-circle-close-btn:active {
+    background-color: #d4d4d4;
+    border-color: #8c8c8c;
+}
+
+.ah-info-container .ah-circle-close-btn {
 	float: right; 
 	margin: 0 0 0 20px;
 }

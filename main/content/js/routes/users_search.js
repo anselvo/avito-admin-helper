@@ -63,7 +63,7 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
     var userId = $(elem).find('td:eq(2) [href^="/users/user/info"]:eq(1)').text() || 'error';
 
     $('body').append('<div class="ah-info-container" style="z-index: 1050;"></div>');
-    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #2e8b57;">найдена</span></span><span class="sh-circle-close-btn"></span><hr class="ah-default-hr">');
+    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #2e8b57;">найдена</span></span><span class="ah-circle-close-btn"></span><hr class="ah-default-hr">');
 
     $('.ah-info-container').append('<table></table>');
     $('.ah-info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
@@ -85,7 +85,7 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
         }
     });
 
-    $('.sh-circle-close-btn').click(function() {
+    $('.ah-circle-close-btn').click(function() {
         $('.ah-info-container').detach();
         $('tr .ah-verified-icon').detach();
     });
@@ -93,7 +93,7 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
 
 function renderVerificationLog(html, phone) {
     $('body').append('<div class="ah-info-container" style=""></div>');
-    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #e00;">не найдена</span></span><span class="sh-circle-close-btn"></span><hr class="ah-default-hr">');
+    $('.ah-info-container').append('<span class="info-header">Привязка для "'+ phone +'" <span style="color: #e00;">не найдена</span></span><span class="ah-circle-close-btn"></span><hr class="ah-default-hr">');
     $('.ah-info-container').append('<table></table>');
     $('.ah-info-container table').append('<tr><th>Время действия</th><th>Статус</th><th>Учетная запись</th></tr>');
 
@@ -101,7 +101,7 @@ function renderVerificationLog(html, phone) {
 
     $('.ah-info-container').append(`<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="${global.connectInfo.adm_url}/users/phones_verification?phone=${phone}">Перейти в лог верификации</a></span>`);
 
-    $('.sh-circle-close-btn').click(function() {
+    $('.ah-circle-close-btn').click(function() {
         $('.ah-info-container').detach();
         $('tr .ah-verified-icon').detach();
     });
