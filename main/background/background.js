@@ -290,8 +290,8 @@ function setBudgetIcon(script) {
     }
 }
 
-function setConnectInfo(connectInfo) {
-    this.connectInfo = connectInfo;
+function setConnectInfo(info) {
+    connectInfo = info;
 }
 
 function setAuthoritiesToStorage(authorities) {
@@ -323,7 +323,7 @@ function errorMessage(status, error) {
             break;
         case "(failed)":
             connectInfo.error = "Отсутствует соединение с сервером\nЕсли проблема сохраняется в течение длительного времени, сообщите тимлидеру";
-            connectInfo.spring_reconnect = true;
+            connectInfo.spring_reconnect = true;й
             break;
         case 4012:
             connectInfo.error = "Вы ввели неправильный пароль";
