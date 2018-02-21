@@ -69,7 +69,7 @@ function itemsInfoForItems() {
 }
 
 function loadItemInfo(id) {
-    let url = `${global.connectInfo.adm_url}/items/item/info/`+id;
+    let url = `${global.connectInfo.adm_url}/items/item/info/${id}`;
 
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
