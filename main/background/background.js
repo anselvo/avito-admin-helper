@@ -130,7 +130,7 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
-        setConnectInfo(result.connectInfo);
+        // setConnectInfo(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
