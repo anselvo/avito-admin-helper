@@ -192,7 +192,7 @@ function settingsPage() {
     pageGenerator(body, true);
 }
 
-function addSettingsDomain(name, url) {
+function addSettingsDomain(name, key) {
     const domain = document.createElement('div');
     domain.className = 'ah-setting-block';
 
@@ -202,10 +202,10 @@ function addSettingsDomain(name, url) {
 
     const domainUrl = document.createElement('input');
     domainUrl.className = 'ah-setting-block-input';
-    domainUrl.value = connectInfo[url];
+    domainUrl.value = connectInfo[key];
     domainUrl.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
-            connectInfo[url] = this.value;
+            connectInfo[key] = this.value;
             setConnectInfoToStorage();
         }
     });
