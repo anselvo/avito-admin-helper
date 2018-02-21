@@ -64,7 +64,7 @@ function linksOnComments(tableClass, currentUserID) {
             $(commentBlock).html(text);
         }
 
-        if (~commentText.indexOf(`${global.connectInfo.adm_url}/`)) { // user links
+        if (~commentText.indexOf(`.avito.ru/`)) { // user links
             var text1 = commentText;
             if (text1 == undefined) continue;
             var links = text1.split(/(?: |<br>|\n)/);
@@ -74,7 +74,7 @@ function linksOnComments(tableClass, currentUserID) {
 
             for (var i = 0; i < links.length; i++){
                 if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
-                    if (~links[i].indexOf(`${global.connectInfo.adm_url}/users/user/info/`) || shortUserLinkReg.test(links[i])) {
+                    if (~links[i].indexOf(`.avito.ru/users/user/info/`) || shortUserLinkReg.test(links[i])) {
                         var userID = links[i].replace(/\D/gi, '');
                         text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</button>)</span>');
                         $(commentBlock).html(text1);
