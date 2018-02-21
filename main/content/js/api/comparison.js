@@ -78,6 +78,7 @@ AhComparison.prototype.renderResultModal = function(options) {
     options = options || {};
     const modalTitle = options.title || `Сравнение`;
     const modalClass = options.class || '';
+    const modalRefContent = options.refContent || null;
 
     const modal = document.createElement('div');
     modal.className = `modal ah-dynamic-bs-modal ah-compare-modal ${modalClass}`;
@@ -91,7 +92,10 @@ AhComparison.prototype.renderResultModal = function(options) {
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">${modalTitle}</h4>
+                    <h4 class="modal-title">
+                        <span>${modalTitle}</span>
+                        ${modalRefContent ? '<span class="modal-title-ref" tabindex="-1">(Справка)</span>' : ''}
+                    </h4>
                 </div>
                 <div class="modal-body">
                     <button class="ah-compare-scroll ah-compare-scroll-left" data-direction="left">
@@ -109,6 +113,23 @@ AhComparison.prototype.renderResultModal = function(options) {
 
     const scrollBtns = modal.querySelectorAll('.ah-compare-scroll');
     const container = modal.querySelector('.ah-compare-container');
+
+    // справка
+    if (modalRefContent) {
+        const ref = modal.querySelector('.modal-title-ref');
+        $(ref).popover({
+            placement: 'bottom',
+            html: true,
+            container: container,
+            content: modalRefContent,
+            trigger: 'focus',
+            template: `
+                 <div class="popover ah-compare-ref__popover">
+                     <div class="arrow"></div>
+                     <div class="popover-content"></div>
+                 </div>`
+        });
+    }
 
     $(modal).on('shown.bs.modal', modalShownHandler);
     modal.addEventListener('click', modalClickHandler);
@@ -134,7 +155,7 @@ AhComparison.prototype.renderResultModal = function(options) {
     function modalClickHandler(e) {
         let target = e.target;
 
-        while (target !== this) {
+        while (target !== this && target) {
             // collapse
             if (target.classList.contains('ah-compare-show-more')) {
                 const prev = target.previousElementSibling;
@@ -300,6 +321,15 @@ AhComparison.prototype.compareStrict = function() {
 
             if (abutmentText === comparingText && abutmentDataCompare === comparingDataCompare) {
                 comparing.classList.add('ah-compare-similar');
+
+                let abutmentSimilars = [comparing.dataset.entityId];
+                if (abutment.hasAttribute('data-similar-entity-ids')) {
+                    const current = JSON.parse(abutment.dataset.similarEntityIds);
+                    abutmentSimilars = abutmentSimilars.concat(current);
+                }
+                abutment.setAttribute('data-similar-entity-ids', JSON.stringify(abutmentSimilars));
+
+                abutment.classList.add('ah-compare-similar');
             }
         });
     });
@@ -667,14 +697,23 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
     const modalContainer = this.modal.querySelector('.ah-compare-container');
     const rows = {
-        mail_chance: {},
+        control: {
+            class: 'ah-compare-row-controls'
+        },
+        mail_chance: {
+            class: 'ah-compare-row-muted'
+        },
         status: {},
-        reg_time: {},
+        reg_time: {
+            class: 'ah-compare-row-muted'
+        },
         name_manager: {},
-        location_metro_district: {},
+        location_metro_district: {
+            class: 'ah-compare-row-muted'
+        },
         user_agent: {},
         phones: {
-            class: 'ah-compare-row-phones',
+            class: 'ah-compare-row-phones ah-compare-row-muted',
             hasShowMore: true,
             showMoreText: 'Телефоны'
         },
@@ -683,11 +722,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
             showMoreText: 'IP-адреса',
             class: 'ah-compare-row-ips'
         },
-        control: {
-            class: 'ah-compare-row-controls'
-        },
         items: {
-            class: 'ah-compare-row-items'
+            class: 'ah-compare-row-items ah-compare-row-muted'
         }
     };
     const statusPatterns = {
@@ -704,12 +740,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         const value = rows[row];
 
         rowsHtml[row] = document.createElement('div');
-        rowsHtml[row].className = 'ah-compare-row';
+        rowsHtml[row].className = `ah-compare-row ${(value.class) ? value.class : ''}`;
         rowsHtml[row].setAttribute('data-row-name', row);
-
-        if (value.class) {
-            rowsHtml[row].classList.add(value.class);
-        }
 
         modalContainer.appendChild(rowsHtml[row]);
         if (value.hasShowMore) {
@@ -730,21 +762,22 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
         const info = parsedEntities[entity];
 
+        rowsHtml.control.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
         rowsHtml.mail_chance.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
         rowsHtml.status.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
-        rowsHtml.reg_time.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-top_big" data-entity-id="${info.id}"></div>`);
+        rowsHtml.reg_time.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
         rowsHtml.name_manager.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
-        rowsHtml.location_metro_district.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-bottom_big" data-entity-id="${info.id}"></div>`);
-        rowsHtml.user_agent.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-bottom_big" data-entity-id="${info.id}"></div>`);
-        rowsHtml.phones.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-top_big ah-compare-cell__padding-bottom_big" data-entity-id="${info.id}"></div>`);
-        rowsHtml.ips.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-top_big ah-compare-cell__padding-bottom_big" data-entity-id="${info.id}"></div>`);
-        rowsHtml.control.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell ah-compare-cell__padding-top_big ah-compare-cell__padding-bottom_big" data-entity-id="${info.id}"></div>`);
+        rowsHtml.location_metro_district.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
+        rowsHtml.user_agent.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
+        rowsHtml.phones.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
+        rowsHtml.ips.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
         rowsHtml.items.insertAdjacentHTML('beforeend', `<div class="ah-compare-cell" data-entity-id="${info.id}"></div>`);
 
         renderEntityCells(info);
     }
 
     function renderEntityCells(info) {
+        const cellControl = rowsHtml.control.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
         const cellMailChance = rowsHtml.mail_chance.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
         const cellStatus = rowsHtml.status.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
         const cellRegTime = rowsHtml.reg_time.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
@@ -753,7 +786,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         const cellUserAgent = rowsHtml.user_agent.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
         const cellPhones = rowsHtml.phones.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
         const cellIps = rowsHtml.ips.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
-        const cellControl = rowsHtml.control.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
+        const cellItems = rowsHtml.items.querySelector(`.ah-compare-cell[data-entity-id="${info.id}"]`);
 
         let control = '';
         let statusClass = 'text-info';
@@ -785,16 +818,18 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
         if (+info.id !== +abutmentId) {
             control += `
-                <button class="btn btn-info btn-xs ah-compare-similar-info-btn" data-entity-id="${info.id}">Совпадения</button>
-                <button class="btn btn-default btn-xs ah-compare-items-list-btn" data-entity-id="${info.id}"
-                title="Загрузить первую страницу объявлений">Объявления (c.1)</button>
+                <button class="btn btn-sm ah-compare-show-abutment-similar-btn" data-entity-id="${info.id}">Совпадения</button>
+            `;
+        } else {
+            control += `
+                <div class="ah-compare-abutment-legend"></div>
             `;
         }
 
         cellControl.insertAdjacentHTML('beforeend', control);
 
         cellMailChance.insertAdjacentHTML('beforeend',`
-            ${(+info.id === +abutmentId) ? `<span class="label label-primary ah-compare-label-abutment">Опорная</span> `: ``}
+            ${(+info.id === +abutmentId) ? '<span class="label label-primary ah-compare-label-abutment">Опорная</span> ': ''}
             <a class="ah-compare-users-user-mail ah-visitable-link" data-entity-id="${info.id}" target="_blank" 
                 href="https://adm.avito.ru/users/user/info/${info.id}">${info.mail}</a>,
             <span> Шанс -</span> ${chance}
@@ -824,7 +859,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         `);
 
         cellUserAgent.insertAdjacentHTML('beforeend',`
-            <i data-compare="userAgent" data-compare-formatted="User-Agent" data-entity-id="${info.id}">${info.userAgent}</i>
+            <b>User-Agent: </b>
+            <span data-compare="userAgent" data-compare-formatted="User-Agent" data-entity-id="${info.id}">${info.userAgent}</span>
         `);
 
         cellPhones.insertAdjacentHTML('beforeend',`
@@ -856,6 +892,14 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         `);
         cellIps.classList.add('ah-compare-collapsible');
 
+        // items
+        if (+info.id !== +abutmentId) {
+            cellItems.insertAdjacentHTML('beforeend', `
+                <button class="btn btn-default btn-xs ah-compare-items-list-btn" data-entity-id="${info.id}"
+                title="Загрузить первую страницу объявлений">Объявления (c.1)</button>
+            `);
+        }
+
         // тултип причина
         $(cellStatus.querySelector(`.ah-compare-users-reason-tooltip`)).tooltip({
             placement: 'bottom',
@@ -885,40 +929,37 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
     });
 
     // controls
-    let abutmentUserItems = []; // тайтлы айтемов опорной УЗ
-    let abutmentUserItemsParsed = false; // айтемы опорной УЗ спарсены
-
     const controlRow = modalContainer.querySelector('[data-row-name="control"]');
     controlRow.addEventListener('click', function (e) {
         const target = e.target;
 
-        // совпадения
-        if (target.classList.contains('ah-compare-similar-info-btn')) {
-
-            const resultTable = document.createElement('table');
-            resultTable.className = 'table table-bordered ah-compare-similar-info-table';
-
-            const dataInfo = JSON.parse(target.dataset.similarInfo);
-            for (let key in dataInfo) {
-                if (!dataInfo.hasOwnProperty(key)) continue;
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${key}</td><td>${dataInfo[key]}</td>`;
-                resultTable.appendChild(row);
-            }
-
-            $(target).popover({
-                html: true,
-                container: modalContainer,
-                placement: 'top',
-                content: resultTable.outerHTML,
-                template: `
-                    <div class="popover ah-popover-destroy-outclicking ah-compare-similar-info-popover">
-                        <div class="arrow"></div>
-                        <div class="popover-content"></div>
-                    </div>`
-            }).popover('show');
+        // совпадения в опорной
+        if (target.classList.contains('ah-compare-show-abutment-similar-btn')) {
+            const entityId = target.dataset.entityId;
+            showAbutmentSimilarInfo(entityId);
         }
 
+        // убрать совпадения с опорной
+        if (target.classList.contains('ah-compare-abutment-legend__reset')) {
+            const allAbutmentSimilars = self.modal.querySelectorAll('.ah-compare-abutment-similar');
+            allAbutmentSimilars.forEach(node => node.classList.remove('ah-compare-abutment-similar'));
+
+            self.compareStrict();
+
+            const legend = target.closest('.ah-compare-abutment-legend');
+            legend.innerHTML = '';
+        }
+    });
+
+    // items
+    let abutmentUserItems = []; // тайтлы айтемов опорной УЗ
+    let abutmentUserItemsParsed = false; // айтемы опорной УЗ спарсены
+
+    const itemsRow = modalContainer.querySelector('[data-row-name="items"]');
+    itemsRow.addEventListener('click', function (e) {
+        const target = e.target;
+
+        // объявления
         if (target.classList.contains('ah-compare-items-list-btn')) {
             const entityId = target.dataset.entityId;
 
@@ -930,9 +971,9 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
                 allBtns.forEach(btn => btn.disabled = true);
 
                 Promise.all([
-                        getUserItems(abutmentId),
-                        getUserItems(entityId)
-                    ])
+                    getUserItems(abutmentId),
+                    getUserItems(entityId)
+                ])
                     .then(result => {
                             renderItems(result[0], abutmentId);
                             abutmentUserItemsParsed = true;
@@ -958,6 +999,36 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
         }
     });
+
+    // показать совпадения на опорной
+    function showAbutmentSimilarInfo(entityId) {
+        const allAbutmentSimilars = self.modal.querySelectorAll('[data-similar-entity-ids]');
+        const abutmentEntitySimilars = [].filter.call(allAbutmentSimilars, node => {
+            return ~JSON.parse(node.dataset.similarEntityIds).indexOf(entityId);
+        });
+        const comparingEntitySimilars = self.modal.querySelectorAll(`.ah-compare-similar[data-entity-id="${entityId}"]`);
+        const abutmentAllSimilars = self.modal.querySelectorAll(`.ah-compare-similar[data-entity-id="${abutmentId}"]`);
+        const allCurrentSimilars = self.modal.querySelectorAll('.ah-compare-abutment-similar');
+
+        allCurrentSimilars.forEach(node => node.classList.remove('ah-compare-abutment-similar'));
+        abutmentAllSimilars.forEach(node => node.classList.remove('ah-compare-similar'));
+        abutmentEntitySimilars.forEach(node => node.classList.add('ah-compare-abutment-similar'));
+        comparingEntitySimilars.forEach(node => node.classList.add('ah-compare-abutment-similar'));
+
+        // legend
+        const abutmentControlLegend = self.modal.querySelector('.ah-compare-abutment-legend');
+        const entityInfo = parsedEntities[`id_${entityId}`];
+        abutmentControlLegend.innerHTML = `
+            <span>
+                Сравнивается с
+                <strong>
+                    <a target="_blank" href="/users/user/info/${entityInfo.id}"  
+                    title="${entityInfo.mail}">${entityInfo.mail}</a>
+                </strong>
+            </span>
+            <button class="close ah-compare-abutment-legend__reset" title="Убрать сравнение">x</button>
+        `;
+    }
 
     // отрисовка объявлений
     function renderItems(htmlStr, entityId) {
@@ -1037,7 +1108,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
     this.compareStrict();
 
     // проверить совпадения
-    const similarBtns = modalContainer.querySelectorAll(`.ah-compare-similar-info-btn`);
+    const similarBtns = modalContainer.querySelectorAll(`.ah-compare-show-abutment-similar-btn`);
     similarBtns.forEach(btn => {
         const entityId = btn.dataset.entityId;
         const cells = modalContainer.querySelectorAll(`.ah-compare-cell[data-entity-id="${entityId}"]`);
@@ -1067,16 +1138,49 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
         if (result.size === 0) {
             const label = document.createElement('span');
-            label.className = 'label label-default';
+            label.className = 'label label-success ah-no-matches-label';
             label.innerHTML = 'Нет совпадений';
 
             btn.replaceWith(label);
         } else {
-            const dataInfo = {};
+            const resultTable = document.createElement('table');
+            resultTable.className = 'table table-bordered ah-compare-similar-info-table';
+
             result.forEach((value, key) => {
-                dataInfo[key] = value.join(', ');
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${key}</td><td>${value.join(', ')}</td>`;
+                resultTable.appendChild(row);
             });
-            btn.setAttribute('data-similar-info', JSON.stringify(dataInfo));
+
+            const className = (result.size === 1) ? 'btn-warning': 'btn-danger';
+            const word = declensionOfNumerals(result.size, ['совпадение', 'совпадения', 'совпадений']);
+            btn.classList.add(className);
+            btn.innerHTML = `${result.size} ${word}`;
+
+            const clonedBtn = btn.cloneNode(true);
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group';
+
+            const info = document.createElement('button');
+            info.className = `btn btn-sm ${className}`;
+            info.innerHTML = `<span class="glyphicon glyphicon-info-sign"></span>`;
+
+            btnGroup.appendChild(clonedBtn);
+            btnGroup.appendChild(info);
+            btn.replaceWith(btnGroup);
+
+            $(info).popover({
+                placement: 'bottom',
+                html: true,
+                container: modalContainer,
+                content: resultTable.outerHTML,
+                trigger: 'focus',
+                template: `
+                     <div class="popover ah-compare-similar-info-popover">
+                         <div class="arrow"></div>
+                         <div class="popover-content"></div>
+                     </div>`
+            });
         }
     });
 };
@@ -1090,7 +1194,14 @@ UsersComparison.prototype.render = function() {
             .then(result => {
                 this.renderResultModal({
                     title: `Сравнение УЗ`,
-                    class: 'ah-compare-modal-users'
+                    class: 'ah-compare-modal-users',
+                    refContent: `
+                        <ul class="ah-compare-ref__list">
+                            <li>В сравнении могут участвовать до ${this._maxCount} УЗ.</li>
+                            <li>В опорной подсвечиваются совпадения со всеми сравниваемыми УЗ.</li>
+                            <li>Клик на количество совпадений в сравниваемой УЗ показывает совпадения только с этой УЗ.</li>
+                        </ul>
+                    `
                 });
                 this.renderEntities(result);
                 resolve();

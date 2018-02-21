@@ -5194,6 +5194,28 @@ select.ah-form-control:focus {
     border-bottom: 1px solid #e5e5e5;
 }
 
+.ah-compare-modal .modal-title-ref {
+    font-size: 14px;
+    color: #969696;
+    cursor: pointer;
+    border-bottom: 1px dotted;
+    outline: none;
+}
+
+.ah-compare-modal .modal-title-ref:hover {
+    color: #cccccc;
+    border-bottom-color: transparent;
+}
+
+.ah-compare-modal .ah-compare-ref__popover {
+    max-width: 500px;
+}
+
+.ah-compare-modal .ah-compare-ref__list {
+    padding-left: 20px;
+    margin: 0;
+}
+
 .ah-compare-modal .modal-dialog {
     margin-top: 25px;
 }
@@ -5212,6 +5234,34 @@ select.ah-form-control:focus {
     border-radius: .25em;
     padding: .2em .6em .3em;
     font-weight: 700;
+}
+
+.ah-compare-modal .ah-no-matches-label {
+    text-transform: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 400;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ah-compare-abutment-legend {
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 2;
+    position: relative;
+    padding-right: 10px;
+    font-size: 13px;
+}
+
+.ah-compare-abutment-legend__reset.close {
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+    top: 5px;
 }
 
 .ah-compare-container {
@@ -5301,12 +5351,9 @@ select.ah-form-control:focus {
     right: 0;
 }
 
-.ah-compare-cell__padding-top_big {
-    padding-top: 4px;
-}
-
-.ah-compare-cell__padding-bottom_big {
-    padding-bottom: 4px;
+.ah-compare-modal-users .ah-compare-cell {
+    padding: 4px 6px;
+    font-size: 14px;
 }
 
 .ah-compare-cell:empty {
@@ -5324,8 +5371,17 @@ select.ah-form-control:focus {
     z-index: -1;
 }
 
-.ah-compare-similar {
-    background-color: #fdd !important;
+.ah-compare-modal .ah-compare-similar {
+    background-color: #fdd;
+}
+
+.ah-compare-modal .ah-compare-abutment-similar {
+    /*background-color: rgba(255, 138, 138, 0.6);*/
+    background-color: #ffdbc3f5;
+}
+
+.ah-compare-modal .ah-compare-abutment-similar.ah-compare-ip-info-btn:not(:hover) {
+    color: #000000;
 }
 
 .ah-compare-user-items-header {
@@ -5337,14 +5393,15 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-similar-info-popover .popover-content {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: 600px;
+    overflow-y: hidden;
     padding: 4px;
 }
 
 .ah-compare-modal .ah-compare-similar-info-table {
     margin: 0;
-    max-width: 300px;
+    width: auto;
+    max-width: 350px;
     table-layout: fixed;
 }
 
@@ -5387,18 +5444,27 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-modal-users .ah-compare-collapsible {
-    max-height: 230px;
+    max-height: 235px;
+}
+
+.ah-compare-modal-users .ah-compare-row:not(:first-child) .ah-compare-cell:not(:empty) {
+    border-top: 1px solid #ddd;
+}
+
+.ah-compare-modal-users .ah-compare-show-more:not(.hidden) + .ah-compare-row .ah-compare-cell {
+    border-top-color: transparent;
 }
 
 .ah-compare-modal-users .ah-compare-row-phones .ah-compare-cell {
-    box-shadow:
-        rgba(204, 204, 204, 0.3) 0px 15px 20px -15px inset,
-        rgba(204, 204, 204, 0.3) 0px -15px 20px -15px inset;
     min-height: 100px;
 }
 
 .ah-compare-modal-users .ah-compare-row-ips .ah-compare-cell {
     min-height: 100px;
+}
+
+.ah-compare-users-reason-tooltip.glyphicon-info-sign {
+    top: 2px;
 }
 
 .ah-compare-items-label {
@@ -5457,13 +5523,14 @@ select.ah-form-control:focus {
     background-color: rgba(204, 204, 204, 0.25);
 }
 
-.ah-compare-row-controls .ah-compare-cell{
-    background-color: rgba(204, 204, 204, 0.25);
+.ah-compare-row-muted .ah-compare-cell {
+    background-color: #f9f9f9;
 }
 
-.ah-compare-row-items .ah-compare-cell {
+.ah-compare-modal-users .ah-compare-row-items .ah-compare-cell {
     max-height: 200px;
     overflow-y: auto;
+    border-top: 1px solid rgb(221, 221, 221);
 }
 
 .ah-compare-items-cell-description {
