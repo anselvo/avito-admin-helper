@@ -5211,6 +5211,10 @@ select.ah-form-control:focus {
     max-width: 500px;
 }
 
+.ah-compare-modal .ah-compare-ref__popover .popover-content {
+    word-break: normal;
+}
+
 .ah-compare-modal .ah-compare-ref__list {
     padding-left: 20px;
     margin: 0;
@@ -5376,7 +5380,6 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-modal .ah-compare-abutment-similar {
-    /*background-color: rgba(255, 138, 138, 0.6);*/
     background-color: #ffdbc3f5;
 }
 
@@ -5396,6 +5399,7 @@ select.ah-form-control:focus {
     max-height: 600px;
     overflow-y: hidden;
     padding: 4px;
+    word-break: normal;
 }
 
 .ah-compare-modal .ah-compare-similar-info-table {
