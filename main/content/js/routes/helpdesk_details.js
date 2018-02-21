@@ -1776,21 +1776,21 @@ function createHyperLinksIpInTechInfo() {
 
         // поиск ip в юзерах и айтемах
         $(ipBlock).append('<span class="sh-ip-links"></span>');
-        $('.sh-ip-links').append(' | <a href="https://adm.avito.ru/users/search?ip=' + text + '" target="_blank">users</a>');
-        $('.sh-ip-links').append(' | <a href="https://adm.avito.ru/items/search?ip=' + text + '" target="_blank">items</a>');
-        $('.sh-ip-links').append(' | <a href="https://adm.avito.ru/system/access?ip=' + text + '" target="_blank">access</a>');
+        $('.sh-ip-links').append(` | <a href="https://adm.avito.ru/users/search?ip=${text}" target="_blank">users</a>`);
+        $('.sh-ip-links').append(` | <a href="https://adm.avito.ru/items/search?ip=${text}" target="_blank">items</a>`);
+        $('.sh-ip-links').append(` | <a href="https://adm.avito.ru/system/access?ip=${text}" target="_blank">access</a>`);
     }
 }
 
 function createHyperLinksInCommentsHeading() {
-    if ( $('div.helpdesk-ticket-single-comment-heading a[href ^= "https://adm.avito.ru/users/search?email="]').length > 0 ) return;
+    if ( $(`div.helpdesk-ticket-single-comment-heading a[href ^= "https://adm.avito.ru/users/search?email="]`).length > 0 ) return;
 
     var regForMail = /\b[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}(?!("|(<\/?a)))\b/gi;
 
     for (var i = 0; i < $('div.helpdesk-ticket-single-comment-heading').length; i++) {
         if ( $('div.helpdesk-ticket-single-comment-heading').slice(i, i + 1).html().search(regForMail) + 1 ) {
             // console.log('mails Comments Heading find');
-            $('div.helpdesk-ticket-single-comment-heading').slice(i, i + 1).html( $('div.helpdesk-ticket-single-comment-heading').slice(i, i + 1).html().replace(regForMail, '<a target="_blank" href="https://adm.avito.ru/users/search?email=$&">$&</a>') );
+            $('div.helpdesk-ticket-single-comment-heading').slice(i, i + 1).html( $('div.helpdesk-ticket-single-comment-heading').slice(i, i + 1).html().replace(regForMail, `<a target="_blank" href="https://adm.avito.ru/users/search?email=$&">$&</a>`) );
         }
     }
 }
@@ -1807,7 +1807,7 @@ function showReasonBlockedUser() {
         var blockedUserId = $('.helpdesk-additional-info-panel:eq(0) div div:eq(0) a').text();
         $('div.helpdesk-usersidebar-status:first').addClass('ah-blocked-user');
 
-        var url = "https://adm.avito.ru/users/user/info/" + blockedUserId;
+        var url = `https://adm.avito.ru/users/user/info/${blockedUserId}`;
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
@@ -1889,7 +1889,7 @@ function addCommentOnUserFromTicket() {
 function commentUserFromTicketHandler(userId, xhr) {
 	$('#ah-loading-layer').hide();
 	
-	if ((xhr.status >= 400 || xhr.status < 200) && xhr.responseURL == 'https://adm.avito.ru/comment') {
+	if ((xhr.status >= 400 || xhr.status < 200) && xhr.responseURL === `https://adm.avito.ru/comment`) {
 		setTimeout(() => {
 			alert('Произошла техническая ошибка при попытке оставить комментарий.\n'+ xhr.status +', '+ xhr.statusText);
 		}, 100);
@@ -1918,7 +1918,7 @@ function unblockUserHD() {
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/activate/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/activate/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
@@ -1936,7 +1936,7 @@ function unblockUserHD() {
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/unblock/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/unblock/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
@@ -1954,7 +1954,7 @@ function unblockUserHD() {
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/unblock_relevant/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/unblock_relevant/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
@@ -2007,7 +2007,7 @@ function changeHrefs() {
         for (var i = 0; i < n; i++) {
             if ($('.helpdesk-html-view a').slice(i, i + 1).text().search(regAlterSearchMail) + 1) {
                 var text = $('.helpdesk-html-view a').slice(i, i + 1).text();
-                var newtext = text.replace(regAlterSearchMail, '<a target="_blank" href="https://adm.avito.ru/items/search?user=$&">$&</a>');
+                var newtext = text.replace(regAlterSearchMail, `<a target="_blank" href="https://adm.avito.ru/items/search?user=$&">$&</a>`);
                 $('.helpdesk-html-view a').slice(i, i + 1).replaceWith(newtext);
             }
         }
@@ -2020,7 +2020,7 @@ function changeHrefs() {
         for (var i = 0; i < n; i++) {
             if ($('.helpdesk-html-view a').slice(i, i + 1).text().search(regAlterSearchMail) + 1) {
                 var text = $('.helpdesk-html-view a').slice(i, i + 1).text();
-                var newtext = text.replace(regAlterSearchMail, '<a target="_blank" href="https://adm.avito.ru/users/search?email=$&">$&</a>');
+                var newtext = text.replace(regAlterSearchMail, `<a target="_blank" href="https://adm.avito.ru/users/search?email=$&">$&</a>`);
                 $('.helpdesk-html-view a').slice(i, i + 1).replaceWith(newtext);
             }
         }
@@ -2037,13 +2037,13 @@ function addElementsTicketTitle() {
     email = email.replace(/[\(\)]/g, '');
 
     if (ticketTitle.indexOf('Заблокированное объявление №')+1) {
-        ticketTitle = ticketTitle.replace(/[0-9]+\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+        ticketTitle = ticketTitle.replace(/[0-9]+\b/g, `<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>`);
         $('.hd-ticket-header-title').html(ticketTitle);
     }
     if (email !== '') {
         $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left').append('<span class="sh-links"></span>');
-        $('.sh-links').append(' | <a href="https://adm.avito.ru/users/search?email=' + email + '" target="_blank">in users</a>');
-        $('.sh-links').append(' | <a href="https://adm.avito.ru/items/search?user=' + email + '" target="_blank">in items</a>');
+        $('.sh-links').append(` | <a href="https://adm.avito.ru/users/search?email=${email}" target="_blank">in users</a>`);
+        $('.sh-links').append(` | <a href="https://adm.avito.ru/items/search?user=${email}" target="_blank">in items</a>`);
     }
 }
 //++++++++++ элементы в тайтле тикета ++++++++++//
@@ -2289,7 +2289,7 @@ function searchUser(email, currentTicketId) {
     // анимация загрузки
     loadingBar('#ah-rightPanel', 80);
 
-    var href = 'https://adm.avito.ru/users/search?email='+email;
+    var href = `https://adm.avito.ru/users/search?email=${email}`;
     
     var xhr = new XMLHttpRequest();
     xhr.open("GET", href, true);
@@ -2310,7 +2310,7 @@ function searchUser(email, currentTicketId) {
 }
 
 function searchIdInItems(mail, currentTicketId) {
-    var hrefAdmShowItems = "https://adm.avito.ru/items/search?user="+mail;
+    var hrefAdmShowItems = `https://adm.avito.ru/items/search?user=${mail}`;
 
     var requestAdmShowItems = new XMLHttpRequest();
     requestAdmShowItems.open("GET", hrefAdmShowItems, true);
@@ -2326,7 +2326,7 @@ function searchIdInItems(mail, currentTicketId) {
                 } else {
                     var admIdUser = $(rAdmShowItems).find('.item_user_login:eq(0)').attr('href').split('/');
 
-                    $('#sh-expected-hacked-userid').attr("href", "https://adm.avito.ru/users/user/info/"+admIdUser);
+                    $('#sh-expected-hacked-userid').attr("href", `https://adm.avito.ru/users/user/info/${admIdUser}`);
 
                     showUserByID(admIdUser[4], mail, currentTicketId);
                 }
@@ -2336,7 +2336,7 @@ function searchIdInItems(mail, currentTicketId) {
 }
 
 function showUserByID(admIdUser, mail, currentTicketId) {
-    var hrefAdmShowUserByID = "https://adm.avito.ru/users/user/info/"+admIdUser;
+    var hrefAdmShowUserByID = `https://adm.avito.ru/users/user/info/${admIdUser}`;
 
     var requestShowUserByID = new XMLHttpRequest();
     requestShowUserByID.open("GET", hrefAdmShowUserByID, true);
@@ -2357,7 +2357,7 @@ function showUserByID(admIdUser, mail, currentTicketId) {
 }
 
 function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
-    var hrefAdmShowHistoryEmail = "https://adm.avito.ru/users/user/"+admIdUser+"/emails/history";
+    var hrefAdmShowHistoryEmail = `https://adm.avito.ru/users/user/${admIdUser}/emails/history`;
 
     var requestHistory = new XMLHttpRequest();
     requestHistory.open("GET", hrefAdmShowHistoryEmail, true);
@@ -2402,7 +2402,7 @@ function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhra
     $('#sh-expected-hacked-userid-current').detach();
     $('#sh-expected-hacked-userid').append('<div id="sh-expected-hacked-userid-current"></div>');
 
-    $('#sh-expected-hacked-userid-current').append('<b>Предполагаемый ID:</b> <a  href="https://adm.avito.ru/users/user/info/'+admIdUser+'" target="_blank">'+admIdUser+'</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>'+statusUser+'</b></span> | <b>E-mail был изменен <span style="color:blue;">'+countEmailsHistory+'</span>' + countPhrase + '<b>');
+    $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="https://adm.avito.ru/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
 
     if (statusUser.indexOf('Blocked') + 1) {
         $('span.sh-expected-user-status').css('color', 'red');
@@ -2442,24 +2442,24 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
 
     if (rightPanelSettings.indexOf('rp-login')+1) {
         let login = $(response).find('.form-group:contains(Логин) .form-control-static').text();
-        $(mainTable).append('<tr><td>Login</td><td><a href="https://adm.avito.ru/items/search?user='+login+'" target="_blank">'+login+'</a></td></tr>');
+        $(mainTable).append(`<tr><td>Login</td><td><a href="https://adm.avito.ru/items/search?user=${login}" target="_blank">${login}</a></td></tr>`);
     }
 
     if (rightPanelSettings.indexOf('rp-email')+1) {
         let email = $(response).find('.js-fakeemail-field').text();
-        $(mainTable).append('<tr>' +
-                '<td>E-mail</td>' +
-                '<td><div id="ah-rp-email">' +
-                    '<a href="https://adm.avito.ru/users/search?email='+email+'" target="_blank">'+email+'</a> ' +
-                    '<span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span>' +
-                    '<button id="sh-copy-mail-right-panel" class="ah-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">' +
-                        '<span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>' +
-                    '</button>' +
-                    '<button id="sh-automail-right-panel" class="ah-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;">' +
-                        '<span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span>' +
-                    '</button>' +
-                '</div></td>' +
-            '</tr>');
+        $(mainTable).append(`<tr>
+                <td>E-mail</td>
+                <td><div id="ah-rp-email">
+                    <a href="https://adm.avito.ru/users/search?email=${email}" target="_blank">${email}</a>
+                    <span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span>
+                    <button id="sh-copy-mail-right-panel" class="ah-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">
+                        <span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>
+                    </button>
+                    <button id="sh-automail-right-panel" class="ah-default-btn" type="button" title="Копирует E-mail в буфер, заменяя последние 3 символа перед @ на звездочки" style="padding: 2px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;">
+                        <span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">О</span>
+                    </button>
+                </div></td>
+            </tr>`);
 
         emailHistory('#ah-rp-email', id);
 
@@ -2527,7 +2527,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     // ИНФОРМАЦИЯ О ОБЪЯВЛЕНИЯХ И БАБЛУ
     if (rightPanelSettings.indexOf('rp-item')+1) {
         let items = $(response).find('.form-group:contains(Объявления) .form-control-static').html().split(',');
-        $(mainTable).append('<tr><td>Items</td><td><a href="https://adm.avito.ru/items/search?user_id='+id+'" target="_blank">'+items[0]+'</a></td></tr>');
+        $(mainTable).append(`<tr><td>Items</td><td><a href="https://adm.avito.ru/items/search?user_id=${id}" target="_blank">${items[0]}</a></td></tr>`);
     }
 
     if (rightPanelSettings.indexOf('rp-subscription')+1) {
@@ -2546,7 +2546,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             checkVasUsageHtml = `<span class="text-muted">|</span> <button class="btn btn-link ah-pseudo-link ah-rp-check-vas-usage-btn" type="button" data-user-id="${id}">Проверить VAS</button>`;
         }
 
-        $(mainTable).append('<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/'+id+'" target="_blank">'+wallet+'</a> '+checkVasUsageHtml+'</td></tr>');
+        $(mainTable).append(`<tr><td>Account</td><td><a href="https://adm.avito.ru/users/account/info/${id}" target="_blank">${wallet}</a> ${checkVasUsageHtml}</td></tr>`);
 
         if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
             const checkVasUsageBtn = document.querySelector('.ah-rp-check-vas-usage-btn');
@@ -2646,12 +2646,11 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
             }
 
-            $('#ah-phoneHistory').append('<div id="'+number+'" ah-phone-status="'+statusPhone+'" style="padding: 3px">' +
-                verify +
-                ' <a href="https://adm.avito.ru/users/search?phone='+number+'" target="_blank">'+number+'</a> ' +
-                '<span class="ah-phone-verify-date" title="Время верификации">('+ phoneVerifyDate + ')</span> ' +
-                unVerify +
-                '</div>');
+            $('#ah-phoneHistory').append(`<div id="${number}" ah-phone-status="${statusPhone}" style="padding: 3px">
+                ${verify} <a href="https://adm.avito.ru/users/search?phone=${number}" target="_blank">${number}</a> 
+                <span class="ah-phone-verify-date" title="Время верификации">(${phoneVerifyDate})</span> 
+                ${unVerify}
+                </div>`);
 
             if ($(phoneInfo).find('i').hasClass('glyphicon-book')) {
                 $('#'+number+' a').attr('title', 'Номер в черном списке').css('color', 'black');
@@ -2738,7 +2737,7 @@ function rightPanelUnblockUser() {
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/activate/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/activate/${id}`, true);
         request.send();
 
         infoAboutUser();
@@ -2754,7 +2753,7 @@ function rightPanelUnblockUser() {
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/unblock/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/unblock/${id}`, true);
         request.send();
 
         infoAboutUser();
@@ -2770,7 +2769,7 @@ function rightPanelUnblockUser() {
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/unblock_relevant/'+id, true);
+        request.open("GET", `https://adm.avito.ru/users/user/unblock_relevant/${id}`, true);
         request.send();
 
         infoAboutUser();
@@ -3094,7 +3093,7 @@ function parseIPInDetailsPanel(block, className) {
 
             var itemHtml = $(item).html();
             if ( ~itemHtml.search(regForIp) ) {
-                $(item).html( itemHtml.replace(regForIp, '<span class="ah-matched-ip-container"><a target="_blank" href="https://adm.avito.ru/system/access?ip=$&" class="'+ className +'">$&</a></span>') );
+                $(item).html( itemHtml.replace(regForIp, `<span class="ah-matched-ip-container"><a target="_blank" href="https://adm.avito.ru/system/access?ip=$&" class="${className}">$&</a></span>`) );
             }
         });
     }
@@ -3764,10 +3763,10 @@ function showParsedItemIdsInTicket(ids) {
     $(body).append('<div class="ah-all-parsed-items"></div>');
     var parsedContainer = $(body).find('.ah-all-parsed-items');
     ids.forEach(function(id) {
-        $(parsedContainer).append('<div class="ah-parsed-item-row"><div class="single-parsed-item-header" data-item-id="'+ id +'"><span class="ah-single-parsed-item"><input class="ah-transparent-checkbox" type="checkbox" id="parsed-item-'+ id +'" value="'+ id +'" checked><label for="parsed-item-'+ id +'"><a target="_blank" href="https://adm.avito.ru/items/item/info/'+ id +'">'+ id +'</a><span class="parsed-item-info"></span></label></span></div><div class="ah-parsed-item-user-info-details ah-popover" style="left: calc(100% + 10px);"></div></div>');
+        $(parsedContainer).append(`<div class="ah-parsed-item-row"><div class="single-parsed-item-header" data-item-id="${id}"><span class="ah-single-parsed-item"><input class="ah-transparent-checkbox" type="checkbox" id="parsed-item-${id}" value="${id}" checked><label for="parsed-item-${id}"><a target="_blank" href="https://adm.avito.ru/items/item/info/${id}">${id}</a><span class="parsed-item-info"></span></label></span></div><div class="ah-parsed-item-user-info-details ah-popover" style="left: calc(100% + 10px);"></div></div>`);
     });
 
-    $(footer).append('<a target="_blank" class="ah-link-btn" data-btn-info="items-search" href="https://adm.avito.ru/items/search?query='+ ids.join('%7C') +'" title="Поиск отмеченных объявлений в items/search">Найти</a><button type="button" class="ah-default-btn" style="" data-btn-info="check-users" title="Получение информации об учетных записях, на которых размещены отмеченные объявления">Проверить УЗ</button>');
+    $(footer).append(`<a target="_blank" class="ah-link-btn" data-btn-info="items-search" href="https://adm.avito.ru/items/search?query=${ids.join('%7C')}" title="Поиск отмеченных объявлений в items/search">Найти</a><button type="button" class="ah-default-btn" style="" data-btn-info="check-users" title="Получение информации об учетных записях, на которых размещены отмеченные объявления">Проверить УЗ</button>`);
 
 
     // обработчики
@@ -3790,7 +3789,7 @@ function showParsedItemIdsInTicket(ids) {
         $(checked).each(function(i, item) {
             checkedIds.push( $(item).val() );
         });
-        $(searchLink).attr('href', 'https://adm.avito.ru/items/search?query='+ checkedIds.join('%7C'));
+        $(searchLink).attr('href', `https://adm.avito.ru/items/search?query=${checkedIds.join('%7C')}`);
 
         $(counter).text( '('+ $(checked).length +' из '+ $(checkboxes).length+')' );
 
@@ -3837,7 +3836,7 @@ function getUserIdByItem(itemId) {
     var label = $(popup).find('.single-parsed-item-header[data-item-id="'+ itemId +'"] label');
     var parsedItemInfo = $(label).find('.parsed-item-info');
 
-    var url = 'https://adm.avito.ru/items/item/info/' + itemId;
+    var url = `https://adm.avito.ru/items/item/info/${itemId}`;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
@@ -3902,7 +3901,7 @@ function getUserInfoByItem(userId) {
     var label = $(popup).find('.single-parsed-item-header [id^="parsed-item"]:checked').next().find('[data-user-id="'+ userId +'"]').parents('label[for^="parsed-item"]');
     var itemInfo = $(label).find('.parsed-item-info');
 
-    var url = 'https://adm.avito.ru/users/user/info/' + userId;
+    var url = `https://adm.avito.ru/users/user/info/${userId}`;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
@@ -3935,7 +3934,7 @@ function getUserInfoByItem(userId) {
             $(label).find('.parsed-item-info .ah-loading-indicator-text').remove();
 
             if (isFinite(userId)) {
-                $(itemInfo).append('<span style="margin-left: 4px;">| <b>УЗ</b>: <a target="_blank" href="https://adm.avito.ru/users/user/info/'+ userId +'">'+ userId +'</a><span class="ah-parsed-item-user-info" style="margin-left: 4px;"><i>инфо</i></span></span>');
+                $(itemInfo).append(`<span style="margin-left: 4px;">| <b>УЗ</b>: <a target="_blank" href="https://adm.avito.ru/users/user/info/${userId}">${userId}</a><span class="ah-parsed-item-user-info" style="margin-left: 4px;"><i>инфо</i></span></span>`);
 
                 var userInfo = $(itemInfo).find('.ah-parsed-item-user-info');
                 if (!shopValue || !subscriptionValue || !persManagerValue) {

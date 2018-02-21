@@ -68,7 +68,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 
     $.ajax({
         type: 'GET',
-        url: 'https://adm.avito.ru/js/locations?json=true&id='+locationID,
+        url: `https://adm.avito.ru/js/locations?json=true&id=`+locationID,
         success: function(data) {
             if (data.length === 0) {
                 abTestHighlight(categoryID, locationID, containsOption);
@@ -580,7 +580,7 @@ function addElementsForEachItemNew() {
         class: 'btn btn-default green',
         xernia: lastReject,
         click: function () {
-            window.open('https://adm.avito.ru/moderation/statistics/user/actions', '_blank');
+            window.open(`https://adm.avito.ru/moderation/statistics/user/actions`, '_blank');
         }
     });
     $('#apply_all').append(butShow);

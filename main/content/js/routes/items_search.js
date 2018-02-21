@@ -69,7 +69,7 @@ function itemsInfoForItems() {
 }
 
 function loadItemInfo(id) {
-    let url = 'https://adm.avito.ru/items/item/info/'+id;
+    let url = `https://adm.avito.ru/items/item/info/`+id;
 
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -140,11 +140,11 @@ function loadItemInfo(id) {
                 '<div><b>Дата:</b> ' + lastTime + '</div>'
             );
 
-            if (ip) $('.ah-item-info-status[itemid="' + id + '"]').append(
-                '<hr style="margin: 3px 0 3px">' +
-                '<div>' +
-                '<b>IP:</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip='+ip+'" target="_blank">'+ip+'</a>' +
-                '</div>'
+            if (ip) $('.ah-item-info-status[itemid="' + id + '"]').append(`
+                <hr style="margin: 3px 0 3px">
+                <div>
+                <b>IP:</b> <a class="ipLinks" href="https://adm.avito.ru/items/search?ip=${ip}" target="_blank">${ip}</a>
+                </div>`
             );
         }
     }
@@ -239,7 +239,7 @@ function smartSNP(id) {
         '<span id="isUseSNP" class="ah-wheelSNP" title="Информирует о смене пароля:\n- СЕРЫЙ - пароль (snp) был отправлен менее 3 раз\n- КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз">SNP</span>' +
         '<input id="snp" type="button" class="btn btn-primary" value="SNP" title="Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана" style="margin-left: 5px;" disabled/>');
 
-    var href = 'https://adm.avito.ru/users/user/info/'+id;
+    var href = `https://adm.avito.ru/users/user/info/${id}`;
     var cancelLoadSNP = 0;
 
     var request = new XMLHttpRequest();
@@ -274,7 +274,7 @@ function smartSNP(id) {
         }
     };
 
-    var hrefEmailHistory = 'https://adm.avito.ru/users/user/'+id+'/emails/history';
+    var hrefEmailHistory = `https://adm.avito.ru/users/user/${id}/emails/history`;
 
     var xhrEmailHistory = new XMLHttpRequest();
     xhrEmailHistory.open("GET", hrefEmailHistory, true);
@@ -301,7 +301,7 @@ function smartSNP(id) {
         var name = $(this).attr('name');
 
         var xhrSendSNP = new XMLHttpRequest();
-        xhrSendSNP.open("POST", 'https://adm.avito.ru/users/user/edit/'+id+'/password', true);
+        xhrSendSNP.open("POST", `https://adm.avito.ru/users/user/edit/${id}/password`, true);
         xhrSendSNP.send(null);
         xhrSendSNP.onreadystatechange=function() {
             if (xhrSendSNP.readyState == 4 && xhrSendSNP.status == 200) {
@@ -495,7 +495,7 @@ function getSearchInformHref(queryStringParams) {
 		query += encodeURIComponent(key) +'='+ queryStringParams[key] +'&';
 	}
 	// console.log(query);
-	var href = 'https://adm.avito.ru/items/search?'+ query;
+	var href = `https://adm.avito.ru/items/search?${query}`;
 	href += 'search_inform_link&search_inform_location_id='+ queryStringParams['location_id[]'];
 	
 	return href;

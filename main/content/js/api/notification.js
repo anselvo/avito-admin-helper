@@ -104,7 +104,7 @@ function isItemChecked(reason, reasonText, item, time) {
 				var msg = jsonParse[0].msg;
 				var modAgentID = jsonParse[0].modAgentID;
 				
-				notificationBarAdd('checked'+itemID,'allowListItemHeaderChecked', 'Allow List', 'allowListItemBodyChecked', '<span style="color:black;"><a href="https://adm.avito.ru/items/item/info/'+itemID+'" target="_blank">'+itemID+'</a> is checked by </span><span style="color:#9C27B0;">'+modAgentID+'</span><br><span>MSG: '+msg+'</span>');
+				notificationBarAdd('checked'+itemID,'allowListItemHeaderChecked', 'Allow List', 'allowListItemBodyChecked', `<span style="color:black;"><a href="https://adm.avito.ru/items/item/info/${itemID}" target="_blank">${itemID}</a> is checked by </span><span style="color:#9C27B0;">${modAgentID}</span><br><span>MSG: ${msg}</span>`);
 			
 				$('#checked'+itemID).click(function () {
 					localStorage.allowList = localStorage.allowList.replace('|'+item+'&'+time,'');
@@ -183,7 +183,7 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 			var len = jsonParse.length;
 			
 			if (len > 0) {
-				window.open('https://adm.avito.ru/items/item/info/'+item+'?st='+encodeURIComponent(time));
+				window.open(`https://adm.avito.ru/items/item/info/${item}?st=${encodeURIComponent(time)}`);
 				changeAllowListItem(item, time, 'modAgentID', agentlogin);
 				changeAllowListItem(item, time, 'status', 'checking');
 				$('[item='+item+']').parents('.ah-notificationBarItem').find('.ah-notificationRemove').click();

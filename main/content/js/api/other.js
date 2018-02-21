@@ -233,7 +233,7 @@ function renderSearchUserBySocialPopup(avitoSocialInfo) {
     });
 }
 function getSocialSearchResults(prefix, socialId) {
-    var url = 'https://adm.avito.ru/users/search?login=' + prefix.id + '_' + socialId;
+    var url = `https://adm.avito.ru/users/search?login=${prefix.id}_${socialId}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -252,7 +252,7 @@ function getSocialSearchResults(prefix, socialId) {
                 var userId = $(response).find('.js-user-id').text();
                 if (!userId)
                     userId = 'error';
-                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html('<a target="_blank" class="ah-nocontent-default-link" href="https://adm.avito.ru/users/user/info/' + userId + '">' + userId + '</a>').removeClass('ah-loading-indicator-text');
+                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html(`<a target="_blank" class="ah-nocontent-default-link" href="https://adm.avito.ru/users/user/info/${userId}">${userId}</a>`).removeClass('ah-loading-indicator-text');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(0)').css('color', 'black');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"]').css('font-weight', '700');
             }
@@ -398,7 +398,7 @@ function addBindedWLLink(elem, toDay, route) {
             newLinkText = isFinite(operationId) ? 'ID операции' : 'error';
             dateStart = $(elem).find('td').find('[href^="/billing/walletlog"]').attr('href').split('&date=');
             dateStart = dateStart[1].split(' ')[0];
-            $(block).find('a[href^="/items/item/info"]').after(' | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=' + operationId + '&date=' + dateStart + '%2000:00+-+' + toDay + '%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">' + newLinkText + '</a>');
+            $(block).find('a[href^="/items/item/info"]').after(` | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">'${newLinkText}</a>`);
             break;
 
         case '/billing/walletlog':
@@ -410,7 +410,7 @@ function addBindedWLLink(elem, toDay, route) {
             newLinkText = isFinite(operationId) ? 'ID операции' : 'error';
             dateStart = $(elem).find('td:eq(2)')[0].childNodes[4].nodeValue.replace(/^\s+/, '');
             dateStart = dateStart.split(' ')[0];
-            $(block).append(' | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=' + operationId + '&date=' + dateStart + '%2000:00+-+' + toDay + '%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">' + newLinkText + '</a>');
+            $(block).append(` | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">${newLinkText}</a>`);
             break;
     }
 }
