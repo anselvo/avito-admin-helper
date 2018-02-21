@@ -291,7 +291,7 @@ function setBudgetIcon(script) {
 }
 
 function setConnectInfo(info) {
-    connectInfo = info;
+    if (info) connectInfo = info;
 }
 
 function setAuthoritiesToStorage(authorities) {
