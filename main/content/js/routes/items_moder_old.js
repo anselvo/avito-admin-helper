@@ -202,7 +202,7 @@ function showComparePhotosPre(id, appendID) {
     $('#'+appendID).append('<div id="price'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Цена"></div>');
     $('#'+appendID).append('<div id="photo'+appendID+'" class="ah-itemPhotosBlock ah-infoBlockOnPopupWindow"></div>');
 
-    var href = `${global.connectInfo.adm_url}/items/item/info/`${id};
+    var href = `${global.connectInfo.adm_url}/items/item/info/${id}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", href, true);
