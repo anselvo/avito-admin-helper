@@ -141,7 +141,7 @@ function gerRegulationHead(regulation) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: `${global.connectInfo.spring_url}/assistant/graphs/head/`+ regulation.uuid
+            url: `${global.connectInfo.spring_url}/assistant/graphs/head/${regulation.uuid}`
         },
 
         function(response) {
@@ -226,7 +226,7 @@ function getVertexChildren(children) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: `${global.connectInfo.spring_url}/assistant/list/?children=`+ children
+            url: `${global.connectInfo.spring_url}/assistant/list/?children=${children}`
         },
 
         function(response) {
