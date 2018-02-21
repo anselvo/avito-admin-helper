@@ -120,7 +120,7 @@ function getShopModerationTemplates() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: "http://spring.avitoadm.ru/traffic/template/list"
+                url: `${connectInfo.spring_url}/traffic/template/list`
             },
             function (response) {
                 if (response === 'error') {

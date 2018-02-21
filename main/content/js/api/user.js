@@ -97,7 +97,7 @@ function usersWallet(userId, offset) {
         .append('<div class="ah-userTransactions"></div>');
 
 
-    let href = 'http://spring.avitoadm.ru/avito/user/wallet/log';
+    let href = `${connectInfo.spring_url}/avito/user/wallet/log`;
 
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',

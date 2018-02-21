@@ -162,7 +162,7 @@ function allowItem() {
 }
 
 function allowItemRequest(id) {
-    let href = 'http://spring.avitoadm.ru/avito/item/activate';
+    let href = `${connectInfo.spring_url}/avito/item/activate`;
     
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
