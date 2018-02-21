@@ -131,7 +131,7 @@ function countMoneyWalletlog() {
                     statusId = $(this).val();
                 }
             });
-            return `${global.connectInfo.adm_url}/billing/walletlog/?operationIds=${btnData.oid}&date=${changedDate}&operationStatusIds[]=${statusId}`;
+            return `/billing/walletlog/?operationIds=${btnData.oid}&date=${changedDate}&operationStatusIds[]=${statusId}`;
         })();
         let btn = getCountMoneyBtn(btnData);
         $(this).find('td:first').append(btn);
