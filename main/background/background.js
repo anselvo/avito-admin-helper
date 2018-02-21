@@ -592,7 +592,7 @@ function sendLogToDB(type, reason, count, items_id) {
 	let jsonRow = JSON.stringify(row);
 	
 	let xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/mod_stat/add.php', true);
+	xhr.open('POST', `${connectInfo.ext_url}/journal/include/php/mod_stat/add.php`, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.send("param="+jsonRow);
 	xhr.onreadystatechange = function () {
