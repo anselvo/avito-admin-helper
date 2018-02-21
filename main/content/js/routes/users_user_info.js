@@ -388,11 +388,11 @@ function unverifyPhones(id) {
     $('.sh-unverify-phone-btn').unbind().click(function () {
         var phone = $(this).data('phone');
 
-        $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номера</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
+        $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номера</b></span><span class="ah-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
 
         $('#ah-popup-layer-blackout-btn').show();
 
-        $('#sh-unverify-url-container span.sh-circle-close-btn').click(function () {
+        $('#sh-unverify-url-container span.ah-circle-close-btn').click(function () {
             $('#ah-popup-layer-blackout-btn').hide();
             $('#sh-unverify-url-container').detach();
             return;
@@ -459,7 +459,7 @@ function unverifyPhones(id) {
             if (!navbarHeight) {
                 navbarHeight = 50;
             }
-            $('body').append('<div id="sh-unverify-phones-multi-container" style="position: fixed; top: ' + (navbarHeight + 10) + 'px; right: 10px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 2;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span>Добавленные номера:</span><ul id="sh-added-phone-multi-unverify-list" style="padding-left: 20px; margin-top: 4px;"></ul><hr class="ah-default-hr"><div id="sh-multi-unverify-action-btns"></div></div>');
+            $('body').append('<div id="sh-unverify-phones-multi-container" style="position: fixed; top: ' + (navbarHeight + 10) + 'px; right: 10px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 2;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="ah-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span>Добавленные номера:</span><ul id="sh-added-phone-multi-unverify-list" style="padding-left: 20px; margin-top: 4px;"></ul><hr class="ah-default-hr"><div id="sh-multi-unverify-action-btns"></div></div>');
             $('#sh-multi-unverify-action-btns').append('<div><button type="button" class="ah-default-btn sh-multi-unverify-btn" style="width: 100%;" title="">Отвязать для...</button><br><button type="button" class="ah-default-btn sh-multi-unverify-btn" style="width: 100%; margin-top: 4px;" title="Отвязывает добавленные номера и проставляет на текущей УЗ введенный комментарий">Просто отвязать</button><div>');
             $('#sh-multi-unverify-action-btns').append('<button type="button" class="ah-default-btn" style="width: 100%; display: none" title="" id="sh-close-and-reboot-btn">Перезагрузить страницу</button>');
 
@@ -492,7 +492,7 @@ function unverifyPhones(id) {
             $('#sh-added-phone-multi-unverify-list').append('<li><span class="sh-added-phone-multi-unverify">' + $(this).data('phone') + '</span></li>');
         }
 
-        $('#sh-unverify-phones-multi-container span.sh-circle-close-btn').click(function () {
+        $('#sh-unverify-phones-multi-container span.ah-circle-close-btn').click(function () {
             $('#sh-unverify-phones-multi-container').detach();
             $('.ah-unverify-phones-multi').removeClass('ah-active-btn');
         });
@@ -543,11 +543,11 @@ function unverifyPhones(id) {
                 });
 
             } else {
-                $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="sh-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
+                $('body').append('<div id="sh-unverify-url-container" style="position: fixed; top: 0; right: 0; left:0; bottom: 0; margin: auto; width: 450px; height: 220px; background-color: white; box-shadow: 0 0 10px; border-radius: 4px; padding: 10px; z-index: 9999;"><span style="font-size: 16px;"><b>Отвязка номеров</b></span><span class="ah-circle-close-btn" style="float: right; margin: 0 0 0 20px;"></span><hr class="ah-default-hr"><span style="display: block; font-weight: bold;">E-mail, ссылка на УЗ или ссылка на тикет</span><div class="input-group" style="margin-top: 2px;"><input type="text" class="form-control" id="sh-unverify-comment-input" value="" maxlength=""><span class="input-group-btn"><input type="button" class="btn btn-primary" value="Продолжить" title="" id="sh-unverify-url-ok-btn"></span></div><span style="display: block; margin-top: 10px;"> - При указании ссылки на тикет - ставит комменнтарий с указанной ссылкой на текущей УЗ.</span><span style="display: block;"> - При указании ссылки на УЗ - ставит комментарии на обеих УЗ.</span><span style="display: block;"> - При указании E-mail - ставит комменнтарий с указанным E-mail на текущей УЗ (<b>\'Номер\'</b> отвязан для <b>\'E-mail\'</b>).</span></div>');
 
                 $('#ah-popup-layer-blackout-btn').show();
 
-                $('#sh-unverify-url-container span.sh-circle-close-btn').click(function () {
+                $('#sh-unverify-url-container span.ah-circle-close-btn').click(function () {
                     $('#ah-popup-layer-blackout-btn').hide();
                     $('#sh-unverify-url-container').detach();
                     return;
