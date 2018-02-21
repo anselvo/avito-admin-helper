@@ -255,7 +255,7 @@ function usersInfo(id, itemid, offset, query) {
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
-            $('#lastIP').append(visitIpTime + `- <a href="${global.connectInfo.adm_url}/users/search?ip=${ip}" target="_blank">${ip}'</a> `);
+            $('#lastIP').append(visitIpTime + `- <a href="${global.connectInfo.adm_url}/users/search?ip=${ip}" target="_blank">${ip}</a> `);
             $('#ah-info-chance').append('<b style="color: ' + colorChance + '">' + chance + '</b>');
 
             // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
