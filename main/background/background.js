@@ -7,6 +7,7 @@ let connectInfo = {
     spring_user: null,
     spring_url: "http://spring.avitoadm.ru",
     spring_reconnect: false,
+    ext_url: "http://avitoadm.ru",
     status: null,
     error: null
 };

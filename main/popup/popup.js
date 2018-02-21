@@ -150,6 +150,24 @@ function settingsPage() {
     let body = [];
 
     try {
+        if (authorities.ROLE_DEV_TOOLS_DOMAIN) {
+            const domainSettings = document.createElement('div');
+            domainSettings.className = 'ah-settings-user ah-body-block';
+
+            const headerSelector = document.createElement('h2');
+            headerSelector.textContent = 'Домены';
+
+            domainSettings.appendChild(headerSelector);
+            domainSettings.appendChild(addSettingsDomain('Avito Admin Url', 'adm_url'));
+            domainSettings.appendChild(addSettingsDomain('Extension Url', 'ext_url'));
+            domainSettings.appendChild(addSettingsDomain('Extension Spring Url', 'spring_url'));
+            body.push(domainSettings);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
+    try {
         if (connectInfo.spring_user.principal.permissions.length > 0) {
             const userSettings = document.createElement('div');
             userSettings.className = 'ah-settings-user ah-body-block';
@@ -172,6 +190,30 @@ function settingsPage() {
     }
 
     pageGenerator(body, true);
+}
+
+function addSettingsDomain(name, url) {
+    const domain = document.createElement('div');
+    domain.className = 'ah-setting-block';
+
+    const domainName = document.createElement('div');
+    domainName.className = 'ah-setting-block-name';
+    domainName.textContent = name;
+
+    const domainUrl = document.createElement('input');
+    domainUrl.className = 'ah-setting-block-input';
+    domainUrl.value = connectInfo[url];
+    domainUrl.addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+            connectInfo[url] = this.value;
+            setConnectInfoToStorage();
+        }
+    });
+
+    domain.appendChild(domainName);
+    domain.appendChild(domainUrl);
+
+    return domain;
 }
 
 function addSettingsTable(permission, header) {
@@ -322,6 +364,10 @@ function addNavElement(html) {
 function scriptSwitch(checked) {
     script = checked;
     chrome.storage.local.set({ script: checked });
+}
+
+function setConnectInfoToStorage() {
+    chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
 function addChromeNotification(message) {
