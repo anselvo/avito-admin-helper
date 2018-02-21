@@ -89,7 +89,7 @@ AhComparison.prototype.renderResultModal = function(options) {
          <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close ah-compare-modal-close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title">
@@ -298,7 +298,7 @@ AhComparison.prototype.showModalSecond = function() {
 
     this.modal.addEventListener('click', e => {
         if (!e.target.closest('.modal-dialog')
-            || e.target.closest('.close')) {
+            || e.target.closest('.ah-compare-modal-close')) {
             this.modal.style.cssText = 'display: none;';
             $(this.modal).trigger('hidden.bs.modal');
         }
@@ -947,7 +947,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
             self.compareStrict();
 
             const legend = target.closest('.ah-compare-abutment-legend');
-            legend.innerHTML = '';
+            legend.classList.add('hidden');
+            self.modal.focus();
         }
     });
 
@@ -1028,6 +1029,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
             </span>
             <button class="close ah-compare-abutment-legend__reset" title="Убрать сравнение">x</button>
         `;
+        abutmentControlLegend.classList.remove('hidden');
     }
 
     // отрисовка объявлений
