@@ -312,20 +312,20 @@ function comparePhotoActionWithButtons(item1id, item2id) {
     if (item1Bleach && !item2Bleach) blockItemBlock = 'second';
     if (!item1Bleach && item2Bleach) blockItemBlock = 'first';
 
-    if (blockItemBlock == 'first') {
+    if (blockItemBlock === 'first') {
         comparePhotoDecideBlockReason(item1id, item1Category, item1Type);
 
-        commentOnItemModer(item1id, 'Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/' + item2id + ' [Alive]');
-        commentOnItemModer(item2id, 'Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/' + item1id + ' [Blocked]');
+        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Alive]`);
+        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Blocked]`);
         $('#item_'+item1id).detach();
 
         outTextFrame('Опорное объявление было<br>заблокировано/отклонено');
     }
-    if (blockItemBlock == 'second') {
+    if (blockItemBlock === 'second') {
         comparePhotoDecideBlockReason(item2id, item2Category, item2Type);
 
-        commentOnItemModer(item1id, 'Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/' + item2id + ' [Blocked]');
-        commentOnItemModer(item2id, 'Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/' + item1id + ' [Alive]');
+        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Blocked]`);
+        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Alive]`);
 
         outTextFrame('Второстепенное объявление было<br>заблокировано/отклонено');
     }
@@ -335,10 +335,10 @@ function comparePhotoActionWithButtons(item1id, item2id) {
 }
 
 function comparePhotoDecideBlockReason(id, category, type) {
-    if (category == 'Недвижимость' && type == 'Продам') rejectItem(id, 15);
-    else if (category == 'Недвижимость' && type == 'Сдам') blockItem(id, 384);
-    else if (category == 'Недвижимость' && type == 'Cниму') rejectItem(id, 15);
-    else if (category == 'Недвижимость' && type == 'Куплю') rejectItem(id, 15);
+    if (category === 'Недвижимость' && type === 'Продам') rejectItem(id, 15);
+    else if (category === 'Недвижимость' && type === 'Сдам') blockItem(id, 384);
+    else if (category === 'Недвижимость' && type === 'Cниму') rejectItem(id, 15);
+    else if (category === 'Недвижимость' && type === 'Куплю') rejectItem(id, 15);
     else blockItem(id, 20);
 }
 
