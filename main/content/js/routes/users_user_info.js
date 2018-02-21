@@ -17,7 +17,7 @@ function adminTableCategory() {
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
         method: "GET",
-        url: "http://avitoadm.ru/journal/include/php/user/getAllUsers.php",
+        url: `${connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
     },
             function (response) {
                 var jsonParse = JSON.parse(response);

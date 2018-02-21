@@ -93,7 +93,7 @@ function isItemChecked(reason, reasonText, item, time) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
@@ -121,7 +121,7 @@ function parseAllowListCheckingItems(agentlogin) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
         	try {
@@ -176,7 +176,7 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
@@ -203,7 +203,7 @@ function changeAllowListItem(item, time, reason, reasonText) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchange.php",
+			url: `${connectInfo.ext_url}/support_helper/allowlist/allowlistchange.php`,
 			data: data,
 		}, function(response) {
 			console.log(response);

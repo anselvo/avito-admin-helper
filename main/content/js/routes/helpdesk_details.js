@@ -2914,7 +2914,7 @@ function getAttendantTL(btn) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: "http://avitoadm.ru/support_helper/attendant_tl/getTL.php?login="+ global.userInfo.subdivision.teamlead_login,
+            url: `${connectInfo.ext_url}/support_helper/attendant_tl/getTL.php?login=`+ global.userInfo.subdivision.teamlead_login,
         },
 
         function(response) {
@@ -3648,7 +3648,7 @@ function getReevaluateTLTagId(leaderLogin) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "GET",
-            url: "http://avitoadm.ru/support_helper/reevaluate_tags/getTag.php?leader_login="+ leaderLogin,
+            url: `${connectInfo.ext_url}/support_helper/reevaluate_tags/getTag.php?leader_login=`+ leaderLogin,
         },
 
         function(response) {
@@ -4045,7 +4045,7 @@ function addSkipedTicketToDatabase(data) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "POST",
-            url: "http://avitoadm.ru/support_helper/other/addSkipedTicket.php",
+            url: `${connectInfo.ext_url}/support_helper/other/addSkipedTicket.php`,
             data: "param=" + JSON.stringify(data),
         },
 

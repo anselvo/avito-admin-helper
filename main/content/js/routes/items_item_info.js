@@ -35,7 +35,7 @@ function allowListSendLogServer(log) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "POST",
-            url: "http://avitoadm.ru/support_helper/allowlist/allowlist.php",
+            url: `${connectInfo.ext_url}/support_helper/allowlist/allowlist.php`,
             headers: 'json',
             data: data,
         }, function(response) {

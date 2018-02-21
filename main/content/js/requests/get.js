@@ -59,7 +59,7 @@ function getPremiumUsersList() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: "http://avitoadm.ru/support_helper/other/premium_users.json"
+                url: `${connectInfo.ext_url}/support_helper/other/premium_users.json`
             },
             function (response) {
                 if (response === 'error') {
@@ -96,7 +96,7 @@ function getNegativeUsersRequest() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: "http://avitoadm.ru/admin/sections/helpdesk/negative_users/include/php/user/get.php"
+                url: `${connectInfo.ext_url}/admin/sections/helpdesk/negative_users/include/php/user/get.php`
             },
             function (response) {
                 if (response === 'error') {
@@ -149,7 +149,7 @@ function getShopRegexp() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: "http://avitoadm.ru/traffic_helper/getRegExp.php"
+                url: `${connectInfo.ext_url}/traffic_helper/getRegExp.php`
             },
             function (response) {
                 if (response === 'error') {
