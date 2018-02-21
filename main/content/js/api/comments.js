@@ -14,14 +14,14 @@ function linksOnComments(tableClass, currentUserID) {
         
         if (duplicateReg.test(commentText)) { // dublicate
             var text = commentText;
-            text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+            text = text.replace(/\d{2,}/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
             var duplicatePluralText = commentText.match(duplicatePluralReg);
             if (duplicatePluralText) {
                 var itemIds = duplicatePluralText[0].match(/\d+/g);
                 if (itemIds && itemIds.length > 1) {
                     var dublicatePhrase = duplicatePluralText[0].split(':')[0];
-                    text = text.replace(dublicatePhrase, '<a href="https://adm.avito.ru/items/search?query=' + itemIds.join('%7C') + '" target="_blank">$&</a>');
+                    text = text.replace(dublicatePhrase, `<a href="${global.connectInfo.adm_url}/items/search?query=${itemIds.join('%7C')}" target="_blank">$&</a>`);
                 }
             }
 
@@ -32,16 +32,16 @@ function linksOnComments(tableClass, currentUserID) {
             var text = commentText;
             let ids = text.match(/\d+(?![\].])\b/g);
 
-            text = text.replace(/\d+(?![\].])\b/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+            text = text.replace(/\d+(?![\].])\b/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
             if (ids.length <= 4) {
-                let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+                let link = `${global.connectInfo.adm_url}/items/comparison/${ids[0]}/archive?`;
                 for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
 
                 text += ` <a class="glyphicon glyphicon-new-window" href="${link}"  style="margin-right: 4px;" target="_blank"></a>`;
             }
 
-            text += ' <a class="glyphicon glyphicon-search" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query='${ids.join('|')}" target="_blank"></a>`;
 
             $(commentBlock).html(text);
         }
@@ -50,31 +50,31 @@ function linksOnComments(tableClass, currentUserID) {
             var text = commentText;
             let ids = text.match(/\d{2,}/g);
 
-            text = text.replace(/\d{2,}/g, '<a href="https://adm.avito.ru/items/item/info/$&" target="_blank">$&</a>');
+            text = text.replace(/\d{2,}/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
             if (ids.length <= 4) {
-                let link = 'https://adm.avito.ru/items/comparison/' + ids[0] + '/archive?';
+                let link = `${global.connectInfo.adm_url}/items/comparison/'${ids[0]}/archive?`;
                 for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
 
                 text += ` <a class="glyphicon glyphicon-new-window" href="${link}" style="margin-right: 4px;" target="_blank"></a>`;
             }
 
-            text += ' <a class="glyphicon glyphicon-search" href="https://adm.avito.ru/items/search?query=' + ids.join('|') + '" target="_blank"></a>';
+            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${ids.join('|')}" target="_blank"></a>`;
 
             $(commentBlock).html(text);
         }
 
-        if (~commentText.indexOf('https://adm.avito.ru/')) { // user links
+        if (~commentText.indexOf(`.avito.ru/`)) { // user links
             var text1 = commentText;
             if (text1 == undefined) continue;
             var links = text1.split(/(?: |<br>|\n)/);
-            var avito = 'https://adm.avito.ru/';
+            var avito = `${global.connectInfo.adm_url}/`;
 
             var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
 
             for (var i = 0; i < links.length; i++){
                 if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
-                    if (~links[i].indexOf('https://adm.avito.ru/users/user/info/') || shortUserLinkReg.test(links[i])) {
+                    if (~links[i].indexOf(`.avito.ru/users/user/info/`) || shortUserLinkReg.test(links[i])) {
                         var userID = links[i].replace(/\D/gi, '');
                         text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</button>)</span>');
                         $(commentBlock).html(text1);
@@ -92,13 +92,13 @@ function linksOnComments(tableClass, currentUserID) {
             var tmp = text.split("Alive user ID: ");
             if (tmp[1] == undefined) continue;
             var users = tmp[1].split(/\D/);
-            text = text.replace(users[0], '<a href="https://adm.avito.ru/users/user/info/' + users[0] + '" target="_blank">' + users[0] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + users[0] + '" title="Сравнить учетные записи">&#8644</button>)</span>');
+            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/users/user/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users[0]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
             $(commentBlock).html(text);
 
             var tmp2 = text.split("Base item ID: ");
             if (tmp2[1] == undefined) continue;
             var users2 = tmp2[1].split(/\D/);
-            text = text.replace(users2[0], '<a href="https://adm.avito.ru/items/item/info/' + users2[0] + '" target="_blank">' + users2[0] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="'+users2[0]+'" target="_blank">%</span>)</span>');
+            text = text.replace(users2[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users2[0]}" target="_blank">${users2[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users2[0]}" target="_blank">%</span>)</span>`);
             $(commentBlock).html(text);
 
             var part = text.split(", ");
@@ -107,7 +107,7 @@ function linksOnComments(tableClass, currentUserID) {
             var sii1 = sii[1].split(",");
             for (var i = 0; i < sii1.length; i++) {
                 var siiLinks = sii1[i].split(" -");
-                text = text.replace(siiLinks[0],'<a href="https://adm.avito.ru/items/item/info/'+siiLinks[0]+'" target="_blank">'+siiLinks[0]+'</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="'+siiLinks[0]+'" target="_blank">%</span>)</span>');
+                text = text.replace(siiLinks[0],`<a href="${global.connectInfo.adm_url}/items/item/info/${siiLinks[0]}" target="_blank">${siiLinks[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${siiLinks[0]}" target="_blank">%</span>)</span>`);
             }
             $(tableClass).slice(j,j+1).html(text);
         }
@@ -118,14 +118,14 @@ function linksOnComments(tableClass, currentUserID) {
             var tmp = text.split("Base item ID: ");
             if (tmp[1] == undefined) continue;
             var users = tmp[1].split(/\D/);
-            text = text.replace(users[0], '<a href="https://adm.avito.ru/items/item/info/' + users[0] + '" target="_blank">' + users[0] + '</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="'+ users[0] +'" target="_blank">%</span>)</span>');
+            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users[0]}" target="_blank">%</span>)</span>`);
             $(commentBlock).html(text);
 
             var tmp2 = text.split("Similar accounts: ");
             if (tmp2[1] == undefined) continue;
             var users2 = tmp2[1].split(/\D/);
             for (var i = 1; i < users2.length; i++) { // Цикл с 1, т.к. ID дублируются
-                text = text.replace(users2[i], '<a href="https://adm.avito.ru/users/user/info/' + users2[i] + '" target="_blank">' + users2[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + users2[i] + '" title="Сравнить учетные записи">&#8644</button>)</span>');
+                text = text.replace(users2[i], `<a href="${global.connectInfo.adm_url}/users/user/info/${users2[i]}" target="_blank">${users2[i]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users2[i]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
                 $(commentBlock).html(text);
             }
         }
@@ -136,7 +136,7 @@ function linksOnComments(tableClass, currentUserID) {
             var tmp = text.split("по обращению №");
             if (tmp[1] == undefined) continue;
             var tickets = tmp[1].split(/\D/);
-            text = text.replace(tickets[0], '<a href="https://adm.avito.ru/helpdesk/details/' + tickets[0] + '" target="_blank">' + tickets[0] + '</a>');
+            text = text.replace(tickets[0], `<a href="${global.connectInfo.adm_url}/helpdesk/details/${tickets[0]}" target="_blank">${tickets[0]}</a>`);
             $(commentBlock).html(text);
         }
 
@@ -195,7 +195,7 @@ function linksOnComments(tableClass, currentUserID) {
 
 function blockUser(id, reason) {
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/users/user/block', true);
+    request.open("POST", `${global.connectInfo.adm_url}/users/user/block`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     request.setRequestHeader("Accept", "*/*");
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -208,13 +208,13 @@ function blockUser(id, reason) {
 
 function chanceUser(id, chance) {
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/users/user/save/chance', true);
+    request.open("POST", `${global.connectInfo.adm_url}/users/user/save/chance`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send('chance='+chance+'&user='+id);
 }
 
 function loadComperison(itemID, currentUserID) {
-    var url = 'https://adm.avito.ru/items/comparison/'+itemID;
+    var url = `${global.connectInfo.adm_url}/items/comparison/${itemID}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -412,7 +412,7 @@ function compareItems(comperison) {
 }
 
 function loadImageForItem(itemID, imagePrev) {
-    var url = 'https://adm.avito.ru/items/moder/images?item_id='+itemID;
+    var url = `${global.connectInfo.adm_url}/items/moder/images?item_id=${itemID}`;
 
     $('.images-preview-gallery').css('display','block');
     $('.images-preview-gallery').append('<ul class="images-preview-gallery-list img-for-'+itemID+'" style="padding-left: 0; max-height: 430px; overflow-y: auto; list-style-type: none; padding-right: 4px;"></ul>');

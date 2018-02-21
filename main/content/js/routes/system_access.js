@@ -50,7 +50,7 @@ function renderSanctionIPPopup(ip, ticketLink) {
 
     $(bodyForm).append('<div class="ah-field-group"><div class="ah-field-title">Ссылка на тикет</div><div class="ah-btn-group ah-field-flex" style=""><input class="ah-form-control ah-btn-group-left ah-flex-grow-extended" style="" name="ticketLink" value="'+ ticketLink +'" placeholder=""><button type="button" class="ah-default-btn ah-btn-group-right" style="white-space: nowrap; letter-spacing: .1px;" title="Используется, когда одобрение IP происходит по звонку, а не по тикету">По звонку</button></div></div>');
 
-    if (~window.location.href.indexOf('https://adm.avito.ru/helpdesk/details')) {
+    if (~window.location.href.indexOf(`${global.connectInfo.adm_url}/helpdesk/details`)) {
         var ipInput = $(bodyForm).find('[name="ip"]');
         var ticketLinkInput = $(bodyForm).find('[name="ticketLink"]');
         ipInputParent = $(ipInput).parents('.ah-field-group');
@@ -146,13 +146,13 @@ function renderSanctionIPPopup(ip, ticketLink) {
     $('#sh-sanction-ip-popup').show();
 }
 function checkSanctionIPAllowRules(data) {
-    var url = "https://adm.avito.ru/system/access/allow?sort=-finishAt&status=active&ip=" + data.ip;
+    var url = `${global.connectInfo.adm_url}/system/access/allow?sort=-finishAt&status=active&ip=${data.ip}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
+        if (xhr.readyState === 4) {
             if (xhr.status >= 200 && xhr.status < 400) {
                 var response = xhr.responseText;
                 var table = $(response).find('.table-striped');
@@ -179,13 +179,13 @@ function checkSanctionIPAllowRules(data) {
     }
 }
 function checkSanctionIPDisallowRules(data) {
-    var url = "https://adm.avito.ru/system/access/disallow?sort=-finishAt&status=active&ip=" + data.ip;
+    var url = `${global.connectInfo.adm_url}/system/access/disallow?sort=-finishAt&status=active&ip=${data.ip}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
+        if (xhr.readyState === 4) {
             if (xhr.status >= 200 && xhr.status < 400) {
                 var response = xhr.responseText;
                 var table = $(response).find('.table-striped');
@@ -228,7 +228,7 @@ function setSanctionIP(data) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "POST",
-            url: "http://avitoadm.ru/support_helper/sanction_ip/sanctionIp.php",
+            url: `${global.connectInfo.ext_url}/support_helper/sanction_ip/sanctionIp.php`,
             data: "sanctionIp=" + JSON.stringify(data),
         },
 
@@ -256,7 +256,7 @@ function setSanctionIP(data) {
                 $(body).empty();
                 $(footer).remove();
 
-                $(body).append('<div class="ah-alert ah-alert-success" style="margin-top: 0;"><p>IP-адрес '+ data.ip +' был успешно одобрен. Вы можете <a target="_blank" href="https://adm.avito.ru/system/access/allow?sort=-createdAt&ip='+ data.ip +'">посмотреть разрешающие правила</a> и проверить эту информацию.</p><p style="margin-bottom: 0;">Обратите внимание, что данные в админке могут обновляться с задержкой.</p></div>');
+                $(body).append(`<div class="ah-alert ah-alert-success" style="margin-top: 0;"><p>IP-адрес ${data.ip} был успешно одобрен. Вы можете <a target="_blank" href="${global.connectInfo.adm_url}/system/access/allow?sort=-createdAt&ip=${data.ip}">посмотреть разрешающие правила</a> и проверить эту информацию.</p><p style="margin-bottom: 0;">Обратите внимание, что данные в админке могут обновляться с задержкой.</p></div>`);
                 $('#ah-loading-layer').hide();
             } else {
                 alert('Произошла техническая ошибка.\nКод ошибки: '+ http_code);

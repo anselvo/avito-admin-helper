@@ -3,31 +3,31 @@
 const contextSearchAdm = ["selection"];
 
 function goToTicket(info) {
-    let newURL = 'https://adm.avito.ru/helpdesk/details/' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/helpdesk/details/${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function goToItem(info) {
-    let newURL = 'https://adm.avito.ru/items/item/info/' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/items/item/info/${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function goToUser(info) {
     let text = info.selectionText;
     let newURL;
-    if (text.indexOf('@')+1) newURL = 'https://adm.avito.ru/users/search?email=' + text;
-    else newURL = 'https://adm.avito.ru/users/user/info/' + text;
+    if (text.indexOf('@')+1) newURL = `${connectInfo.adm_url}/users/search?email=${text}`;
+    else newURL = `${connectInfo.adm_url}/users/user/info/${text}`;
 
     chrome.tabs.create({ url: newURL });
 }
 
 function goToComparison(info) {
-    let newURL = 'https://adm.avito.ru/items/comparison/' + info.selectionText + '/archive';
+    let newURL = `${connectInfo.adm_url}/items/comparison/${info.selectionText}/archive`;
     chrome.tabs.create({ url: newURL });
 }
 
 function goToMoney(info) {
-    let newURL = 'https://adm.avito.ru/users/account/info/' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/users/account/info/${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
@@ -43,22 +43,22 @@ chrome.contextMenus.create({type: 'separator', contexts: contextSearchAdm});
 
 // Create contextMenu for items/search
 function searchInItemByQuery(info) {
-    let newURL = 'https://adm.avito.ru/items/search?query=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/items/search?query=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInItemByPhone(info) {
-    let newURL = 'https://adm.avito.ru/items/search?phone=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/items/search?phone=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInItemByUser(info) {
-    let newURL = 'https://adm.avito.ru/items/search?user=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/items/search?user=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInItemByIP(info) {
-    let newURL = 'https://adm.avito.ru/items/search?ip=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/items/search?ip=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
@@ -70,22 +70,22 @@ chrome.contextMenus.create({title: "по пользователю", contexts: co
 
 // Create contextMenu for users/search
 function searchInUserByPhone(info) {
-    let newURL = 'https://adm.avito.ru/users/search?phone=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/users/search?phone=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInUserByName(info) {
-    let newURL = 'https://adm.avito.ru/users/search?name=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/users/search?name=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInUserByIP(info) {
-    let newURL = 'https://adm.avito.ru/users/search?ip=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/users/search?ip=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 
 function searchInUserByEmail(info) {
-    let newURL = 'https://adm.avito.ru/users/search?email=' + info.selectionText;
+    let newURL = `${connectInfo.adm_url}/users/search?email=${info.selectionText}`;
     chrome.tabs.create({ url: newURL });
 }
 

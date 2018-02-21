@@ -47,17 +47,7 @@ function antifraudLinks(page) {
                 let flagStatus = 'block_id[]';
                 if (~flagAction.indexOf('reject')) flagStatus = 'reject_id[]';
 
-                let flagLink = 'https://adm.avito.ru/items/search?' +
-                    'date=' + formatDateStart + '+-+' + formatDateEnd + '&' +
-                    'location_id[]=' + locationItemID + '&' +
-                    'cid[]=' + categoryItemID + '&' +
-                    'price_min=' + itemPriceMin + '&' +
-                    'price_max=' + itemPriceMax + '&' +
-                    flagStatus + '=' + flagId + '&' +
-                    'percent_min=' + percentMin + '&' +
-                    'percent_max=' + percentMax + '&' +
-                    'params[' + firstParam[0] + ']=' + firstParamMap + '&' +
-                    's_type=2';
+                let flagLink = `${global.connectInfo.adm_url}/items/search?date=${formatDateStart}+-+${formatDateEnd}&location_id[]=${locationItemID}&cid[]=${categoryItemID}&price_min=${itemPriceMin}&price_max=${itemPriceMax}&${flagStatus}=${flagId}&percent_min=${percentMin}&percent_max=${percentMax}&params[${firstParam[0]}]=${firstParamMap}&s_type=2`;
 
                 $(flagList[j]).find('.name').html('<a href="' + flagLink + '" target="_blank">' + flagName + '</a>');
             }
@@ -251,7 +241,7 @@ function eyeLinks(list) {
         let cid = $(list[i]).parents('tr').find('[data-category]').attr('data-category');
         let city = $(list[i]).parents('tr').attr('data-location');
 
-        let link = 'https://adm.avito.ru/items/search?status[]=active&cid[]='+cid;
+        let link = `${global.connectInfo.adm_url}/items/search?status[]=active&cid[]=${cid}`;
 
         if (eyeCity === 'true') {
             link += '&location_id[]='+city;
@@ -463,11 +453,11 @@ function postBlockReasonList(reasonId) {
     let usersListActive = sessionStorage.postBlockActiveUserID.split(', ');
     let url = window.location.href;
 
-    let commentSearchLink = 'https://adm.avito.ru/items/search?user=';
+    let commentSearchLink = `${global.connectInfo.adm_url}/items/search?user=`;
     let commentUsersLink = '';
     for (let i = 0; i < usersListBlock.length-1; i++) {
         commentSearchLink += usersListBlock[i];
-        commentUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListBlock[i];
+        commentUsersLink += `${global.connectInfo.adm_url}/users/user/info/${usersListBlock[i]}`;
         if (i < usersListBlock.length-2) {
             commentUsersLink += '\n';
             commentSearchLink += '|';
@@ -476,7 +466,7 @@ function postBlockReasonList(reasonId) {
 
     let commentActiveUsersLink = '';
     for (let i = 0; i < usersListActive.length-1; i++) {
-        commentActiveUsersLink += 'https://adm.avito.ru/users/user/info/' +  usersListActive[i];
+        commentActiveUsersLink += `${global.connectInfo.adm_url}/users/user/info/${usersListActive[i]}`;
         if (i < usersListActive.length-2) commentActiveUsersLink += '\n';
     }
 
@@ -511,7 +501,7 @@ function postBlockReasonList(reasonId) {
 
 function postBlockRequest(id, reason){
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/users/user/block', true);
+    request.open("POST", `${global.connectInfo.adm_url}/users/user/block`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     request.setRequestHeader("Accept", "*/*");
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -548,7 +538,7 @@ function usersInfoForItems() {
 }
 
 function usersInfoForManyItems(id) {
-    let href = "https://adm.avito.ru/users/user/info/"+id;
+    let href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
     let request = new XMLHttpRequest();
     request.open("GET", href, true);
     request.send(null);

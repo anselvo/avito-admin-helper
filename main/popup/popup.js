@@ -150,6 +150,24 @@ function settingsPage() {
     let body = [];
 
     try {
+        if (authorities.ROLE_DEV_TOOLS_DOMAIN) {
+            const domainSettings = document.createElement('div');
+            domainSettings.className = 'ah-settings-user ah-body-block';
+
+            const headerSelector = document.createElement('h2');
+            headerSelector.textContent = 'Домены';
+
+            domainSettings.appendChild(headerSelector);
+            domainSettings.appendChild(addSettingsDomain('Avito Admin Url', 'adm_url'));
+            domainSettings.appendChild(addSettingsDomain('Extension Url', 'ext_url'));
+            domainSettings.appendChild(addSettingsDomain('Extension Spring Url', 'spring_url'));
+            body.push(domainSettings);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
+    try {
         if (connectInfo.spring_user.principal.permissions.length > 0) {
             const userSettings = document.createElement('div');
             userSettings.className = 'ah-settings-user ah-body-block';
@@ -174,32 +192,66 @@ function settingsPage() {
     pageGenerator(body, true);
 }
 
-function addSettingsTable(permission, caption) {
+function addSettingsDomain(name, key) {
+    const domain = document.createElement('div');
+    domain.className = 'ah-setting-block';
+
+    const domainName = document.createElement('div');
+    domainName.className = 'ah-setting-block-name';
+    domainName.textContent = name;
+
+    const domainUrl = document.createElement('input');
+    domainUrl.className = 'ah-setting-block-input';
+    domainUrl.value = connectInfo[key];
+    domainUrl.addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+            connectInfo[key] = this.value;
+            setConnectInfoToStorage();
+        }
+    });
+
+    domain.appendChild(domainName);
+    domain.appendChild(domainUrl);
+
+    return domain;
+}
+
+function addSettingsTable(permission, header) {
+    const tableDiv = document.createElement('div');
+    tableDiv.className = 'ah-table-settings';
+
     const table = document.createElement('table');
-    table.className = 'ah-table-settings';
 
-    const captionSelector = document.createElement('caption');
-    captionSelector.textContent = caption;
+    const headerSelector = document.createElement('h2');
+    headerSelector.textContent = header;
 
-    table.appendChild(captionSelector);
+    const searchSelector = document.createElement('input');
+    searchSelector.type = 'text';
+    searchSelector.className = 'ah-table-settings-search';
+    searchSelector.placeholder = 'Search...';
+    searchSelector.addEventListener('input', function () {
+        table.innerHTML = '';
+        const value = this.value.toLowerCase();
 
-    for (let i = 0; i < permission.length; ++i) {
-        if (permission[i].visible) {
-            const tr = document.createElement('tr');
+        for (let i = 0; i < permission.length; ++i) {
+            if (permission[i].visible && (~permission[i].name.toLowerCase().indexOf(value) || ~permission[i].description.toLowerCase().indexOf(value))) {
+                const tr = document.createElement('tr');
 
-            const roleName = "ROLE_" + permission[i].name.toUpperCase();
-            const checked = authorities[roleName] ? 'checked' : '';
-            const id = permission[i].id + (Math.floor(Math.random() * (1000 - 1)) + 1);
+                const roleName = "ROLE_" + permission[i].name.toUpperCase();
+                const checked = authorities[roleName] ? 'checked' : '';
+                const id = permission[i].id + (Math.floor(Math.random() * (1000 - 1)) + 1);
 
-            tr.innerHTML = `<td><div class="ah-table-settings-name" title="${permission[i].name}">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
+                tr.innerHTML = `<td><div class="ah-table-settings-name" title="${permission[i].name}">${permission[i].name}</div><div class="ah-table-settings-description">${permission[i].description}</div></td>
                         <td width="35">
                             <input id="${id}" class="ah-checkbox" type="checkbox" name="settings" data-uuid="${permission[i].id}" data-role="${roleName}" data-name="${permission[i].name}" ${checked} />
                             <label class="ah-checkbox-label" for="${id}"></label>
                         </td>`;
 
-            table.appendChild(tr);
+                table.appendChild(tr);
+            }
         }
-    }
+    });
+    searchSelector.dispatchEvent(new Event('input'));
 
     table.addEventListener('change', event => {
         authorities[event.target.dataset.role] = event.target.checked;
@@ -212,7 +264,11 @@ function addSettingsTable(permission, caption) {
         addChromeNotification(`Вы изменили настройку:\n${event.target.dataset.name}\n\nДля того чтобы изменения вступили в силу обновите страницу`);
     });
 
-    return table;
+    tableDiv.appendChild(headerSelector);
+    tableDiv.appendChild(searchSelector);
+    tableDiv.appendChild(table);
+
+    return tableDiv;
 }
 
 // СТРАНИЦА Загрузки
@@ -308,6 +364,10 @@ function addNavElement(html) {
 function scriptSwitch(checked) {
     script = checked;
     chrome.storage.local.set({ script: checked });
+}
+
+function setConnectInfoToStorage() {
+    chrome.storage.local.set({ connectInfo: connectInfo });
 }
 
 function addChromeNotification(message) {

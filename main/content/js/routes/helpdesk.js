@@ -5,11 +5,9 @@ function openTicketInNewTab() {
 
     $(rows).each(function (i, item) {
         var ticketId = $(item).find('td:eq(2)').text().split(' ')[0];
-        $(item).before(''+
-        '<a class="ah-open-in-new-tab-link" style=""'+
-        'href="https://adm.avito.ru/helpdesk/details/' + ticketId + '" target="_blank" '+
-        'title="Открыть тикет в новой вкладке">&#x21b7'+
-        '</a>');
+        $(item).before(`<a class="ah-open-in-new-tab-link" style=""
+        href="${global.connectInfo.adm_url}/helpdesk/details/${ticketId}" target="_blank" 
+        title="Открыть тикет в новой вкладке">&#x21b7</a>`);
     });
 }
 //-------------- Открывать тикеты из очереди в новой вкладке -------------- //

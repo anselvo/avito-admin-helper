@@ -953,7 +953,7 @@ RoleHandler.prototype.userPhonesVerificationLink = function() {
         $('button[data-verify-text="Верифицировать"]').each((idx, item) => {
             const $item = $(item);
             const phone_number = $item.attr("data-phone");
-            $item.after('\t<a href="https://adm.avito.ru/users/phones_verification?phone=' + phone_number + '" target="_blank" style="margin: 0 4px;">Log</a>');
+            $item.after(`\t<a href="${global.connectInfo.adm_url}/users/phones_verification?phone=${phone_number}" target="_blank" style="margin: 0 4px;">Log</a>`);
         });
     }
 };
@@ -1241,7 +1241,7 @@ RoleHandler.prototype.intern = function() {
         premoderationInternComparisonNew();
     }
 
-    if (~global.currentUrl.indexOf("http://avitoadm.ru/intern_helper/")) {
+    if (~global.currentUrl.indexOf(`${global.connectInfo.ext_url}/intern_helper/`)) {
         eg();
     }
 };
@@ -1273,7 +1273,7 @@ RoleHandler.prototype.taskLogLink = function() {
     // линк на тасклог
     $('.dropdown-menu:contains(Выход) li:last-child').before(`
         <li>
-            <a target = "_blank" href="http://avitoadm.ru/journal/tasklog_show.html">Task Log</a>
+            <a target = "_blank" href="${global.connectInfo.ext_url}/journal/tasklog_show.html">Task Log</a>
         </li>
         <li class="divider" role="separator"></li>
     `);
@@ -1282,7 +1282,7 @@ RoleHandler.prototype.taskLogLink = function() {
 RoleHandler.prototype.internLogLink = function() {
     $('.dropdown-menu:contains(Выход) li:last-child').before(`
         <li>
-            <a href="http://avitoadm.ru/intern_helper/internlog/" target = "_blank">Intern log</a>
+            <a href="${global.connectInfo.ext_url}/intern_helper/internlog/" target = "_blank">Intern log</a>
         </li>
         <li class="divider" role="separator"></li>
     `);

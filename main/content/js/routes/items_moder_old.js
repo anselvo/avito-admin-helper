@@ -202,13 +202,13 @@ function showComparePhotosPre(id, appendID) {
     $('#'+appendID).append('<div id="price'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Цена"></div>');
     $('#'+appendID).append('<div id="photo'+appendID+'" class="ah-itemPhotosBlock ah-infoBlockOnPopupWindow"></div>');
 
-    var href = 'https://adm.avito.ru/items/item/info/'+id;
+    var href = `${global.connectInfo.adm_url}/items/item/info/${id}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", href, true);
     xhr.send(null);
     xhr.onreadystatechange = function() {
-        if (xhr.readyState==4 && xhr.status==200)  {
+        if (xhr.readyState===4 && xhr.status===200)  {
             var request = xhr.responseText;
 
             var login = $(request).find('a[href^="/users/user/info/"]');
@@ -312,20 +312,20 @@ function comparePhotoActionWithButtons(item1id, item2id) {
     if (item1Bleach && !item2Bleach) blockItemBlock = 'second';
     if (!item1Bleach && item2Bleach) blockItemBlock = 'first';
 
-    if (blockItemBlock == 'first') {
+    if (blockItemBlock === 'first') {
         comparePhotoDecideBlockReason(item1id, item1Category, item1Type);
 
-        commentOnItemModer(item1id, 'Duplicate photo: https://adm.avito.ru/items/item/info/' + item2id + ' [Alive]');
-        commentOnItemModer(item2id, 'Duplicate photo: https://adm.avito.ru/items/item/info/' + item1id + ' [Blocked]');
+        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Alive]`);
+        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Blocked]`);
         $('#item_'+item1id).detach();
 
         outTextFrame('Опорное объявление было<br>заблокировано/отклонено');
     }
-    if (blockItemBlock == 'second') {
+    if (blockItemBlock === 'second') {
         comparePhotoDecideBlockReason(item2id, item2Category, item2Type);
 
-        commentOnItemModer(item1id, 'Duplicate photo: https://adm.avito.ru/items/item/info/' + item2id + ' [Blocked]');
-        commentOnItemModer(item2id, 'Duplicate photo: https://adm.avito.ru/items/item/info/' + item1id + ' [Alive]');
+        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Blocked]`);
+        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Alive]`);
 
         outTextFrame('Второстепенное объявление было<br>заблокировано/отклонено');
     }
@@ -335,10 +335,10 @@ function comparePhotoActionWithButtons(item1id, item2id) {
 }
 
 function comparePhotoDecideBlockReason(id, category, type) {
-    if (category == 'Недвижимость' && type == 'Продам') rejectItem(id, 15);
-    else if (category == 'Недвижимость' && type == 'Сдам') blockItem(id, 384);
-    else if (category == 'Недвижимость' && type == 'Cниму') rejectItem(id, 15);
-    else if (category == 'Недвижимость' && type == 'Куплю') rejectItem(id, 15);
+    if (category === 'Недвижимость' && type === 'Продам') rejectItem(id, 15);
+    else if (category === 'Недвижимость' && type === 'Сдам') blockItem(id, 384);
+    else if (category === 'Недвижимость' && type === 'Cниму') rejectItem(id, 15);
+    else if (category === 'Недвижимость' && type === 'Куплю') rejectItem(id, 15);
     else blockItem(id, 20);
 }
 
@@ -368,7 +368,7 @@ function blockItem(id, reason) {
     formDate.append('id', id);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", 'https://adm.avito.ru/items/item/block', true);
+    xhr.open("POST", `${global.connectInfo.adm_url}/items/item/block`, true);
     xhr.send(formDate);
 
     outTextFrame(id+' item is blocked');
@@ -380,7 +380,7 @@ function rejectItem(id, reason) {
     formDate.append('id', id);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", 'https://adm.avito.ru/items/item/reject', true);
+    xhr.open("POST", `${global.connectInfo.adm_url}/items/item/reject`, true);
     xhr.send(formDate);
 
     outTextFrame(id+' item is rejected');
@@ -388,7 +388,7 @@ function rejectItem(id, reason) {
 
 function commentOnItemModer(id, comment){
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/comment', true);
+    request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("objectTypeId=1&objectId="+id+"&comment="+encodeURIComponent(comment));
 }
@@ -679,7 +679,7 @@ function addElementsForEachItem() {
             if(lastReject==''){
                 outTextFrame('Ничего небыло отклонено или заблокировано!');
             }else{
-                var href = 'https://adm.avito.ru/items/search?date=&phone=&user=&ip=&query='+lastReject+'&price_min=&price_max=&percent_min=&percent_max=&sort_field=sort_time';
+                var href = `${global.connectInfo.adm_url}/items/search?date=&phone=&user=&ip=&query=${lastReject}&price_min=&price_max=&percent_min=&percent_max=&sort_field=sort_time`;
                 window.open(href, '_blank');
             }
         }
@@ -827,7 +827,7 @@ function submitItem(data) {
     }
 
 
-    let url = 'https://adm.avito.ru/items/moder/submit';
+    let url = `${global.connectInfo.adm_url}/items/moder/submit`;
 
     let xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
@@ -840,7 +840,7 @@ function submitItem(data) {
         if (xhr.readyState === 4 && xhr.status > 200) {
 
 
-            $('body').append('<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="ah-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>' + xhr.status  + ': ' + xhr.statusText + '</span></b><hr class="ah-default-hr"><span>Ссылка на объявление: <a href="https://adm.avito.ru/items/item/info/' + data.itemId + '" target="_blank">'+ data.itemId +'</a></span></div>');
+            $('body').append(`<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="ah-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>${xhr.status}:${xhr.statusText}</span></b><hr class="ah-default-hr"><span>Ссылка на объявление: <a href="${global.connectInfo.adm_url}/items/item/info/${data.itemId}" target="_blank">${data.itemId}</a></span></div>`);
 
 
             hideElementOutClicking($('#mh-error-alert'));

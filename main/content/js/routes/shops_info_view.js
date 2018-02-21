@@ -165,7 +165,7 @@ function getRexExp(refresh) {
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
         method: "GET",
-        url: "http://avitoadm.ru/traffic_helper/getRegExp.php",
+        url: `${global.connectInfo.ext_url}/traffic_helper/getRegExp.php`,
     }, function(response) {
         $('#shop-keywords .ah-shop-searching-indicator').detach();
         $('#shop-keywords h4').append('<span class="ah-refresh-btn" style="float: right; margin-left: 4px;" title="Обновить"></span>');
@@ -455,7 +455,7 @@ function checkPass() {
                     alert('Ошибка: не удалось определить ID Магазина.');
                     return;
                 }
-                window.location.assign('https://adm.avito.ru/shops/'+ shopId +'/moderate');
+                window.location.assign(`${global.connectInfo.adm_url}/shops/${shopId}/moderate`);
             } else {
                 return;
             }

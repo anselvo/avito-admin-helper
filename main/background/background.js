@@ -7,6 +7,7 @@ let connectInfo = {
     spring_user: null,
     spring_url: "http://spring.avitoadm.ru",
     spring_reconnect: false,
+    ext_url: "http://avitoadm.ru",
     status: null,
     error: null
 };
@@ -129,7 +130,7 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
-        setConnectInfo(result.connectInfo);
+        // setConnectInfo(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
@@ -289,8 +290,8 @@ function setBudgetIcon(script) {
     }
 }
 
-function setConnectInfo(connectInfo) {
-    this.connectInfo = connectInfo;
+function setConnectInfo(info) {
+    if (info) connectInfo = info;
 }
 
 function setAuthoritiesToStorage(authorities) {
@@ -591,7 +592,7 @@ function sendLogToDB(type, reason, count, items_id) {
 	let jsonRow = JSON.stringify(row);
 	
 	let xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://avitoadm.ru/journal/include/php/mod_stat/add.php', true);
+	xhr.open('POST', `${connectInfo.ext_url}/journal/include/php/mod_stat/add.php`, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.send("param="+jsonRow);
 	xhr.onreadystatechange = function () {

@@ -93,7 +93,7 @@ function isItemChecked(reason, reasonText, item, time) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${global.connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
@@ -104,7 +104,7 @@ function isItemChecked(reason, reasonText, item, time) {
 				var msg = jsonParse[0].msg;
 				var modAgentID = jsonParse[0].modAgentID;
 				
-				notificationBarAdd('checked'+itemID,'allowListItemHeaderChecked', 'Allow List', 'allowListItemBodyChecked', '<span style="color:black;"><a href="https://adm.avito.ru/items/item/info/'+itemID+'" target="_blank">'+itemID+'</a> is checked by </span><span style="color:#9C27B0;">'+modAgentID+'</span><br><span>MSG: '+msg+'</span>');
+				notificationBarAdd('checked'+itemID,'allowListItemHeaderChecked', 'Allow List', 'allowListItemBodyChecked', `<span style="color:black;"><a href="${global.connectInfo.adm_url}/items/item/info/${itemID}" target="_blank">${itemID}</a> is checked by </span><span style="color:#9C27B0;">${modAgentID}</span><br><span>MSG: ${msg}</span>`);
 			
 				$('#checked'+itemID).click(function () {
 					localStorage.allowList = localStorage.allowList.replace('|'+item+'&'+time,'');
@@ -121,7 +121,7 @@ function parseAllowListCheckingItems(agentlogin) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${global.connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
         	try {
@@ -176,14 +176,14 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchecker.php",
+			url: `${global.connectInfo.ext_url}/support_helper/allowlist/allowlistchecker.php`,
 			data: data,
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
 			var len = jsonParse.length;
 			
 			if (len > 0) {
-				window.open('https://adm.avito.ru/items/item/info/'+item+'?st='+encodeURIComponent(time));
+				window.open(`${global.connectInfo.adm_url}/items/item/info/${item}?st=${encodeURIComponent(time)}`);
 				changeAllowListItem(item, time, 'modAgentID', agentlogin);
 				changeAllowListItem(item, time, 'status', 'checking');
 				$('[item='+item+']').parents('.ah-notificationBarItem').find('.ah-notificationRemove').click();
@@ -203,7 +203,7 @@ function changeAllowListItem(item, time, reason, reasonText) {
 	chrome.runtime.sendMessage({
 			action: 'XMLHttpRequest',
 			method: "POST",
-			url: "http://avitoadm.ru/support_helper/allowlist/allowlistchange.php",
+			url: `${global.connectInfo.ext_url}/support_helper/allowlist/allowlistchange.php`,
 			data: data,
 		}, function(response) {
 			console.log(response);

@@ -28,7 +28,7 @@ function statusItem() {
 }
 function getItemInfoRequest(itemId, options) {
     options = options || {};
-    var url = "https://adm.avito.ru/items/item/info/" + itemId;
+    var url = `${global.connectInfo.adm_url}/items/item/info/${itemId}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -253,7 +253,7 @@ function renderCommentItemsCompensation(allItems) {
         delay = 500;
 
     allItems.forEach(function (id, i) {
-        $(table).find('tbody').append('<tr><td><a target="_blank" href="https://adm.avito.ru/items/item/info/' + id + '" class="ah-visitable-link">' + id + '</a></td><td class="ah-loading-indicator-text" data-item-id="' + id + '" ><span style="color: rgb(149, 149, 149);">Выполняется...</span></td></tr>');
+        $(table).find('tbody').append(`<tr><td><a target="_blank" href="${global.connectInfo.adm_url}/items/item/info/${id}" class="ah-visitable-link">${id}</a></td><td class="ah-loading-indicator-text" data-item-id="${id}" ><span style="color: rgb(149, 149, 149);">Выполняется...</span></td></tr>`);
 
         setTimeout(commentOnItem, i * delay, id, commentText, action);
     });
@@ -277,7 +277,7 @@ function renderCommentItemsCompensation(allItems) {
     var openAllBtn = $('#open-all-items-in-new-window');
     $(openAllBtn).click(function () {
         for (var i = 0; i < allItems.length; i++) {
-            var isOpened = window.open('https://adm.avito.ru/items/item/info/' + allItems[i]);
+            var isOpened = window.open(`${global.connectInfo.adm_url}/items/item/info/${allItems[i]}`);
             if (!isOpened) {
                 alert('В вашем браузере заблокированы всплывающие окна для текущего сайта. Пожалуйста, отключите эту блокировку для сайта adm.avito.ru и повторите попытку.');
                 break;
@@ -293,7 +293,7 @@ function commentItemCompensationHandler(itemId, xhr) {
 
     $(table).find('[data-item-id="' + itemId + '"]').html('<span>Выполнен </span>');
 
-    if ((xhr.status >= 400 || xhr.status < 200) && xhr.responseURL == 'https://adm.avito.ru/comment') {
+    if ((xhr.status >= 400 || xhr.status < 200) && xhr.responseURL === `${global.connectInfo.adm_url}/comment`) {
         $(table).find('[data-item-id="' + itemId + '"]').append('<span data-error>(' + xhr.status + ', ' + xhr.statusText + ')</span>');
         $(table).find('[data-item-id="' + itemId + '"]').parent().addClass('danger');
     }
@@ -358,7 +358,7 @@ function joinWalletLogLinks(links) {
 
     var dateRange = (minDate === maxDate) ? minDate + '+00:00' : minDate + '+00:00+-+' + maxDate + '+23:59';
 
-    result = 'https://adm.avito.ru/billing/walletlog?date=' + dateRange + '&operationIds=' + operationIds.join('%2C') + allStatusesStr;
+    result = `${global.connectInfo.adm_url}/billing/walletlog?date=${dateRange}&operationIds=${operationIds.join('%2C') + allStatusesStr}`;
     return result;
 }
 
