@@ -94,7 +94,7 @@ function getTagsInfo() {
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
         method: "POST",
-        url: `${connectInfo.ext_url}/support_helper/other/getTags.php`,
+        url: `${global.connectInfo.ext_url}/support_helper/other/getTags.php`,
         data: "param=" + JSON.stringify(data),
     },
             function (response) {
@@ -129,7 +129,7 @@ function getAllUsers() {
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
         method: "GET",
-        url: `${connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
+        url: `${global.connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
     },
             function (response) {
                 try {

@@ -548,7 +548,7 @@ function internSendLogServer(log) {
 	chrome.runtime.sendMessage({ 
 		action: 'XMLHttpRequest',
 		method: "POST",
-		url: `${connectInfo.ext_url}/intern_helper/catcher.php`,
+		url: `${global.connectInfo.ext_url}/intern_helper/catcher.php`,
 		data: data,
 	}, function(response) {
 		console.log(response);

@@ -312,7 +312,7 @@ function smartSNP(id) {
         chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: 'POST',
-            url: `${connectInfo.ext_url}/journal/include/php/load/create_ticket_avito_adm.php`,
+            url: `${global.connectInfo.ext_url}/journal/include/php/load/create_ticket_avito_adm.php`,
             data: 'email='+email+'&name='+name,
         }, function(response) {
             console.log(response);

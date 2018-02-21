@@ -1241,7 +1241,7 @@ RoleHandler.prototype.intern = function() {
         premoderationInternComparisonNew();
     }
 
-    if (~global.currentUrl.indexOf(`${connectInfo.ext_url}/intern_helper/`)) {
+    if (~global.currentUrl.indexOf(`${global.connectInfo.ext_url}/intern_helper/`)) {
         eg();
     }
 };
@@ -1273,7 +1273,7 @@ RoleHandler.prototype.taskLogLink = function() {
     // линк на тасклог
     $('.dropdown-menu:contains(Выход) li:last-child').before(`
         <li>
-            <a target = "_blank" href="${connectInfo.ext_url}/journal/tasklog_show.html">Task Log</a>
+            <a target = "_blank" href="${global.connectInfo.ext_url}/journal/tasklog_show.html">Task Log</a>
         </li>
         <li class="divider" role="separator"></li>
     `);
@@ -1282,7 +1282,7 @@ RoleHandler.prototype.taskLogLink = function() {
 RoleHandler.prototype.internLogLink = function() {
     $('.dropdown-menu:contains(Выход) li:last-child').before(`
         <li>
-            <a href="${connectInfo.ext_url}/intern_helper/internlog/" target = "_blank">Intern log</a>
+            <a href="${global.connectInfo.ext_url}/intern_helper/internlog/" target = "_blank">Intern log</a>
         </li>
         <li class="divider" role="separator"></li>
     `);

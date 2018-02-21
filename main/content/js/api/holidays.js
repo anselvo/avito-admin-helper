@@ -29,9 +29,9 @@ function postcardbody(url) {
 }
 
 function newyear() {
-    if (!localStorage.holidays) postcardbody(`${connectInfo.ext_url}/holidays/newyear/postcard.jpg`);
+    if (!localStorage.holidays) postcardbody(`${global.connectInfo.ext_url}/holidays/newyear/postcard.jpg`);
 }
 
 function christmas() {
-    if (!localStorage.holidays) postcardbody(`${connectInfo.ext_url}/holidays/christmas/postcard.jpg`);
+    if (!localStorage.holidays) postcardbody(`${global.connectInfo.ext_url}/holidays/christmas/postcard.jpg`);
 }

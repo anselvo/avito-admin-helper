@@ -35,7 +35,7 @@ function allowListSendLogServer(log) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "POST",
-            url: `${connectInfo.ext_url}/support_helper/allowlist/allowlist.php`,
+            url: `${global.connectInfo.ext_url}/support_helper/allowlist/allowlist.php`,
             headers: 'json',
             data: data,
         }, function(response) {
@@ -162,7 +162,7 @@ function allowItem() {
 }
 
 function allowItemRequest(id) {
-    let href = `${connectInfo.spring_url}/avito/item/activate`;
+    let href = `${global.connectInfo.spring_url}/avito/item/activate`;
     
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',

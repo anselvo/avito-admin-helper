@@ -228,7 +228,7 @@ function setSanctionIP(data) {
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             method: "POST",
-            url: `${connectInfo.ext_url}/support_helper/sanction_ip/sanctionIp.php`,
+            url: `${global.connectInfo.ext_url}/support_helper/sanction_ip/sanctionIp.php`,
             data: "sanctionIp=" + JSON.stringify(data),
         },
 

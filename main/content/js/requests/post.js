@@ -45,7 +45,7 @@ function getAdmWithSuperAcc(url) {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "POST",
-                url: `${connectInfo.ext_url}/journal/include/php/load/get_avito_adm.php`,
+                url: `${global.connectInfo.ext_url}/journal/include/php/load/get_avito_adm.php`,
                 data: 'url=' + encodeURIComponent(url)
             },
             function (response) {

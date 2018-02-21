@@ -59,7 +59,7 @@ function getPremiumUsersList() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: `${connectInfo.ext_url}/support_helper/other/premium_users.json`
+                url: `${global.connectInfo.ext_url}/support_helper/other/premium_users.json`
             },
             function (response) {
                 if (response === 'error') {
@@ -96,7 +96,7 @@ function getNegativeUsersRequest() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: `${connectInfo.ext_url}/admin/sections/helpdesk/negative_users/include/php/user/get.php`
+                url: `${global.connectInfo.ext_url}/admin/sections/helpdesk/negative_users/include/php/user/get.php`
             },
             function (response) {
                 if (response === 'error') {
@@ -120,7 +120,7 @@ function getShopModerationTemplates() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: `${connectInfo.spring_url}/traffic/template/list`
+                url: `${global.connectInfo.spring_url}/traffic/template/list`
             },
             function (response) {
                 if (response === 'error') {
@@ -149,7 +149,7 @@ function getShopRegexp() {
         chrome.runtime.sendMessage({
                 action: 'XMLHttpRequest',
                 method: "GET",
-                url: `${connectInfo.ext_url}/traffic_helper/getRegExp.php`
+                url: `${global.connectInfo.ext_url}/traffic_helper/getRegExp.php`
             },
             function (response) {
                 if (response === 'error') {
