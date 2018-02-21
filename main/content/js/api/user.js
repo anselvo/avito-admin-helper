@@ -116,11 +116,11 @@ function usersWallet(userId, offset) {
                 } else {
                     $('.ah-userTransactions').append('<table><thead><tr><th>Транзакции</th><th>Учетки</th></tr></thead><tbody></tbody></table>');
                     for (let row of json) {
-                        let link = `https://adm.avito.ru/items/search?user=`;
+                        let link = `${global.connectInfo.adm_url}/items/search?user=`;
                         let usersLink = '';
                         for (let userId of row.userIds) {
                             link += userId + '|';
-                            usersLink += `<div><a href="https://adm.avito.ru/users/user/info/${userId}" target="_blank">${userId}</a></div>`;
+                            usersLink += `<div><a href="${global.connectInfo.adm_url}/users/user/info/${userId}" target="_blank">${userId}</a></div>`;
                         }
 
                         $('.ah-userTransactions tbody').append('<tr>' +
@@ -150,8 +150,8 @@ function usersInfo(id, itemid, offset, query) {
     if (!query) query = '';
     global.beforeId = id;
 
-    let href = `https://adm.avito.ru/users/user/info/${id}`;
-    let hrefitem = `https://adm.avito.ru/items/item/info/${itemid}`;
+    let href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
+    let hrefitem = `${global.connectInfo.adm_url}/items/item/info/${itemid}`;
 
     $('.userInfoMain')
         .append('<div id="nameuser" class="ah-userInfoDiv" style="width:100%; text-align: center; color: orange; font-weight: bold;"></div>')
@@ -255,7 +255,7 @@ function usersInfo(id, itemid, offset, query) {
             $('#nameuser').append(nameuser);
             $('#status').append('<b style="color:'+color+'">'+status+'<b>');
             $('#registeredTime').append(register);
-            $('#lastIP').append(visitIpTime + `- <a href="https://adm.avito.ru/users/search?ip=${ip}" target="_blank">${ip}'</a> `);
+            $('#lastIP').append(visitIpTime + `- <a href="${global.connectInfo.adm_url}/users/search?ip=${ip}" target="_blank">${ip}'</a> `);
             $('#ah-info-chance').append('<b style="color: ' + colorChance + '">' + chance + '</b>');
 
             // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
@@ -303,17 +303,17 @@ function usersInfo(id, itemid, offset, query) {
                         } else verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
                         $('#ah-phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
-                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="https://adm.avito.ru/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${number}</a>`);
-                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="https://adm.avito.ru/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}" target="_blank">city</a>`);
-                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="https://adm.avito.ru/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}" target="_blank">+private</a>`);
-                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="https://adm.avito.ru/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}" target="_blank">parameter</a>`);
-                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="https://adm.avito.ru/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}" target="_blank">item_ip</a>`);
+                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${number}</a>`);
+                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}" target="_blank">city</a>`);
+                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}" target="_blank">+private</a>`);
+                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}" target="_blank">parameter</a>`);
+                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}" target="_blank">item_ip</a>`);
                         if (localStorage.checkboxInfo.indexOf('15')+1) $('#'+number).append(`<div class="ah-phone-verify-date" title="Дата верификации телефона">${verifyDate}</div>`);
                     }
 
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
-                    $('#ipItem').append(`<a href="https://adm.avito.ru/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${ipItem}</a>`);
+                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${ipItem}</a>`);
                     $(phoneInItem+" .ah-phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);
@@ -360,7 +360,7 @@ function ipHistory(selector, id, response) {
                 let ipVisitTime = $(ipInfoList[i]).text().split("-")[0];
 
                 $('.ah-info-history-ip-table').append(`<tr>
-                    <td><a href="https://adm.avito.ru/users/search?ip=${ipInfo}" target="_blank">${ipInfo}</a></td>
+                    <td><a href="${global.connectInfo.adm_url}/users/search?ip=${ipInfo}" target="_blank">${ipInfo}</a></td>
                     <td><span ipinfo="${ipInfo}"></span></td>
                     <td>${ipVisitTime}</td>
                     </tr>`);
@@ -386,7 +386,7 @@ function emailHistory(selector, id) {
         $('.ah-info-history-email').toggle("slow");
     });
 
-    let historyUrl = `https://adm.avito.ru/users/user/${id}/emails/history`;
+    let historyUrl = `${global.connectInfo.adm_url}/users/user/${id}/emails/history`;
     $.ajax({
         type: 'GET',
         url: historyUrl,
@@ -463,8 +463,8 @@ function usersAbuses(id, itemid, offset) {
     global.beforeId = itemid;
 
     let href;
-    if (localStorage.abusesSetting === 'true') href = `https://adm.avito.ru/abuses/search?userId=${id}&itemId=${itemid}`;
-    else href = `https://adm.avito.ru/abuses/search?userId=${id}`;
+    if (localStorage.abusesSetting === 'true') href = `${global.connectInfo.adm_url}/abuses/search?userId=${id}&itemId=${itemid}`;
+    else href = `${global.connectInfo.adm_url}/abuses/search?userId=${id}`;
 
     $('.userInfoMain').append('<div id="abuseWithCom" style="display:none;"></div>');
     $('#abuseWithCom').append('<div style="width:100%; text-align: center; color: #BA68C8;"><b>Abuses</b></div>');

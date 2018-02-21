@@ -455,7 +455,7 @@ function checkPass() {
                     alert('Ошибка: не удалось определить ID Магазина.');
                     return;
                 }
-                window.location.assign('https://adm.avito.ru/shops/'+ shopId +'/moderate');
+                window.location.assign(`${global.connectInfo.adm_url}/shops/${shopId}/moderate`);
             } else {
                 return;
             }

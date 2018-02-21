@@ -1,12 +1,12 @@
 function changeUserType(id, type) {
     var request = new XMLHttpRequest();
-    request.open("GET", `https://adm.avito.ru/users/user/${type}/${id}`, true);
+    request.open("GET", `${global.connectInfo.adm_url}/users/user/${type}/${id}`, true);
     request.send('reasons%5B%5D=128&id='+id);
 }
 
 // item info
 function getItemInfo(id) {
-     return fetch(`/items/item/info/${id}`, {
+     return fetch(`${global.connectInfo.adm_url}/items/item/info/${id}`, {
              credentials: 'include'
          }).then(response => {
              if (response.status !== 200) {
@@ -18,7 +18,7 @@ function getItemInfo(id) {
 
 // ip info
 function getIpInfo(ip) {
-    return fetch(`/ip/info?ip=${ip}`, {
+    return fetch(`${global.connectInfo.adm_url}/ip/info?ip=${ip}`, {
             credentials: 'include',
             headers: {"X-Requested-With": "XMLHttpRequest"}
         }).then(response =>  {
@@ -31,7 +31,7 @@ function getIpInfo(ip) {
 
 // shop info
 function getShopInfo(id) {
-    return fetch(`https://adm.avito.ru/shops/info/view/${id}`, {
+    return fetch(`${global.connectInfo.adm_url}/shops/info/view/${id}`, {
             credentials: 'include'
         }).then(response =>  {
             if (response.status !== 200) {
@@ -43,7 +43,7 @@ function getShopInfo(id) {
 
 // user account info
 function getUserAccountInfo(id) {
-    return fetch(`https://adm.avito.ru/users/account/info/${id}`, {
+    return fetch(`${global.connectInfo.adm_url}/users/account/info/${id}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -80,7 +80,7 @@ function getPremiumUsersList() {
 
 // user info
 function getUserInfo(id) {
-    return fetch(`https://adm.avito.ru/users/user/info/${id}`, {
+    return fetch(`${global.connectInfo.adm_url}/users/user/info/${id}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -170,7 +170,7 @@ function getShopRegexp() {
 }
 
 function getImageByItemId(id) {
-    return fetch(`https://adm.avito.ru/items/moder/images?item_id=${id}`, {
+    return fetch(`${global.connectInfo.adm_url}/items/moder/images?item_id=${id}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -182,7 +182,7 @@ function getImageByItemId(id) {
 
 // shop managers
 function getShopManagers() {
-    return fetch(`/shops/moderation/managers/list`, {
+    return fetch(`${global.connectInfo.adm_url}/shops/moderation/managers/list`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -194,7 +194,7 @@ function getShopManagers() {
 
 // user items
 function getUserItems(userId, page) {
-    return fetch(`/items/search?p=${page || 1}&user_id=${userId}`, {
+    return fetch(`${global.connectInfo.adm_url}/items/search?p=${page || 1}&user_id=${userId}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -205,7 +205,7 @@ function getUserItems(userId, page) {
 }
 
 function getGroupFilterCountHD(id) {
-    return fetch(`/helpdesk/api/1/filter/group/${id}/count`, {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/filter/group/${id}/count`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
@@ -216,7 +216,7 @@ function getGroupFilterCountHD(id) {
 }
 
 function getUserMessenger(id) {
-    return fetch(`/messenger/user/${id}`, {
+    return fetch(`${global.connectInfo.adm_url}/messenger/user/${id}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {

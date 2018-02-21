@@ -590,7 +590,7 @@ ShopModeration.prototype.addMailForm = function () {
         overlay.style.display = 'block';
         overlay.focus();
 
-        fetch(`/shops/moderation/send/email/${self.shopId}`, {
+        fetch(`${global.connectInfo.adm_url}/shops/moderation/send/email/${self.shopId}`, {
                 method: 'post',
                 credentials: 'include',
                 body: data

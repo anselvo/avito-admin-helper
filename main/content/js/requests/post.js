@@ -1,6 +1,6 @@
 function commentOnUserModer(id, comment){
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/comment', true);
+    request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("objectTypeId=2&objectId="+id+"&comment="+encodeURIComponent(comment));
 }
@@ -8,7 +8,7 @@ function commentOnUserModer(id, comment){
 function commentOnItem(id, comment, action){
 	action = action || '';
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/comment', true);
+    request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("objectTypeId=1&objectId="+id+"&comment="+encodeURIComponent(comment));
 	request.onreadystatechange = function() {
@@ -25,7 +25,7 @@ function commentOnItem(id, comment, action){
 function commentOnUserSupport(id, comment, action){
 	action = action || '';
     var request = new XMLHttpRequest();
-    request.open("POST", 'https://adm.avito.ru/comment', true);
+    request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("objectTypeId=2&objectId="+id+"&comment="+encodeURIComponent(comment));
 	request.onreadystatechange = function() {
@@ -70,7 +70,7 @@ function editPersonalManager(userId, managerId) {
     const headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
     });
-    return fetch(`/users/user/edit/manager/${userId}`, {
+    return fetch(`${global.connectInfo.adm_url}/users/user/edit/manager/${userId}`, {
         method: 'post',
         credentials: 'include',
         headers: headers,

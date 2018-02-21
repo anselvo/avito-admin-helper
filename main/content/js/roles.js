@@ -953,7 +953,7 @@ RoleHandler.prototype.userPhonesVerificationLink = function() {
         $('button[data-verify-text="Верифицировать"]').each((idx, item) => {
             const $item = $(item);
             const phone_number = $item.attr("data-phone");
-            $item.after(`\t<a href="https://adm.avito.ru/users/phones_verification?phone=${phone_number}" target="_blank" style="margin: 0 4px;">Log</a>`);
+            $item.after(`\t<a href="${global.connectInfo.adm_url}/users/phones_verification?phone=${phone_number}" target="_blank" style="margin: 0 4px;">Log</a>`);
         });
     }
 };

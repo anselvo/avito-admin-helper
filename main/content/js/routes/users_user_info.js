@@ -109,7 +109,7 @@ function userChangeEmail() {
     });
 
     function changeEmail(email, domen, id, status) {
-        var href = "https://adm.avito.ru/users/user/change_email/" + id;
+        var href = `${global.connectInfo.adm_url}/users/user/change_email/${id}`;
 
         var request = new XMLHttpRequest();
         request.open("POST", href, true);
@@ -135,7 +135,7 @@ function userChangeEmail() {
         };
     }
     function notfake(emailCheck, domen) {
-        var href = "https://adm.avito.ru/users/fakeemail/removeOld";
+        var href = `${global.connectInfo.adm_url}/users/fakeemail/removeOld`;
 
         var request = new XMLHttpRequest();
         request.open("POST", href, true);
@@ -147,12 +147,12 @@ function userChangeEmail() {
     function commentOnUserHack(id, email, domen, comment) {
         var commentFull = email + "@" + domen + comment;
         var request = new XMLHttpRequest();
-        request.open("POST", 'https://adm.avito.ru/comment', true);
+        request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         request.send("objectTypeId=2&objectId=" + id + "&comment=" + encodeURIComponent(commentFull));
     }
     function sendNewPassword(id) {
-        var href = "https://adm.avito.ru/users/user/edit/" + id + "/password";
+        var href = `${global.connectInfo.adm_url}/users/user/edit/${id}/password`;
 
         var request = new XMLHttpRequest();
         request.open("POST", href, true);
@@ -162,7 +162,7 @@ function userChangeEmail() {
     }
     function unblockUserHack(id) {
         var request = new XMLHttpRequest();
-        request.open("GET", 'https://adm.avito.ru/users/user/unblock_relevant/' + id, true);
+        request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock_relevant/${id}`, true);
         request.send();
     }
     function changeName() {
@@ -213,7 +213,7 @@ function alternatePhoneSearch() {
             newNumber = newNumber + number[j];
         }
 
-        $(nuser[i]).find('td:eq(6)').append('<br><a class="anatherNumber" href="https://adm.avito.ru/items/search?phone=' + newNumber + '%3F%3F%3F' + region + '" target="_blank">item???</a>');
+        $(nuser[i]).find('td:eq(6)').append(`<br><a class="anatherNumber" href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}%3F%3F%3F${region}" target="_blank">item???</a>`);
     }
 }
 
@@ -637,7 +637,7 @@ function unverify(obj, reloadPage) {
     formData.append('id', obj.id);
     formData.append('phone', obj.phone);
 
-    var url = 'https://adm.avito.ru/users/user/phone/cancel_confirm';
+    var url = `${global.connectInfo.adm_url}/users/user/phone/cancel_confirm`;
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
@@ -700,7 +700,7 @@ function requestInfoIP(ip, options) {
     options = options || {};
     let action  = options.action || null;
 
-    let href = 'https://adm.avito.ru/ip/info?ip=' + ip;
+    let href = `${global.connectInfo.adm_url}/ip/info?ip=${ip}`;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', href, true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -738,7 +738,7 @@ function addIPSystemAccessLink() {
     $(allIps).each(function (i, ip) {
         var itemsIpLink = $(ip).find('[href^="/items/search?ip"]');
         var ipText = $(ip).find('.js-ip-info').text();
-        $(itemsIpLink).after(' / <a target="_blank" href="https://adm.avito.ru/system/access?ip=' + ipText + '">Access</a>');
+        $(itemsIpLink).after(` / <a target="_blank" href="${global.connectInfo.adm_url}/system/access?ip=${ipText}">Access</a>`);
     });
 }
 //+++++ ссылки на system/access рядом с IP +++++//
@@ -756,7 +756,7 @@ function usersInfoElements() {
 // переход в HD
 function linkToHDOnUser() {
     var mailToUrl = $('.js-fakeemail-field').text();
-    $('.header__title:eq(0)').append('<span style="color: rgb(189, 189, 189);"> | </span><span style="font-size: 14px; vertical-align: middle;"><a id="" style="cursor: pointer;" href="https://adm.avito.ru/helpdesk?p=1&requesterEmail=&#34;' + mailToUrl + '&#34;&sortField=createdTxtime&sortType=desc" target="_blank">Перейти в Helpdesk</a></span>');
+    $('.header__title:eq(0)').append(`<span style="color: rgb(189, 189, 189);"> | </span><span style="font-size: 14px; vertical-align: middle;"><a id="" style="cursor: pointer;" href="${global.connectInfo.adm_url}/helpdesk?p=1&requesterEmail=&#34;${mailToUrl}&#34;&sortField=createdTxtime&sortType=desc" target="_blank">Перейти в Helpdesk</a></span>`);
 }
 
 // переход в ВЛ со страницы юзера (все статусы, последние пол года)
@@ -857,7 +857,7 @@ function feesAvailableModal() {
                         <a class="ah-fees-modal-copy-all">Скопировать ID</a>
                     </li>
                     <li>
-                        <a href="https://adm.avito.ru/items/search" target="_blank" 
+                        <a href="${global.connectInfo.adm_url}/items/search" target="_blank" 
                             class="ah-fees-modal-open-search">Открыть в /items/search</a>
                     </li>
                 </ul>
@@ -970,7 +970,7 @@ function feesAvailableModal() {
         const uniqueArr = Array.from(unique);
         checkedCounter.setAttribute('data-checked-ids', JSON.stringify(uniqueArr));
         checkedCounter.innerHTML = uniqueArr.length;
-        openAllLink.href = `https://adm.avito.ru/items/search?query=${uniqueArr.join('|')}`;
+        openAllLink.href = `${global.connectInfo.adm_url}/items/search?query=${uniqueArr.join('|')}`;
     }
 }
 

@@ -57,8 +57,8 @@ function allowListMSG(currentUrl, agentLogin) {
         $('#itemChecked').click(function () {
             var msg = prompt('Введите статус проверки объявления:', 'ok');
             if (msg != null) {
-                if (msg.toLowerCase() == 'ok' || msg.toLowerCase() == 'ок') {
-                    window.location.replace('https://adm.avito.ru/items/item/activate/' + itemID +'');
+                if (msg.toLowerCase() === 'ok' || msg.toLowerCase() === 'ок') {
+                    window.location.replace(`${global.connectInfo.adm_url}/items/item/activate/${itemID}`);
                 }
 
                 changeAllowListItem(itemID, startTime[1], 'status', 'checked');
@@ -280,7 +280,7 @@ function addRefundInfoBtns(table) {
                     dateRange: `${$(this).data('date')} - ${$(this).data('date')}`,
                     itemId: $('form[data-item-id]').data('itemId'),
                     getUrl: function() {
-                        return `https://adm.avito.ru/billing/walletlog?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
+                        return `${global.connectInfo.adm_url}/billing/walletlog?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
                     },
                     clickedElem: $(this)
                 };
@@ -416,7 +416,7 @@ function renderRefundInfo(responseBody, data) {
                 dateRange: data.dateRange,
                 itemId: data.itemId,
                 getUrl: function() {
-                    return `https://adm.avito.ru/billing/walletlog/total?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
+                    return `${global.connectInfo.adm_url}/billing/walletlog/total?date=${this.dateRange}&itemIds=${this.itemId}&paymentMethodIds%5B%5D=114`
                 },
                 clickedElem: $(this)
             };
@@ -515,7 +515,7 @@ function addAccountLinkItemInfo() {
 
     const divider = document.createTextNode('| ');
     const accountLink = document.createElement('a');
-    accountLink.href = `/users/account/info/${userId}`;
+    accountLink.href = `${global.connectInfo.adm_url}/users/account/info/${userId}`;
     accountLink.textContent = 'Счёт';
     accountLink.target = '_blank';
 

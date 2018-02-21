@@ -85,7 +85,7 @@ function comparisonInfoOld() {
 var mainIP;
 
 function loadItem(i, item) {
-    var url = "https://adm.avito.ru"+item;
+    var url = global.connectInfo.adm_url}+item;
 
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
@@ -98,7 +98,7 @@ function loadItem(i, item) {
             var startTime = $(r).find('[title="Start time"]').text();
             var itemIP = $(r).find('.ip-info').attr('data-ip');
 
-            $('#itemIP [item="'+item+'"]').append('<a href="https://adm.avito.ru/items/search?ip='+itemIP+'" target="_blank">'+itemIP+'</a>');
+            $('#itemIP [item="'+item+'"]').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${itemIP}" target="_blank">${itemIP}</a>`);
             $('.item-sort-time [item="'+item+'"]').append(sortTime[1]);
             $('#startTime [item="'+item+'"]').append(startTime);
 

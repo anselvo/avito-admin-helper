@@ -796,7 +796,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         cellMailChance.insertAdjacentHTML('beforeend',`
             ${(+info.id === +abutmentId) ? `<span class="label label-primary ah-compare-label-abutment">Опорная</span> `: ``}
             <a class="ah-compare-users-user-mail ah-visitable-link" data-entity-id="${info.id}" target="_blank" 
-                href="https://adm.avito.ru/users/user/info/${info.id}">${info.mail}</a>,
+                href="${global.connectInfo.adm_url}/users/user/info/${info.id}">${info.mail}</a>,
             <span> Шанс -</span> ${chance}
         `);
 

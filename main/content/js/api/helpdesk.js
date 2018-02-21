@@ -69,7 +69,7 @@ function getHelpdeskProblems() {
 
 //---------- Agent ID ----------//
 function findAgentID() {
-    var url = "https://adm.avito.ru/helpdesk/api/1/permissions";
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/permissions`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, false);
@@ -236,7 +236,7 @@ function renderCreateNewTicketWindow(route) {
     $(body).append('<div class="ah-field-group" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;"><div class="ah-field-horizontal"><label for="create-ticket-statusId-1" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-1" value="1" checked>Новое</label><label for="create-ticket-statusId-5" class="ah-radio-inline"><input type="radio"  name="create-ticket-statusId" id="create-ticket-statusId-5" value="5">В решено</label><label for="create-ticket-statusId-3" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-3" value="3">На ожидании</label></div><div class="ah-field-horizontal" style=""><div class="ah-dropmenu-holder btn-group" style="display: inline-block;"><input type="text" class="ah-form-control ah-btn-group-left" style="height: 30px; width: 200px; display: none;" id="create-ticket-search-templates-input"><button type="button" class="ah-default-btn ah-btn-small ah-btn-group-left" id="ah-create-ticket-choose-templates" style="height: 30px;    padding: 1px 10px;" disabled>Шаблоны<span class="ah-caret"></span></button><ul class="ah-dropdown-menu-templates" style="width: 350px; max-height: 50vh; overflow: auto;"></ul></div><label class="ah-default-btn ah-btn-small ah-btn-group-right" style="line-height: 1; margin-bottom: 0; height: 30px;"><input type="file" multiple style="display: none;" name="create-ticket-attaches[]"><i class="ah-btn-icon ah-icon-paperclip"></i></label></div></div>');
 
     // Описание
-    $(body).append('<div class="alert alert-warning" style="position: absolute; top: 1px;left: calc(100% + 10px);width: 320px;border-radius: 0;"><strong>Данная форма не поддерживает Markdown. </strong>В случае необходимости, воспользуйтесь оригинальной формой <a target="_blank" href="https://adm.avito.ru/helpdesk">здесь</a>.</div><div class="ah-field-group" style="position: relative;"><div class="ah-form-control" style="min-height: 180px;" id="ah-create-ticket-description-clone"></div></div><div class="ah-field-group"><textarea type="text" class="ah-form-control" style="min-height: 180px; resize: vertical; " name="create-ticket-description"></textarea></div>');
+    $(body).append('<div class="alert alert-warning" style="position: absolute; top: 1px;left: calc(100% + 10px);width: 320px;border-radius: 0;"><strong>Данная форма не поддерживает Markdown. </strong>В случае необходимости, воспользуйтесь оригинальной формой <a target="_blank" href="${global.connectInfo.adm_url}/helpdesk">здесь</a>.</div><div class="ah-field-group" style="position: relative;"><div class="ah-form-control" style="min-height: 180px;" id="ah-create-ticket-description-clone"></div></div><div class="ah-field-group"><textarea type="text" class="ah-form-control" style="min-height: 180px; resize: vertical; " name="create-ticket-description"></textarea></div>');
 
     // Почта и имя
     $(body).append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 10px 0 0; margin-bottom: 0;"><div class="ah-field-title" style="">Почта пользователя</div><div class="ah-field-horizontal ah-field-flex"><input type="text" class="ah-form-control" name="create-ticket-requesterEmail" pattern="^.+@.+\..+$"></div></div>');
@@ -275,7 +275,7 @@ function renderCreateNewTicketWindow(route) {
                 return;
             }
 
-            var isOpened = window.open('https://adm.avito.ru/helpdesk?p=1&requesterEmail="' + mail + '"&sortField=createdTxtime&sortType=desc');
+            var isOpened = window.open(`${global.connectInfo.adm_url}/helpdesk?p=1&requesterEmail="${mail}"&sortField=createdTxtime&sortType=desc`);
             if (!isOpened) {
                 alert('К сожалению, невозможно открыть окно, так как в вашем браузере блокируются всплывающие окна для этого сайта.\nПожалуйста, снимите эту блокировку для сайта adm.avito.ru.');
             }
@@ -656,7 +656,7 @@ function renderCreateNewTicketWindow(route) {
 }
 
 function getHDTemplates() {
-    var url = 'https://adm.avito.ru/helpdesk/api/1/templates/list';
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/templates/list`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -855,7 +855,7 @@ function resetCreateTicketValues() {
 }
 
 function getHDTags() {
-    var url = 'https://adm.avito.ru/helpdesk/api/1/dictionaries/tags';
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -1179,7 +1179,7 @@ function autoFillCreateTicket(fill) {
 function searchHDUserNameInTickets(mail) {
 
     mail = encodeURIComponent(mail);
-    var url = 'https://adm.avito.ru/helpdesk/api/1/ticket/search?p=1&sortField=createdTxtime&sortType=desc&requesterEmail="' + mail + '"&statusId%5B%5D=&problemId%5B%5D=&tags%5B%5D=';
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/ticket/search?p=1&sortField=createdTxtime&sortType=desc&requesterEmail="${mail}"&statusId%5B%5D=&problemId%5B%5D=&tags%5B%5D=`;
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -1226,7 +1226,7 @@ function createTicket(data) {
         formData.append('attaches[]', filesArr[i]);
     }
 
-    var url = 'https://adm.avito.ru/helpdesk/api/1/ticket/add';
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/ticket/add`;
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
@@ -1251,7 +1251,7 @@ function createTicket(data) {
                 var closeBtn = $(modal).find('.ah-modal-close');
                 $(closeBtn).click();
 
-                var isOpened = window.open('https://adm.avito.ru/helpdesk/details/' + ticketId);
+                var isOpened = window.open(`${global.connectInfo.adm_url}/helpdesk/details/${ticketId}`);
                 if (!isOpened) {
                     chrome.runtime.sendMessage({action: 'copyToClipboard', text: ticketId});
                     setTimeout(function () {

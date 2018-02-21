@@ -20,7 +20,7 @@ function findWherePhoneVerified() {
 
 function getVerificationLog(phone) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", `https://adm.avito.ru/users/phones_verification/full`, true);
+    xhr.open("POST", `${global.connectInfo.adm_url}/users/phones_verification/full`, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.send("phone="+phone);
@@ -70,7 +70,7 @@ function renderUserWithVerifiedPhoneInfo(elem, phone) {
 
     $('.ah-info-container table').append(elem);
 
-    $('.ah-info-container').append(`<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone=${phone}">Перейти в лог верификации</a></span>`);
+    $('.ah-info-container').append(`<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="${global.connectInfo.adm_url}/users/phones_verification?phone=${phone}">Перейти в лог верификации</a></span>`);
 
     var tableUserId, tableRow;
     $('table.table-striped tr').each(function(i, elem) {
@@ -99,7 +99,7 @@ function renderVerificationLog(html, phone) {
 
     $('.ah-info-container table').append(html);
 
-    $('.ah-info-container').append(`<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="https://adm.avito.ru/users/phones_verification?phone=${phone}">Перейти в лог верификации</a></span>`);
+    $('.ah-info-container').append(`<hr class="ah-default-hr"><span style="padding: 8px;"><a target="_blank" href="${global.connectInfo.adm_url}/users/phones_verification?phone=${phone}">Перейти в лог верификации</a></span>`);
 
     $('.sh-circle-close-btn').click(function() {
         $('.ah-info-container').detach();

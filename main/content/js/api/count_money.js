@@ -131,7 +131,7 @@ function countMoneyWalletlog() {
                     statusId = $(this).val();
                 }
             });
-            return `/billing/walletlog/?operationIds=${btnData.oid}&date=${changedDate}&operationStatusIds[]=${statusId}`;
+            return `${global.connectInfo.adm_url}/billing/walletlog/?operationIds=${btnData.oid}&date=${changedDate}&operationStatusIds[]=${statusId}`;
         })();
         let btn = getCountMoneyBtn(btnData);
         $(this).find('td:first').append(btn);
@@ -430,9 +430,9 @@ function showMoneyCounterCurrentUser() {
     let lsObj = JSON.parse(localStorage['users/account/info/countMoney']);
     let userId = lsObj.currentUser;
 
-    $('#money-counter-user-id').attr('href', `https://adm.avito.ru/users/user/info/${userId}`)
+    $('#money-counter-user-id').attr('href', `${global.connectInfo.adm_url}/users/user/info/${userId}`)
         .text(`${userId}`);
-    $('#money-counter-user-account').attr('href', `https://adm.avito.ru/users/account/info/${userId}`)
+    $('#money-counter-user-account').attr('href', `${global.connectInfo.adm_url}/users/account/info/${userId}`)
         .text(`Счёт`);
 
     $('.ah-money-counter-current-user').show();

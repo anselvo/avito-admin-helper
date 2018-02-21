@@ -50,7 +50,7 @@ function consultationNotificationSwap(id) {
 
     $consultationMain.find('.ah-consultation-count').show().text(count);
     $consultationMain.find('.ah-consultation-name').show().text(name);
-    $consultationMain.find('.ah-consultation-link').show().find('a').attr('href', `https://adm.avito.ru/helpdesk?fid=${id}`);
+    $consultationMain.find('.ah-consultation-link').show().find('a').attr('href', `${global.connectInfo.adm_url}/helpdesk?fid=${id}`);
 }
 
 function hideTestItemsSearch() {
@@ -68,7 +68,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 
     $.ajax({
         type: 'GET',
-        url: `https://adm.avito.ru/js/locations?json=true&id=`+locationID,
+        url: `${global.connectInfo.adm_url}/js/locations?json=true&id=`+locationID,
         success: function(data) {
             if (data.length === 0) {
                 abTestHighlight(categoryID, locationID, containsOption);
@@ -580,7 +580,7 @@ function addElementsForEachItemNew() {
         class: 'btn btn-default green',
         xernia: lastReject,
         click: function () {
-            window.open(`https://adm.avito.ru/moderation/statistics/user/actions`, '_blank');
+            window.open(`${global.connectInfo.adm_url}/moderation/statistics/user/actions`, '_blank');
         }
     });
     $('#apply_all').append(butShow);

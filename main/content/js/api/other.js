@@ -233,7 +233,7 @@ function renderSearchUserBySocialPopup(avitoSocialInfo) {
     });
 }
 function getSocialSearchResults(prefix, socialId) {
-    var url = `https://adm.avito.ru/users/search?login=${prefix.id}_${socialId}`;
+    var url = `${global.connectInfo.adm_url}/users/search?login=${prefix.id}_${socialId}`;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -252,7 +252,7 @@ function getSocialSearchResults(prefix, socialId) {
                 var userId = $(response).find('.js-user-id').text();
                 if (!userId)
                     userId = 'error';
-                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html(`<a target="_blank" class="ah-nocontent-default-link" href="https://adm.avito.ru/users/user/info/${userId}">${userId}</a>`).removeClass('ah-loading-indicator-text');
+                $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(1)').html(`<a target="_blank" class="ah-nocontent-default-link" href="${global.connectInfo.adm_url}/users/user/info/${userId}">${userId}</a>`).removeClass('ah-loading-indicator-text');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"] td:eq(0)').css('color', 'black');
                 $(searchTable).find('[data-prefix-id="' + prefix.id + '"]').css('font-weight', '700');
             }
@@ -398,7 +398,7 @@ function addBindedWLLink(elem, toDay, route) {
             newLinkText = isFinite(operationId) ? 'ID операции' : 'error';
             dateStart = $(elem).find('td').find('[href^="/billing/walletlog"]').attr('href').split('&date=');
             dateStart = dateStart[1].split(' ')[0];
-            $(block).find('a[href^="/items/item/info"]').after(` | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">'${newLinkText}</a>`);
+            $(block).find('a[href^="/items/item/info"]').after(` | <a target="_blank" href="${global.connectInfo.adm_url}/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">'${newLinkText}</a>`);
             break;
 
         case '/billing/walletlog':
@@ -410,7 +410,7 @@ function addBindedWLLink(elem, toDay, route) {
             newLinkText = isFinite(operationId) ? 'ID операции' : 'error';
             dateStart = $(elem).find('td:eq(2)')[0].childNodes[4].nodeValue.replace(/^\s+/, '');
             dateStart = dateStart.split(' ')[0];
-            $(block).append(` | <a target="_blank" href="https://adm.avito.ru/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">${newLinkText}</a>`);
+            $(block).append(` | <a target="_blank" href="${global.connectInfo.adm_url}/billing/walletlog/?operationIds=${operationId}&date=${dateStart}%2000:00+-+${toDay}%2023:59&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4" title="Переход в Wallet Log на операцию, для которой было резервирование">${newLinkText}</a>`);
             break;
     }
 }
@@ -671,7 +671,7 @@ function btnLoaderOff(btn) {
 }
 
 function addInfoDocQueueLink(target) {
-    $(target).append(`<a class="ah-infodoc-queue-link" target="_blank" href="https://adm.avito.ru/helpdesk?fid=841&fname=%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D1%82&limit=30&p=1&sortField=reactionTxtime&sortType=asc">Очередь "Документооборот"</a>`);
+    $(target).append(`<a class="ah-infodoc-queue-link" target="_blank" href="${global.connectInfo.adm_url}/helpdesk?fid=841&fname=%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D1%82&limit=30&p=1&sortField=reactionTxtime&sortType=asc">Очередь "Документооборот"</a>`);
 }
 
 // линк на ВЛ для юзера (фильтры: последние полгода, айди юзера, все статусы)
@@ -690,7 +690,7 @@ function getWlLinkForUser(userId) {
 
     let dateRange = `${minDate}+00:00+-+${maxDate}+23:59`;
 
-    return `/billing/walletlog?date=${dateRange}&userIds=${userId}&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4`;
+    return `${global.connectInfo.adm_url}/billing/walletlog?date=${dateRange}&userIds=${userId}&operationStatusIds%5B%5D=0&operationStatusIds%5B%5D=1&operationStatusIds%5B%5D=2&operationStatusIds%5B%5D=3&operationStatusIds%5B%5D=4`;
 
 }
 
@@ -710,7 +710,7 @@ function getWlLinkForDocuments(userId) {
 
     let dateRange = `${minDate}+00:00+-+${maxDate}+23:59`;
 
-    return `/billing/walletlog?date=${dateRange}&userIds=${userId}&itemIds=&payerCode=&operationIds=&orderIds=&serviceTransactionIds=&externalIds=&fiscalIds=&payCode=0&personType=0&accountType=0&legalEntityIds%5B%5D=0&operationStatusIds%5B%5D=1&paymentMethodIds%5B%5D=0&userTypes%5B%5D=&operationTypeIds%5B%5D=vas_vip&operationTypeIds%5B%5D=vas_highlight&operationTypeIds%5B%5D=vas_pushup&operationTypeIds%5B%5D=vas_premium&operationTypeIds%5B%5D=vas_activation&operationTypeIds%5B%5D=vas_fast&operationTypeIds%5B%5D=vas_turbo&operationTypeIds%5B%5D=lf_single&operationTypeIds%5B%5D=lf_package_writeoff&operationTypeIds%5B%5D=lf_package_extrawriteoff&operationTypeIds%5B%5D=lf_package_burn&operationTypeIds%5B%5D=promo_writeoff&operationTypeIds%5B%5D=context_writeoff&operationTypeIds%5B%5D=shop_tariff_writeoff&operationTypeIds%5B%5D=shop_extension_writeoff&operationTypeIds%5B%5D=cv_single_view&operationTypeIds%5B%5D=cv_package_writeoff&operationTypeIds%5B%5D=cv_package_expired&operationTypeIds%5B%5D=cv_package_extra_writeoff&operationTypeIds%5B%5D=srf_single_placement&operationTypeIds%5B%5D=subscription_writeoff&operationTypeIds%5B%5D=subscription_extra_writeoff&operationTypeIds%5B%5D=vas_domofond&operationTypeIds%5B%5D=subscription_extension_writeoff&operationTypeIds%5B%5D=subscription_extension_extra_writeoff&operationTypeIds%5B%5D=vas_xl&operationTypeIds%5B%5D=context_items_writeoff`;
+    return `${global.connectInfo.adm_url}/billing/walletlog?date=${dateRange}&userIds=${userId}&itemIds=&payerCode=&operationIds=&orderIds=&serviceTransactionIds=&externalIds=&fiscalIds=&payCode=0&personType=0&accountType=0&legalEntityIds%5B%5D=0&operationStatusIds%5B%5D=1&paymentMethodIds%5B%5D=0&userTypes%5B%5D=&operationTypeIds%5B%5D=vas_vip&operationTypeIds%5B%5D=vas_highlight&operationTypeIds%5B%5D=vas_pushup&operationTypeIds%5B%5D=vas_premium&operationTypeIds%5B%5D=vas_activation&operationTypeIds%5B%5D=vas_fast&operationTypeIds%5B%5D=vas_turbo&operationTypeIds%5B%5D=lf_single&operationTypeIds%5B%5D=lf_package_writeoff&operationTypeIds%5B%5D=lf_package_extrawriteoff&operationTypeIds%5B%5D=lf_package_burn&operationTypeIds%5B%5D=promo_writeoff&operationTypeIds%5B%5D=context_writeoff&operationTypeIds%5B%5D=shop_tariff_writeoff&operationTypeIds%5B%5D=shop_extension_writeoff&operationTypeIds%5B%5D=cv_single_view&operationTypeIds%5B%5D=cv_package_writeoff&operationTypeIds%5B%5D=cv_package_expired&operationTypeIds%5B%5D=cv_package_extra_writeoff&operationTypeIds%5B%5D=srf_single_placement&operationTypeIds%5B%5D=subscription_writeoff&operationTypeIds%5B%5D=subscription_extra_writeoff&operationTypeIds%5B%5D=vas_domofond&operationTypeIds%5B%5D=subscription_extension_writeoff&operationTypeIds%5B%5D=subscription_extension_extra_writeoff&operationTypeIds%5B%5D=vas_xl&operationTypeIds%5B%5D=context_items_writeoff`;
 }
 
 // имя пользователя
@@ -1354,7 +1354,7 @@ function handleCheckVasUsage(btn) {
         const dateRange = `${minDate}+00:00+-+${maxDate}+23:59`;
         const userId = this.dataset.userId;
 
-        const url = `https://adm.avito.ru/billing/walletlog/total?date=${dateRange}&userIds=${userId}&itemIds=&payerCode=&operationIds=&orderIds=&serviceTransactionIds=&externalIds=&fiscalIds=&payCode=0&personType=0&accountType=0&legalEntityIds[]=0&operationStatusIds[]=1&paymentMethodIds[]=0&userTypes[]=&operationTypeIds[]=vas_vip&operationTypeIds[]=vas_highlight&operationTypeIds[]=vas_pushup&operationTypeIds[]=vas_premium&operationTypeIds[]=vas_activation&operationTypeIds[]=vas_fast&operationTypeIds[]=vas_turbo&operationTypeIds[]=vas_domofond&operationTypeIds[]=vas_xl`;
+        const url = `${global.connectInfo.adm_url}/billing/walletlog/total?date=${dateRange}&userIds=${userId}&itemIds=&payerCode=&operationIds=&orderIds=&serviceTransactionIds=&externalIds=&fiscalIds=&payCode=0&personType=0&accountType=0&legalEntityIds[]=0&operationStatusIds[]=1&paymentMethodIds[]=0&userTypes[]=&operationTypeIds[]=vas_vip&operationTypeIds[]=vas_highlight&operationTypeIds[]=vas_pushup&operationTypeIds[]=vas_premium&operationTypeIds[]=vas_activation&operationTypeIds[]=vas_fast&operationTypeIds[]=vas_turbo&operationTypeIds[]=vas_domofond&operationTypeIds[]=vas_xl`;
 
         getAdmWithSuperAcc(url)
             .then(response => {
