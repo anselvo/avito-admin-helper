@@ -85,7 +85,7 @@ function comparisonInfoOld() {
 var mainIP;
 
 function loadItem(i, item) {
-    var url = global.connectInfo.adm_url}+item;
+    var url = global.connectInfo.adm_url+item;
 
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
