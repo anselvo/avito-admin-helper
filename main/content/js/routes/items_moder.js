@@ -68,7 +68,7 @@ function markTestItems(categoryID, locationID, containsOption) {
 
     $.ajax({
         type: 'GET',
-        url: `${global.connectInfo.adm_url}/js/locations?json=true&id=`+locationID,
+        url: `${global.connectInfo.adm_url}/js/locations?json=true&id=${locationID}`,
         success: function(data) {
             if (data.length === 0) {
                 abTestHighlight(categoryID, locationID, containsOption);
