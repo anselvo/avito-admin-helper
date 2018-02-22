@@ -41,7 +41,7 @@ function linksOnComments(tableClass, currentUserID) {
                 text += ` <a class="glyphicon glyphicon-new-window" href="${link}"  style="margin-right: 4px;" target="_blank"></a>`;
             }
 
-            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query='${ids.join('|')}" target="_blank"></a>`;
+            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${ids.join('|')}" target="_blank"></a>`;
 
             $(commentBlock).html(text);
         }
