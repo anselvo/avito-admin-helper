@@ -188,56 +188,56 @@ function clickComparePhoto() {
 }
 
 function showComparePhotosPre(id, appendID) {
-    $('#'+appendID).append('<div id="login'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Логин">' +
-        '<div class="">' +
-        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="MC" title="Block: Нарушение условий пользовательского соглашения">' +
-        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="PA" title="Block: Подозрительная активность">' +
-        '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser blockUser'+appendID+'" value="BN" title="Block: Несколько учетных записей">' +
-        '</div>' +
-        '</div>');
+    $('#'+appendID)
+        .append('<div id="'+appendID+'login" class="ah-infoBlockOnPopupWindow" title="Логин">' +
+                    '<div class="">' +
+                    '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser '+appendID+'blockUser" value="MC" title="Block: Нарушение условий пользовательского соглашения">' +
+                    '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser '+appendID+'blockUser" value="PA" title="Block: Подозрительная активность">' +
+                    '<input type="button" class="ah-action-btn ah-comparePhotoBlockUser '+appendID+'blockUser" value="BN" title="Block: Несколько учетных записей">' +
+                    '</div>' +
+                '</div>')
+        .append('<div id="'+appendID+'items" class="ah-infoBlockOnPopupWindow" title="Кол-во активных объявлений"></div><hr class="ah-coolHR">')
+        .append('<div id="'+appendID+'head" class="ah-infoBlockOnPopupWindow" title="Тема объявления"></div>')
+        .append('<div id="'+appendID+'startTime" class="ah-infoBlockOnPopupWindow" title="Start Time"></div>')
+        .append('<div id="'+appendID+'price" class="ah-infoBlockOnPopupWindow" title="Цена"></div>')
+        .append('<div id="'+appendID+'photo" class="ah-itemPhotosBlock ah-infoBlockOnPopupWindow"></div>');
 
-    $('#'+appendID).append('<div id="items'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Кол-во активных объявлений"></div><hr class="ah-coolHR">');
-    $('#'+appendID).append('<div id="head'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Тема объявления"></div>');
-    $('#'+appendID).append('<div id="startTime'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Start Time"></div>');
-    $('#'+appendID).append('<div id="price'+appendID+'" class="ah-infoBlockOnPopupWindow" title="Цена"></div>');
-    $('#'+appendID).append('<div id="photo'+appendID+'" class="ah-itemPhotosBlock ah-infoBlockOnPopupWindow"></div>');
+    let href = `${global.connectInfo.adm_url}/items/item/info/${id}`;
 
-    var href = `${global.connectInfo.adm_url}/items/item/info/${id}`;
-
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("GET", href, true);
     xhr.send(null);
     xhr.onreadystatechange = function() {
         if (xhr.readyState===4 && xhr.status===200)  {
-            var request = xhr.responseText;
+            let request = xhr.responseText;
 
-            var login = $(request).find('a[href^="/users/user/info/"]');
-            var email = $(request).find('.js-autoselect').text();
-            var status = $(request).find('.form-group:contains(Статус) span:first').text();
-            var userID = $(request).find('a[href^="/users/user/info/"]').attr('href').split('/')[4];
-            var categoryItem = $(request).find('.form-group:contains(Категория) option:selected').parents('.category').attr('label');
-            var itemType = $(request).find('.form-group:contains(Тип объявления) option:selected').text();
-            var items = $(request).find('a[href^="/items/search?user_id="]');
-            var head = $(request).find('.subhead a').text();
-            var startTime = $(request).find('[title="Start time"]');
-            var price = $(request).find('#fld_price').val();
-            var jsonPhotos = $(request).find('.photo-component').attr('data-json');
-            var bleach = $(request).find('a[href^="/items/item/soil"]');
-            var jsonParsePhotos = JSON.parse(jsonPhotos);
+            let login = $(request).find('a[href^="/users/user/info/"]');
+            let email = $(request).find('.js-autoselect').text();
+            let status = $(request).find('.form-group:contains(Статус) span:first').text();
+            let userID = $(request).find('a[href^="/users/user/info/"]').attr('href').split('/')[4];
+            let categoryItem = $(request).find('.form-group:contains(Категория) option:selected').parents('.category').attr('label');
+            let itemType = $(request).find('.form-group:contains(Тип объявления) option:selected').text();
+            let items = $(request).find('a[href^="/items/search?user_id="]');
+            let head = $(request).find('.subhead a').text();
+            let startTime = $(request).find('[title="Start time"]');
+            let price = $(request).find('#fld_price').val();
+            let jsonPhotos = $(request).find('.photo-component').attr('data-json');
+            let bleach = $(request).find('a[href^="/items/item/soil"]');
+            let jsonParsePhotos = JSON.parse(jsonPhotos);
 
 
-            $('#login'+appendID).append(login).append('<br>'+email);
-            $('#items'+appendID).append(items);
-            $('#head'+appendID).append('<a href="'+href+'" target="_blank">'+head+'</a>').attr('category', categoryItem).attr('type', itemType);
-            $('#startTime'+appendID).append(startTime);
-            $('#price'+appendID).append(price);
-            $('.blockUser'+appendID).attr('itemID', userID);
+            $('#'+appendID+'login').append(login).append('<br>'+email);
+            $('#'+appendID+'items').append(items);
+            $('#'+appendID+'head').append('<a href="'+href+'" target="_blank">'+head+'</a>').attr('category', categoryItem).attr('type', itemType);
+            $('#'+appendID+'startTime').append(startTime);
+            $('#'+appendID+'price').append(price);
+            $('.'+appendID+'blockUser').attr('itemID', userID);
 
-            if (bleach.length != 0) {
-                $('#head'+appendID).addClass('ah-bleach');
-                $('#startTime'+appendID).addClass('ah-bleach');
-                $('#price'+appendID).addClass('ah-bleach');
-                $('#photo'+appendID).addClass('ah-bleach');
+            if (bleach.length !== 0) {
+                $('#'+appendID+'head').addClass('ah-bleach');
+                $('#'+appendID+'startTime').addClass('ah-bleach');
+                $('#'+appendID+'price').addClass('ah-bleach');
+                $('#'+appendID+'photo').addClass('ah-bleach');
             }
             if (status.indexOf('Blocked')+1) {
                 comparePhotoRemoveButton('Item '+id+' is blocked');
@@ -256,21 +256,21 @@ function showComparePhotosPre(id, appendID) {
             }
 
             $('#'+appendID+' a').attr('target','_blank');
-            for (var i = 0; i < jsonParsePhotos.length; ++i) {
-                $('#photo'+appendID).append('<div class="ah-photo-component-image-border"><a class="ah-photo-component-link" href="'+jsonParsePhotos[i].url+'" target="_blank"><img class="ah-photo-component-image js-image" alt="" src="'+jsonParsePhotos[i].thumbUrl+'"></a></div>');
+            for (let i = 0; i < jsonParsePhotos.length; ++i) {
+                $('#'+appendID+'photo').append('<div class="ah-photo-component-image-border"><a class="ah-photo-component-link" href="'+jsonParsePhotos[i].url+'" target="_blank"><img class="ah-photo-component-image js-image" alt="" src="'+jsonParsePhotos[i].thumbUrl+'"></a></div>');
             }
 
             ++global.comparePhotoLoadItemsCount;
-            if (global.comparePhotoLoadItemsCount == 2) {
+            if (global.comparePhotoLoadItemsCount === 2) {
                 $('.ah-comparePhotoLoadingWindow').detach();
                 comparePhotoItemCategory();
             }
         }
     };
 
-    $('.blockUser'+appendID).click(function () {
-        var userID = $(this).attr('itemID');
-        var val = $(this).val();
+    $('.'+appendID+'blockUser').click(function () {
+        let userID = $(this).attr('itemID');
+        let val = $(this).val();
 
         outTextFrame('Вы заблокировали пользователя '+userID);
         blockUser(userID, val);
@@ -278,36 +278,36 @@ function showComparePhotosPre(id, appendID) {
         $('#ah-comparePhotoWindow').detach();
         $('#ah-comparePhotoBackground').detach();
 
-        if (appendID == 'ah-comparePhotoItem1') {
+        if (appendID === 'ah-comparePhotoItem1') {
             $('#item_'+id).detach();
         }
     });
 }
 
 function comparePhotoItemCategory() {
-    var item1 = $('#headcomparePhotoItem1');
-    var item2 = $('#headcomparePhotoItem2');
-    var item1Category = $(item1).attr('category');
-    var item2Category = $(item2).attr('category');
-    var item1Bleach = $(item1).hasClass('ah-bleach');
-    var item2Bleach = $(item2).hasClass('ah-bleach');
+    let item1 = $('#ah-comparePhotoItem1head');
+    let item2 = $('#ah-comparePhotoItem2head');
+    let item1Category = $(item1).attr('category');
+    let item2Category = $(item2).attr('category');
+    let item1Bleach = $(item1).hasClass('ah-bleach');
+    let item2Bleach = $(item2).hasClass('ah-bleach');
 
-    if (item1Category != item2Category) comparePhotoRemoveButton('Объявления размещены в разных категориях');
+    if (item1Category !== item2Category) comparePhotoRemoveButton('Объявления размещены в разных категориях');
     if (item1Bleach && item2Bleach) comparePhotoRemoveButton('Оба объявления отбелены');
 }
 
 function comparePhotoActionWithButtons(item1id, item2id) {
-    var st1 = $('#startTimecomparePhotoItem1 span').text();
-    var st2 = $('#startTimecomparePhotoItem2 span').text();
-    var item1 = $('#headcomparePhotoItem1');
-    var item2 = $('#headcomparePhotoItem2');
-    var item1Type = $(item1).attr('type');
-    var item2Type = $(item2).attr('type');
-    var item1Category = $(item1).attr('category');
-    var item2Category = $(item2).attr('category');
-    var item1Bleach = $(item1).hasClass('ah-bleach');
-    var item2Bleach = $(item2).hasClass('ah-bleach');
-    var blockItemBlock = comparePhotoTimeChecker(st1 , st2);
+    let st1 = $('#ah-comparePhotoItem1startTime').find('span').text();
+    let st2 = $('#ah-comparePhotoItem2startTime').find('span').text();
+    let item1 = $('#ah-comparePhotoItem1head');
+    let item2 = $('#ah-comparePhotoItem2head');
+    let item1Type = $(item1).attr('type');
+    let item2Type = $(item2).attr('type');
+    let item1Category = $(item1).attr('category');
+    let item2Category = $(item2).attr('category');
+    let item1Bleach = $(item1).hasClass('ah-bleach');
+    let item2Bleach = $(item2).hasClass('ah-bleach');
+    let blockItemBlock = comparePhotoTimeChecker(st1 , st2);
 
     if (item1Bleach && !item2Bleach) blockItemBlock = 'second';
     if (!item1Bleach && item2Bleach) blockItemBlock = 'first';
