@@ -53,7 +53,7 @@ chrome.tabs.onActivated.addListener(info => {
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
 });
 
@@ -267,6 +267,7 @@ function getPrincipal() {
         })
         .then(json => {
             connectInfo.spring_user = json;
+            /** @namespace json.principal.authoritiesMap */
             setAuthoritiesToStorage(json.principal.authoritiesMap);
         }, error => errorMessage(error.status, error.error));
 }
@@ -460,8 +461,8 @@ function moderationListener(details) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 
-        if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, items_id);
-		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, items_id);
+        if (~formData['action'].indexOf('reject')) sendLogToDB('reject item', reason, count, items_id);
+		if (~formData['action'].indexOf('block')) sendLogToDB('block item', reason, count, items_id);
 	}
 	
 	//post
