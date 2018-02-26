@@ -2,25 +2,25 @@
 function linksOnComments(tableClass, currentUserID) {
     $(tableClass+' .sh-unicode-links').detach();
 
-    var n = $(tableClass).length;
+    const n = $(tableClass).length;
 
     // Patterns
-    var duplicateReg = /duplicate.+/i;
-    var duplicatePluralReg = /(duplicates|duplicate items):.+/i;
+    let duplicateReg = /duplicate.+/i;
+    let duplicatePluralReg = /(duplicates|duplicate items):.+/i;
 
-    for (var j = 0; j < n; j++) {
-        var commentBlock = $(tableClass).slice(j, j + 1);
-        var commentText = $(commentBlock).html();
+    for (let j = 0; j < n; j++) {
+        let commentBlock = $(tableClass).slice(j, j + 1);
+        let commentText = $(commentBlock).html();
         
         if (duplicateReg.test(commentText)) { // dublicate
-            var text = commentText;
+            let text = commentText;
             text = text.replace(/\d{2,}/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
-            var duplicatePluralText = commentText.match(duplicatePluralReg);
+            let duplicatePluralText = commentText.match(duplicatePluralReg);
             if (duplicatePluralText) {
-                var itemIds = duplicatePluralText[0].match(/\d+/g);
+                let itemIds = duplicatePluralText[0].match(/\d+/g);
                 if (itemIds && itemIds.length > 1) {
-                    var dublicatePhrase = duplicatePluralText[0].split(':')[0];
+                    let dublicatePhrase = duplicatePluralText[0].split(':')[0];
                     text = text.replace(dublicatePhrase, `<a href="${global.connectInfo.adm_url}/items/search?query=${itemIds.join('%7C')}" target="_blank">$&</a>`);
                 }
             }
@@ -29,7 +29,7 @@ function linksOnComments(tableClass, currentUserID) {
         }
 
         if (~commentText.indexOf('item_')) { // cron-dublicate on Item
-            var text = commentText;
+            let text = commentText;
             let ids = text.match(/\d+(?![\].])\b/g);
 
             text = text.replace(/\d+(?![\].])\b/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
@@ -47,13 +47,13 @@ function linksOnComments(tableClass, currentUserID) {
         }
 
         if (~commentText.indexOf('revived')) { //comparison on Item
-            var text = commentText;
+            let text = commentText;
             let ids = text.match(/\d{2,}/g);
 
             text = text.replace(/\d{2,}/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
             if (ids.length <= 4) {
-                let link = `${global.connectInfo.adm_url}/items/comparison/'${ids[0]}/archive?`;
+                let link = `${global.connectInfo.adm_url}/items/comparison/${ids[0]}/archive?`;
                 for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
 
                 text += ` <a class="glyphicon glyphicon-new-window" href="${link}" style="margin-right: 4px;" target="_blank"></a>`;
@@ -65,17 +65,17 @@ function linksOnComments(tableClass, currentUserID) {
         }
 
         if (~commentText.indexOf(`.avito.ru/`)) { // user links
-            var text1 = commentText;
-            if (text1 == undefined) continue;
-            var links = text1.split(/(?: |<br>|\n)/);
-            var avito = `${global.connectInfo.adm_url}/`;
+            let text1 = commentText;
+            if (text1 === undefined) continue;
+            let links = text1.split(/(?: |<br>|\n)/);
+            let avito = `${global.connectInfo.adm_url}/`;
 
-            var shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
+            let shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
 
-            for (var i = 0; i < links.length; i++){
+            for (let i = 0; i < links.length; i++){
                 if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
                     if (~links[i].indexOf(`.avito.ru/users/user/info/`) || shortUserLinkReg.test(links[i])) {
-                        var userID = links[i].replace(/\D/gi, '');
+                        let userID = links[i].replace(/\D/gi, '');
                         text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</button>)</span>');
                         $(commentBlock).html(text1);
                     } else {
@@ -87,55 +87,55 @@ function linksOnComments(tableClass, currentUserID) {
         }
 
         if (~commentText.indexOf('Alive user ID:')) { // comparison on User
-            var text = commentText;
+            let text = commentText;
 
-            var tmp = text.split("Alive user ID: ");
-            if (tmp[1] == undefined) continue;
-            var users = tmp[1].split(/\D/);
+            let tmp = text.split("Alive user ID: ");
+            if (tmp[1] === undefined) continue;
+            let users = tmp[1].split(/\D/);
             text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/users/user/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users[0]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
             $(commentBlock).html(text);
 
-            var tmp2 = text.split("Base item ID: ");
-            if (tmp2[1] == undefined) continue;
-            var users2 = tmp2[1].split(/\D/);
+            let tmp2 = text.split("Base item ID: ");
+            if (tmp2[1] === undefined) continue;
+            let users2 = tmp2[1].split(/\D/);
             text = text.replace(users2[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users2[0]}" target="_blank">${users2[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users2[0]}" target="_blank">%</span>)</span>`);
             $(commentBlock).html(text);
 
-            var part = text.split(", ");
-            if (part[2] == undefined) continue;
-            var sii = part[2].split("Similar item IDs: [");
-            var sii1 = sii[1].split(",");
-            for (var i = 0; i < sii1.length; i++) {
-                var siiLinks = sii1[i].split(" -");
+            let part = text.split(", ");
+            if (part[2] === undefined) continue;
+            let sii = part[2].split("Similar item IDs: [");
+            let sii1 = sii[1].split(",");
+            for (let i = 0; i < sii1.length; i++) {
+                let siiLinks = sii1[i].split(" -");
                 text = text.replace(siiLinks[0],`<a href="${global.connectInfo.adm_url}/items/item/info/${siiLinks[0]}" target="_blank">${siiLinks[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${siiLinks[0]}" target="_blank">%</span>)</span>`);
             }
             $(tableClass).slice(j,j+1).html(text);
         }
 
         if (~commentText.indexOf('Similar accounts:')) { // comparison on User
-            var text = commentText;
+            let text = commentText;
 
-            var tmp = text.split("Base item ID: ");
-            if (tmp[1] == undefined) continue;
-            var users = tmp[1].split(/\D/);
+            let tmp = text.split("Base item ID: ");
+            if (tmp[1] === undefined) continue;
+            let users = tmp[1].split(/\D/);
             text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users[0]}" target="_blank">%</span>)</span>`);
             $(commentBlock).html(text);
 
-            var tmp2 = text.split("Similar accounts: ");
-            if (tmp2[1] == undefined) continue;
-            var users2 = tmp2[1].split(/\D/);
-            for (var i = 1; i < users2.length; i++) { // Цикл с 1, т.к. ID дублируются
+            let tmp2 = text.split("Similar accounts: ");
+            if (tmp2[1] === undefined) continue;
+            let users2 = tmp2[1].split(/\D/);
+            for (let i = 1; i < users2.length; i++) { // Цикл с 1, т.к. ID дублируются
                 text = text.replace(users2[i], `<a href="${global.connectInfo.adm_url}/users/user/info/${users2[i]}" target="_blank">${users2[i]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users2[i]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
                 $(commentBlock).html(text);
             }
         }
 
         if (~commentText.indexOf('по обращению №')) { // link on ticket
-            var text = commentText;
+            let text = commentText;
 
-            var tmp = text.split("по обращению №");
-            if (tmp[1] == undefined) continue;
-            var tickets = tmp[1].split(/\D/);
+            let tmp = text.split("по обращению №");
+            if (tmp[1] === undefined) continue;
+            let tickets = tmp[1].split(/\D/);
             text = text.replace(tickets[0], `<a href="${global.connectInfo.adm_url}/helpdesk/details/${tickets[0]}" target="_blank">${tickets[0]}</a>`);
             $(commentBlock).html(text);
         }
@@ -194,7 +194,7 @@ function linksOnComments(tableClass, currentUserID) {
 }
 
 function blockUser(id, reason) {
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open("POST", `${global.connectInfo.adm_url}/users/user/block`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     request.setRequestHeader("Accept", "*/*");
@@ -207,23 +207,23 @@ function blockUser(id, reason) {
 }
 
 function chanceUser(id, chance) {
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open("POST", `${global.connectInfo.adm_url}/users/user/save/chance`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send('chance='+chance+'&user='+id);
 }
 
 function loadComperison(itemID, currentUserID) {
-    var url = `${global.connectInfo.adm_url}/items/comparison/${itemID}`;
+    let url = `${global.connectInfo.adm_url}/items/comparison/${itemID}`;
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.send(null);
     xhr.onreadystatechange=function() {
-        if (xhr.readyState == 4) {
+        if (xhr.readyState === 4) {
             $('#ah-loading-layer').hide();
 
-            if (xhr.status == 200) {
+            if (xhr.status === 200) {
                 $('#comperison_box').detach();
 
                 $('body').append('<div id="comperison_box" style="background: #f5f5f5;background-clip:padding-box;padding:10px;border-radius:4px;display:none;color:black;position:fixed;top:10%;margin:0 auto;overflow:auto;overflow-y:scroll;max-width:1100px;height:85%;z-index:1050;-webkit-box-shadow:0 3px 20px rgba(0, 0, 0, 0.9); -webkit-box-align: center; "></div>');
