@@ -162,7 +162,7 @@ function allowItem() {
 }
 
 function allowItemRequest(id) {
-    let href = `${global.connectInfo.spring_url}/avito/item/activate`;
+    let href = `${global.connectInfo.spring_url}/admin/item/activate`;
     
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
