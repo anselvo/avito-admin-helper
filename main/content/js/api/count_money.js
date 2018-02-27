@@ -48,9 +48,11 @@ function countMoneyAccount() {
     let rows = $('.account-history tr[data-oid]');
     $(rows).each(function(){
         let amountClassList = $(this).find('.text-nowrap span').attr('class');
+        const $amountNode = $(this).find('td:nth-last-child(3) span:eq(0)');
+
         let btnData = {
             itemLink: $(this).find('td:eq(1) a').attr('href'),
-            amount: $(this).find('.text-nowrap span').text().replace(',', '.').replace(/[^\d.]/g, '').replace(/.$/, ''),
+            amount: ($amountNode.length !== 0) ? $amountNode.text().replace(/[^\d,]/g, '').replace(',', '.').trim() : null,
             description: $(this).find('td:eq(1)').text().replace(/\n/g, "").replace(/ {2,}/g, ""),
             wlLink: $(this).find('.text-nowrap a').attr('href'),
             oid: $(this).attr('data-oid'),
