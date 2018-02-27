@@ -362,65 +362,6 @@ function joinWalletLogLinks(links) {
     return result;
 }
 
-function userViewOperations() {
-    let rows = $('table.account-history tr[data-oid]');
-    let reg = /(?:резервирование|применение|списание (?:при|остатка|зарезервированных|из|за)|корректировка за)/i;
-    
-    $(rows).each(function(i, row) {
-        let text = $(row).text();
-        if (reg.test(text)) {
-            $(row).addClass('ah-user-view-operaion');
-        }
-    });
-    
-    toggleUserViewOperations();
-}
-
-function toggleUserViewOperations() {
-    var isCheckedAttr;
-    var rows = $('table .ah-user-view-operaion:not(.ah-table-background-highlight)');
-    var lsItem = 'userViewOperations';
-    var lsObj = JSON.parse(localStorage.getItem(lsItem));
-
-    if (lsObj && lsObj['visibility'] === 'hidden') {
-        $(rows).hide();
-        isCheckedAttr = 'checked';
-    } else {
-        $(rows).show();
-        isCheckedAttr = '';
-    }
-
-    var block = $('#history');
-    $(block).append(
-        '<div class="ah-switch-wrapper" style="position: absolute; right: 55.5px; margin-top: -30px;">'+
-            '<input type="checkbox" class="ah-switch-checkbox" '+
-            'id="user-view-operations-toogler" ' + isCheckedAttr + '>'+
-            '<label class="ah-switch-label" for="user-view-operations-toogler" title="Переключает режим отображения операций, которые видит пользователь в ЛК">'+
-            '<span>Глазами пользователя</span>'+
-            '</label>'+
-        '</div>');
-
-    var switcher = $('#user-view-operations-toogler');
-
-    $(switcher).click(function () {
-        var lsItem = 'userViewOperations';
-        if (!localStorage.getItem(lsItem)) {
-            localStorage.setItem(lsItem, '{"visibility": "visible"}');
-        }
-
-        var lsObj = JSON.parse(localStorage.getItem(lsItem));
-
-        if (document.getElementById('user-view-operations-toogler').checked) {
-            lsObj['visibility'] = 'hidden';
-            $(rows).hide();
-        } else {
-            lsObj['visibility'] = 'visible';
-            $(rows).show();
-        }
-        localStorage.setItem(lsItem, JSON.stringify(lsObj));
-    });
-}
-
 // ссылка на ВЛ на счете
 function addWlLinkAccountInfo(getLinkFunc, options) {
     options = options || {};
@@ -442,7 +383,7 @@ function addPackageInfoAccountInfo() {
         let row = $(this);
         let descriptionCell = row.find('td:eq(1)');
         let descriptionText = descriptionCell.text();
-        let statusCell = row.find('td:eq(4)');
+        let statusCell = row.find('td:nth-last-child(2)');
         let statusText = statusCell.text().trim();
         if (packageReg.test(descriptionText) && ~statusText.indexOf('Исполнено')) {
             let ids = descriptionText.match(/\d+/);

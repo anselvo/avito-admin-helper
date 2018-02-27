@@ -267,9 +267,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEMS_SEARCH_CHECKBOX_CLICK')) { // Обработка клика рядом с checkbox
         roleHandler.itemsSearchCheckboxClick();
     }
-    if (isAuthority('ROLE_ITEMS_SEARCH_INFORM_SEARCH')) { // поиск информ
-        roleHandler.itemsSearchInformSearch();
-    }
     if (isAuthority('ROLE_ITEMS_SEARCH_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemsSearchCopyItem();
     }
@@ -363,9 +360,6 @@ function handleRoles() {
     // ACCOUNT
     if (isAuthority('ROLE_ACCOUNT_COMPENSATION_BTNS')) { // кнопки для компенсации ДС
         roleHandler.accountCompensationBtns();
-    }
-    if (isAuthority('ROLE_ACCOUNT_USER_VIEW_OPERATIONS')) { // показ операций, которые видет пользователь
-        roleHandler.accountUserViewOperations();
     }
     if (isAuthority('ROLE_ACCOUNT_WL_LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
         roleHandler.accountWlLink();
@@ -826,12 +820,6 @@ RoleHandler.prototype.itemsSearchCheckboxClick = function() {
     }
 };
 
-RoleHandler.prototype.itemsSearchInformSearch = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        searchInform();
-    }
-};
-
 RoleHandler.prototype.itemsSearchCopyItem = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         copyItemsOnItemsSearch();
@@ -1040,12 +1028,6 @@ RoleHandler.prototype.accountItemInfo = function() {
 RoleHandler.prototype.accountCompensationBtns = function() {
     if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addCompensationBtns();
-    }
-};
-
-RoleHandler.prototype.accountUserViewOperations = function() {
-    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
-        userViewOperations();
     }
 };
 
