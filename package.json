@@ -1,0 +1,24 @@
+{
+  "name": "admin-helper",
+  "version": "1.0.0",
+  "description": "***\r Расширения для Google Chrome, которое позволяет увеличить продуктивность работы департамента \"Поддержки и модерации\" в Санкт-Петербурге",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://stash.msk.avito.ru/scm/in/admin-helper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-json-editor": "^2.2.2",
+    "gulp-uglify-es": "^1.0.1",
+    "gulp-zip": "^4.1.0"
+  }
+}

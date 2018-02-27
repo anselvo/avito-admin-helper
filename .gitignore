@@ -1,3 +1,5 @@
 .idea
 /Avito Helper.iml
-/scripts.min.js
+/node_modules/
+/public/
+/builds/
