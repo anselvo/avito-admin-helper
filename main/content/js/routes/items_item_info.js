@@ -168,8 +168,7 @@ function allowItemRequest(id) {
             action: 'XMLHttpRequest',
             url: href,
             method: 'POST',
-            contentType: 'application/json',
-            data: id
+            data: `id=${id}`
         },
         function(response) {
             outTextFrame(response);

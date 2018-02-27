@@ -103,8 +103,7 @@ function usersWallet(userId, offset) {
             action: 'XMLHttpRequest',
             url: href,
             method: 'POST',
-            contentType: 'application/json',
-            data: userId
+            data: `id=${userId}`
         },
         function(response) {
             try {
