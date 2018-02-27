@@ -24,6 +24,9 @@ $(function () {
 
     // пытаемся рекконектится, если нету коннекта к серверу
     chrome.alarms.create('reconnect', { delayInMinutes: 1, periodInMinutes: 1 });
+
+    // проверка очередей в HD
+    chrome.alarms.create('helpDeskQueueChecker', { delayInMinutes: 1, periodInMinutes: 5 });
 });
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -45,6 +48,7 @@ chrome.runtime.onInstalled.addListener(details => {
 chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
     if (alarm.name === 'reconnect') reconnect();
+    if (alarm.name === 'helpDeskQueueChecker') helpDeskQueueChecker();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
@@ -53,7 +57,7 @@ chrome.tabs.onActivated.addListener(info => {
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
 });
 
@@ -267,6 +271,7 @@ function getPrincipal() {
         })
         .then(json => {
             connectInfo.spring_user = json;
+            /** @namespace json.principal.authoritiesMap */
             setAuthoritiesToStorage(json.principal.authoritiesMap);
         }, error => errorMessage(error.status, error.error));
 }
@@ -427,6 +432,26 @@ function startWebSocket() {
     }
 }
 
+function helpDeskQueueChecker() {
+    if (connectInfo.adm_auth) {
+        getGroupFilterCountHD().then(response => {
+            chrome.storage.local.set({ helpDeskQueueChecker: response });
+        });
+    }
+}
+
+function getGroupFilterCountHD() {
+    return fetch(`${connectInfo.spring_url}/admin/hd/group/count`, {
+        method: "POST",
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
 function moderationListener(details) {
 	let count = 0, ids, reason = '', items_id = '';
 
@@ -460,8 +485,8 @@ function moderationListener(details) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
 
-        if (formData['action'] == 'reject') sendLogToDB('reject item', reason, count, items_id);
-		if (formData['action'] == 'block') sendLogToDB('block item', reason, count, items_id);
+        if (~formData['action'].indexOf('reject')) sendLogToDB('reject item', reason, count, items_id);
+		if (~formData['action'].indexOf('block')) sendLogToDB('block item', reason, count, items_id);
 	}
 	
 	//post

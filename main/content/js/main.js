@@ -30,15 +30,6 @@ const global = {
     // globals from moderator helper
     beforeId: 0,
     comparePhotoLoadItemsCount: null,
-    consultation: [
-        {id: 1575, name: "Услуги"},
-        {id: 1616, name: "Бытовая электроника | Хобби и отдых"},
-        {id: 1617, name: "Транспорт"},
-        {id: 1618, name: "Для дома и дачи | Для бизнеса"},
-        {id: 1620, name: "Личные вещи | Животные"},
-        {id: 1621, name: "Работа"},
-        {id: 1622, name: "Недвижимость"}
-    ],
     otherReasonsCategory: {
         name: "Неправильная категория",
         reason: [
