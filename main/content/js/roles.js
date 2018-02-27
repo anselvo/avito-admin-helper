@@ -364,9 +364,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ACCOUNT_COMPENSATION_BTNS')) { // кнопки для компенсации ДС
         roleHandler.accountCompensationBtns();
     }
-    if (isAuthority('ROLE_ACCOUNT_USER_VIEW_OPERATIONS')) { // показ операций, которые видет пользователь
-        roleHandler.accountUserViewOperations();
-    }
     if (isAuthority('ROLE_ACCOUNT_WL_LINK')) {  // переход в ВЛ со страницы счета (все статусы, последние пол года)
         roleHandler.accountWlLink();
     }
@@ -1040,12 +1037,6 @@ RoleHandler.prototype.accountItemInfo = function() {
 RoleHandler.prototype.accountCompensationBtns = function() {
     if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
         addCompensationBtns();
-    }
-};
-
-RoleHandler.prototype.accountUserViewOperations = function() {
-    if (global.admUrlPatterns.users_account_info.test(global.currentUrl)) {
-        userViewOperations();
     }
 };
 
