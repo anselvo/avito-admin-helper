@@ -442,7 +442,7 @@ function addPackageInfoAccountInfo() {
         let row = $(this);
         let descriptionCell = row.find('td:eq(1)');
         let descriptionText = descriptionCell.text();
-        let statusCell = row.find('td:eq(4)');
+        let statusCell = row.find('td:nth-last-child(2)');
         let statusText = statusCell.text().trim();
         if (packageReg.test(descriptionText) && ~statusText.indexOf('Исполнено')) {
             let ids = descriptionText.match(/\d+/);
