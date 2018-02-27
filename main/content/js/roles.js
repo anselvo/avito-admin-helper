@@ -267,9 +267,6 @@ function handleRoles() {
     if (isAuthority('ROLE_ITEMS_SEARCH_CHECKBOX_CLICK')) { // Обработка клика рядом с checkbox
         roleHandler.itemsSearchCheckboxClick();
     }
-    if (isAuthority('ROLE_ITEMS_SEARCH_INFORM_SEARCH')) { // поиск информ
-        roleHandler.itemsSearchInformSearch();
-    }
     if (isAuthority('ROLE_ITEMS_SEARCH_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemsSearchCopyItem();
     }
@@ -820,12 +817,6 @@ RoleHandler.prototype.itemsSearchItemDescription = function() {
 RoleHandler.prototype.itemsSearchCheckboxClick = function() {
     if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
         chooseItem();
-    }
-};
-
-RoleHandler.prototype.itemsSearchInformSearch = function() {
-    if (global.admUrlPatterns.items_search.test(global.currentUrl)) {
-        searchInform();
     }
 };
 
