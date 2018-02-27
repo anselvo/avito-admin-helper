@@ -7,15 +7,15 @@ const jsonEditor = require('gulp-json-editor');
 const zip = require('gulp-zip');
 
 gulp.task('clean', () => {
-    return del('public');
+    return del('build');
 });
 
 gulp.task('copy', callback => {
-    gulp.src(['include/**/*.*', '!include/config/**'])
-        .pipe(gulp.dest('public/include'));
+    gulp.src(['src/include/**/*.*', '!src/include/config/**'])
+        .pipe(gulp.dest('build/include'));
 
-    gulp.src(['main/**/*', '!main/{background,content}/**/*', '!main/popup/**/*.{js,css}'])
-        .pipe(gulp.dest('public/main'));
+    gulp.src(['src/main/**/*', '!src/main/{background,content,inject}/**/*', '!src/main/popup/**/*.{js,css}'])
+        .pipe(gulp.dest('build/main'));
 
     callback();
 });
@@ -27,38 +27,42 @@ gulp.task('js', callback => {
         output: { ascii_only: true }
     };
 
-    gulp.src('main/content/js/**/*.js')
-        .pipe(concat('content.min.js'))
-        .pipe(uglify(uglifyOptions))
-        .pipe(gulp.dest('public/main/content'));
-
-    gulp.src('main/background/*.js')
+    gulp.src('src/main/background/*.js')
         .pipe(concat('background.min.js'))
         .pipe(uglify(uglifyOptions))
-        .pipe(gulp.dest('public/main/background'));
+        .pipe(gulp.dest('build/main/background'));
 
-    gulp.src('main/popup/popup.js')
+    gulp.src('src/main/content/js/**/*.js')
+        .pipe(concat('content.min.js'))
         .pipe(uglify(uglifyOptions))
-        .pipe(gulp.dest('public/main/popup'));
+        .pipe(gulp.dest('build/main/content'));
+
+    gulp.src('src/main/inject/*.js')
+        .pipe(uglify(uglifyOptions))
+        .pipe(gulp.dest('build/main/inject'));
+
+    gulp.src('src/main/popup/popup.js')
+        .pipe(uglify(uglifyOptions))
+        .pipe(gulp.dest('build/main/popup'));
 
     callback();
 });
 
 gulp.task('css', callback => {
-    gulp.src('main/content/css/**/*.css')
+    gulp.src('src/main/content/css/**/*.css')
         .pipe(concat('content.min.css'))
         .pipe(cleanCss())
-        .pipe(gulp.dest('public/main/content'));
+        .pipe(gulp.dest('build/main/content'));
 
-    gulp.src('main/popup/popup.css')
+    gulp.src('src/main/popup/popup.css')
         .pipe(cleanCss())
-        .pipe(gulp.dest('public/main/popup'));
+        .pipe(gulp.dest('build/main/popup'));
 
     callback();
 });
 
 gulp.task('manifest', () => {
-    return gulp.src('manifest.json')
+    return gulp.src('src/manifest.json')
         .pipe(jsonEditor(json => {
             const newContentJs = json.content_scripts[0].js.filter(
                 file => file.indexOf('main/content/js/') === -1
@@ -78,15 +82,15 @@ gulp.task('manifest', () => {
         }, {
             'indent_size': 1
         }))
-        .pipe(gulp.dest('public'));
+        .pipe(gulp.dest('build'));
 });
 
 gulp.task('zip', () => {
-    const manifest = require('./manifest.json');
+    const manifest = require('./build/manifest.json');
 
-    return gulp.src('public/**/*.*')
+    return gulp.src('build/**/*.*')
         .pipe(zip(`${manifest.name}_${manifest.version}.zip`))
-        .pipe(gulp.dest('builds'));
+        .pipe(gulp.dest('archives'));
 });
 
 gulp.task('default', gulp.series(
