@@ -10,7 +10,7 @@ function allowlist(currentUrl, agentLogin) {
 }
 
 function allowListtoJSONitem(agentID, itemID) {
-    if (localStorage.allowList.indexOf(itemID) == -1) {
+    if (localStorage.allowList.indexOf(itemID) === -1) {
         var time = currentTime();
 
         var jsonItem = {
@@ -162,13 +162,12 @@ function allowItem() {
 }
 
 function allowItemRequest(id) {
-    let href = `${global.connectInfo.spring_url}/admin/item/activate`;
+    let href = `${global.connectInfo.spring_url}/admin/item/activate?id=${id}`;
     
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             url: href,
-            method: 'POST',
-            data: `id=${id}`
+            method: 'POST'
         },
         function(response) {
             outTextFrame(response);
