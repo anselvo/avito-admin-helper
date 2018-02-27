@@ -5221,42 +5221,62 @@ select.ah-form-control:focus {
     margin-right: 0;
 }
 .ah-consultation {
-    display: inline-block;
-    position: relative;
-    float: right;
-    margin-left: 11px;
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 99999;
 }
 .ah-consultation-main {
     font-size: 15px;
     cursor: pointer;
-    padding: 5px 14px;
+    padding: 5px;
     border: 1px solid #dedede;
     border-image: initial;
-    border-radius: 4px;
-    background: rgb(241, 248, 255);;
+    border-radius: 4px 0 0 4px;
+    background: rgb(255, 255, 255);
 }
 .ah-consultation-selector {
     position: absolute;
-    bottom: calc(100% + 20px);
-    background: rgb(241, 248, 255);;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    background: rgb(255, 255, 255);
     border: 1px solid #dedede;
     border-radius: 4px;
 }
-.ah-consultation-name {
-    flex-grow: 1;
+.ah-cons-name {
+    writing-mode: tb-rl;
+    padding: 8px 0;
+    border-bottom: 1px solid #dedede;
 }
-.ah-consultation-count {
+.ah-cons-count {
+    font-size: 30px;
+}
+.ah-cons-count, .ah-cons-radio-count {
     color: #3197EE;
 }
-.ah-consultation-count, .ah-consultation-link, .ah-consultation-name {
-    padding: 0 5px;
+.ah-cons-count, .ah-cons-link {
+    padding: 3px 0;
+    text-align: center;
 }
-.ah-consultation-count, .ah-consultation-link {
-    border-left: 1px solid #dedede;
+.ah-cons-link {
+    border-top: 1px solid #dedede;
 }
-.ah-radio-flex {
+
+.ah-cons-radio-flex {
     display: flex;
 }
+.ah-cons-radio-name {
+    flex-grow: 1;
+}
+.ah-cons-radio-count, .ah-cons-radio-link, .ah-cons-radio-name {
+    padding: 0 5px;
+}
+.ah-cons-radio-count, .ah-cons-radio-link {
+    border-left: 1px solid #dedede;
+}
+
 
 .ah-check-vas-usage-btn-holder {
     padding: 4px 0;

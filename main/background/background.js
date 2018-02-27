@@ -24,6 +24,9 @@ $(function () {
 
     // пытаемся рекконектится, если нету коннекта к серверу
     chrome.alarms.create('reconnect', { delayInMinutes: 1, periodInMinutes: 1 });
+
+    // проверка очередей в HD
+    chrome.alarms.create('helpDeskQueueChecker', { delayInMinutes: 1, periodInMinutes: 5 });
 });
 
 // ПРОВЕРКА НА ОБНОВЛЕНИЯ
@@ -45,6 +48,7 @@ chrome.runtime.onInstalled.addListener(details => {
 chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'day') clearDayInfo();
     if (alarm.name === 'reconnect') reconnect();
+    if (alarm.name === 'helpDeskQueueChecker') helpDeskQueueChecker();
 });
 
 // ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
@@ -426,6 +430,26 @@ function startWebSocket() {
     function defaultNotificationToStorage() {
         chrome.storage.local.set({notifications: { all: null, old: null }});
     }
+}
+
+function helpDeskQueueChecker() {
+    if (connectInfo.adm_auth) {
+        getGroupFilterCountHD().then(response => {
+            chrome.storage.local.set({ helpDeskQueueChecker: response });
+        });
+    }
+}
+
+function getGroupFilterCountHD() {
+    return fetch(`${connectInfo.spring_url}/admin/hd/group/count`, {
+        method: "POST",
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
 }
 
 function moderationListener(details) {
