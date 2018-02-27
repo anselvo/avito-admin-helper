@@ -26,7 +26,6 @@
 				"include/library/angular.min.js",
 				"include/library/bootstrap.min.js",
 				"include/library/jquery-ui.min.js",
-				// "scripts.min.js"
 
 				"main/content/js/main.js",
 				"main/content/js/roles.js",
