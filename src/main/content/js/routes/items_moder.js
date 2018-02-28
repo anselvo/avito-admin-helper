@@ -2,7 +2,7 @@ function consultationCount() {
     $('body').append(`<div class="ah-consultation">
                         <div class="ah-consultation-main">
                             <div class="ah-consultation-name ah-cons-name" style="display: none">Выберите консультацию</div>
-                            <div class="ah-consultation-count ah-cons-count">-</div>
+                            <div class="ah-consultation-count ah-cons-count ah-cons-big-digit">-</div>
                             <div class="ah-consultation-link ah-cons-link"><a href="#" target="_blank">&#10132;</a></div>
                         </div>
                         <div class="ah-consultation-selector" style="display: none"></div>
@@ -15,12 +15,12 @@ function consultationCount() {
 
     $consultationCount.mouseover(() => {
         $consultationName.show();
-        $consultationCount.css("font-size", "13px");
+        $consultationCount.removeClass("ah-cons-big-digit");
     });
     $consultation.mouseleave(() => {
         $consultationName.hide();
         $consultationSelector.hide();
-        $consultationCount.css("font-size", "30px");
+        $consultationCount.addClass("ah-cons-big-digit");
     });
 
     $consultationName.click(() => $consultationSelector.toggle());
@@ -42,23 +42,24 @@ function consultationCount() {
 }
 
 function consultationCountShow($consultationSelector, response) {
-    $consultationSelector.html('');
+    if (response) {
+        $consultationSelector.html('');
 
-    for (let i = 0; i < response.length; ++i) {
-        $consultationSelector.append(`<div class="ah-radio" data-queue-id="${response[i].queue.id}">
+        for (let i = 0; i < response.length; ++i) {
+            $consultationSelector.append(`<div class="ah-radio" data-queue-id="${response[i].queue.id}">
                                            <input id="radio-${i}" name="radio" type="radio">
                                            <label for="radio-${i}" class="ah-radio-label ah-cons-radio-flex">
                                                <div class="ah-consultation-name ah-cons-radio-name">${response[i].queue.name}</div>
                                                <div class="ah-consultation-count ah-cons-radio-count">${response[i].count}</div>
                                            </label>
                                       </div>`);
-    }
+        }
 
-    if (localStorage.consultation) {
-        $(`.ah-radio[data-queue-id="${localStorage.consultation}"]`).find('[name="radio"]').prop('checked', true);
-        consultationNotificationSwap(localStorage.consultation);
+        if (localStorage.consultation) {
+            $(`.ah-radio[data-queue-id="${localStorage.consultation}"]`).find('[name="radio"]').prop('checked', true);
+            consultationNotificationSwap(localStorage.consultation);
+        }
     }
-
 }
 
 function consultationNotificationSwap(id) {
@@ -69,8 +70,8 @@ function consultationNotificationSwap(id) {
     const $consultationMain = $('.ah-consultation-main');
 
     $consultationMain.find('.ah-consultation-count').show().text(count);
-    $consultationMain.find('.ah-consultation-name').show().text(name);
-    $consultationMain.find('.ah-consultation-link').show().find('a').attr('href', `${global.connectInfo.adm_url}/helpdesk?fid=${id}`);
+    $consultationMain.find('.ah-consultation-name').text(name);
+    $consultationMain.find('.ah-consultation-link').find('a').attr('href', `${global.connectInfo.adm_url}/helpdesk?fid=${id}`);
 }
 
 function hideTestItemsSearch() {
