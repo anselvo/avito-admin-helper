@@ -17,7 +17,13 @@
 
     "content_scripts": [
 		{
-			"matches": ["https://*.avito.ru/*", "https://br-analytics.ru/*"],
+			"matches": [
+				"https://*.avito.ru/*",
+				"https://br-analytics.ru/*",
+				"http://domofond.propertyengine.com/*",
+				"https://*.domofond.ru/*"
+			],
+
 			"css": ["main/content/css/content.css"],
 
 			"js": [
