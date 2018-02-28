@@ -2,41 +2,45 @@
 function usersInfoAction() {
     $('.ah-userInfoActionButton').click(function () {
         const offset = $(this).offset();
-        usersInfo($(this).attr("userid"), $(this).attr("itemid"), offset, $(this).attr("infoQuery"));
+        usersInfo($(this).data("userId"), $(this).data("itemId"), offset, $(this).data("query"));
     });
 
     $('.ah-userAbuseActionButton').click(function () {
         const offset = $(this).offset();
-        usersAbuses($(this).attr("useridab"), $(this).attr("itemidab"), offset);
+        usersAbuses($(this).data("userId"), $(this).data("itemId"), offset);
     });
 
     $('.ah-userWalletActionButton').click(function () {
         const offset = $(this).offset();
-        usersWallet($(this).attr("userid"), offset);
+        usersWallet($(this).data("userId"), offset);
     });
 
     $('.ah-userShowItemsActionButton').click(function () {
         const offset = $(this).offset();
-        userShowItems($(this).attr("userid"), offset);
+        userShowItems($(this).data("userId"), $(this).data("email"), offset);
     });
 
     $('.ah-userMessengerActionButton').click(function () {
         const offset = $(this).offset();
-        userMessenger($(this).attr("userid"), offset);
+        userMessenger($(this).data("userId"), offset);
     });
 }
 
-function userShowItems(userId, offset) {
+function userShowItems(userId, email, offset) {
     openInfoWindow(1000, offset);
 
+    const formatDate = dateForSearch(2.592e+9);
+    const searchParam = `user=${email}&sort_field=sort_time&date=${formatDate}`;
+
     $('.userInfoMain')
-        .append(`<a href="/items/search?user_id=${userId}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
+        .append(`<a href="${global.connectInfo.adm_url}/items/search?p=1&user_id=${userId}&${searchParam || ''}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
         .append('<div class="ah-user-show-item-body"></div>');
 
     const $body = $('.ah-user-show-item-body');
     const $title = $('.ah-user-show-item-title');
 
-    getUserItems(userId).then(response => {
+
+    getUserItems(userId, 1, searchParam).then(response => {
         const $responseTitle = $(response).find('.header__title');
         const $responseTable = $(response).find('.table');
         const $responseTableTR = $responseTable.find('tbody tr');
@@ -231,12 +235,7 @@ function usersInfo(id, itemid, offset, query) {
             let nameuser =  $(ruser).find('.form-group:contains(Название) input').attr('value');
             const chanceTmp = $(ruser).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             const chance = chanceTmp ? parseInt(chanceTmp.replace('cval_', '')) : 0;
-
-            let dateStart = new Date(new Date() - 7.776e+9);
-            let dateEnd = new Date();
-            let formatDateStart = parseDateToSearchFormat(dateStart);
-            let formatDateEnd = parseDateToSearchFormat(dateEnd);
-            let formatDate = formatDateStart + '+-+' + formatDateEnd;
+            const formatDate = dateForSearch(7.776e+9);
 
             let color;
             if (status.indexOf('Active')+1) color = 'green';
@@ -301,17 +300,17 @@ function usersInfo(id, itemid, offset, query) {
                         } else verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
                         $('#ah-phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
-                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${number}</a>`);
-                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}" target="_blank">city</a>`);
-                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}" target="_blank">+private</a>`);
-                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}" target="_blank">parameter</a>`);
-                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}" target="_blank">item_ip</a>`);
+                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${number}</a>`);
+                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">city</a>`);
+                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}&s_type=2" target="_blank">+private</a>`);
+                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}&s_type=2" target="_blank">parameter</a>`);
+                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}&s_type=2" target="_blank">item_ip</a>`);
                         if (localStorage.checkboxInfo.indexOf('15')+1) $('#'+number).append(`<div class="ah-phone-verify-date" title="Дата верификации телефона">${verifyDate}</div>`);
                     }
 
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
-                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${ipItem}</a>`);
+                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${ipItem}</a>`);
                     $(phoneInItem+" .ah-phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);
@@ -331,6 +330,14 @@ function usersInfo(id, itemid, offset, query) {
         }
     };
 
+}
+
+function dateForSearch(period) {
+    const dateStart = new Date(new Date() - period);
+    const dateEnd = new Date();
+    const formatDateStart = parseDateToSearchFormat(dateStart);
+    const formatDateEnd = parseDateToSearchFormat(dateEnd);
+    return formatDateStart + '+-+' + formatDateEnd;
 }
 
 

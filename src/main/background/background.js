@@ -134,7 +134,6 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
-        // setConnectInfo(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
@@ -367,6 +366,8 @@ function errorMessage(status, error) {
 }
 
 function startWebSocket() {
+    if (stompClient) stompClient.disconnect();
+
     const socket = new SockJS(`${connectInfo.spring_url}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;

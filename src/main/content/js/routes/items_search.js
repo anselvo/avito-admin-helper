@@ -154,38 +154,39 @@ function userInfoForPost() {
     const itemList = $('.b-item');
 
     for (let i = 0; i < itemList.length; ++i) {
+        const $userLinkSelector = $(itemList[i]).parents('tr').find('.item_user_login')
 
-        var id = $(itemList[i]).parents('tr').find('.item_user_login').attr('href').split('/')[4];
-
-        var itemid = $(itemList[i]).attr("id").replace('desc_', '');
-        var category = $(itemList[i]).parents('tr').find('[data-category]').attr("data-category");
-        var params = $(itemList[i]).parents('tr').attr("data-params-map");
+        const id = $userLinkSelector.attr('href').split('/')[4];
+        const email = $userLinkSelector.text().trim();
+        const itemid = $(itemList[i]).attr("id").replace('desc_', '');
+        const category = $(itemList[i]).parents('tr').find('[data-category]').attr("data-category");
+        let params = $(itemList[i]).parents('tr').attr("data-params-map");
         params = params ? params.replace(/"/g, "&quot;") : '{}';
-        var cityItem = $(itemList[i]).parents('tr').attr("data-location");
+        const cityItem = $(itemList[i]).parents('tr').attr("data-location");
 
         if (isAuthority('ROLE_USER_INFO_INFO')) {
             $(itemList[i])
-                .prepend('<span class="ah-userInfoActionButton ah-user-api" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+                .prepend('<span class="ah-userInfoActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_ABUSES')) {
             $(itemList[i])
-                .prepend('<span class="ah-userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+                .prepend('<span class="ah-userAbuseActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_WL')) {
             $(itemList[i])
-                .prepend('<span class="ah-userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+                .prepend('<span class="ah-userWalletActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 		}
 
         if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
             $(itemList[i])
-                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
         }
 
         if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
             $(itemList[i])
-                .prepend('<span class="ah-userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+                .prepend('<span class="ah-userMessengerActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
         }
     }
 

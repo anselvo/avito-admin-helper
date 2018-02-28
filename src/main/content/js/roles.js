@@ -1349,9 +1349,7 @@ RoleHandler.prototype.reservedOperations = function() {
 
 
 RoleHandler.prototype.consultationCount = function () {
-    if (global.admUrlPatterns.items_moder.test(global.currentUrl) ||
-        global.admUrlPatterns.items_search.test(global.currentUrl))
-        consultationCount();
+    consultationCount();
 };
 
 RoleHandler.prototype.userCheckVasUsage = function() {

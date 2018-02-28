@@ -3235,7 +3235,7 @@ select.ah-form-control:focus {
 
 #ah-personalStatistics {
     cursor: pointer;
-    background: #f5f5f5;
+    background: #ffffff;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border: 1px solid #e6e6e6;
@@ -5219,14 +5219,13 @@ select.ah-form-control:focus {
 .ah-consultation {
     position: fixed;
     top: 50%;
-    right: 0;
+    right: -2px;
     transform: translateY(-50%);
     z-index: 99999;
 }
 .ah-consultation-main {
     font-size: 15px;
     cursor: pointer;
-    padding: 5px;
     border: 1px solid #dedede;
     border-image: initial;
     border-radius: 4px 0 0 4px;
@@ -5246,14 +5245,14 @@ select.ah-form-control:focus {
     padding: 8px 0;
     border-bottom: 1px solid #dedede;
 }
-.ah-cons-count {
-    font-size: 30px;
+.ah-cons-big-digit {
+    font-size: 20px;
 }
 .ah-cons-count, .ah-cons-radio-count {
     color: #3197EE;
 }
-.ah-cons-count, .ah-cons-link {
-    padding: 3px 0;
+.ah-cons-count, .ah-cons-link, .ah-cons-name {
+    padding: 5px;
     text-align: center;
 }
 .ah-cons-link {
@@ -5280,4 +5279,10 @@ select.ah-form-control:focus {
 
 .ah-check-vas-usage-popover .popover-content {
     word-break: normal;
+}
+
+
+.btn.ah-led-button {
+    background-color: rgb(255, 255, 0);
+    box-shadow: rgb(128, 128, 2) 0px -1px 9px inset;
 }
