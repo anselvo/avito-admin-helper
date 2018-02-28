@@ -1210,64 +1210,6 @@ function searchHDUserNameInTickets(mail) {
         }
     }
 }
-
-function createTicket(data) {
-    var formData = new FormData();
-
-    data.forEach(function (item) {
-        formData.append('' + item.name + '', '' + item.value + '');
-    });
-
-    var files = $('[name="create-ticket-attaches[]"]');
-    var newslide = files.prop('files');
-    var filesArr = [];
-    for (var i = 0; i < newslide.length; i++) {
-        filesArr[i] = newslide[i];
-        formData.append('attaches[]', filesArr[i]);
-    }
-
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/ticket/add`;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.send(formData);
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            $('#ah-loading-layer').hide();
-
-            if (xhr.status == 200) {
-                var response = JSON.parse(xhr.responseText);
-                if (response.hasOwnProperty('error')) {
-                    var errorText = JSON.stringify(response.error);
-                    setTimeout(function () {
-                        alert('error: ' + errorText);
-                    }, 100);
-                    return;
-                }
-                var ticketId = response.id;
-
-                var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-                var closeBtn = $(modal).find('.ah-modal-close');
-                $(closeBtn).click();
-
-                var isOpened = window.open(`${global.connectInfo.adm_url}/helpdesk/details/${ticketId}`);
-                if (!isOpened) {
-                    chrome.runtime.sendMessage({action: 'copyToClipboard', text: ticketId});
-                    setTimeout(function () {
-                        alert('Обращение было создано, однако в вашем браузере блокируются всплывающие окна для этого сайта.\nПожалуйста, снимите эту блокировку для сайта adm.avito.ru.\nНомер созданного обращения был скопирован в буфер обмена');
-                    }, 100);
-                }
-            }
-
-            if (xhr.status >= 400) {
-                setTimeout(function () {
-                    alert('Произошла техническая ошибка.\n' + xhr.status + ', ' + xhr.statusText + '');
-                }, 100);
-            }
-        }
-    }
-}
 //---------- Создание обращения ----------//
 
 function getHdLeftPanelHeaders() {

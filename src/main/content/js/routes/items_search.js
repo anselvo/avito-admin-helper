@@ -301,14 +301,7 @@ function smartSNP(id) {
         var email = $(this).attr('email');
         var name = $(this).attr('name');
 
-        var xhrSendSNP = new XMLHttpRequest();
-        xhrSendSNP.open("POST", `${global.connectInfo.adm_url}/users/user/edit/${id}/password`, true);
-        xhrSendSNP.send(null);
-        xhrSendSNP.onreadystatechange=function() {
-            if (xhrSendSNP.readyState == 4 && xhrSendSNP.status == 200) {
-                console.log(xhrSendSNP.responseText);
-            }
-        };
+        sendNewPassword(id);
 
         chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',

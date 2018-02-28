@@ -107,76 +107,6 @@ function userChangeEmail() {
 
         changeEmail(checkemail[0], checkemail[1], id, status);
     });
-
-    function changeEmail(email, domen, id, status) {
-        var href = `${global.connectInfo.adm_url}/users/user/change_email/${id}`;
-
-        var request = new XMLHttpRequest();
-        request.open("POST", href, true);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        request.setRequestHeader("Accept", "*/*");
-        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        request.send("email=+" + email + "%40" + domen);
-        request.onreadystatechange = function () {
-            if (request.readyState == 4 && request.status == 200) {
-                var r = request.responseText;
-                if (r.indexOf("success") + 1) {
-                    notfake(email, domen);
-                    sendNewPassword(id);
-                    commentOnUserHack(id, email, domen, " вернул, взлом.");
-                    if (status.indexOf("Blocked") + 1) {
-                        unblockUserHack(id);
-                    }
-                    changeName();
-                } else {
-                    $('#statusEmail').text(r);
-                }
-            }
-        };
-    }
-    function notfake(emailCheck, domen) {
-        var href = `${global.connectInfo.adm_url}/users/fakeemail/removeOld`;
-
-        var request = new XMLHttpRequest();
-        request.open("POST", href, true);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        request.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
-        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        request.send("email=" + emailCheck + "%40" + domen);
-    }
-    function commentOnUserHack(id, email, domen, comment) {
-        var commentFull = email + "@" + domen + comment;
-        var request = new XMLHttpRequest();
-        request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.send("objectTypeId=2&objectId=" + id + "&comment=" + encodeURIComponent(commentFull));
-    }
-    function sendNewPassword(id) {
-        var href = `${global.connectInfo.adm_url}/users/user/edit/${id}/password`;
-
-        var request = new XMLHttpRequest();
-        request.open("POST", href, true);
-        request.setRequestHeader("Accept", "*/*");
-        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        request.send(null);
-    }
-    function unblockUserHack(id) {
-        var request = new XMLHttpRequest();
-        request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock_relevant/${id}`, true);
-        request.send();
-    }
-    function changeName() {
-        var formElem = $('.js-user-info-form-user');
-        var name = $(formElem).find('[name="name"]');
-        var saveBtn = $(formElem).find('[name="save"]');
-        if (!formElem || !name || !saveBtn) {
-            alert('Ошибка: не удалось изменить имя пользователя.');
-            location.reload();
-        }
-
-        $(name).val('.');
-        $(saveBtn).click();
-    }
 }
 
 function userInfoScrollableIndic(scrollTo, indicator) {
@@ -629,52 +559,6 @@ function unverifyPhones(id) {
 
 function getUserIdFromUrl(url) {
     return url.replace(/\D/gi, '');
-}
-
-function unverify(obj, reloadPage) {
-
-    var formData = new FormData();
-    formData.append('id', obj.id);
-    formData.append('phone', obj.phone);
-
-    var url = `${global.connectInfo.adm_url}/users/user/phone/cancel_confirm`;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.send(formData);
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            if (reloadPage) {
-                alert('Номер успешно отвязан');
-                location.reload();
-            } else { // мультиотвязка
-                $('#sh-added-phone-multi-unverify-list li:contains(' + obj.phone + ')').append('<span class="sh-multi-unverify-status-chacker" style="margin-left: 8px; color: green;">Ok</span>');
-
-                if ($('.sh-multi-unverify-status-chacker').length == $('.sh-added-phone-multi-unverify').length) {
-                    $('#ah-loading-layer').hide();
-
-                    $('#sh-multi-unverify-action-btns div').detach();
-                    $('#sh-close-and-reboot-btn').show();
-                }
-            }
-        }
-
-        if (xhr.readyState == 4 && xhr.status > 200) {
-            if (reloadPage) {
-                alert('Не удалось отвязать номер');
-            } else {
-                $('#sh-added-phone-multi-unverify-list li:contains(' + obj.phone + ')').append('<span class="sh-multi-unverify-status-chacker" style="margin-left: 8px; color: red;">Fail</span>');
-
-                if ($('.sh-multi-unverify-status-chacker').length == $('.sh-added-phone-multi-unverify').length) {
-                    $('#ah-loading-layer').hide();
-
-                    $('#sh-multi-unverify-action-btns div').detach();
-                    $('#sh-close-and-reboot-btn').show();
-                }
-            }
-        }
-    }
 }
 
 //----- инфа о всех IP на users/info  -----//
