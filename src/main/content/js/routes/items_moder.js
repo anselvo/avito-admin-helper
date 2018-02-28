@@ -108,10 +108,12 @@ function abTestHighlight(categoryID, locationID, containsOption) {
     const $items = $('tr[data-category="' + categoryID + '"][data-location="' + locationID + '"]:contains(' + containsOption + ')');
 
     $items.find('.item-info-row_user-actions').prev().addClass('ah-ab-test-mark').prepend('<div class="ah-ab-test">A/B TEST</div>');
-
-    abTestCheckedPhoto($items);
 }
 
+/**
+ * Отказались от парсинга SCR-601
+ * @deprecated
+ */
 function abTestCheckedPhoto($items) {
     for (let i = 0; i < $items.length; ++ i) {
         const $item = $($items[i]);
@@ -549,29 +551,8 @@ function addElementsForEachItemNew() {
             }
         }
 
-        // ++++++ добавление кнопки отклонения и выделение флага "Вид объявления"  ++++++ //
-        const $flagItemType = $(trList[i]).find('.b-antifraud .name:contains(Вид объявления)');
-
-        if ($flagItemType.length > 0) {
-            $(trList[i]).find('.item-info-name').append('<div class="ah-led-yellow" title="Обратите внимание на флаги!"></div>');
-
-            const $butBlock = $(trList[i]).find('#ah-but-reject-block');
-            $butBlock.append(`<input type="button" class="btn btn-default btn-sm ah-flag-item-type" 
-                              data-item="${trItemId}" data-item-version="${itemVersion}" value="ItemType" 
-                              style="box-shadow: inset 0 0 15px 0 #FF0; border: 1px solid #f18500; margin-left: 4px">`);
-        }
+        ledItem(trList[i], trItemId, itemVersion);
     }
-
-    $('.ah-flag-item-type').click(event => {
-        let dataObj = {
-            itemId: event.currentTarget.dataset.item,
-            version: event.currentTarget.dataset.itemVersion,
-            action: 'reject',
-            reason: 715
-        };
-
-        submitItem(dataObj);
-    });
 
     $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
         let dataObj = {
@@ -624,6 +605,36 @@ function addElementsForEachItemNew() {
     });
 }
 
+/**
+ * Добавление кнопки отклонения и выделение флага подсвечивающимся фонариком
+ */
+function ledItem($itemInfo, trItemId, itemVersion) {
+    for (let i = 0; i < global.ledItem.length; ++i) {
+        const led = global.ledItem[i];
+
+        const $flagItemType = $($itemInfo).find(`.b-antifraud .name:contains(${led.flagName})`);
+
+        if ($flagItemType.length > 0) {
+            if ($($itemInfo).find('.ah-led-yellow').length === 0)
+                $($itemInfo).find('.item-info-name').append('<div class="ah-led-yellow" title="Обратите внимание на флаги!"></div>');
+
+            if (led.button) {
+                const $butBlock = $($itemInfo).find('#ah-but-reject-block');
+
+                const input = document.createElement('input');
+                input.className = "btn btn-default btn-sm ah-led-button";
+                input.type = 'button';
+                input.value = led.button.value;
+                input.title = "LED BUTTON";
+                input.addEventListener('click', () => {
+                    submitItem({itemId: trItemId, version: itemVersion, action: led.button.action, reason: led.button.reason});
+                });
+
+                $butBlock.append(input);
+            }
+        }
+    }
+}
 
 function getActiveItems(selector) {
     let url = $(selector).find('div.item-info-row_user-actions a[href ^= "/items/search"]').attr('href');
