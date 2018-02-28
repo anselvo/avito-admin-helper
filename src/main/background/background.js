@@ -134,7 +134,6 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
-        // setConnectInfo(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
@@ -262,7 +261,7 @@ function logout() {
 }
 
 function getPrincipal() {
-    return fetch(`${connectInfo.spring_url}/auth/principal`, { credentials: 'include', redirect: 'error' })
+    return fetch(`${connectInfo.spring_url}/auth/principal/da`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
@@ -367,6 +366,8 @@ function errorMessage(status, error) {
 }
 
 function startWebSocket() {
+    if (stompClient) stompClient.disconnect();
+
     const socket = new SockJS(`${connectInfo.spring_url}/ws`);
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
