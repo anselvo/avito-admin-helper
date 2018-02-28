@@ -18,29 +18,6 @@ function findWherePhoneVerified() {
     });
 }
 
-function getVerificationLog(phone) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", `${global.connectInfo.adm_url}/users/phones_verification/full`, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    xhr.send("phone="+phone);
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            $('#ah-loading-layer').hide();
-            var html = xhr.responseText;
-
-            findUserWithVerifiedPhone(html, phone);
-        }
-        if (xhr.readyState == 4 && xhr.status > 200) {
-            $('#ah-loading-layer').hide();
-            setTimeout(function() {
-                alert('Произошла техническая ошибка.\n'+ xhr.status +', '+ xhr.statusText +'');
-            }, 100);
-        }
-    }
-}
-
 function findUserWithVerifiedPhone(html, phone) {
     var finded = false;
 

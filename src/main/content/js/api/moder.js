@@ -499,30 +499,6 @@ function postBlockReasonList(reasonId) {
     sessionStorage.postBlockActiveUserID = '';
 }
 
-function postBlockRequest(id, reason){
-    var request = new XMLHttpRequest();
-    request.open("POST", `${global.connectInfo.adm_url}/users/user/block`, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    request.setRequestHeader("Accept", "*/*");
-    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    request.send('reasons%5B%5D='+reason+'&id='+id);
-    request.onreadystatechange=function(){
-        if (request.readyState === 4) {
-            $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(1)').text('DONE').css({color: '#009500'});
-
-            if (request.status === 200) {
-                $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('OK').css({color: '#009500'});
-            } else {
-                $('#ah-postBlockTable').find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
-            }
-        } else {
-            $('#ah-postBlockTable')
-                .find('tr[name="' + id + '"] td:eq(1)').text('FAIL').css({color: '#ff0000'})
-                .find('tr[name="' + id + '"] td:eq(2)').text('FAIL').css({color: '#ff0000'});
-        }
-    };
-}
-
 // МАССОВАЯ БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ
 
 // запрос на отображения информации о юзере для большого кол-ва

@@ -362,37 +362,6 @@ function dateParse(dateString) {
     return new Date(parseInt(date[2]), parseInt(date[1])-1, parseInt(date[0]), parseInt(time[0]), parseInt(time[1]));
 }
 
-function blockItem(id, reason) {
-    var formDate = new FormData();
-    formDate.append('reasons[]', reason);
-    formDate.append('id', id);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", `${global.connectInfo.adm_url}/items/item/block`, true);
-    xhr.send(formDate);
-
-    outTextFrame(id+' item is blocked');
-}
-
-function rejectItem(id, reason) {
-    var formDate = new FormData();
-    formDate.append('reasons[]', reason);
-    formDate.append('id', id);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", `${global.connectInfo.adm_url}/items/item/reject`, true);
-    xhr.send(formDate);
-
-    outTextFrame(id+' item is rejected');
-}
-
-function commentOnItemModer(id, comment){
-    var request = new XMLHttpRequest();
-    request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send("objectTypeId=1&objectId="+id+"&comment="+encodeURIComponent(comment));
-}
-
 //----- Compare Photos -----//
 
 function addsomeelements() {
@@ -826,33 +795,7 @@ function submitItem(data) {
         formData.append('reasons[]', data.customReason);
     }
 
-
-    let url = `${global.connectInfo.adm_url}/items/moder/submit`;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.send(formData);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            $('tr[data-id="' + data.itemId + '"]').remove();
-        }
-
-        if (xhr.readyState === 4 && xhr.status > 200) {
-
-
-            $('body').append(`<div id="mh-error-alert" style="position: fixed; margin: auto; left: 0; right: 0; top: 0; bottom: 0; width: 320px; height: 110px; background-color: white;  padding: 10px; box-shadow: 0 0 10px; border-radius: 4px;"><span class="ah-close-btn" style="float: right;" id="mh-error-alert-close-btn"></span><span>Произошла ошибка. Техническая информация:</span><br><b><span>${xhr.status}:${xhr.statusText}</span></b><hr class="ah-default-hr"><span>Ссылка на объявление: <a href="${global.connectInfo.adm_url}/items/item/info/${data.itemId}" target="_blank">${data.itemId}</a></span></div>`);
-
-
-            hideElementOutClicking($('#mh-error-alert'));
-
-            $('#mh-error-alert-close-btn').click(function() {
-                $('#mh-error-alert').detach();
-            });
-
-
-            $('tr[data-id="' + data.itemId + '"]').remove();
-        }
-    }
+    submitItemRequest(formData, data);
 }
 
 

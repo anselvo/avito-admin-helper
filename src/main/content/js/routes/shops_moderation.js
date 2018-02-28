@@ -590,26 +590,15 @@ ShopModeration.prototype.addMailForm = function () {
         overlay.style.display = 'block';
         overlay.focus();
 
-        fetch(`${global.connectInfo.adm_url}/shops/moderation/send/email/${self.shopId}`, {
-                method: 'post',
-                credentials: 'include',
-                body: data
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return Promise.reject(`Произошла ошибка:\n${response.status}\n${response.statusText}`);
-                }
-                if (response.redirected) {
-                    return Promise.reject(`Произошла техническая ошибка`);
-                }
-
+        shopsModerationSendEmail(self.shopId, data)
+            .then(() => {
                 $(modal).modal('hide');
                 form.reset();
                 messageInput.innerHTML = '';
                 outTextFrame('Письмо успешно отправлено');
                 overlay.style.display = 'none';
-            }).
-            catch(error => {
+            })
+            .catch(error => {
                 overlay.style.display = 'none';
                 alert(error);
             });
