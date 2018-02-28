@@ -2,41 +2,45 @@
 function usersInfoAction() {
     $('.ah-userInfoActionButton').click(function () {
         const offset = $(this).offset();
-        usersInfo($(this).attr("userid"), $(this).attr("itemid"), offset, $(this).attr("infoQuery"));
+        usersInfo($(this).data("userId"), $(this).data("itemId"), offset, $(this).data("query"));
     });
 
     $('.ah-userAbuseActionButton').click(function () {
         const offset = $(this).offset();
-        usersAbuses($(this).attr("useridab"), $(this).attr("itemidab"), offset);
+        usersAbuses($(this).data("userId"), $(this).data("itemId"), offset);
     });
 
     $('.ah-userWalletActionButton').click(function () {
         const offset = $(this).offset();
-        usersWallet($(this).attr("userid"), offset);
+        usersWallet($(this).data("userId"), offset);
     });
 
     $('.ah-userShowItemsActionButton').click(function () {
         const offset = $(this).offset();
-        userShowItems($(this).attr("userid"), offset);
+        userShowItems($(this).data("userId"), $(this).data("email"), offset);
     });
 
     $('.ah-userMessengerActionButton').click(function () {
         const offset = $(this).offset();
-        userMessenger($(this).attr("userid"), offset);
+        userMessenger($(this).data("userId"), offset);
     });
 }
 
-function userShowItems(userId, offset) {
+function userShowItems(userId, email, offset) {
     openInfoWindow(1000, offset);
 
+    const formatDate = dateForSearch(2.592e+9);
+    const searchParam = `user=${email}&sort_field=sort_time&date=${formatDate}`;
+
     $('.userInfoMain')
-        .append(`<a href="/items/search?user_id=${userId}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
+        .append(`<a href="${global.connectInfo.adm_url}/items/search?p=1&user_id=${userId}&${searchParam || ''}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
         .append('<div class="ah-user-show-item-body"></div>');
 
     const $body = $('.ah-user-show-item-body');
     const $title = $('.ah-user-show-item-title');
 
-    getUserItems(userId).then(response => {
+
+    getUserItems(userId, 1, searchParam).then(response => {
         const $responseTitle = $(response).find('.header__title');
         const $responseTable = $(response).find('.table');
         const $responseTableTR = $responseTable.find('tbody tr');
@@ -231,12 +235,7 @@ function usersInfo(id, itemid, offset, query) {
             let nameuser =  $(ruser).find('.form-group:contains(Название) input').attr('value');
             const chanceTmp = $(ruser).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
             const chance = chanceTmp ? parseInt(chanceTmp.replace('cval_', '')) : 0;
-
-            let dateStart = new Date(new Date() - 7.776e+9);
-            let dateEnd = new Date();
-            let formatDateStart = parseDateToSearchFormat(dateStart);
-            let formatDateEnd = parseDateToSearchFormat(dateEnd);
-            let formatDate = formatDateStart + '+-+' + formatDateEnd;
+            const formatDate = dateForSearch(7.776e+9);
 
             let color;
             if (status.indexOf('Active')+1) color = 'green';
@@ -331,6 +330,14 @@ function usersInfo(id, itemid, offset, query) {
         }
     };
 
+}
+
+function dateForSearch(period) {
+    const dateStart = new Date(new Date() - period);
+    const dateEnd = new Date();
+    const formatDateStart = parseDateToSearchFormat(dateStart);
+    const formatDateEnd = parseDateToSearchFormat(dateEnd);
+    return formatDateStart + '+-+' + formatDateEnd;
 }
 
 

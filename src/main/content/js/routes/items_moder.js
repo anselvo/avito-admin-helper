@@ -208,6 +208,7 @@ function addComparisonInfo() {
     optionOtherReasons('.btn-group-reject .moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
     let wordsParse = find_words_parse(localStorage.title.replace(/\s/g, ''));
+    let mainUserId = null;
     for (let i = 0; i < comparisonUserList.length; ++i) {
         const comparisonDescriptionListChildren = $(comparisonDescriptionList[i]).find('span');
         const comparisonItemCategory = $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title");
@@ -221,38 +222,39 @@ function addComparisonInfo() {
             }
         }
 
+        const email = $(comparisonUserList[i]).text().trim();
         let tmp = $(comparisonUserList[i]).parent().attr('class').split(' ');
         let userid = tmp[3].split('-')[2];
         let itemid = tmp[2].split('-')[2];
         const $comparisonUserListParent = $(comparisonUserList[i]).parents('.'+tmp[2]);
 
         if (isAuthority('ROLE_USER_INFO_INFO'))
-            $comparisonUserListParent.prepend('<span class="ah-userInfoActionButton userInfoComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+            $comparisonUserListParent.prepend('<span class="ah-userInfoActionButton userInfoComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_ABUSES'))
             $comparisonUserListParent
-                .prepend('<span class="ah-userAbuseActionButton userAbuseComparison ah-user-api" useridab="'+userid+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+                .prepend('<span class="ah-userAbuseActionButton userAbuseComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_WL'))
             $comparisonUserListParent
-                .prepend('<span class="ah-userWalletActionButton userWalletComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
+                .prepend('<span class="ah-userWalletActionButton userWalletComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" title="WalletLog"><i class="glyphicon glyphicon-ruble"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
             $comparisonUserListParent
-                .prepend('<span class="ah-userShowItemsActionButton userShowItemsComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+                .prepend('<span class="ah-userShowItemsActionButton userShowItemsComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_MESSENGER'))
             $comparisonUserListParent
-                .prepend('<span class="ah-userMessengerActionButton userMessengerComparison ah-user-api" userid="'+userid+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+                .prepend('<span class="ah-userMessengerActionButton userMessengerComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
 
-        if (i === 0) var mainUserId = userid;
-        else {
-            if (mainUserId !== userid)  // disable for test
-                $(comparisonUserList[i])
-                    .parents('.'+tmp[2])
-                    .append('<button class="btn btn-link ah-pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</button>');
-        }
+        if (i === 0) mainUserId = userid;
+
+        if (mainUserId !== userid)  // disable for test
+            $(comparisonUserList[i])
+                .parents('.'+tmp[2])
+                .append('<button class="btn btn-link ah-pseudo-link compareUserOnComparison" userid="'+userid+'" itemid="'+itemid+'" title="Сравнить учетные записи" style="margin-left: 10px;  float: right;">&#8644</button>');
+
 
         if (localStorage.imageSearchComparison === 'true') {
             let imageList = $(comparisonImageList[i]).find('.js-gallery-prev-img');
@@ -309,29 +311,29 @@ function addComparisonInfo() {
                 .then(() => btnLoaderOff(btn));
         });
 
-        $('.userInfoComparison[itemid='+itemid+']').click(function () {
+        $('.userInfoComparison[data-item-id='+itemid+']').click(function () {
             let offset = $(this).offset();
-            usersInfo($(this).attr("userid"), $(this).attr("itemid"), offset, $(this).attr("infoQuery"));
+            usersInfo($(this).data("userId"), $(this).data("itemId"), offset, $(this).data("query"));
         });
 
-        $('.userAbuseComparison[itemidab='+itemid+']').click(function () {
+        $('.userAbuseComparison[data-item-id='+itemid+']').click(function () {
             let offset = $(this).offset();
-            usersAbuses($(this).attr("useridab"), $(this).attr("itemidab"), offset);
+            usersAbuses($(this).data("userId"), $(this).data("itemId"), offset);
         });
 
-        $('.userWalletComparison[itemid='+itemid+']').click(function () {
+        $('.userWalletComparison[data-item-id='+itemid+']').click(function () {
             let offset = $(this).offset();
-            usersWallet($(this).attr("userid"), offset);
+            usersWallet($(this).data("userId"), offset);
         });
 
-        $('.userShowItemsComparison[itemid='+itemid+']').click(function () {
+        $('.userShowItemsComparison[data-item-id='+itemid+']').click(function () {
             let offset = $(this).offset();
-            userShowItems($(this).attr("userid"), offset);
+            userShowItems($(this).data("userId"), $(this).data("email"), offset);
         });
 
-        $('.userMessengerComparison[itemid='+itemid+']').click(function () {
+        $('.userMessengerComparison[data-item-id='+itemid+']').click(function () {
             let offset = $(this).offset();
-            userMessenger($(this).attr("userid"), offset);
+            userMessenger($(this).data("userId"), offset);
         });
     }
 }
@@ -352,7 +354,10 @@ function addSomeElementsNew() {
     const trList = $('#items').find('tr');
 
     for(let i = 0; i < trList.length; i++){
-        const id = $(trList[i]).find('a[href^="/users/user/info/"]').attr("href").split("/")[4];
+        const $userLinkSelector = $(trList[i]).find('a[href^="/users/user/info/"]');
+
+        const id = $userLinkSelector.attr("href").split("/")[4];
+        const email = $userLinkSelector.text().trim();
         const itemid = $(trList[i]).attr("id").substring(5);
         const category = $(trList[i]).attr("data-category");
         const params = $(trList[i]).attr("data-params-map") ? $(trList[i]).attr("data-params-map").replace(/"/g, "&quot;") : '{}';
@@ -364,23 +369,23 @@ function addSomeElementsNew() {
 
         if (isAuthority('ROLE_USER_INFO_INFO'))
             $itemInfoName.prepend('<span class="ah-user-api">' +
-                '<span class="ah-userInfoActionButton" infoQuery cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span> ' +
+                '<span class="ah-userInfoActionButton" data-query data-user-id="'+id+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span> ' +
                 '<i class="ah-infoSearchIcon glyphicon  glyphicon-search" title="Поисковый запрос для ссылок в Info"></i> ' +
                 '<input type="text" placeholder="Info query" class="ah-infoQuery"></span>');
 
         if (isAuthority('ROLE_USER_INFO_ABUSES'))
-            $itemInfoName.prepend('<span class="ah-userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+            $itemInfoName.prepend('<span class="ah-userAbuseActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_WL'))
-            $itemInfoName.prepend('<span class="ah-userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+            $itemInfoName.prepend('<span class="ah-userWalletActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS'))
             $itemInfoName
-                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
 
         if (isAuthority('ROLE_USER_INFO_MESSENGER'))
             $itemInfoName
-                .prepend('<span class="ah-userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+                .prepend('<span class="ah-userMessengerActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
 
         // кнопки блокировки
         if (localStorage.createdButtons.indexOf('blockUser|&|MC')+1 && type.indexOf('Магазин') === -1)
@@ -397,7 +402,7 @@ function addSomeElementsNew() {
     usersInfoAction();
 
     $(".ah-infoQuery").on("input",function() {
-        $(this).parent().find('.ah-userInfoActionButton').attr('infoQuery', $(this).val());
+        $(this).parent().find('.ah-userInfoActionButton').data('query', $(this).val());
     });
 
     $(".ah-infoSearchIcon").click(function () {

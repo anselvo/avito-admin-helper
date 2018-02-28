@@ -193,8 +193,8 @@ function getShopManagers() {
 }
 
 // user items
-function getUserItems(userId, page) {
-    return fetch(`${global.connectInfo.adm_url}/items/search?p=${page || 1}&user_id=${userId}`, {
+function getUserItems(userId, page, searchParam) {
+    return fetch(`${global.connectInfo.adm_url}/items/search?p=${page || 1}&user_id=${userId}&${searchParam || ''}`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {

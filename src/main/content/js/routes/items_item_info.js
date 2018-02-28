@@ -72,6 +72,7 @@ function allowListMSG(currentUrl, agentLogin) {
 
 function userInfoOnItem() {
     const id = $('a[href^="/users/user/info/"]').attr('href').split('/')[4];
+    const email = $('.js-autoselect').text().trim();
     const itemid = $('form').attr('data-item-id');
     const category = $('#fld_category_id :selected').attr('value');
     const param = $('.js-component__parameters select.form-control:eq(1)').attr("data-id");
@@ -87,23 +88,23 @@ function userInfoOnItem() {
 
     if (isAuthority('ROLE_USER_INFO_INFO')) {
         $blockUserInfo
-            .prepend('<span class="ah-userInfoActionButton ah-user-api" cityItem="'+cityItem+'" userid="'+id+'" itemid="'+itemid+'" data-category="'+category+'" data-params-map="'+params+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+            .prepend('<span class="ah-userInfoActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
     }
     if (isAuthority('ROLE_USER_INFO_ABUSES')) {
         $blockUserInfo
-            .prepend('<span class="ah-userAbuseActionButton ah-user-api" useridab="'+id+'" itemidab="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+            .prepend('<span class="ah-userAbuseActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
     }
     if (isAuthority('ROLE_USER_INFO_WL')) {
         $blockUserInfo
-            .prepend('<span class="ah-userWalletActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+            .prepend('<span class="ah-userWalletActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
     }
     if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
         $blockUserInfo
-            .prepend('<span class="ah-userShowItemsActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+            .prepend('<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
     }
     if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
         $blockUserInfo
-            .prepend('<span class="ah-userMessengerActionButton ah-user-api" userid="'+id+'" itemid="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+            .prepend('<span class="ah-userMessengerActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
     }
 
 
