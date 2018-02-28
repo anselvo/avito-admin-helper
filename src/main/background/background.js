@@ -261,7 +261,7 @@ function logout() {
 }
 
 function getPrincipal() {
-    return fetch(`${connectInfo.spring_url}/auth/principal/da`, { credentials: 'include', redirect: 'error' })
+    return fetch(`${connectInfo.spring_url}/auth/principal`, { credentials: 'include', redirect: 'error' })
         .then(response => {
             connectInfo.status = response.status;
 
