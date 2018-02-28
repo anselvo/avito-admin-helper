@@ -301,17 +301,17 @@ function usersInfo(id, itemid, offset, query) {
                         } else verify = '<span class="ah-verify" style="color: red;" title="Телефон не верифицирован">&#10060;</span>';
 
                         $('#ah-phoneHistory').append('<div id="'+number+'" style="margin-left:10px;"></div>');
-                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${number}</a>`);
-                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}" target="_blank">city</a>`);
-                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}" target="_blank">+private</a>`);
-                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}" target="_blank">parameter</a>`);
-                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}" target="_blank">item_ip</a>`);
+                        if (localStorage.checkboxInfo.indexOf('8')+1) $('#'+number).append(`<span class="ah-phoneInItem"></span>${verify}<a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${number}</a>`);
+                        if (localStorage.checkboxInfo.indexOf('9')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">city</a>`);
+                        if (localStorage.checkboxInfo.indexOf('10')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&location_id[]=${regionItemID}&is_company=2&query=${query}&date=${formatDate}&s_type=2" target="_blank">+private</a>`);
+                        if (localStorage.checkboxInfo.indexOf('11')+1 && firstParam) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&cid[]=${categoryItemID}&params[${firstParam}]=${firstParamVal}&query=${query}&date=${formatDate}&s_type=2" target="_blank">parameter</a>`);
+                        if (localStorage.checkboxInfo.indexOf('14')+1) $('#'+number).append(` <a href="${global.connectInfo.adm_url}/items/search?phone=${newNumber}???&ip=${ipItem}&query=${query}&date=${formatDate}&s_type=2" target="_blank">item_ip</a>`);
                         if (localStorage.checkboxInfo.indexOf('15')+1) $('#'+number).append(`<div class="ah-phone-verify-date" title="Дата верификации телефона">${verifyDate}</div>`);
                     }
 
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
-                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}" target="_blank">${ipItem}</a>`);
+                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${ipItem}</a>`);
                     $(phoneInItem+" .ah-phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);
