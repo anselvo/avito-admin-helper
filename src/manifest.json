@@ -8,7 +8,7 @@
 		"scripts": [
 			"include/library/jquery.min.js",
 			"include/library/angular.min.js",
-			"include/library/sockjs.min.js",
+			"include/library/sockjs.js",
             "include/library/stomp.min.js",
 			"main/background/background.js",
 			"main/background/contextMenu.js"
