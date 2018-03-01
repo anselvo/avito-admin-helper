@@ -5,7 +5,7 @@ let connectInfo = {
     adm_url: "https://adm.avito.ru",
     spring_auth: false,
     spring_user: null,
-    spring_url: "http://localhost:8080",
+    spring_url: "http://spring.avitoadm.ru",
     spring_reconnect: false,
     ext_url: "http://avitoadm.ru",
     status: null,
