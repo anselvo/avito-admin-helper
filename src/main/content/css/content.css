@@ -2761,48 +2761,43 @@ select.ah-form-control:focus {
     border-color: rgba(56, 162, 64, 0.29);
 }
 
-.ah-attendant-tl-btn {
+.ah-ticket-tl-help-holder {
+    margin-bottom: 6px;
+    border: 1px dashed rgba(204, 204, 204, 0.47);
+    border-left: none;
+    border-right: none;
+}
+
+.ah-tl-help-btn {
 	background-color: transparent;
 	border-radius: 0px;
-	position: absolute; 
-	top: -1px; 
-	bottom: -1px;
     border: 1px solid #eee;
 	font-size: 13px;
 	color: #959595;
 }
-.ah-attendant-tl-btn:hover {
+.ah-tl-help-btn:hover {
 	background-color: rgba(255, 235, 59, 0.17);
     border-color: #FFC107;
 	color: #FF9800;
 }
-.ah-attendant-tl-btn:active {
+.ah-tl-help-btn:active {
 	background-color: rgba(255, 219, 110, 0.52);
 	border-color: #FFC107;
 	color: #FF9800;
 }
 
-.ah-attendant-tl-btn.ah-active-btn {
+.ah-tl-help-btn.ah-active-btn {
 	background-color: rgb(255, 193, 7);
     color: #fff;
     border-color: #FFC107;
 }
-.ah-attendant-tl-btn.ah-active-btn:hover {
+.ah-tl-help-btn.ah-active-btn:hover {
 	background-color: rgba(255, 152, 0, 0.82);
 	border-color: #efa12e;
 }
-.ah-attendant-tl-btn.ah-active-btn:active {
+.ah-tl-help-btn.ah-active-btn:active {
 	background-color: rgba(255, 152, 0, 1);
 	border-color: #efa12e;
-}
-
-#ah-ticket-control-tools-container {
-	text-align: left;
-    margin-bottom: 6px;
-    position: relative;
-    border: 1px dashed rgba(204, 204, 204, 0.47);
-    border-left: none;
-	border-right: none;
 }
 
 .ah-sh-helpdesk-notification {
