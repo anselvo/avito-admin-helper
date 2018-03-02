@@ -20,6 +20,7 @@ const global = {
         helpdesk: /https:\/\/adm\.avito\.ru\/helpdesk/,
         system_access: /https:\/\/adm\.avito\.ru\/(?:adm\/)?system\/access/,
         detectives_queue_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search/,
+        detectives_queue_search_call: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search\/call/,
         messenger_user: /https:\/\/adm\.avito\.ru\/(?:adm\/)?messenger\/user/
     },
     // globals from support helper
@@ -52,12 +53,6 @@ const global = {
             'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство',
             'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
     },
-    abTestInfo: [
-        { categoryID: "10", locationID: "660710" },
-        { categoryID: "10", locationID: "660300" },
-        { categoryID: "10", locationID: "628780" },
-        { categoryID: "10", locationID: "625670" }
-    ],
     ledItem: [
         { flagName: "Вид объявления", button: { reason: 715, value: "ItemType", action: "reject" } },
         { flagName: "Нет фото с ID", button: { reason: 774, value: "NoPhotoID", action: "reject" } }

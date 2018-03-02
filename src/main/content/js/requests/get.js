@@ -225,3 +225,43 @@ function getUserMessenger(id) {
         return response.text();
     });
 }
+
+function getDetectivesQueuePrune(id) {
+    return fetch(`${global.connectInfo.adm_url}/detectives/queue/prune/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
+function getSpringJsonTable(uuid) {
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage({
+                action: 'XMLHttpRequest',
+                method: "GET",
+                url: `${global.connectInfo.spring_url}/json/${uuid}`
+            },
+            function (response) {
+                if (response === 'error') {
+                    reject({success: false});
+                }
+
+                let json;
+                try {
+                    json = JSON.parse(response);
+                } catch (e) {
+                    reject(e);
+                }
+
+                if (json.error && json.status !== 200) {
+                    reject(json);
+                }
+
+                resolve(json);
+            }
+        );
+    });
+}

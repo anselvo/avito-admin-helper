@@ -407,6 +407,9 @@ function handleRoles() {
     if (isAuthority('ROLE_DETECTIVES_HOLD_ITEMS')) { // удержание айтемов
         roleHandler.detectivesHoldItems();
     }
+    if (isAuthority('ROLE_DETECTIVES_CALL_REJECT_PHONE')) { // добавление кнопок в очередь на прозвон
+        roleHandler.detectivesCall();
+    }
 
     // OTHER
     if (isAuthority('ROLE_SEARCH_INFO_BTN')) {  // добавить кнопку показа инфы
@@ -1360,4 +1363,10 @@ RoleHandler.prototype.userCheckVasUsage = function() {
 
 RoleHandler.prototype.helpdeskCheckVasUsage = function() {
     addHelpdeskCheckVasUsage();
+};
+
+RoleHandler.prototype.detectivesCall = function() {
+    if (global.admUrlPatterns.detectives_queue_search_call.test(global.currentUrl)) {
+        callTableListener();
+    }
 };

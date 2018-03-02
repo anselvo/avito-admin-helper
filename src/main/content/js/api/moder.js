@@ -187,8 +187,6 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
             const difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
             if ($(this).prop('checked')) {
-                // $(this).closest(difParent).find('[type="checkbox"]').prop('checked', true);
-
                 $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
             } else {
                 $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
@@ -202,8 +200,7 @@ function addOtherReasons(block, reasonSelector, textSelector, otherReasons, prob
 
             let text = '';
 
-            // let checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block:not(.ah-has-children)').find(':checked');
-            const checkedReasons = $('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
+            const checkedReasons = $(block).find('[name="ah-other-reasons"]').parents('.ah-other-reason-block').find(':checked');
 
             if ($(checkedReasons).length > 0) text = 'Пожалуйста, измените на ';
 
