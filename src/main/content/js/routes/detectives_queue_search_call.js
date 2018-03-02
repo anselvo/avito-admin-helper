@@ -40,7 +40,7 @@ function addRejectButtonNotActualPhone(tr) {
     notActualPhone.value = 'Неактуальный телефон';
     notActualPhone.addEventListener('click', () => {
         rejectItem(itemId, 734);
-        getDtectivesQueuePrune(itemId);
+        getDetectivesQueuePrune(itemId);
         tr.remove();
     });
 

@@ -79,9 +79,12 @@ function hideTestItemsSearch() {
 }
 
 function abTest() {
-    for (let i = 0; i < global.abTestInfo.length; ++i) {
-        markTestItems(global.abTestInfo[i].categoryID, global.abTestInfo[i].locationID, global.abTestInfo[i].containsOption);
-    }
+    getSpringJsonTable('e68c1466-1e1e-11e8-b467-0ed5f89f718b').then(response => {
+        const json = JSON.parse(response.json);
+        for (let i = 0; i < json.length; ++i) {
+            markTestItems(json[i].categoryID, json[i].locationID, json[i].containsOption);
+        }
+    });
 }
 
 function markTestItems(categoryID, locationID, containsOption) {
