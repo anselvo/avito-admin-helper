@@ -225,3 +225,14 @@ function getUserMessenger(id) {
         return response.text();
     });
 }
+
+function getDtectivesQueuePrune(id) {
+    return fetch(`${global.connectInfo.adm_url}/detectives/queue/prune/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}

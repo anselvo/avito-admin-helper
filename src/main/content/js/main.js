@@ -20,6 +20,7 @@ const global = {
         helpdesk: /https:\/\/adm\.avito\.ru\/helpdesk/,
         system_access: /https:\/\/adm\.avito\.ru\/(?:adm\/)?system\/access/,
         detectives_queue_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search/,
+        detectives_queue_search_call: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search\/call/,
         messenger_user: /https:\/\/adm\.avito\.ru\/(?:adm\/)?messenger\/user/
     },
     // globals from support helper
