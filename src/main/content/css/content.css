@@ -2761,43 +2761,34 @@ select.ah-form-control:focus {
     border-color: rgba(56, 162, 64, 0.29);
 }
 
-.ah-ticket-tl-help-holder {
+.ah-tl-help {
     margin-bottom: 6px;
-    border: 1px dashed rgba(204, 204, 204, 0.47);
-    border-left: none;
-    border-right: none;
 }
 
-.ah-tl-help-btn {
-	background-color: transparent;
-	border-radius: 0px;
-    border: 1px solid #eee;
-	font-size: 13px;
-	color: #959595;
-}
-.ah-tl-help-btn:hover {
-	background-color: rgba(255, 235, 59, 0.17);
-    border-color: #FFC107;
-	color: #FF9800;
-}
-.ah-tl-help-btn:active {
-	background-color: rgba(255, 219, 110, 0.52);
-	border-color: #FFC107;
-	color: #FF9800;
+.ah-tl-help .ah-tl-help__btn-group {
+    display: flex;
 }
 
-.ah-tl-help-btn.ah-active-btn {
-	background-color: rgb(255, 193, 7);
-    color: #fff;
-    border-color: #FFC107;
+.ah-tl-help .ah-tl-help__btn {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.ah-tl-help-btn.ah-active-btn:hover {
-	background-color: rgba(255, 152, 0, 0.82);
-	border-color: #efa12e;
+
+.ah-tl-help .ah-tl-help__list {
+    width: 100%;
 }
-.ah-tl-help-btn.ah-active-btn:active {
-	background-color: rgba(255, 152, 0, 1);
-	border-color: #efa12e;
+
+.ah-tl-help__list-divider {
+    margin: 5px 0 !important;
+}
+
+.ah-tl-help .ah-tl-help__list-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 15px;
 }
 
 .ah-sh-helpdesk-notification {

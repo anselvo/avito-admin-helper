@@ -2848,14 +2848,14 @@ function addTicketTlHelp() {
 
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'btn btn-default btn-sm';
+    button.className = 'btn btn-default btn-sm ah-tl-help__btn';
     button.id = 'ah-tl-help-btn';
     button.setAttribute('data-fullname', agentTlFullName);
     button.setAttribute('data-adm-user-id', agentTlAdmUserId);
-    button.innerHTML = 'Помощь ТЛ';
+    button.innerHTML = `Помощь ТЛ <span class=" text-muted ah-tl-help__current-tl">(${agentTlFullName})</span>`;
 
     const list = document.createElement('ul');
-    list.className = 'dropdown-menu ah-tl-help__list';
+    list.className = 'dropdown-menu dropdown-menu-right ah-tl-help__list';
 
     if (global.allUsersInfo.isLoading) {
         list.innerHTML = `<li class="text-muted text-center">Загрузка...</li>`;
@@ -2877,14 +2877,14 @@ function addTicketTlHelp() {
 
         list.insertAdjacentHTML('afterbegin', `
             ${getListItem(agentTlFullName, agentTlAdmUserId)}
-            <li class="divider"></li>
+            <li class="divider ah-tl-help__list-divider"></li>
         `);
     }
 
     holder.innerHTML = `
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="ah-tl-help__current-tl">${agentTlFullName}</span>
+        <div class="btn-group ah-tl-help__btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle ah-tl-help__dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Выбор</span>
                 <span class="caret"></span>
             </button>
         </div>
@@ -2892,12 +2892,6 @@ function addTicketTlHelp() {
     const holderButtonGroup = holder.firstElementChild;
     holderButtonGroup.insertAdjacentElement('afterbegin', button);
     holderButtonGroup.appendChild(list);
-
-    // tlHelpHolder.innerHTML = `
-    //     <button type="button" class="ah-default-btn ah-btn-small ah-tl-help-btn" id="ah-tl-help-btn" title="Отправка обращения тимлидеру"
-    //     data-fullname="${tlFullName}" data-adm-user-id="${global.userInfo.leader.adm_user_id}">Помощь ТЛ</button>
-    //     ${tlFullName}
-    // `;
 
     const sidePanelCheckbox = document.querySelector('.helpdesk-side-panel-setting-checkbox');
     if (sidePanelCheckbox) sidePanelCheckbox.after(holder);
@@ -2918,7 +2912,7 @@ function addTicketTlHelp() {
             const item = target.closest('.ah-tl-help__list-item');
             const [ tlFullName, tlAdmUserId ] = [item.dataset.fullname, +item.dataset.admUserId];
             const currentTlNode = holder.querySelector('.ah-tl-help__current-tl');
-            currentTlNode.innerHTML = tlFullName;
+            currentTlNode.innerHTML = `(${tlFullName})`;
             button.setAttribute('data-fullname', tlFullName);
             button.setAttribute('data-adm-user-id', tlAdmUserId);
         }
