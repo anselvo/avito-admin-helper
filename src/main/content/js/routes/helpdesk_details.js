@@ -2833,45 +2833,116 @@ function changeAssignee() {
 //---------- дежурный тимлид ----------//
 function addTicketTlHelp() {
     const existing = [
-        document.querySelector('.ah-ticket-tl-help-holder'),
+        document.querySelector('.ah-tl-help'),
         document.getElementById('attendant-tl-notification')
     ];
     existing.forEach(node => {
         if (node) node.remove();
     });
 
-    const tlHelpHolder = document.createElement('div');
-    tlHelpHolder.className = 'ah-ticket-tl-help-holder';
+    const agentTlFullName = getTlFullName(global.userInfo.leader.name, global.userInfo.leader.surname);
+    const agentTlAdmUserId = global.userInfo.leader.adm_user_id;
 
-    const tlFullName = `${global.userInfo.leader.name} ${global.userInfo.leader.surname}`;
-    tlHelpHolder.innerHTML = `
-        <button type="button" class="ah-default-btn ah-btn-small ah-tl-help-btn" id="ah-tl-help-btn" title="Отправка обращения тимлидеру" 
-        data-fullname="${tlFullName}" data-adm-user-id="${global.userInfo.leader.adm_user_id}">Помощь ТЛ</button>
-        ${tlFullName}
+    const holder = document.createElement('div');
+    holder.className = 'ah-tl-help';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-default btn-sm';
+    button.id = 'ah-tl-help-btn';
+    button.setAttribute('data-fullname', agentTlFullName);
+    button.setAttribute('data-adm-user-id', agentTlAdmUserId);
+    button.innerHTML = 'Помощь ТЛ';
+
+    const list = document.createElement('ul');
+    list.className = 'dropdown-menu ah-tl-help__list';
+
+    if (global.allUsersInfo.isLoading) {
+        list.innerHTML = `<li class="text-muted text-center">Загрузка...</li>`;
+    } else if (global.allUsersInfo.fail) {
+        list.innerHTML = `<li  class="text-danger text-center">Не удалось загрузить список ТЛ</li>`;
+    } else if (global.allUsersInfo.list.length > 0) {
+        list.innerHTML = global.allUsersInfo.list.reduce((html, user) => {
+            if (user.position_id === '882f3674-081a-4962-b34c-0b5bf67fc391' && // Саппортские лиды
+                user.adm_user_id &&
+                user.adm_user_id !== agentTlAdmUserId) {
+
+                const tlFullName = getTlFullName(user.name, user.surname);
+
+                html += getListItem(tlFullName, user.adm_user_id);
+            }
+
+            return html;
+        }, '');
+
+        list.insertAdjacentHTML('afterbegin', `
+            ${getListItem(agentTlFullName, agentTlAdmUserId)}
+            <li class="divider"></li>
+        `);
+    }
+
+    holder.innerHTML = `
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="ah-tl-help__current-tl">${agentTlFullName}</span>
+                <span class="caret"></span>
+            </button>
+        </div>
     `;
+    const holderButtonGroup = holder.firstElementChild;
+    holderButtonGroup.insertAdjacentElement('afterbegin', button);
+    holderButtonGroup.appendChild(list);
+
+    // tlHelpHolder.innerHTML = `
+    //     <button type="button" class="ah-default-btn ah-btn-small ah-tl-help-btn" id="ah-tl-help-btn" title="Отправка обращения тимлидеру"
+    //     data-fullname="${tlFullName}" data-adm-user-id="${global.userInfo.leader.adm_user_id}">Помощь ТЛ</button>
+    //     ${tlFullName}
+    // `;
 
     const sidePanelCheckbox = document.querySelector('.helpdesk-side-panel-setting-checkbox');
-    sidePanelCheckbox.after(tlHelpHolder);
+    if (sidePanelCheckbox) sidePanelCheckbox.after(holder);
 
-	const commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
+    const commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
     const openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
     $(openAnswerInput).unbind('click');
 
-    tlHelpHolder.addEventListener('click', e => {
+    holder.addEventListener('click', e => {
         const target = e.target;
 
-        if (target.closest('.ah-tl-help-btn')) {
-            const btn = target.closest('.ah-tl-help-btn');
+        if (target.closest('#ah-tl-help-btn')) {
+            const btn = target.closest('#ah-tl-help-btn');
             attendantTLBtnHandler(btn);
         }
+
+        if (target.closest('.ah-tl-help__list-item')) {
+            const item = target.closest('.ah-tl-help__list-item');
+            const [ tlFullName, tlAdmUserId ] = [item.dataset.fullname, +item.dataset.admUserId];
+            const currentTlNode = holder.querySelector('.ah-tl-help__current-tl');
+            currentTlNode.innerHTML = tlFullName;
+            button.setAttribute('data-fullname', tlFullName);
+            button.setAttribute('data-adm-user-id', tlAdmUserId);
+        }
     });
+
+    function getTlFullName(name, surname) {
+        return `${name} ${surname}`;
+    }
+
+    function getListItem(tlFullName, tlAdmUserId) {
+        return `
+            <li>
+                <a class="ah-tl-help__list-item" data-fullname="${tlFullName}" 
+                data-adm-user-id="${tlAdmUserId}">${tlFullName}</a>
+            </li>
+        `;
+    }
 }
 
 function attendantTLBtnHandler(btn) {
     // проверка на статус тикета
     var statusText = getTicketStatusText();
-    if (statusText != 'открытое' && statusText != 'на удержании') {
-        alert('Для отправки обращения дежурному тимлидеру статус обращения должен быть "открытое" или "на удержании"');
+    if (statusText !== 'открытое' && statusText !== 'на удержании') {
+        alert('Для отправки обращения тимлидеру статус обращения должен быть "открытое" или "на удержании"');
         return;
     }
 	
@@ -2879,7 +2950,7 @@ function attendantTLBtnHandler(btn) {
 	var commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
     var input = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 	if ($(input).prop('disabled')) {
-		alert('Для отправки обращения дежурному тимлидеру Вы долджны быть назначены в качестве Исполнителя');
+		alert('Для отправки обращения тимлидеру Вы долджны быть назначены в качестве Исполнителя');
         return;
 	}
 
@@ -2889,13 +2960,19 @@ function attendantTLBtnHandler(btn) {
         alert('Пожалуйста, перейдите во вкладку "Параметры" и повторите попытку');
         return;
     }
+
+    const holder = document.querySelector('.ah-tl-help');
+    const dropdownToggle = holder.querySelector('.dropdown-toggle');
 	
     if (!$(btn).hasClass('ah-active-btn')) {
         setInternalNoteMode(btn);
+
+        dropdownToggle.disabled = true;
     } else {
         $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
-		outTextFrame('Отключен режим отправки обращения дежурному тимлидеру');
+		outTextFrame('Отключен режим отправки обращения тимлидеру');
+        dropdownToggle.disabled = false;
 		
 		var receiverField = $('.helpdesk-comment-holder .helpdesk-select-typeahead');
 		var receiverClear = $(receiverField).find('.close');
@@ -2912,10 +2989,14 @@ function setInternalNoteMode(btn) {
     var input = $(commentsToggleBlock).find('[name="type-selector"][value="3"]');
     var label = $(input).parent('label');
 
+    const holder = document.querySelector('.ah-tl-help');
+    const dropdownToggle = holder.querySelector('.dropdown-toggle');
+
     if (!label.length) {
         alert('Ошибка: не удалось переключиться в режим внутреннего примечания.');
         $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
+        dropdownToggle.disabled = false;
         return;
     }
     $(label).click();
@@ -2927,6 +3008,7 @@ function setInternalNoteMode(btn) {
             alert('Ошибка: не удалось выбрать тимлидера в качестве адресата.');
             $(btn).toggleClass('ah-active-btn');
             $('#attendant-tl-notification').remove();
+            dropdownToggle.disabled = false;
             return;
         }
         $(usersSelect).click();
@@ -2952,6 +3034,7 @@ function setInternalNoteMode(btn) {
 				if (!$(btn).hasClass('ah-active-btn')) return;
 				$(btn).toggleClass('ah-active-btn');
 				$('#attendant-tl-notification').remove();
+                dropdownToggle.disabled = false;
 				outTextFrame('Отключен режим отправки обращения тимлидеру');
 			});
 			
@@ -2986,6 +3069,9 @@ function showAttendantTlNotification() {
 function checkAdmUserIdAttendantTL($btn) {
     if (!$btn.data('admUserId')) {
 		$('#ah-loading-layer').hide();
+        const holder = document.querySelector('.ah-tl-help');
+        const dropdownToggle = holder.querySelector('.dropdown-toggle');
+        dropdownToggle.disabled = false;
 		setTimeout(() => {
 			alert(`Не удалось назначить тимлидера "${$btn.data('fullname')}" в качестве исполнителя. Пожалуйста, сообщите о данной ошибке вашему тимлидеру.`);
 		}, 100);
@@ -3495,7 +3581,7 @@ function showAgentInfoTicket() {
         claimReevaluation();
         return;
     }
-    if (global.allUsersInfo === 'FatalError') {
+    if (global.allUsersInfo.fail) {
         $(assigneeBlockSpan).before('<span id="ah-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
     }
@@ -3508,8 +3594,8 @@ function showAgentInfoTicket() {
         return;
     }
     
-    for (var i = 0; i < global.allUsersInfo.length; i++) {
-        let user = global.allUsersInfo[i];
+    for (var i = 0; i < global.allUsersInfo.list.length; i++) {
+        let user = global.allUsersInfo.list[i];
         if (user.username == currentLogin[0]) {
             // console.log(user);
             let teamleadLogin = user.teamlead_login;
@@ -3530,8 +3616,8 @@ function showAgentInfoTicket() {
             return;
         }
         
-        for (var i = 0; i < global.allUsersInfo.length; i++) {
-            let user = global.allUsersInfo[i];
+        for (var i = 0; i < global.allUsersInfo.list.length; i++) {
+            let user = global.allUsersInfo.list[i];
             let userFullName = user.name.replace(/(^ | $)/g, '') 
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             
