@@ -2840,8 +2840,11 @@ function addTicketTlHelp() {
         if (node) node.remove();
     });
 
-    const agentTlFullName = getTlFullName(global.userInfo.leader.name, global.userInfo.leader.surname);
-    const agentTlAdmUserId = global.userInfo.leader.adm_user_id;
+    const leaderInfo = global.userInfo.leader;
+    if (!leaderInfo) return;
+
+    const agentTlFullName = getTlFullName(leaderInfo.name, leaderInfo.surname);
+    const agentTlAdmUserId = leaderInfo.adm_user_id;
 
     const holder = document.createElement('div');
     holder.className = 'ah-tl-help';
