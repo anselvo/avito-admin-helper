@@ -736,7 +736,7 @@ RoleHandler.prototype.helpdeskTlHelpHold = function() {
         $('#ah-loading-layer').show();
 
         helpdeskLoadingEnd().
-            then(() => checkAdmUserIdAttendantTL($btn),
+            then(() => checkAdmUserIdTlHelp($btn),
                 error => {
                     alert(`Error:\n${error}`);
                     $('#ah-loading-layer').hide();
@@ -753,7 +753,7 @@ RoleHandler.prototype.helpdeskTlHelpComment = function() {
             $('#ah-loading-layer').show();
 
             helpdeskLoadingEnd().
-                then(() => checkAdmUserIdAttendantTL($btn),
+                then(() => checkAdmUserIdTlHelp($btn),
                     error => {
                         alert(`Error:\n${error}`);
                         $('#ah-loading-layer').hide();

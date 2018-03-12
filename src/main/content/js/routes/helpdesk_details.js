@@ -2911,7 +2911,7 @@ function addTicketTlHelp() {
 
         if (target.closest('#ah-tl-help-btn')) {
             const btn = target.closest('#ah-tl-help-btn');
-            attendantTLBtnHandler(btn);
+            tlHelpButtonHandler(btn);
         }
 
         if (target.closest('.ah-tl-help__list-item')) {
@@ -2938,7 +2938,7 @@ function addTicketTlHelp() {
     }
 }
 
-function attendantTLBtnHandler(btn) {
+function tlHelpButtonHandler(btn) {
     // проверка на статус тикета
     var statusText = getTicketStatusText();
     if (statusText !== 'открытое' && statusText !== 'на удержании') {
@@ -3017,7 +3017,7 @@ function setInternalNoteMode(btn) {
             const teamLeadName = btn.dataset.fullname;
             const list = $(commentForm).find('.helpdesk-select-typeahead-dropdown-list');
             const item = $(list).find(`.helpdesk-select-typeahead-dropdown-item:contains(${teamLeadName})`);
-			showAttendantTlNotification();
+			showTlHelpNotification();
 			
             if (!item.length) {
                 setTimeout(function() {
@@ -3031,6 +3031,7 @@ function setInternalNoteMode(btn) {
 			
 			var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 			$(openAnswerInput).unbind('click').click(function() {
+                console.log('test');
 				if (!$(btn).hasClass('ah-active-btn')) return;
 				$(btn).toggleClass('ah-active-btn');
 				$('#attendant-tl-notification').remove();
@@ -3041,7 +3042,7 @@ function setInternalNoteMode(btn) {
         }, 10);
     }, 10);
 }
-function showAttendantTlNotification() {
+function showTlHelpNotification() {
     $('#attendant-tl-notification').remove();
 
     var detailsPanel = $('.helpdesk-details-panel');
@@ -3066,7 +3067,7 @@ function showAttendantTlNotification() {
     $(notifBlock).fadeIn(100);
 }
 
-function checkAdmUserIdAttendantTL($btn) {
+function checkAdmUserIdTlHelp($btn) {
     if (!$btn.data('admUserId')) {
 		$('#ah-loading-layer').hide();
         const holder = document.querySelector('.ah-tl-help');
@@ -3078,10 +3079,10 @@ function checkAdmUserIdAttendantTL($btn) {
         return;
     }
 	
-	addTagAttendantTL($btn);
+	addTagTLlHelp($btn);
 }
 
-function addTagAttendantTL($btn) {
+function addTagTLlHelp($btn) {
 	var currentYOffset = window.pageYOffset;
     let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
