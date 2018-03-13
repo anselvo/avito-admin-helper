@@ -124,28 +124,35 @@ function getTagsInfo() {
     );
 }
 
-// инфа обо всех пользователях global.allUsersInfo
+// инфа обо всех пользователях global.allUsersInfo.list
 function getAllUsers() {
     chrome.runtime.sendMessage({
-        action: 'XMLHttpRequest',
-        method: "GET",
-        url: `${global.connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
-    },
-            function (response) {
-                try {
-                    var jsonParse = JSON.parse(response);
-                } catch (e) {
-                    global.allUsersInfo = 'FatalError';
-                    showAgentInfoTicket();
-                    return;
-                }
-
-                global.allUsersInfo = jsonParse.table;
-
-                // первый раз запуск после загузки страницы
+            action: 'XMLHttpRequest',
+            method: "GET",
+            url: `${global.connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
+        },
+        function (response) {
+            let jsonParse;
+            try {
+                jsonParse = JSON.parse(response);
+            } catch (e) {
+                global.allUsersInfo.fail = true;
+                global.allUsersInfo.isLoading = false;
                 showAgentInfoTicket();
-                showAgentInfoQueue();
+                addTicketTlHelp();
+                return;
             }
+
+            global.allUsersInfo.list = jsonParse.table;
+            global.allUsersInfo.isLoading = false;
+
+            // первый раз запуск после загузки страницы
+            showAgentInfoTicket();
+            showAgentInfoQueue();
+
+            // Помощь ТЛ
+            addTicketTlHelp();
+        }
     );
 }
 

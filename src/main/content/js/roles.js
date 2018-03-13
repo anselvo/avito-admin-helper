@@ -86,9 +86,9 @@ function handleRoles() {
             roleHandler.helpdeskCreateTicketBtn();
         }
 
-        // операции с тикетом (дежурный тим, классификация)
-        if (isAuthority('ROLE_HELPDESK_CONTROL_TOOLS')) {
-            roleHandler.helpdeskControlTools();
+        // помощь ТЛ
+        if (isAuthority('ROLE_HELPDESK_TL_HELP')) {
+            roleHandler.helpdeskTlHelp();
         }
 
         // элементы в тайтле тикета
@@ -646,8 +646,8 @@ RoleHandler.prototype.helpdeskEmployeeLabel = function() {
     showAgentInfoTicket();
 };
 
-RoleHandler.prototype.helpdeskControlTools = function() {
-    addTicketControlTools();
+RoleHandler.prototype.helpdeskTlHelp = function() {
+    addTicketTlHelp();
 };
 
 RoleHandler.prototype.helpdeskTicketTitleTools = function() {
@@ -734,12 +734,12 @@ RoleHandler.prototype.helpdeskQueueEmployeeLabels = function() {
 };
 
 RoleHandler.prototype.helpdeskTlHelpHold = function() {
-    const $btn = $('#ah-attendant-tl-btn');
+    const $btn = $('#ah-tl-help-btn');
     if ($btn.hasClass('ah-active-btn')) {
         $('#ah-loading-layer').show();
 
         helpdeskLoadingEnd().
-            then(() => checkAdmUserIdAttendantTL(),
+            then(() => checkAdmUserIdTlHelp($btn),
                 error => {
                     alert(`Error:\n${error}`);
                     $('#ah-loading-layer').hide();
@@ -748,7 +748,7 @@ RoleHandler.prototype.helpdeskTlHelpHold = function() {
 };
 
 RoleHandler.prototype.helpdeskTlHelpComment = function() {
-    const $btn = $('#ah-attendant-tl-btn');
+    const $btn = $('#ah-tl-help-btn');
     // проверка на статус тикета - только для онхолдов
     const statusText = getTicketStatusText();
     if (statusText === 'на удержании') {
@@ -756,7 +756,7 @@ RoleHandler.prototype.helpdeskTlHelpComment = function() {
             $('#ah-loading-layer').show();
 
             helpdeskLoadingEnd().
-                then(() => checkAdmUserIdAttendantTL(),
+                then(() => checkAdmUserIdTlHelp($btn),
                     error => {
                         alert(`Error:\n${error}`);
                         $('#ah-loading-layer').hide();

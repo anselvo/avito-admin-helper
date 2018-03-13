@@ -22,8 +22,8 @@ function showAgentInfoQueue() {
         let assigneeNameBlock = $(row).find('td:last');
         let assigneeNameText = $(assigneeNameBlock).find('span').attr('title');
         
-        for (var i = 0; i < global.allUsersInfo.length; i++) {
-            let user = global.allUsersInfo[i];
+        for (var i = 0; i < global.allUsersInfo.list.length; i++) {
+            let user = global.allUsersInfo.list[i];
             let agentFullName = user.name.replace(/(^ | $)/g, '') 
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             if (assigneeNameText === agentFullName) {

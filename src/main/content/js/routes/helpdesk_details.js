@@ -2830,51 +2830,116 @@ function changeAssignee() {
 }
 //+++++++++++ Смена ассигни +++++++++++//
 
-function addTicketControlTools() {
-    $('#ah-ticket-control-tools-container').remove();
-
-    $('.helpdesk-side-panel-setting-checkbox').after('<div id="ah-ticket-control-tools-container" style=""><div class="ah-clearfix"></div></div>');
-
-    addSmiles();
-
-    attendantTL();
-}
-
-//---------- смайлы (пользователь похвалил или наругал нас) ----------//
-function addSmiles() {
-    $('#ah-ticket-control-tools-container').prepend('<div class="ah-class-ticket-container" style=""><b style="vertical-align : middle; line-height : 1; font-size : 13px; font-weight : 500; color : #959595;">Классифицировать: </b></div>');
-
-    $('div.ah-class-ticket-container').append('<input type="button" class="ah-default-btn ah-img-btn" id="ah-smile-btn-up" style="margin: 0; border-radius: 0;" title="Положительный тикет от пользователя - нас похвалили за что-то" data-tag-id="1000" data-tag-name="user_joy">');
-    $('div.ah-class-ticket-container').append('<input type="button" class="ah-default-btn ah-img-btn" id="ah-smile-btn-down" style="margin: 0; border-radius: 0;" title="Отрицательный тикет от пользователя - нас поругали за что-то" data-tag-id="999" data-tag-name="user_pain">');
-
-    $('input[id^="sh-smile-btn"]').click(function() {
-		$('#ah-loading-layer').show();
-        checkTagInTicket($(this).data('tagId'));
-    });
-}
-
-//++++++++++ смайлы (пользователь похвалил или наругал нас) ++++++++++//
-
 //---------- дежурный тимлид ----------//
-function attendantTL() {
-	 $('#attendant-tl-notification').remove();
-	 
-    $('#ah-ticket-control-tools-container').prepend('<button type="button" class="ah-default-btn ah-btn-small ah-attendant-tl-btn" style="" id="ah-attendant-tl-btn" title="Отправка обращения дежурному тимлидеру">Помощь ТЛ </button>');
-
-	var commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
-	var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
-	$(openAnswerInput).unbind('click');
-	
-    $('#ah-attendant-tl-btn').click(function() {
-        attendantTLBtnHandler($(this));
+function addTicketTlHelp() {
+    const existing = [
+        document.querySelector('.ah-tl-help'),
+        document.getElementById('attendant-tl-notification')
+    ];
+    existing.forEach(node => {
+        if (node) node.remove();
     });
+
+    const leaderInfo = global.userInfo.leader;
+    if (!leaderInfo) return;
+
+    const agentTlFullName = getTlFullName(leaderInfo.name, leaderInfo.surname);
+    const agentTlAdmUserId = leaderInfo.adm_user_id;
+
+    const holder = document.createElement('div');
+    holder.className = 'ah-tl-help';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-default btn-sm ah-tl-help__btn';
+    button.id = 'ah-tl-help-btn';
+    button.setAttribute('data-fullname', agentTlFullName);
+    button.setAttribute('data-adm-user-id', agentTlAdmUserId);
+    button.innerHTML = `Помощь ТЛ <span class=" text-muted ah-tl-help__current-tl">(${agentTlFullName})</span>`;
+
+    const list = document.createElement('ul');
+    list.className = 'dropdown-menu dropdown-menu-right ah-tl-help__list';
+
+    if (global.allUsersInfo.isLoading) {
+        list.innerHTML = `<li class="text-muted text-center">Загрузка...</li>`;
+    } else if (global.allUsersInfo.fail) {
+        list.innerHTML = `<li  class="text-danger text-center">Не удалось загрузить список ТЛ</li>`;
+    } else if (global.allUsersInfo.list.length > 0) {
+        list.innerHTML = global.allUsersInfo.list.reduce((html, user) => {
+            if (user.position_id === '882f3674-081a-4962-b34c-0b5bf67fc391' && // Саппортские лиды
+                user.adm_user_id &&
+                user.adm_user_id !== agentTlAdmUserId) {
+
+                const tlFullName = getTlFullName(user.name, user.surname);
+
+                html += getListItem(tlFullName, user.adm_user_id);
+            }
+
+            return html;
+        }, '');
+
+        list.insertAdjacentHTML('afterbegin', `
+            ${getListItem(agentTlFullName, agentTlAdmUserId)}
+            <li class="divider ah-tl-help__list-divider"></li>
+        `);
+    }
+
+    holder.innerHTML = `
+        <div class="btn-group ah-tl-help__btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle ah-tl-help__dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Выбор</span>
+                <span class="caret"></span>
+            </button>
+        </div>
+    `;
+    const holderButtonGroup = holder.firstElementChild;
+    holderButtonGroup.insertAdjacentElement('afterbegin', button);
+    holderButtonGroup.appendChild(list);
+
+    const sidePanelCheckbox = document.querySelector('.helpdesk-side-panel-setting-checkbox');
+    if (sidePanelCheckbox) sidePanelCheckbox.after(holder);
+
+    const commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
+    const openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
+    $(openAnswerInput).unbind('click');
+
+    holder.addEventListener('click', e => {
+        const target = e.target;
+
+        if (target.closest('#ah-tl-help-btn')) {
+            const btn = target.closest('#ah-tl-help-btn');
+            tlHelpButtonHandler(btn);
+        }
+
+        if (target.closest('.ah-tl-help__list-item')) {
+            const item = target.closest('.ah-tl-help__list-item');
+            const [ tlFullName, tlAdmUserId ] = [item.dataset.fullname, +item.dataset.admUserId];
+            const currentTlNode = holder.querySelector('.ah-tl-help__current-tl');
+            currentTlNode.innerHTML = `(${tlFullName})`;
+            button.setAttribute('data-fullname', tlFullName);
+            button.setAttribute('data-adm-user-id', tlAdmUserId);
+        }
+    });
+
+    function getTlFullName(name, surname) {
+        return `${name} ${surname}`;
+    }
+
+    function getListItem(tlFullName, tlAdmUserId) {
+        return `
+            <li>
+                <a class="ah-tl-help__list-item" data-fullname="${tlFullName}" 
+                data-adm-user-id="${tlAdmUserId}">${tlFullName}</a>
+            </li>
+        `;
+    }
 }
 
-function attendantTLBtnHandler(btn) {
+function tlHelpButtonHandler(btn) {
     // проверка на статус тикета
     var statusText = getTicketStatusText();
-    if (statusText != 'открытое' && statusText != 'на удержании') {
-        alert('Для отправки обращения дежурному тимлидеру статус обращения должен быть "открытое" или "на удержании"');
+    if (statusText !== 'открытое' && statusText !== 'на удержании') {
+        alert('Для отправки обращения тимлидеру статус обращения должен быть "открытое" или "на удержании"');
         return;
     }
 	
@@ -2882,7 +2947,7 @@ function attendantTLBtnHandler(btn) {
 	var commentsToggleBlock = $('.helpdesk-ticket-comments-toggle');
     var input = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 	if ($(input).prop('disabled')) {
-		alert('Для отправки обращения дежурному тимлидеру Вы долджны быть назначены в качестве Исполнителя');
+		alert('Для отправки обращения тимлидеру Вы долджны быть назначены в качестве Исполнителя');
         return;
 	}
 
@@ -2892,14 +2957,19 @@ function attendantTLBtnHandler(btn) {
         alert('Пожалуйста, перейдите во вкладку "Параметры" и повторите попытку');
         return;
     }
+
+    const holder = document.querySelector('.ah-tl-help');
+    const dropdownToggle = holder.querySelector('.dropdown-toggle');
 	
     if (!$(btn).hasClass('ah-active-btn')) {
-        $('#ah-loading-layer').show();
-        getAttendantTL(btn);
+        setInternalNoteMode(btn);
+
+        dropdownToggle.disabled = true;
     } else {
         $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
-		outTextFrame('Отключен режим отправки обращения дежурному тимлидеру');
+		outTextFrame('Отключен режим отправки обращения тимлидеру');
+        dropdownToggle.disabled = false;
 		
 		var receiverField = $('.helpdesk-comment-holder .helpdesk-select-typeahead');
 		var receiverClear = $(receiverField).find('.close');
@@ -2909,47 +2979,6 @@ function attendantTLBtnHandler(btn) {
     }
 }
 
-function getAttendantTL(btn) {
-    chrome.runtime.sendMessage({
-            action: 'XMLHttpRequest',
-            method: "GET",
-            url: `${global.connectInfo.ext_url}/support_helper/attendant_tl/getTL.php?login=`+ global.userInfo.subdivision.teamlead_login,
-        },
-
-        function(response) {
-            global.attendantTlInfo = {};
-            $('#ah-loading-layer').hide();
-            if (response == 'error') {
-                setTimeout(function() {
-                    alert('Произошла техническая ошибка.');
-                }, 100);
-                return;
-            }
-			
-			if (response == '') {
-                setTimeout(function() {
-                    alert('Не удалось определить вашего тимлидера.');
-                }, 100);
-                return;
-            }
-			
-            try {
-                var response = JSON.parse(response);
-            } catch(e) {
-                setTimeout(function() {
-                    alert('Произошла техническая ошибка.\n'+ e);
-                }, 100);
-                return;
-            }
-			
-            global.attendantTlInfo = response;
-			// console.log(global.attendantTlInfo);
-			
-            setInternalNoteMode(btn);
-        }
-    );
-}
-
 function setInternalNoteMode(btn) {
     $(btn).toggleClass('ah-active-btn');
 
@@ -2957,11 +2986,14 @@ function setInternalNoteMode(btn) {
     var input = $(commentsToggleBlock).find('[name="type-selector"][value="3"]');
     var label = $(input).parent('label');
 
+    const holder = document.querySelector('.ah-tl-help');
+    const dropdownToggle = holder.querySelector('.dropdown-toggle');
+
     if (!label.length) {
         alert('Ошибка: не удалось переключиться в режим внутреннего примечания.');
         $(btn).toggleClass('ah-active-btn');
         $('#attendant-tl-notification').remove();
-		global.attendantTlInfo = {};
+        dropdownToggle.disabled = false;
         return;
     }
     $(label).click();
@@ -2973,21 +3005,20 @@ function setInternalNoteMode(btn) {
             alert('Ошибка: не удалось выбрать тимлидера в качестве адресата.');
             $(btn).toggleClass('ah-active-btn');
             $('#attendant-tl-notification').remove();
-			global.attendantTlInfo = {};
+            dropdownToggle.disabled = false;
             return;
         }
         $(usersSelect).click();
 
         setTimeout(() => {
-            var teamLeadName = global.attendantTlInfo.name +' '+ global.attendantTlInfo.surname;
-            var list = $(commentForm).find('.helpdesk-select-typeahead-dropdown-list');
-            var item = $(list).find('.helpdesk-select-typeahead-dropdown-item:contains('+ teamLeadName +')');
-            var value = $(commentForm).find('.helpdesk-select-typeahead-value div');
-			showAttendantTlNotification();
+            const teamLeadName = btn.dataset.fullname;
+            const list = $(commentForm).find('.helpdesk-select-typeahead-dropdown-list');
+            const item = $(list).find(`.helpdesk-select-typeahead-dropdown-item:contains(${teamLeadName})`);
+			showTlHelpNotification();
 			
             if (!item.length) {
                 setTimeout(function() {
-                    alert('Не удалось найти тимлидера "'+ teamLeadName +'" в списке получателей внутреннего примечания.\nЕсли данный тимлидер еще не назначен получателем, пожалуйста, сделайте это вручную.');
+                    alert(`Не удалось найти тимлидера "${teamLeadName}" в списке получателей внутреннего примечания.\nЕсли данный тимлидер еще не назначен получателем, пожалуйста, сделайте это вручную.`);
                     $(usersSelect).click();
                 }, 100);
                 return;
@@ -2997,16 +3028,18 @@ function setInternalNoteMode(btn) {
 			
 			var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 			$(openAnswerInput).unbind('click').click(function() {
+                console.log('test');
 				if (!$(btn).hasClass('ah-active-btn')) return;
 				$(btn).toggleClass('ah-active-btn');
 				$('#attendant-tl-notification').remove();
-				outTextFrame('Отключен режим отправки обращения дежурному тимлидеру');
+                dropdownToggle.disabled = false;
+				outTextFrame('Отключен режим отправки обращения тимлидеру');
 			});
 			
         }, 10);
     }, 10);
 }
-function showAttendantTlNotification() {
+function showTlHelpNotification() {
     $('#attendant-tl-notification').remove();
 
     var detailsPanel = $('.helpdesk-details-panel');
@@ -3015,14 +3048,14 @@ function showAttendantTlNotification() {
     var notifBody;
     switch (ticketStatus) {
         case 'открытое':
-            notifBody = '<b>Включен режим отправки обращения дежурному тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "На удержании". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>agent_help</i>.<br>Изменять получателя внутреннего примечания не нужно.';
+            notifBody = '<b>Включен режим отправки обращения тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "На удержании". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>agent_help</i>.<br>Изменять получателя внутреннего примечания не нужно.';
             break;
         case 'на удержании':
-            notifBody = '<b>Включен режим отправки обращения дежурному тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "Отправить". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>agent_help</i>.<br>Изменять получателя внутреннего примечания не нужно.';
+            notifBody = '<b>Включен режим отправки обращения тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "Отправить". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>agent_help</i>.<br>Изменять получателя внутреннего примечания не нужно.';
             break;
 
         default:
-            notifBody = '<b>Включен режим отправки обращения дежурному тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "На удержании", если статус тикета "Открытый", или кнопку "Отправить", если статус тикета "На удержании". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>"agent_help"</i>.<br>Изменять получателя внутреннего примечания не нужно.';
+            notifBody = '<b>Включен режим отправки обращения тимлидеру.</b><br>Напишите внутреннее примечание для тимлидера, и нажмите кнопку "На удержании", если статус тикета "Открытый", или кнопку "Отправить", если статус тикета "На удержании". После этого в обращении автоматически поменяется Исполнитель и проставится служебный тег <i>"agent_help"</i>.<br>Изменять получателя внутреннего примечания не нужно.';
             break;
     }
     $(detailsPanel).before('<div id="attendant-tl-notification" class="ah-sh-helpdesk-notification ah-alert-warning"></div>');
@@ -3031,20 +3064,22 @@ function showAttendantTlNotification() {
     $(notifBlock).fadeIn(100);
 }
 
-function checkAdmUserIdAttendantTL() {
-    var teamLeadName = global.attendantTlInfo.name +' '+ global.attendantTlInfo.surname;
-    if (!global.attendantTlInfo.adm_user_id) {
+function checkAdmUserIdTlHelp($btn) {
+    if (!$btn.data('admUserId')) {
 		$('#ah-loading-layer').hide();
+        const holder = document.querySelector('.ah-tl-help');
+        const dropdownToggle = holder.querySelector('.dropdown-toggle');
+        dropdownToggle.disabled = false;
 		setTimeout(() => {
-			alert('Не удалось назначить тимлидера "'+ teamLeadName +'" в качестве исполнителя. Пожалуйста, сообщите о данной ошибке вашему тимлидеру.');
+			alert(`Не удалось назначить тимлидера "${$btn.data('fullname')}" в качестве исполнителя. Пожалуйста, сообщите о данной ошибке вашему тимлидеру.`);
 		}, 100);
         return;
     }
 	
-	addTagAttendantTL();
+	addTagTLlHelp($btn);
 }
 
-function addTagAttendantTL() {
+function addTagTLlHelp($btn) {
 	var currentYOffset = window.pageYOffset;
     let allPanelHeaders = getHdLeftPanelHeaders();
     let classifHeader = [].find.call(allPanelHeaders, singleItem => singleItem.firstChild.data === 'Классификация');
@@ -3062,7 +3097,7 @@ function addTagAttendantTL() {
 		newInput.value = 1251; // agent_help
         existingTags[0].parentNode.appendChild(newInput);
 
-		var admUserId = global.attendantTlInfo.adm_user_id;
+		const admUserId = $btn.data('admUserId');
 		addExtraAssigneeId(admUserId);
 			
 	    document.querySelector('.helpdesk-click-fog').click();
@@ -3544,7 +3579,7 @@ function showAgentInfoTicket() {
         claimReevaluation();
         return;
     }
-    if (global.allUsersInfo === 'FatalError') {
+    if (global.allUsersInfo.fail) {
         $(assigneeBlockSpan).before('<span id="ah-line-sup" style=""><span class="label" title="Произошла техническая ошибка"  style="color: #d9534f; padding: 0; font-weight: 700;">Er</span></span> ');
         return;
     }
@@ -3557,8 +3592,8 @@ function showAgentInfoTicket() {
         return;
     }
     
-    for (var i = 0; i < global.allUsersInfo.length; i++) {
-        let user = global.allUsersInfo[i];
+    for (var i = 0; i < global.allUsersInfo.list.length; i++) {
+        let user = global.allUsersInfo.list[i];
         if (user.username == currentLogin[0]) {
             // console.log(user);
             let teamleadLogin = user.teamlead_login;
@@ -3579,8 +3614,8 @@ function showAgentInfoTicket() {
             return;
         }
         
-        for (var i = 0; i < global.allUsersInfo.length; i++) {
-            let user = global.allUsersInfo[i];
+        for (var i = 0; i < global.allUsersInfo.list.length; i++) {
+            let user = global.allUsersInfo.list[i];
             let userFullName = user.name.replace(/(^ | $)/g, '') 
                     +' '+ user.surname.replace(/(^ | $)/g, '');
             

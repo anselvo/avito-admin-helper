@@ -26,8 +26,10 @@ const global = {
     // globals from support helper
     existGlobal: null,
     hdSettings: {}, // настройки (теги, проблемы в HD)
-    attendantTlInfo: {}, // дежурный тимлид
-    allUsersInfo: [], // инфомрация о всех юзерах
+    allUsersInfo: { // инфомрация о всех юзерах
+        isLoading: true,
+        list: []
+    },
     // globals from moderator helper
     beforeId: 0,
     comparePhotoLoadItemsCount: null,
