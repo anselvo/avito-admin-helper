@@ -1029,12 +1029,18 @@ ShopModeration.prototype.addBrief = function () {
             const userInfo = getParamsUserInfo($(response));
             renderCompanyInfo(userInfo);
             renderPersonalManagerEdit(userInfo);
+            renderOfficialDealer(userInfo);
         }, error => {
             companyInfo.innerHTML = `
                 <table class="ah-shop-moderation-info-table">
                 <caption>Информация о компании</caption>
                     <tr><td class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</td></tr>
                 </table>
+            `;
+
+            const officialDealerCell = fieldsInfo.querySelector('.ah-official-dealer-cell');
+            officialDealerCell.innerHTML = `
+                <span class="text-danger">Произошла ошибка: ${error.status}<br>${error.statusText}</span>
             `;
         });
 
@@ -1103,6 +1109,10 @@ ShopModeration.prototype.addBrief = function () {
                         <span class="glyphicon glyphicon-copy ah-copy-btn" data-copy="${userEmail}" 
                             title="Скопировать E-mail пользователя"></span>
                     </td>
+                </tr>
+                <tr>
+                    <td>Официальный диллер</td>
+                    <td class="ah-official-dealer-cell"><span class="text-muted">Загрузка...</span></td>
                 </tr>
             </table>
         `;
@@ -1184,6 +1194,30 @@ ShopModeration.prototype.addBrief = function () {
                 </span>
             </div>
         `;
+    }
+
+    function renderOfficialDealer(user) {
+        const cell = fieldsInfo.querySelector('.ah-official-dealer-cell');
+        let result = '';
+
+        switch (user.dealerUntil) {
+            case null:
+                result = `<i class="text-muted">Поле отсутствует</i>`;
+                break;
+
+            case '':
+                result = `<span class="glyphicon glyphicon-remove text-danger"></span> Нет`;
+                break;
+
+            default:
+                result = `
+                    <span class="glyphicon glyphicon-ok text-success"></span> Да
+                    <span class="text-muted">(до ${user.dealerUntil})</span>
+                `;
+                break;
+        }
+
+        cell.innerHTML = result;
     }
 
     function renderKeyWords(regs) {

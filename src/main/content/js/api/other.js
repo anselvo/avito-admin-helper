@@ -956,6 +956,8 @@ function getParamsUserInfo(node) {
     const $companyInfoForm = $searchNode.find('#company-info');
     const $persManagerSelect = $searchNode.find('.js-user-info-personal-manager-select');
 
+    const $dealerUntilInput = $searchNode.find('#dealerUntil');
+
     const res = {};
 
     res.id = $searchNode.find('a[data-user-id]').data('userId');
@@ -1017,6 +1019,8 @@ function getParamsUserInfo(node) {
             })
         });
     }
+
+    res.dealerUntil = ($dealerUntilInput.length === 0) ? null : $dealerUntilInput.val();
 
     return res;
 }
