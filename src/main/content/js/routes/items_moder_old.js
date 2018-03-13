@@ -116,13 +116,27 @@ function comparePhotoPre() {
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
-        var item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
-        var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
+        const item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
+        const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
+        photoSelector.slice(i, i+1).after($pseudoLink);
     }
 
-    clickComparePhoto();
+    $('.ah-comparePhotoPre').click(function () {
+        const items = {};
+        items.abutment = $(this).attr('item1id');
+        items.compared = JSON.parse($(this).attr('item2id'));
+
+        btnLoaderOn(this);
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(this));
+    });
 }
 
 function comparePhotoPreNew() {
@@ -131,13 +145,27 @@ function comparePhotoPreNew() {
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
-        var item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
-        var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
+        const item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
+        const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
+        photoSelector.slice(i, i+1).after($pseudoLink);
     }
 
-    clickComparePhoto();
+    $('.ah-comparePhotoPre').click(function () {
+        const items = {};
+        items.abutment = $(this).attr('item1id');
+        items.compared = JSON.parse($(this).attr('item2id'));
+
+        btnLoaderOn(this);
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(this));
+    });
 }
 
 function comparePhotoPost() {
@@ -146,20 +174,37 @@ function comparePhotoPost() {
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
-        var item1id = photoSelector.slice(i, i+1).parents('tr').attr('data-id');
-        var item2id = photoSelector.slice(i, i+1).attr('href').split('/')[6];
+        const item1id = photoSelector.slice(i, i+1).parents('tr').attr('data-id');
+        const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        photoSelector.slice(i, i+1).before(' <span class="ah-comparePhotoPre pseudo-link" item1id="'+item1id+'" item2id="'+item2id+'">&#128247</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
+        photoSelector.slice(i, i+1).after($pseudoLink);
     }
 
-    clickComparePhoto();
+    $('.ah-comparePhotoPre').click(function () {
+        const items = {};
+        items.abutment = $(this).attr('item1id');
+        items.compared = JSON.parse($(this).attr('item2id'));
+
+        btnLoaderOn(this);
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(this));
+    });
 }
 
+/**
+ * изменения в админке привели к некорректной работе функционала
+ * @deprecated*/
 function clickComparePhoto() {
     $('.ah-comparePhotoPre').click(function () {
         global.comparePhotoLoadItemsCount = 0;
-        var item1id = $(this).attr('item1id');
-        var item2id = $(this).attr('item2id');
+        const item1id = $(this).attr('item1id');
+        const item2id = $(this).attr('item2id');
 
         $('body').append('<div id="ah-comparePhotoBackground"><div id="ah-comparePhotoWindow"><div id="comparePhotoItems"><div id="ah-comparePhotoItem1"></div><div id="ah-comparePhotoItem2"></div></div><div id="ah-comparePhotoButton"></div></div></div>');
         $('#ah-comparePhotoWindow').append('<div class="ah-comparePhotoLoadingWindow"></div>');
