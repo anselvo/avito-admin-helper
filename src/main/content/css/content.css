@@ -1574,10 +1574,9 @@ span.ah-words-separator {
     padding: 0 !important;
 }
 
-/* Compare Photo Pre */
-.ah-comparePhotoPre {
+.ah-comparePhotoPre-wrapper {
+    margin-left: 2px;
     font-size: 14px;
-    margin-right: 2px;
 }
 
 #ah-comparePhotoBackground {
