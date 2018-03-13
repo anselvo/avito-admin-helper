@@ -430,7 +430,7 @@ function ShopInfoIndicators(options) {
     this.getRePremiumInfo = function() {
         let res = {};
         res.isFired = !!(params.subscription
-            && ~params.subscription.vertical.indexOf('Realty')
+            && /realty|недвижимость/i.test(params.subscription.vertical)
             && ~params.subscription.tariffPlan.indexOf('Золото')
             && ~params.subscription.status.indexOf('Оплачено'));
         return res;
