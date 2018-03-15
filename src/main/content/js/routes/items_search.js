@@ -216,11 +216,12 @@ function addChooseButton() {
 			.css('padding', '5px')
 			.after('<hr class="ah-separate-line">')
 			.append('<input type="button" userid="' + id + '" class="ah-postBlockButton ah-postPlus" value="+">')
-            .append('<br><span  class="ah-post-userAgent" title="User chance">' +
-                '<b>Chance:</b> ' +
+            .append('<div class="ah-post-userAgent" title="User chance">' +
+                '<b>Шанс:</b> ' +
                 '<span ah-post-block-chance="'+id+'" style="color:#65a947">?</span>/<span style="color:red;">10</span>' +
                 '<span ah-post-block-chance-time="'+id+'"></span>' +
-                '</span>');
+                '</div>')
+            .append(`<div><b>Статус: </b><span ah-post-block-status="${id}"></span></div>`);
 
         $(loginList[i])
             .parents('tr')

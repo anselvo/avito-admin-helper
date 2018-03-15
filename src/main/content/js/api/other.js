@@ -963,6 +963,7 @@ function getParamsUserInfo(node) {
     res.id = $searchNode.find('a[data-user-id]').data('userId');
     res.mail = $searchNode.find('.js-fakeemail-field').text();
     res.chance = ($chanceId) ? +$chanceId.replace(/\D/g, '') : null;
+    res.chanceTime = $searchNode.find('.form-group:contains(Chance) b').text() || null;
     res.status = $statusLabel.next().find('b:eq(0)').text() || $statusLabel.next().text().trim();
     res.blockReasons = ($blockReasonLabel.next().length !== 0) ? $blockReasonLabel.next().text().split(', ').map(item => item.trim()) : null;
     res.regTime = $regTimeLabel.next().text();

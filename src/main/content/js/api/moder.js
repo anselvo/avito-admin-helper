@@ -501,32 +501,28 @@ function postBlockReasonList(reasonId) {
 // запрос на отображения информации о юзере для большого кол-ва
 
 function usersInfoForItems() {
-    let list = $('[userAgent]');
+    const userAgentSelector = document.querySelectorAll('[userAgent]');
+    const map = [].map.call(userAgentSelector, selector => selector.getAttribute('useragent'));
+    const userSet = new Set(map);
 
-    for (let i = 0; i < list.length; i++) {
-        let id = $(list[i]).attr('useragent');
-
+    for (let id of userSet.keys()) {
         usersInfoForManyItems(id);
     }
 }
 
 function usersInfoForManyItems(id) {
-    let href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
-    let request = new XMLHttpRequest();
+    const href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
+    const request = new XMLHttpRequest();
     request.open("GET", href, true);
     request.send(null);
     request.onreadystatechange=function() {
         if (request.readyState === 4 && request.status === 200)  {
-            let r = request.responseText;
+            const json = getParamsUserInfo(request.responseText);
 
-            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения) .help-block').text();
-            let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
-            let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
-            let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
-
-            $('[ah-post-block-chance="'+id+'"]').text(chance);
-            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.ah-post-userAgent').show();
-            $('[userAgent="'+id+'"]').text(userAgent).parents('.ah-post-userAgent').show();
+            $('[ah-post-block-chance="'+id+'"]').text(json.chance ? json.chance : 0);
+            $('[ah-post-block-status="'+id+'"]').text(json.status);
+            if (json.chanceTime) $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + json.chanceTime).parents('.ah-post-userAgent').show();
+            $('[userAgent="'+id+'"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
     };
 }

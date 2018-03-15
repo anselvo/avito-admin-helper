@@ -77,9 +77,6 @@ function premoderationsStart() {
 
     // Закрывание прежки
     closePre();
-
-    // убрать лишние категории для модеров
-    hideSubcategory();
 }
 
 
