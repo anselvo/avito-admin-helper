@@ -221,7 +221,10 @@ function addChooseButton() {
                 '<span ah-post-block-chance="'+id+'" style="color:#65a947">?</span>/<span style="color:red;">10</span>' +
                 '<span ah-post-block-chance-time="'+id+'"></span>' +
                 '</div>')
-            .append(`<div><b>Статус: </b><span ah-post-block-status="${id}"></span></div>`);
+            .append(`<div class="ah-post-userAgent">
+                        <div><b>Статус: </b><span ah-post-block-status="${id}"></span></div>
+                        <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}"></span></div>
+                        </div>`);
 
         $(loginList[i])
             .parents('tr')

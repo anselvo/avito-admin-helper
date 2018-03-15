@@ -521,6 +521,7 @@ function usersInfoForManyItems(id) {
 
             $('[ah-post-block-chance="'+id+'"]').text(json.chance ? json.chance : 0);
             $('[ah-post-block-status="'+id+'"]').text(json.status);
+            if (json.blockReasons) $('[ah-post-block-reason="'+id+'"]').text(json.blockReasons).parent().show();
             if (json.chanceTime) $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + json.chanceTime).parents('.ah-post-userAgent').show();
             $('[userAgent="'+id+'"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
