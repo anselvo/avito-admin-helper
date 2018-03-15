@@ -3138,7 +3138,7 @@ select.ah-form-control:focus {
     position: fixed;
     background: white;
     border: 1px solid #eeeeee;
-    width: 300px;
+    width: 250px;
     max-height: 300px;
     padding: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -3163,6 +3163,17 @@ select.ah-form-control:focus {
 
 .ah-postBlockReason {
     color: red;
+}
+
+.ah-postBlockModerComment input {
+    border: none;
+    border-bottom: 1px solid #777777;
+    padding: 3px;
+    outline: none;
+    color: #7e7e7e;
+    font-style: italic;
+    box-sizing: border-box;
+    width: 90%;
 }
 
 .ah-postClearList {

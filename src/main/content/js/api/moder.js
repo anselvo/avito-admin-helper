@@ -298,9 +298,10 @@ function addActionButton() {
 
     $('body')
         .append('<div class="ah-postBlockChoose ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активност</div>' +
+            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
+            '<div class="ah-post-block-users ah-postBlockModerComment"><i class="glyphicon glyphicon-pencil"></i> <input id="ah-post-block-comment" type="text" placeholder="доп. комментарий"></div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
@@ -471,9 +472,9 @@ function postBlockReasonList(reasonId) {
     if (reasonId === '91') reason = 'СПАМ';
     if (reasonId === '593') reason = 'ВЗЛОМ';
     if (reasonId === '128') reason = 'МОШЕННИК';
+    const moderComment = document.getElementById('ah-post-block-comment');
 
-
-    const comment = `${reason}
+    const comment = `${reason} ${moderComment.value ? '(' + moderComment.value + ')' : ''}
     Ссылка открытая модератором при блокировке:
     ${url}
     Ссылка на активного пользователя:
@@ -495,8 +496,6 @@ function postBlockReasonList(reasonId) {
     sessionStorage.postBlockID = '';
     sessionStorage.postBlockActiveUserID = '';
 }
-
-// МАССОВАЯ БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ
 
 // запрос на отображения информации о юзере для большого кол-ва
 
