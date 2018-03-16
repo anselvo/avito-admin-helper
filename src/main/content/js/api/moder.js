@@ -298,9 +298,10 @@ function addActionButton() {
 
     $('body')
         .append('<div class="ah-postBlockChoose ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активност</div>' +
+            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
             '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
+            '<div class="ah-post-block-users ah-postBlockModerComment"><i class="glyphicon glyphicon-pencil"></i> <input id="ah-post-block-comment" type="text" placeholder="доп. комментарий"></div>' +
             '</div>')
         .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
             '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
@@ -471,9 +472,9 @@ function postBlockReasonList(reasonId) {
     if (reasonId === '91') reason = 'СПАМ';
     if (reasonId === '593') reason = 'ВЗЛОМ';
     if (reasonId === '128') reason = 'МОШЕННИК';
+    const moderComment = document.getElementById('ah-post-block-comment');
 
-
-    const comment = `${reason}
+    const comment = `${reason} ${moderComment.value ? '(' + moderComment.value + ')' : ''}
     Ссылка открытая модератором при блокировке:
     ${url}
     Ссылка на активного пользователя:
@@ -496,37 +497,32 @@ function postBlockReasonList(reasonId) {
     sessionStorage.postBlockActiveUserID = '';
 }
 
-// МАССОВАЯ БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ
-
 // запрос на отображения информации о юзере для большого кол-ва
 
 function usersInfoForItems() {
-    let list = $('[userAgent]');
+    const userAgentSelector = document.querySelectorAll('[userAgent]');
+    const map = [].map.call(userAgentSelector, selector => selector.getAttribute('useragent'));
+    const userSet = new Set(map);
 
-    for (let i = 0; i < list.length; i++) {
-        let id = $(list[i]).attr('useragent');
-
+    for (let id of userSet.keys()) {
         usersInfoForManyItems(id);
     }
 }
 
 function usersInfoForManyItems(id) {
-    let href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
-    let request = new XMLHttpRequest();
+    const href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
+    const request = new XMLHttpRequest();
     request.open("GET", href, true);
     request.send(null);
     request.onreadystatechange=function() {
         if (request.readyState === 4 && request.status === 200)  {
-            let r = request.responseText;
+            const json = getParamsUserInfo(request.responseText);
 
-            let userAgent = $(r).find('.form-group:contains(User-Agent последнего посещения) .help-block').text();
-            let chanceTmp = $(r).find('.form-group:contains(Chance) .form-control-static .active').attr('id');
-            let chance = chanceTmp ? chanceTmp.replace('cval_', '') : '0';
-            let chanceTime = $(r).find('.form-group:contains(Chance) b').text();
-
-            $('[ah-post-block-chance="'+id+'"]').text(chance);
-            if (chanceTime !== '') $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + chanceTime).parents('.ah-post-userAgent').show();
-            $('[userAgent="'+id+'"]').text(userAgent).parents('.ah-post-userAgent').show();
+            $('[ah-post-block-chance="'+id+'"]').text(json.chance ? json.chance : 0);
+            $('[ah-post-block-status="'+id+'"]').text(json.status);
+            if (json.blockReasons) $('[ah-post-block-reason="'+id+'"]').text(json.blockReasons).parent().show();
+            if (json.chanceTime) $('[ah-post-block-chance-time="'+id+'"]').text(' - ' + json.chanceTime).parents('.ah-post-userAgent').show();
+            $('[userAgent="'+id+'"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
     };
 }

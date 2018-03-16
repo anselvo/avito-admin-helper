@@ -3138,7 +3138,7 @@ select.ah-form-control:focus {
     position: fixed;
     background: white;
     border: 1px solid #eeeeee;
-    width: 300px;
+    width: 250px;
     max-height: 300px;
     padding: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -3163,6 +3163,17 @@ select.ah-form-control:focus {
 
 .ah-postBlockReason {
     color: red;
+}
+
+.ah-postBlockModerComment input {
+    border: none;
+    border-bottom: 1px solid #777777;
+    padding: 3px;
+    outline: none;
+    color: #7e7e7e;
+    font-style: italic;
+    box-sizing: border-box;
+    width: 90%;
 }
 
 .ah-postClearList {
@@ -5270,4 +5281,17 @@ select.ah-form-control:focus {
 .btn.ah-led-button {
     background-color: rgb(255, 255, 0);
     box-shadow: rgb(128, 128, 2) 0px -1px 9px inset;
+}
+
+.ah-item-comparison-comment-status {
+    padding: 0 8px;
+    border-radius: 5px;
+    float: right;
+}
+
+.ah-vin-symbol-count {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 4px;
+    cursor: pointer;
 }

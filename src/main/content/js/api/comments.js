@@ -30,18 +30,29 @@ function linksOnComments(tableClass, currentUserID) {
 
         if (~commentText.indexOf('item_')) { // cron-dublicate on Item
             let text = commentText;
-            let ids = text.match(/\d+(?![\].])\b/g);
 
-            text = text.replace(/\d+(?![\].])\b/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
+            const regIds = /\d+(?![\].])\b/g;
+            const regIdsStatus = /\d+: \[[a-z]+](?![\].])/g;
 
-            if (ids.length <= 4) {
-                let link = `${global.connectInfo.adm_url}/items/comparison/${ids[0]}/archive?`;
-                for (let i = 1; i < ids.length; ++i) link += 'ids[]=' + ids[i] + '&';
+            const items = text.match(regIdsStatus).map(item => {
+                const obj = {};
+                obj.id = item.match(/\d+/)[0];
+                obj.status = item.match(/[a-z]+/)[0];
+                return obj;
+            });
 
-                text += ` <a class="glyphicon glyphicon-new-window" href="${link}"  style="margin-right: 4px;" target="_blank"></a>`;
-            }
+            text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
-            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${ids.join('|')}" target="_blank"></a>`;
+            let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${items[0].id}/archive?`;
+            const len = items.length < 4 ? items.length : 4;
+            for (let i = 0; i < len; ++i) itemComparison += `ids[]=${items[i].id}&${items[i].status}&`;
+
+            let itemSearch = items[0].id;
+            for (let i = 1; i < items.length; ++i) itemSearch += `|${items[i].id}`;
+
+            text += ` <a class="glyphicon glyphicon-new-window" href="${itemComparison}"  style="margin-right: 4px;" target="_blank"></a>`;
+
+            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${itemSearch}" target="_blank"></a>`;
 
             $(commentBlock).html(text);
         }

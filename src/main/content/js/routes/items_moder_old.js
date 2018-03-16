@@ -1,16 +1,14 @@
 
 function personalStatistics() {
-    // if (window.location.href.indexOf("helpdesk") + 1) return;
-
     $('body').append('<div id="ah-rightShotBar"></div>');
     $('#ah-rightShotBar').append('<div id="ah-personalStatistics"></div>');
-    $('#ah-personalStatistics').append('<div class="ah-statHide">Statistics</div>')
+    $('#ah-personalStatistics').append('<div class="ah-statHide">Статистика</div>')
         .append('<div class="ah-statShow" style="display:none;"></div>');
     $('.ah-statShow')
-        .append('<div class="ah-stat-block" style="color: #b62029">Users is blocked: <span id="ah-blockUserCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #c83daf">Items is blocked: <span id="ah-blockItemCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #e97899">Items is rejected: <span id="ah-rejectItemCount">0</span></div>')
-        .append('<div class="ah-stat-block" style="color: #4c8b46">Items is allowed: <span id="ah-allowAllCount">0</span></div>');
+        .append('<div class="ah-stat-block" style="color: #b62029"><i class="glyphicon glyphicon-user"></i> Заблокировано: <span id="ah-blockUserCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #c83daf"><i class="glyphicon glyphicon-file"></i> Заблокировано: <span id="ah-blockItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #e97899"><i class="glyphicon glyphicon-file"></i> Отклонено: <span id="ah-rejectItemCount">0</span></div>')
+        .append('<div class="ah-stat-block" style="color: #4c8b46"><i class="glyphicon glyphicon-file"></i> Пропущено: <span id="ah-allowAllCount">0</span></div>');
 
     chrome.storage.local.get(['mod_stat', 'currentDay'], function (result) {
         $('#ah-blockUserCount').text(result.mod_stat.blockUserCount);
@@ -79,9 +77,6 @@ function premoderationsStart() {
 
     // Закрывание прежки
     closePre();
-
-    // убрать лишние категории для модеров
-    hideSubcategory();
 }
 
 

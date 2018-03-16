@@ -378,13 +378,17 @@ function reservedOperation(route) {
             return;
 
         $(elem).hide();
-        addBindedWLLink(elem, toDay, route);
+        // addBindedWLLink(elem, toDay, route);
         $(elem).addClass('ah-table-background-highlight');
     });
 
     toggleReservedOperations(route); // переключатель отображения резервированных
 }
 
+/**
+ * Ломает отправку комментариев из Валет лога, функция удалено, до появления жалоб на необходимость данного функционала
+ * @deprecated
+ */
 function addBindedWLLink(elem, toDay, route) {
     var block, decrcText, operationId, newLinkText, dateStart;
 
@@ -963,6 +967,7 @@ function getParamsUserInfo(node) {
     res.id = $searchNode.find('a[data-user-id]').data('userId');
     res.mail = $searchNode.find('.js-fakeemail-field').text();
     res.chance = ($chanceId) ? +$chanceId.replace(/\D/g, '') : null;
+    res.chanceTime = $searchNode.find('.form-group:contains(Chance) b').text() || null;
     res.status = $statusLabel.next().find('b:eq(0)').text() || $statusLabel.next().text().trim();
     res.blockReasons = ($blockReasonLabel.next().length !== 0) ? $blockReasonLabel.next().text().split(', ').map(item => item.trim()) : null;
     res.regTime = $regTimeLabel.next().text();

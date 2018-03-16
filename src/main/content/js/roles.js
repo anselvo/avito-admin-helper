@@ -246,6 +246,9 @@ function handleRoles() {
     }
 
     // ITEM
+    if (isAuthority('ROLE_VIN_SYMBOL_COUNT')) { // показывает кол-во символов в VIN номере
+        roleHandler.itemVinSymbolCount();
+    }
     if (isAuthority('ROLE_ITEM_COPY_ITEM')) { // копирование айди и неймов айтемов
         roleHandler.itemCopyItem();
     }
@@ -775,6 +778,12 @@ RoleHandler.prototype.helpdeskCommentsIp = function() {
     parseIPInDetailsPanel(comments, className);
 };
 
+RoleHandler.prototype.itemVinSymbolCount = function() {
+    if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
+        vinSymbolCount();
+    }
+};
+
 RoleHandler.prototype.itemCopyItem = function() {
     if (global.admUrlPatterns.items_item_info.test(global.currentUrl)) {
         copyItemOnItemInfo();
@@ -886,6 +895,7 @@ RoleHandler.prototype.itemsComparisonComparisonElementsOld = function() {
 RoleHandler.prototype.itemsComparisonArchiveComparisonElements = function() {
     if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
         addComparisonInfo();
+        itemsStatusFromComments();
     }
 };
 
