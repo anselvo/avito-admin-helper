@@ -1,3 +1,27 @@
+function vinSymbolCount() {
+    const $vinFormGroupSelector = $('.form-group:contains(VIN или номер кузова)');
+    const $vinInputSelector = $vinFormGroupSelector.find('#flt_param_836');
+    const vin = $vinInputSelector.val();
+
+    let alert = 'ah-alert';
+    let title = '';
+    if (vin.length === 17) {
+        alert = 'ah-alert-success';
+        title = 'VIN - корректный\n';
+    }
+    if (vin.length < 17) {
+        alert = 'ah-alert-warning';
+        title += '- Недостаточное кол-во символов\n';
+    }
+    if (~vin.search(/i/i) || ~vin.search(/q/i) || ~vin.search(/o/i)) {
+        alert = 'ah-alert-danger';
+        title += '- Присутствую запрещеные символы: q, i, o\n';
+    }
+
+    $vinInputSelector.after(`<div class="ah-vin-symbol-count ${alert}" title="${title}">Символов: ${vin.length}</div>`);
+}
+
+
 // Добавление объявлений в базу данных
 function allowlist(currentUrl, agentLogin) {
     // var itemID = currentUrl.split('/');
@@ -19,7 +43,6 @@ function allowListtoJSONitem(agentID, itemID) {
             status : 'check',
             time : time
         };
-
 
         allowListSendLogServer(jsonItem);
 
