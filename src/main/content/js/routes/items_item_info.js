@@ -7,15 +7,15 @@ function vinSymbolCount() {
     let title = '';
     if (vin.length === 17) {
         alert = 'ah-alert-success';
-        title = 'VIN - корректный\n';
+        title += '- корректное кол-во символов\n';
     }
     if (vin.length < 17) {
         alert = 'ah-alert-warning';
-        title += '- Недостаточное кол-во символов\n';
+        title += '- недостаточное кол-во символов\n';
     }
     if (~vin.search(/i/i) || ~vin.search(/q/i) || ~vin.search(/o/i)) {
         alert = 'ah-alert-danger';
-        title += '- Присутствую запрещеные символы: q, i, o\n';
+        title += '- присутствую запрещеные символы: q, i, o\n';
     }
 
     $vinInputSelector.after(`<div class="ah-vin-symbol-count ${alert}" title="${title}">Символов: ${vin.length}</div>`);
