@@ -1,24 +1,26 @@
 function vinSymbolCount() {
     const $vinFormGroupSelector = $('.form-group:contains(VIN или номер кузова)');
-    const $vinInputSelector = $vinFormGroupSelector.find('#flt_param_836');
-    const vin = $vinInputSelector.val();
+    if ($vinFormGroupSelector.length > 0) {
+        const $vinInputSelector = $vinFormGroupSelector.find('#flt_param_836');
+        const vin = $vinInputSelector.val();
 
-    let alert = 'ah-alert';
-    let title = '';
-    if (vin.length === 17) {
-        alert = 'ah-alert-success';
-        title += '- корректное кол-во символов\n';
-    }
-    if (vin.length < 17) {
-        alert = 'ah-alert-warning';
-        title += '- недостаточное кол-во символов\n';
-    }
-    if (~vin.search(/i/i) || ~vin.search(/q/i) || ~vin.search(/o/i)) {
-        alert = 'ah-alert-danger';
-        title += '- присутствую запрещеные символы: q, i, o\n';
-    }
+        let alert = 'ah-alert';
+        let title = '';
+        if (vin.length === 17) {
+            alert = 'ah-alert-success';
+            title += '- корректное кол-во символов\n';
+        }
+        if (vin.length < 17) {
+            alert = 'ah-alert-warning';
+            title += '- недостаточное кол-во символов\n';
+        }
+        if (~vin.search(/i/i) || ~vin.search(/q/i) || ~vin.search(/o/i)) {
+            alert = 'ah-alert-danger';
+            title += '- присутствуют запрещеные символы: q, i, o\n';
+        }
 
-    $vinInputSelector.after(`<div class="ah-vin-symbol-count ${alert}" title="${title}">Символов: ${vin.length}</div>`);
+        $vinInputSelector.after(`<div class="ah-vin-symbol-count ${alert}" title="${title}">Символов: ${vin.length}</div>`);
+    }
 }
 
 
