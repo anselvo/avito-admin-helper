@@ -1,3 +1,33 @@
+function itemsStatusFromComments() {
+    const urlItems = global.currentUrl.match(/=\d+&[a-z]+&/g);
+
+    if (urlItems) {
+        const items = urlItems.map(item => {
+            const obj = {};
+            obj.id = item.match(/\d+/)[0];
+            obj.status = item.match(/[a-z]+/)[0];
+            obj.color = '#d2d2d2';
+
+            if (obj.status === 'alived' || obj.status === 'allowed') obj.color = '#a6dead';
+            if (obj.status === 'blocked') obj.color = '#f4a4a3';
+            if (obj.status === 'skipped') obj.color = '#f6d6a5';
+
+            return obj;
+        });
+
+        for (let i = 0; i < items.length; ++i) {
+            const divItemSelector = document.getElementsByClassName(`js-item-${items[i].id}`);
+
+            const itemStatus = document.createElement('span');
+            itemStatus.className = 'ah-item-comparison-comment-status';
+            itemStatus.style.background = items[i].color;
+            itemStatus.textContent = items[i].status;
+
+            divItemSelector[0].appendChild(itemStatus);
+        }
+    }
+}
+
 function copyItemIdsComparisonPage() {
     var table = $('.comparison-table');
     var itemTitles = $(table).find('.item-title');

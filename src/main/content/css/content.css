@@ -5282,3 +5282,9 @@ select.ah-form-control:focus {
     background-color: rgb(255, 255, 0);
     box-shadow: rgb(128, 128, 2) 0px -1px 9px inset;
 }
+
+.ah-item-comparison-comment-status {
+    padding: 0 8px;
+    border-radius: 5px;
+    float: right;
+}

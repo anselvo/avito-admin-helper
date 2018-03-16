@@ -886,6 +886,7 @@ RoleHandler.prototype.itemsComparisonComparisonElementsOld = function() {
 RoleHandler.prototype.itemsComparisonArchiveComparisonElements = function() {
     if (global.admUrlPatterns.items_comparison_archive.test(global.currentUrl)) {
         addComparisonInfo();
+        itemsStatusFromComments();
     }
 };
 

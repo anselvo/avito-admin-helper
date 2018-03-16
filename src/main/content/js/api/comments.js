@@ -43,9 +43,9 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
-            let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${items[0].id}/archive?${items[0].status}&`;
+            let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${items[0].id}/archive?`;
             const len = items.length < 4 ? items.length : 4;
-            for (let i = 1; i < len; ++i) itemComparison += `ids[]=${items[i].id}&${items[i].status}&`;
+            for (let i = 0; i < len; ++i) itemComparison += `ids[]=${items[i].id}&${items[i].status}&`;
 
             let itemSearch = items[0].id;
             for (let i = 1; i < items.length; ++i) itemSearch += `|${items[i].id}`;
