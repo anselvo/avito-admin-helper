@@ -378,13 +378,17 @@ function reservedOperation(route) {
             return;
 
         $(elem).hide();
-        addBindedWLLink(elem, toDay, route);
+        // addBindedWLLink(elem, toDay, route);
         $(elem).addClass('ah-table-background-highlight');
     });
 
     toggleReservedOperations(route); // переключатель отображения резервированных
 }
 
+/**
+ * Ломает отправку комментариев из Валет лога, функция удалено, до появления жалоб на необходимость данного функционала
+ * @deprecated
+ */
 function addBindedWLLink(elem, toDay, route) {
     var block, decrcText, operationId, newLinkText, dateStart;
 
