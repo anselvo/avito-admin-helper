@@ -423,7 +423,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
             const date = new Date(photo.date);
             prevPhotos += `
-                    <div class="ah-photo-prev-wrap">
+                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
                         <div class="ah-photo-prev-img-date" title="${photo.date}">
                             ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth()+1)} 
@@ -450,8 +450,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
 
         // микрокатегория
-        item.microCategoryes.forEach(function(mircoCategory, i) {
-            microCategories.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${mircoCategory}</span>`);
+        item.microCategoryes.forEach(function(microCategory, i) {
+            microCategories.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${microCategory}</span>`);
         });
 
         // статусы
@@ -720,6 +720,22 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
     this.compareStrict();
     this.compareTime();
+    this.similarPhotos(abutmentId);
+};
+
+ItemsComparison.prototype.similarPhotos = function (id) {
+    getItemAntifraudInfo(id).then(response => {
+        const similarGroup = response.similar_images_grouped;
+
+        for (let similar of similarGroup) {
+            const color = gerRandomColor();
+
+            for (let imageId of similar) {
+                const photoNode = document.querySelectorAll(`data-image-id="${imageId}"`)[0];
+                photoNode.style.borderColor = color;
+            }
+        }
+    });
 };
 
 ItemsComparison.prototype.render = function() {
@@ -738,7 +754,6 @@ ItemsComparison.prototype.render = function() {
                 reject(error);
             });
     });
-
 };
 
 function UsersComparison() {

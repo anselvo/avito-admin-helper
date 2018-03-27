@@ -1,3 +1,7 @@
+function gerRandomColor() {
+    return "#"+((1<<24)*Math.random()|0).toString(16);
+}
+
 function currentTime() {
     const date = new Date();
     const day = dateWithZero(date.getDate());

@@ -406,3 +406,16 @@ function shopsModerationSendEmail(shopId, data) {
             return Promise.resolve();
         });
 }
+
+// antifraud info about item
+function getItemAntifraudInfo(id) {
+    return fetch(`${global.connectInfo.adm_url}/items/item/afrodprobabilities/${id}`, {
+        method: 'post',
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
