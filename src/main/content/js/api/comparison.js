@@ -335,6 +335,45 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
+AhComparison.prototype.compareTime = function () {
+    const allCompareNodes = this.modal.querySelectorAll('[data-compare-time]');
+    const allNodesByName = {};
+
+    allCompareNodes.forEach(node => {
+        const nodeName = node.dataset.compareTime;
+
+        if (!allNodesByName.hasOwnProperty(nodeName)) {
+            allNodesByName[node.dataset.compareTime] = [];
+        }
+
+       allNodesByName[node.dataset.compareTime].push(node);
+    });
+
+    console.log(allNodesByName);
+
+    for (let key in allNodesByName) {
+        let maxTime = Number.NEGATIVE_INFINITY;
+        let maxTimeNode = null;
+        let minTime = Number.POSITIVE_INFINITY;
+        let minTimeNode = null;
+
+        allNodesByName[key].forEach(node => {
+            const time = parseRuDate(node.textContent);
+
+            if (time > maxTime) {
+                maxTime = time;
+                maxTimeNode = node;
+            }
+            if (time < minTime) {
+                minTime = time;
+                minTimeNode = node;
+            }
+        });
+
+        maxTimeNode.className = 'ah-compare-max-time';
+        minTimeNode.className = 'ah-compare-min-time';
+    }
+};
 
 function ItemsComparison() {
     AhComparison.apply(this, arguments);
@@ -357,7 +396,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     let rows = {
         id_title_price: '',
         status_reasons: '',
-        sortTime: '',
+        time: '',
         photos: '',
         description: '',
         microCategory: '',
@@ -377,14 +416,19 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         let mainPhoto = '';
         let prevPhotos = '';
         let reasons = '';
-        let microCategoryes = [];
+        let microCategories = [];
 
         // превьюшки
         item.photos.forEach(function(photo, i) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
+            const date = new Date(photo.date);
             prevPhotos += `
                     <div class="ah-photo-prev-wrap">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
+                        <div class="ah-photo-prev-img-date" title="${photo.date}">
+                            ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth()+1)} 
+                            ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
+                        </div>
                     </div>
                 `;
         });
@@ -392,10 +436,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
+                    <div class="ah-compare-photo-date">${item.photos[0].date}</div>
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
-                    <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
-                        class="ah-photo-link">
-                    </a>
+                    <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
         } else {
             mainPhoto = `<div class="text-muted">Нет Фото</div>`;
@@ -408,7 +451,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
         // микрокатегория
         item.microCategoryes.forEach(function(mircoCategory, i) {
-            microCategoryes.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${mircoCategory}</span>`);
+            microCategories.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${mircoCategory}</span>`);
         });
 
         // статусы
@@ -453,9 +496,16 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                 </div>
             `;
 
-        rows.sortTime += `
+        rows.time += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <span title="Sort Time">${item.sortTime}</span>
+                    <div>
+                        <span class="ah-compare-items-label">Sort time: </span>
+                        <span data-compare-time="sort" data-entity-id="${item.id}" title="Sort Time">${item.time}</span>
+                    </div>
+                    <div>
+                        <span class="ah-compare-items-label">Start time: </span>
+                        <span data-compare-time="start" data-entity-id="${item.id}" title="Start Time">${item.startTime}</span>
+                    </div>
                 </div>
             `;
 
@@ -472,7 +522,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
         rows.microCategory += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <i>${microCategoryes.join(' / ')}</i>
+                    <i>${microCategories.join(' / ')}</i>
                 </div>
             `;
 
@@ -536,7 +586,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             ${rows.status_reasons}
         </div>
         <div class="ah-compare-row">
-            ${rows.sortTime}
+            ${rows.time}
         </div>
         <div class="ah-compare-row ah-compare-items-row-photos">
             ${rows.photos}
@@ -629,14 +679,19 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             const preview = target.closest('.ah-photo-prev-wrap');
 
             const allPreviews = preview.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
-            const mainPhoto = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main .ah-photo-link');
+            const main = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main');
+            const mainPhoto = main.querySelector('.ah-photo-link');
+            const mainPhotoDate = main.querySelector('.ah-compare-photo-date');
             const currPreview = preview.querySelector('.ah-photo-prev-img');
+            const photoDate = preview.querySelector('.ah-photo-prev-img-date');
             const originalImg = currPreview.dataset.originalImage;
 
             allPreviews.forEach(item => item.classList.remove('ah-photo-prev-img-active'));
             currPreview.classList.add('ah-photo-prev-img-active');
             mainPhoto.style.backgroundImage = `url(${originalImg})`;
             mainPhoto.href = originalImg;
+
+            mainPhotoDate.textContent = photoDate.title;
         }
     });
 
@@ -664,6 +719,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     });
 
     this.compareStrict();
+    this.compareTime();
 };
 
 ItemsComparison.prototype.render = function() {

@@ -4248,6 +4248,7 @@ select.ah-form-control:focus {
 
 .ah-compare-photo-main {
     position: relative;
+    border: 1px solid #e5e5e5;
 }
 
 .ah-compare-photo-count {
@@ -4260,10 +4261,33 @@ select.ah-form-control:focus {
     text-align: center;
 }
 
+.ah-compare-photo-date {
+    background: #f5f5f5;
+    text-align: center;
+}
+
+.ah-compare-min-time::after, .ah-compare-max-time::after {
+    vertical-align: super;
+    font-size: 10px;
+    padding: 0 1px;
+    font-weight: bold;
+}
+
+.ah-compare-min-time::after {
+    content: "min";
+    background: #e7ecff;
+    color: #394d99;
+}
+
+.ah-compare-max-time::after {
+    content: "max";
+    background: #fff1ff;
+    color: #a21918;
+}
+
 .ah-photo-link {
     height: 120px;
     display: block;
-    border: 1px solid #e5e5e5;
     overflow: hidden;
     background: #fff 50% 50% no-repeat;
     background-size: contain;
@@ -4284,6 +4308,12 @@ select.ah-form-control:focus {
     display: block;
     height: 37px;
     border: 1px solid transparent;
+}
+
+.ah-photo-prev-img-date {
+    background: #f5f5f5;
+    font-size: 9px;
+    text-align: center;
 }
 
 .ah-photo-prev-img-active {

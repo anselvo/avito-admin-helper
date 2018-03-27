@@ -1,17 +1,44 @@
 function currentTime() {
-    date = new Date();
-    var day = (date.getDate() < 10 ? '0' : '') + date.getDate();
-    var month = ((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1);
-    var year = date.getFullYear();
-    var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+    const date = new Date();
+    const day = dateWithZero(date.getDate());
+    const month = dateWithZero(date.getMonth() + 1);
+    const year = date.getFullYear();
+    const hours = dateWithZero(date.getHours());
+    const minutes = dateWithZero(date.getMinutes());
+    const seconds = dateWithZero(date.getSeconds());
 
     return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds;
 }
 
+/**
+ * Parse date format dd.MM.YYYY hh:mm:ss
+ * Time (hh:mm:ss) is optional
+ */
+function parseRuDate(string) {
+    try {
+        const tmp = string.split(" ");
+        const date = tmp[0].split(".");
+        const time = tmp[1].split(":");
+
+        const day = parseInt(date[0]);
+        const month = parseInt(date[1]) - 1;
+        const year = parseInt(date[2]);
+        const hour = parseInt(time[0] || 0);
+        const minute = parseInt(time[1] || 0);
+        const second = parseInt(time[2] || 0);
+
+        return new Date(year, month, day, hour, minute, second);
+    } catch (e) {
+        return null;
+    }
+}
+
+function dateWithZero(tmp) {
+    return (tmp < 10 ? '0' : '') + tmp;
+}
+
 function DDMMYYY() {
-    var today = new Date();
+    let today = new Date();
     today.setDate(today.getDate());
     today = today.getDate() + '.' + (today.getMonth() + 1) + '.' + today.getFullYear();
     return today;
@@ -806,7 +833,7 @@ function getParamsItemInfo(html) {
     res.ip = $(searchNode).find('.ip-info').text();
     res.status = $(statusBlock).find('span:eq(0)').text().trim();
     res.reasons = reasons;
-    res.sortTime = $(timeBlock).find('span:eq(0)').text().trim();
+    res.time = $(timeBlock).find('span:eq(0)').text().trim();
     res.updateTime = $(timeBlock).find('span:eq(1)').text().trim();
     res.startTime = $(timeBlock).find('span:eq(2)').text().trim();
     res.finishTime = $(timeBlock).find('span:eq(3)').text().trim();
