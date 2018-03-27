@@ -358,7 +358,7 @@ AhComparison.prototype.compareTime = function () {
         let minTimeNode = null;
 
         allNodesByName[key].forEach(node => {
-            const time = parseRuDate(node.textContent);
+            const time = parseRuDate(node.textContent.trim());
 
             if (time > maxTime) {
                 maxTime = time;
@@ -370,8 +370,8 @@ AhComparison.prototype.compareTime = function () {
             }
         });
 
-        maxTimeNode.className = 'ah-compare-max-time';
-        minTimeNode.className = 'ah-compare-min-time';
+        if (maxTimeNode) maxTimeNode.className = 'ah-compare-max-time';
+        if (minTimeNode) minTimeNode.className = 'ah-compare-min-time';
     }
 };
 
@@ -898,7 +898,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         `);
 
         cellRegTime.insertAdjacentHTML('beforeend',`
-            <b>Зарегистрирован:</b> <span>${info.regTime}</span>
+            <b>Зарегистрирован:</b> <span data-compare-time="registry" data-entity-id="${info.id}">${info.regTime}</span>
         `);
 
         cellNameManager.insertAdjacentHTML('beforeend',`
@@ -1164,6 +1164,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
     // сравнение
     this.compareStrict();
+    this.compareTime();
 
     // проверить совпадения
     const similarBtns = modalContainer.querySelectorAll(`.ah-compare-show-abutment-similar-btn`);
