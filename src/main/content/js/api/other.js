@@ -846,6 +846,7 @@ function getParamsItemInfo(html) {
     res.phone = $(searchNode).find('#fld_phone').val();
     res.region = $(searchNode).find('#region').find('option:selected').text();
     res.microCategoryes = microCategories;
+    res.category = $(searchNode).find('#fld_category_id').find('option:selected').parent().attr('label');
     res.title = $(searchNode).find('#fld_title').val();
     res.description = $(searchNode).find('#fld_description').text();
     res.price = $(searchNode).find('#fld_price').val();

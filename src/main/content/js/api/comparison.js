@@ -349,8 +349,6 @@ AhComparison.prototype.compareTime = function () {
        allNodesByName[node.dataset.compareTime].push(node);
     });
 
-    console.log(allNodesByName);
-
     for (let key in allNodesByName) {
         let maxTime = Number.NEGATIVE_INFINITY;
         let maxTimeNode = null;
@@ -360,19 +358,50 @@ AhComparison.prototype.compareTime = function () {
         allNodesByName[key].forEach(node => {
             const time = parseRuDate(node.textContent.trim());
 
-            if (time > maxTime) {
-                maxTime = time;
-                maxTimeNode = node;
-            }
-            if (time < minTime) {
-                minTime = time;
-                minTimeNode = node;
+            if (time) {
+                if (time > maxTime) {
+                    maxTime = time;
+                    maxTimeNode = node;
+                }
+                if (time < minTime) {
+                    minTime = time;
+                    minTimeNode = node;
+                }
             }
         });
 
         if (maxTimeNode) maxTimeNode.className = 'ah-compare-max-time';
         if (minTimeNode) minTimeNode.className = 'ah-compare-min-time';
     }
+};
+
+AhComparison.prototype.actionButtons = function (className, buttonName, entityId, reasonJson, clickReasonAction) {
+    const dropdownNode = document.createElement('div');
+    dropdownNode.className = 'ah-compare-dropdown dropdown';
+    dropdownNode.innerHTML = `
+        <button id="ah-compare-dropdown-btn-${className}"
+                class="btn btn-default green dropdown-toggle ah-compare-item-btn"
+                data-toggle="dropdown"
+                data-entity-id="${entityId}"
+                aria-haspopup="true"
+                aria-expanded="false">
+            ${buttonName}
+        </button>
+        <div class="ah-compare-dropdown-menu dropdown-menu dropdown-menu-right" aria-labelledby="ah-compare-dropdown-btn-${className}">
+            ${reasonJson.map(reason => 
+                `<span class="ah-compare-dropdown-reason" data-entity-id="${entityId}" data-reason="${className}" data-reason-id="${reason.id}">${reason.text}</span>`
+            )}
+        </div>        
+    `;
+
+    dropdownNode.addEventListener('click', elem => {
+        const target = elem.target;
+        if (target.classList.contains('ah-compare-dropdown-reason')) {
+            clickReasonAction(target);
+        }
+    });
+
+    return dropdownNode;
 };
 
 function ItemsComparison() {
@@ -407,6 +436,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     };
 
     const abutmentId = this._ids.abutment;
+    const itemIds = [];
     let abutmentUserId = null;
 
     for (let key in parsedEntities) {
@@ -417,6 +447,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         let prevPhotos = '';
         let reasons = '';
         let microCategories = [];
+
+        itemIds.push(item.id);
 
         // превьюшки
         item.photos.forEach(function(photo, i) {
@@ -440,6 +472,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
                     <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
+            if (item.category === 'Недвижимость') mainPhoto += `<div class="ah-compare-photo-check">Требуется проверка фото</div>`
         } else {
             mainPhoto = `<div class="text-muted">Нет Фото</div>`;
         }
@@ -457,7 +490,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // статусы
         if (statusPatterns.blocked.test(item.status)) {
             item.status = item.status.replace(statusPatterns.blocked, `
-                    <span class="text-danger" title="${reasons}">
+                    <span class="text-danger">
                         $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
                     </span>`);
         }
@@ -491,8 +524,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             `;
 
         rows.status_reasons += `
-                <div class="ah-compare-cell" data-entity-id="${item.id}">
+                <div class="ah-compare-cell ah-compare-items-row-status" data-entity-id="${item.id}">
                     <span class="ah-compare-items-status">${item.status}</span>
+                    <span class="ah-compare-items-status-button" data-entity-id="${item.id}"></span>
                 </div>
             `;
 
@@ -718,9 +752,49 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
     });
 
+    const actionButton = this.modal.querySelectorAll('.ah-compare-items-status-button');
+    actionButton.forEach(button => {
+        const itemId = button.dataset.entityId;
+        button.appendChild(this.actionButtons('reject', 'Отклонить', itemId, global.compareDropdownItemReject, reason => {
+            rejectItem(reason.dataset.entityId, reason.dataset.reasonId);
+            commentOnItem(reason.dataset.entityId, `[Admin.Helper.Item.Comparison] ${itemIds.join(', ')}`);
+            const rowStatusNode = reason.closest('.ah-compare-items-row-status');
+            const itemStatusNode = rowStatusNode.querySelector('.ah-compare-items-status');
+            itemStatusNode.innerHTML = `
+                <span class="text-warning">
+                    Rejected
+                    <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="(${reason.textContent})"></span>
+                </span>
+            `;
+
+            $(this.modal.querySelectorAll(`.ah-compare-items-reason-tooltip`)).tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+        }));
+        button.appendChild(this.actionButtons('block', 'Блок', itemId, global.compareDropdownItemBlock, reason => {
+            blockItem(reason.dataset.entityId, reason.dataset.reasonId);
+            commentOnItem(reason.dataset.entityId, `[Admin.Helper.Item.Comparison] ${itemIds.join(', ')}`);
+            const rowStatusNode = reason.closest('.ah-compare-items-row-status');
+            const itemStatusNode = rowStatusNode.querySelector('.ah-compare-items-status');
+            itemStatusNode.innerHTML = `
+                <span class="text-danger">
+                    Blocked
+                    <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="(${reason.textContent})"></span>
+                </span>
+            `;
+
+            $(this.modal.querySelectorAll(`.ah-compare-items-reason-tooltip`)).tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+        }));
+    });
+
+
     this.compareStrict();
     this.compareTime();
-    this.similarPhotos(abutmentId);
+    // this.similarPhotos(abutmentId);
 };
 
 ItemsComparison.prototype.similarPhotos = function (id) {

@@ -265,3 +265,15 @@ function getSpringJsonTable(uuid) {
         );
     });
 }
+
+// antifraud info about item
+function getItemAntifraudInfo(id) {
+    return fetch(`${global.connectInfo.adm_url}/items/item/afrodprobabilities/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
