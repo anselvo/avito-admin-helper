@@ -5382,3 +5382,39 @@ select.ah-form-control:focus {
     margin: 0 4px;
     cursor: pointer;
 }
+
+.ah-linked-payment-sources-popover .popover-content {
+    position: relative;
+}
+
+.ah-linked-payment-sources-popover__header {
+    margin: 10px 0 8px;
+    font-size: 16px;
+}
+
+.ah-linked-payment-sources-popover__list {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 0 !important;
+}
+
+.ah-linked-payment-sources-popover__list-item {
+    padding: 4px 6px !important;
+}
+
+.ah-linked-payment-sources-popover__unlink-btn.btn {
+    font-weight: bold;
+}
+
+.ah-linked-payment-sources-popover__source-title_unlinked {
+    text-decoration: line-through;
+}
+
+.ah-linked-payment-sources-popover__overlay-loader {
+    width: 16px;
+    height: 16px;
+}
+
+.ah-linked-payment-sources-popover__error {
+    font-size: 13px;
+}

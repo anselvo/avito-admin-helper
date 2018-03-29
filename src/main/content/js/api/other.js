@@ -1063,6 +1063,53 @@ function getParamsUserInfo(node) {
     return res;
 }
 
+// параметры на странице кошелька
+function getParamsUsersAccountInfo(html) {
+    let searchNode = document;
+    if (html) {
+        searchNode = document.createElement('div');
+        searchNode.innerHTML = html;
+    }
+    const result = {};
+
+    const allLegendNodes = searchNode.querySelectorAll('legend');
+    let linkedCardsLegendNode = null;
+    let linkedYandexWalletLegendNode = null;
+
+    allLegendNodes.forEach(legendNode => {
+        switch (legendNode.textContent) {
+            case 'Привязанные карты':
+            linkedCardsLegendNode = legendNode;
+            break;
+
+            case 'Привязанный кошелёк Яндекс.Денег':
+            linkedYandexWalletLegendNode = legendNode;
+            break;
+        }
+    });
+
+    result.linkedCards = linkedCardsLegendNode ? getLinkedInfo(linkedCardsLegendNode) : null;
+    result.linkedYandexWallet = linkedYandexWalletLegendNode ? getLinkedInfo(linkedYandexWalletLegendNode) : null;
+
+    function getLinkedInfo(legendNode) {
+        const fieldsetNode = legendNode.nextElementSibling;
+        const allCollNodes = fieldsetNode.querySelectorAll('.col-xs-9');
+
+        const result = [];
+
+        allCollNodes.forEach(node => {
+            result.push({
+                title: node.firstChild.textContent.trim(),
+                url:  node.querySelector('a[href*="unlink"]').getAttribute('href')
+            });
+        });
+
+        return result;
+    }
+
+    return result;
+}
+
 // получить оставшийся скролл справа
 function getScrollSizeRight(elem) {
     return elem.scrollWidth - elem.scrollLeft - elem.clientWidth;

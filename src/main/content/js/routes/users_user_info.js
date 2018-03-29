@@ -109,6 +109,163 @@ function userChangeEmail() {
     });
 }
 
+// привязанные плятежные источники
+function userLinkedPaymentSources() {
+    const passwordsNode = document.querySelector('.js-passwords');
+    const wrapper = document.createElement('div');
+    const button = document.createElement('button');
+    const currentUserId = getParamsUserInfo().id;
+
+    wrapper.className = 'form-group';
+    button.className = 'btn btn-link ah-pseudo-link';
+    button.innerHTML = 'Привязанные платежные источники';
+
+    wrapper.append(button);
+    passwordsNode.after(wrapper);
+
+    button.addEventListener('click', function() {
+        btnLoaderOn(this);
+        getUserAccountInfo(currentUserId)
+            .then(response => {
+                renderResults(getParamsUsersAccountInfo(response));
+            }, ({ status, statusText }) => {
+                alert(`Произошла ошибка.\n${status || ''}\n${statusText || ''}`);
+            })
+            .then(() => btnLoaderOff(this));
+    });
+
+    let doneRequestsCount = 0;
+    wrapper.addEventListener('click', (e) => {
+        const target = e.target;
+
+        if (target.closest('.ah-linked-payment-sources-popover__unlink-btn')) {
+            const unlinkButton = target.closest('.ah-linked-payment-sources-popover__unlink-btn');
+            const url = unlinkButton.dataset.url;
+
+            showOverlay();
+            unlinkSource(url, unlinkButton)
+                .then(() => hideOverlay());
+        }
+
+        if (target.closest('.ah-linked-payment-sources-popover__unlink-all-btn')) {
+            doneRequestsCount = 0;
+            const allLinks = [].map.call(wrapper.querySelectorAll('.ah-linked-payment-sources-popover__unlink-btn'), button =>  {
+                    return {
+                        url: button.dataset.url,
+                        button
+                    };
+                }
+            );
+
+            if (allLinks.length) {
+                showOverlay();
+                allLinks.forEach(({ url, button }) => {
+                    unlinkSource(url, button)
+                        .then(() =>  {
+                            doneRequestsCount++;
+                            if (allLinks.length === doneRequestsCount) {
+                                hideOverlay();
+                            }
+                        });
+                })
+            }
+        }
+    });
+
+    function showOverlay() {
+        const overlay = wrapper.querySelector('.ah-overlay');
+        overlay.classList.add('show');
+        overlay.focus();
+    }
+
+    function hideOverlay() {
+        const overlay = wrapper.querySelector('.ah-overlay');
+        overlay.classList.remove('show');
+    }
+
+    function unlinkSource(url, button) {
+        return new Promise((resolve) => {
+            unlinkPaymentSource(url)
+                .then(() => {
+                    const listItem = button.parentElement;
+                    const sourceTitle = listItem.querySelector('.ah-linked-payment-sources-popover__source-title');
+                    const errorMessage = listItem.querySelector('.ah-linked-payment-sources-popover__error');
+
+                    sourceTitle.classList.add('ah-linked-payment-sources-popover__source-title_unlinked');
+                    button.remove();
+                    errorMessage.classList.add('hidden');
+                }, ({ status, statusText }) => {
+                    const listItem = button.parentElement;
+                    const errorMessage = listItem.querySelector('.ah-linked-payment-sources-popover__error');
+
+                    errorMessage.innerHTML = `Ошибка. ${status || ''} ${statusText || ''}`;
+                    errorMessage.classList.remove('hidden');
+                })
+                .then(() => {
+                    const unlinkAllButton = wrapper.querySelector('.ah-linked-payment-sources-popover__unlink-all-btn');
+                    const allUnlinkButtons = wrapper.querySelectorAll('.ah-linked-payment-sources-popover__unlink-btn');
+
+                    if (!allUnlinkButtons.length && unlinkAllButton) {
+                        unlinkAllButton.remove();
+                    }
+                    resolve();
+                });
+        })
+
+    }
+
+    function renderResults({ linkedCards, linkedYandexWallet }) {
+        const content = !linkedCards && !linkedYandexWallet ?
+            `<span class="text-muted">Отсутствуют</span>` :
+            renderLinked({ linkedCards, linkedYandexWallet });
+
+        $(button).popover({
+            html: true,
+            container: wrapper,
+            placement: 'bottom',
+            content: content,
+            template: `
+            <div class="popover ah-popover-destroy-outclicking ah-linked-payment-sources-popover">
+                <div class="arrow"></div>
+                <div class="popover-content"></div>
+            </div>`
+        }).popover('show');
+    }
+
+    function renderLinked({ linkedCards, linkedYandexWallet }) {
+        return `
+            <div class="ah-overlay" tabindex="1">
+                <span class="ah-overlay-text ah-btn-loader ah-linked-payment-sources-popover__overlay-loader"></span>
+            </div>
+            <button class="btn btn-danger btn-block ah-linked-payment-sources-popover__unlink-all-btn">Отвязать все</button>
+            ${renderLinkedSection(linkedCards, 'Карты')}
+            ${renderLinkedSection(linkedYandexWallet, 'Кошелек Яндекс.Денег')}
+        `;
+    }
+
+    function renderLinkedSection(linkedItems, sectionName) {
+        return linkedItems ? `
+            <h3 class="ah-linked-payment-sources-popover__header">${sectionName}</h3>
+            <ul class="list-group ah-linked-payment-sources-popover__list">
+                ${linkedItems.reduce((html, item) => {
+                    html += `
+                        <li class="list-group-item ah-linked-payment-sources-popover__list-item">
+                            <span class="ah-linked-payment-sources-popover__source-title">${item.title}</span>
+                            <button 
+                                class="btn btn-link btn-xs ah-linked-payment-sources-popover__unlink-btn"
+                                data-url="${item.url}">
+                                x
+                            </button>
+                            <div class="text-danger hidden ah-linked-payment-sources-popover__error"></div>
+                        </li>
+                    `;
+                    return html;
+                }, '')}
+                </ul>
+            ` : '';
+    }
+}
+
 function userInfoScrollableIndic(scrollTo, indicator) {
     if ($(scrollTo).length) {
         $(indicator).css('cursor', 'pointer');
