@@ -277,3 +277,26 @@ function getItemAntifraudInfo(id) {
         return response.json();
     });
 }
+
+function getHDTemplates() {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/templates/list`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
+
+function getHDTags() {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}

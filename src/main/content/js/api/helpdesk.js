@@ -444,7 +444,7 @@ function renderCreateNewTicketWindow(route) {
 
         if (!global.hdSettings.helpdeskTemplatesJSON) {
             $(list).append('<span id="create-ticket-loading-templates" style="text-align: center; width: 100%; display: inline-block; color: #c5c5c5; font-weight: 500;">Загрузка...</span>');
-            getHDTemplates();
+            createTicketGetHDTemplates();
         }
 
         if ($(list).hasClass('ah-dropped')) {
@@ -532,7 +532,7 @@ function renderCreateNewTicketWindow(route) {
         var list = $(modal).find('.ah-create-ticket-choose-tags-list');
         if (!global.hdSettings.helpdeskTagsJSON) {
             $(list).append('<span id="create-ticket-loading-tags" style="text-align: center; width: 100%; display: inline-block; color: #c5c5c5; font-weight: 500;">Загрузка...</span>');
-            getHDTags();
+            createTicketGetHDTags();
         } else {
             createTicketAddTagHandler();
         }
@@ -662,163 +662,163 @@ function renderCreateNewTicketWindow(route) {
     });
 }
 
-function getHDTemplates() {
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/templates/list`;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.send(null);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            $('#create-ticket-loading-templates').remove();
-            if (xhr.status == 200) {
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    var response = xhr.responseText;
-                    setTimeout(function () {
-                        alert('Произошла техническая ошибка.\n' + e + '\n\n' + response);
-                    }, 100);
-                    return;
-                }
-
+function createTicketGetHDTemplates() {
+    if (global.hdSettings.helpdeskTagsJSON) {
+        getHDTemplates()
+            .then(response => {
                 global.hdSettings.helpdeskTemplatesJSON = response.result;
                 global.hdSettings.helpdeskTemplatesJSON.sort(compareTemplatesNames);
+                renderList();
+            }, () => {
+                outTextFrame('Произошла техническая ошибка при загрузке шаблонов.');
+            })
+            .then(() => $('#create-ticket-loading-templates').remove());
+    } else {
+        getHDTemplates()
+            .then(response => {
+                global.hdSettings.helpdeskTemplatesJSON = response.result;
+                global.hdSettings.helpdeskTemplatesJSON.sort(compareTemplatesNames);
+                return getHDTags();
+            }, () => {
+                outTextFrame('Произошла техническая ошибка при загрузке шаблонов.');
+            })
+            .then(tags => {
+                if (tags) {
+                    global.hdSettings.helpdeskTagsJSON = tags;
+                    renderList();
+                }
+            }, () => {
+                outTextFrame('Произошла техническая ошибка при загрузке тегов.');
+            })
+            .then(() => $('#create-ticket-loading-templates').remove());
+    }
 
-                var templatesAll = global.hdSettings.helpdeskTemplatesJSON;
+    function renderList() {
+        const templatesAll = global.hdSettings.helpdeskTemplatesJSON;
+        const tagsAll = global.hdSettings.helpdeskTagsJSON;
 
-                var btn = $('#ah-create-ticket-choose-templates');
-                var list = $(btn).next();
+        var btn = $('#ah-create-ticket-choose-templates');
+        var list = $(btn).next();
 
-                $(list).append('<li templatesListBack style="display: none;"><a style="font-weight: 700;">Назад</a></li>');
+        $(list).append('<li templatesListBack style="display: none;"><a style="font-weight: 700;">Назад</a></li>');
 
+        templatesAll.forEach(function (temp) {
+            if (!temp.isActive)
+                return;
+
+            var tempItem = getTemplateListItem(temp);
+
+            $(list).append('<li class="ah-hidden" data-temp-id="' + temp.id + '" data-temp-parentId="' + temp.parentId + '" data-temp-haschild="' + temp.hasChild + '"><a style="overflow : hidden; text-overflow : ellipsis; position : relative; white-space : normal;">' + tempItem.number + '<span style="">' + tempItem.name + '</span><span style="float: right;">' + tempItem.arrow + '</span></a></li>');
+        });
+
+
+        $(list).find('li[data-temp-parentid="null"]').removeClass('ah-hidden').addClass('ah-visible');
+
+        // обработчики
+        $(list).find('li:not([templatesListBack])').click(function () {
+            var tempClickedId = $(this).attr('data-temp-id');
+            var tempClickedHasChild = $(this).data('tempHaschild');
+
+            $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
+            $(list).find('li[data-temp-parentId="' + tempClickedId + '"]').removeClass('ah-hidden').addClass('ah-visible');
+
+            const curLevel = $(list).find('li.ah-visible:first').data('tempParentid');
+            if (curLevel !== null) {
+                $(list).find('li[templatesListBack]').show();
+            }
+
+            if (!tempClickedHasChild) {
                 templatesAll.forEach(function (temp) {
-                    if (!temp.isActive)
-                        return;
+                    if (temp.id == tempClickedId) {
 
-                    var tempItem = getTemplateListItem(temp);
+                        var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
+                        var body = $(modal).find('.ah-modal-body');
+                        var description = $(body).find('[name="create-ticket-description"]');
+                        var descriptionClone = $('#ah-create-ticket-description-clone');
 
-                    $(list).append('<li class="ah-hidden" data-temp-id="' + temp.id + '" data-temp-parentId="' + temp.parentId + '" data-temp-haschild="' + temp.hasChild + '" data-temp-level="' + temp.level + '"><a style="overflow : hidden; text-overflow : ellipsis; position : relative; white-space : normal;">' + tempItem.number + '<span style="">' + tempItem.name + '</span><span style="float: right;">' + tempItem.arrow + '</span></a></li>');
-                });
+                        var curDescrVal = $(description).val();
 
-                $(list).find('li[data-temp-level="0"]').removeClass('ah-hidden').addClass('ah-visible');
+                        var text = temp.text;
 
-                // обработчики
-                $(list).find('li:not([templatesListBack])').click(function () {
-                    var tempClickedId = $(this).attr('data-temp-id');
-                    var tempClickedParentId = $(this).attr('data-temp-parentId');
-                    var tempClickedHasChild = $(this).data('tempHaschild');
-                    var tempClickedLevel = $(this).attr('data-temp-level');
+                        var textFinal = curDescrVal + '\n' + text;
+                        textFinal = textFinal.replace(/^\n/, '');
+                        $(description).val(textFinal);
+                        $(descriptionClone).text(textFinal);
+                        createTicketResizeDescription();
 
-                    $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
-                    $(list).find('li[data-temp-parentId="' + tempClickedId + '"]').removeClass('ah-hidden').addClass('ah-visible');
+                        $(list).removeClass('ah-dropped');
+                        $(list).hide();
 
-                    var curLevel = +$(list).find('li.ah-visible:first').attr('data-temp-level');
-                    if (curLevel != 0) {
-                        $(list).find('li[templatesListBack]').show();
-                    }
+                        $('#create-ticket-search-templates-input').hide();
+                        $('#ah-create-ticket-choose-templates').show();
 
-                    if (!tempClickedHasChild) {
-                        templatesAll.forEach(function (temp) {
-                            if (temp.id == tempClickedId) {
+                        $('#create-ticket-search-templates-input').keyup();
 
-                                var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-                                var body = $(modal).find('.ah-modal-body');
-                                var description = $(body).find('[name="create-ticket-description"]');
-                                var descriptionClone = $('#ah-create-ticket-description-clone');
-
-                                var curDescrVal = $(description).val();
-
-                                var text = temp.text;
-
-                                var textFinal = curDescrVal + '\n' + text;
-                                textFinal = textFinal.replace(/^\n/, '');
-                                $(description).val(textFinal);
-                                $(descriptionClone).text(textFinal);
-                                createTicketResizeDescription();
-
-                                $(list).removeClass('ah-dropped');
-                                $(list).hide();
-
-                                $('#create-ticket-search-templates-input').hide();
-                                $('#ah-create-ticket-choose-templates').show();
-
-                                $('#create-ticket-search-templates-input').keyup();
-
-                                var allTags = temp.tags;
-                                var allTagNames = temp.tagNames;
-                                var addedTagIdsBlock = $('#create-ticket-added-tag-ids');
-                                var addedTagsBlock = $('#create-ticket-choose-tags');
-                                var exsistingTagIds = [];
-                                $(addedTagIdsBlock).find('input').each(function (i, tag) {
-                                    exsistingTagIds.push(+$(tag).val());
-                                });
-
-                                var exsistingTagNames = [];
-                                $(addedTagsBlock).find('.ah-helpdesk-tag-label').each(function (i, tag) {
-                                    exsistingTagNames.push($(tag).text());
-                                });
-
-                                if (allTags && allTags.length) {
-                                    allTags.forEach(function (tag) {
-                                        if (~exsistingTagIds.indexOf(tag))
-                                            return;
-                                        var addedTagsLength = $(addedTagIdsBlock).find('[name^="create-ticket-tags"]').length;
-                                        $(addedTagIdsBlock).append('<input type="hidden" name="create-ticket-tags[' + addedTagsLength + ']" value="' + tag + '">');
-                                    });
-                                }
-
-                                if (allTagNames && allTagNames.length) {
-                                    allTagNames.forEach(function (tagName) {
-                                        if (~exsistingTagNames.indexOf(tagName))
-                                            return;
-                                        $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
-                                    });
-                                }
-
-                                createTicketRemoveTagBtnHandler();
-                            }
+                        var allTags = temp.tags;
+                        var addedTagIdsBlock = $('#create-ticket-added-tag-ids');
+                        var addedTagsBlock = $('#create-ticket-choose-tags');
+                        var exsistingTagIds = [];
+                        $(addedTagIdsBlock).find('input').each(function (i, tag) {
+                            exsistingTagIds.push(+$(tag).val());
                         });
-                    }
-                });
 
-                $(list).find('li[templatesListBack]').click(function () {
-                    var curParentId = +$(list).find('li.ah-visible:first').attr('data-temp-parentid');
-                    var parentLevelParentId = +$(list).find('li[data-temp-id="' + curParentId + '"]:first').attr('data-temp-parentid');
+                        var exsistingTagNames = [];
+                        $(addedTagsBlock).find('.ah-helpdesk-tag-label').each(function (i, tag) {
+                            exsistingTagNames.push($(tag).text());
+                        });
 
-                    if (!parentLevelParentId)
-                        parentLevelParentId = 'null';
+                        if (allTags && allTags.length) {
+                            allTags.forEach(function (tagId) {
+                                if (~exsistingTagIds.indexOf(tagId)) return;
 
-                    $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
-                    $(list).find('li[data-temp-parentid="' + parentLevelParentId + '"]').removeClass('ah-hidden').addClass('ah-visible');
+                                const { name: tagName } = tagsAll.find(tag => tag.id === tagId);
+                                const addedTagsLength = $(addedTagIdsBlock).find('[name^="create-ticket-tags"]').length;
+                                $(addedTagIdsBlock).append('<input type="hidden" name="create-ticket-tags[' + addedTagsLength + ']" value="' + tagId + '">');
+                                $(addedTagsBlock).append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">' + tagName + '</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+                            });
+                        }
 
-                    var curLevel = +$(list).find('li.ah-visible:first').attr('data-temp-level');
-                    if (curLevel == 0) {
-                        $(list).find('li[templatesListBack]').hide();
-                    }
-                });
-
-                var searchInput = $('#create-ticket-search-templates-input');
-                $(searchInput).unbind('keyup').keyup(function (e) {
-                    var typedText = $(this).val();
-                    if (!typedText) {
-                        $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
-                        $(list).find('li[data-temp-level="0"]').removeClass('ah-hidden').addClass('ah-visible');
-                        $(list).find('li[templatesListBack]').hide();
-                        return;
-                    }
-
-                    $(list).find('li[templatesListBack]').hide();
-                    $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
-                    var matched = $(list).find('li:containsCI(' + typedText + ')');
-                    $(matched).removeClass('ah-hidden').addClass('ah-visible');
-
-                    if (e.which == 13) {
-                        $(list).find('li.ah-visible[data-temp-haschild="false"]:first').click();
+                        createTicketRemoveTagBtnHandler();
                     }
                 });
             }
-        }
+        });
+
+        $(list).find('li[templatesListBack]').click(function () {
+            var curParentId = +$(list).find('li.ah-visible:first').attr('data-temp-parentid');
+            var parentLevelParentId = +$(list).find('li[data-temp-id="' + curParentId + '"]:first').attr('data-temp-parentid');
+
+            if (!parentLevelParentId)
+                parentLevelParentId = 'null';
+
+            $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
+            $(list).find('li[data-temp-parentid="' + parentLevelParentId + '"]').removeClass('ah-hidden').addClass('ah-visible');
+
+            const curLevel = $(list).find('li.ah-visible:first').data('tempParentid');
+            if (curLevel === null) {
+                $(list).find('li[templatesListBack]').hide();
+            }
+        });
+
+        var searchInput = $('#create-ticket-search-templates-input');
+        $(searchInput).unbind('keyup').keyup(function (e) {
+            var typedText = $(this).val();
+            if (!typedText) {
+                $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
+                $(list).find('li[data-temp-parentid="null"]').removeClass('ah-hidden').addClass('ah-visible');
+                $(list).find('li[templatesListBack]').hide();
+                return;
+            }
+
+            $(list).find('li[templatesListBack]').hide();
+            $(list).find('li').removeClass('ah-visible').addClass('ah-hidden');
+            var matched = $(list).find('li:containsCI(' + typedText + ')');
+            $(matched).removeClass('ah-hidden').addClass('ah-visible');
+
+            if (e.which == 13) {
+                $(list).find('li.ah-visible[data-temp-haschild="false"]:first').click();
+            }
+        });
     }
 }
 
@@ -861,31 +861,15 @@ function resetCreateTicketValues() {
     $(description).css('overflow', 'auto');
 }
 
-function getHDTags() {
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.send(null);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            $('#create-ticket-loading-tags').remove();
-            if (xhr.status == 200) {
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    var response = xhr.responseText;
-                    setTimeout(function () {
-                        alert('Произошла техническая ошибка.\n' + e + '\n\n' + response);
-                    }, 100);
-                    return;
-                }
-
-                global.hdSettings.helpdeskTagsJSON = response;
-                createTicketAddTagHandler();
-            }
-        }
-    }
+function createTicketGetHDTags() {
+    getHDTags()
+        .then(response => {
+            global.hdSettings.helpdeskTagsJSON = response;
+            createTicketAddTagHandler();
+        }, () => {
+            outTextFrame('Произошла техническая ошибка при тегов.');
+        })
+        .then(() => $('#create-ticket-loading-tags').remove());
 }
 
 function createTicketAddTagHandler() {
