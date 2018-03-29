@@ -266,6 +266,41 @@ function getSpringJsonTable(uuid) {
     });
 }
 
+// antifraud info about item
+function getItemAntifraudInfo(id) {
+    return fetch(`${global.connectInfo.adm_url}/items/item/afrodprobabilities/${id}`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
+function getHDTemplates() {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/templates/list`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
+
+function getHDTags() {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
 function unlinkPaymentSource(url) {
     return fetch(url, {
         credentials: 'include'

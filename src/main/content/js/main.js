@@ -58,6 +58,12 @@ const global = {
     ledItem: [
         { flagName: "Вид объявления", button: { reason: 715, value: "ItemType", action: "reject" } },
         { flagName: "Нет фото с ID", button: { reason: 774, value: "NoPhotoID", action: "reject" } }
+    ],
+    compareDropdownItemBlock: [
+        { id: 384, text: "Неактуальное предложение" }
+    ],
+    compareDropdownItemReject: [
+        { id: 15, text: "Несоответствующее фото" }
     ]
 };
 

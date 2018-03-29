@@ -216,7 +216,7 @@ function addCompensationBtns() {
         let commentuser = confirm("Проставить комментарий в учетной записи пользователя?");
         if (commentuser) {
             let commentText = $('form.payin input[name="comment"]').val();
-            commentOnUserSupport(userID, commentText);
+            commentOnUserSupport(userID, "[Admin.Helper.Compensation]" + commentText);
         }
     });
     // обработка кнопки в БО "Внести средства" ---
@@ -245,7 +245,7 @@ function renderCommentItemsCompensation(allItems) {
     $(body).append('<div class="table-scroll"><table class="table table-striped comment-items-compensation-table"><thead><tr><th>ID объявления</th><th>Статус запроса</th></tr></thead><tbody></tbody></table></div>');
     var table = $(body).find('.comment-items-compensation-table');
 
-    var commentText = 'За данное объявление была произведена компенсация';
+    var commentText = '[Admin.Helper.Compensation] За данное объявление была произведена компенсация';
     var action = 'compensation';
     var delay = 250;
 

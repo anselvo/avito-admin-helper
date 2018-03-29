@@ -10,12 +10,27 @@ function premoderationInternComparisonNew() {
                 $('.comperisonLog').click(function () {
                     let mainItemID = $('.comparison-similarity:eq(0)').text().replace(/[^0-9]/gi, '');
 
-                    let compItems = $('.comparison-row:eq(0) .comparison-cell');
+                    const $compItems = $('.comparison-row:eq(0) .comparison-cell');
+                    const $compItemBlock = $('.js-reason-btn.btn-group-block');
+                    const $compItemReject = $('.js-reason-btn.btn-group-reject');
                     let reason = [];
 
-                    for (let i = 0; i < $(compItems).length; ++i) {
-                    	let item = $(compItems).slice(i, i+1);
-                    	let itemClass = $(item).attr('class').split(' ');
+                    for (let i = 0; i < $compItems.length; ++i) {
+                    	const item = $compItems[i];
+
+                    	const rejectCheckbox = $($compItemReject[i]).find('.js-moderate-reject-checkbox:checked').parent();
+                        const blockCheckbox = $($compItemBlock[i]).find('.js-moderate-block-checkbox:checked').parent();
+
+                        let rejectCheckText = [];
+                        for (let j = 0; j < rejectCheckbox.length; ++j) rejectCheckText.push($(rejectCheckbox[j]).text().trim());
+
+                        let blockCheckText = [];
+                        for (let j = 0; j < blockCheckbox.length; ++j) blockCheckText.push($(blockCheckbox[j]).text().trim());
+
+                        const rejectInputText = $($compItemReject[i]).find('.js-moderation-reject-other').val();
+                        const blockInputText = $($compItemBlock[i]).find('.js-moderation-block-other').val();
+
+                        let itemClass = $(item).attr('class').split(' ');
                     	let itemID, userID;
 
                         for (let j = 0; j < itemClass.length; ++j) {
@@ -23,9 +38,16 @@ function premoderationInternComparisonNew() {
                             if (itemClass[j].indexOf('user')+1) userID = itemClass[j].split('js-user-')[1];
                         }
 
-                    	if (item.hasClass('not-valuable')) reason.push('Дубль [' + itemID + ']');
-						else if (item.hasClass('is-valuable')) reason.push('Оставить [' + itemID + ']');
+                    	if ($(item).hasClass('not-valuable')) reason.push('Дубль [' + itemID + ']');
+						else if ($(item).hasClass('is-valuable')) reason.push('Оставить [' + itemID + ']');
 						else reason.push('Не дубль [' + itemID + ']');
+
+						if (rejectCheckbox.length > 0) reason.push(`Отклонение [Причины: ${rejectCheckText.join(', ')}]`);
+                        if (rejectInputText !== '') reason.push(`Отклонение [Другая причина: ${rejectInputText}]`);
+
+                        if (blockCheckbox.length > 0) reason.push(`Блокировка [Причины: ${blockCheckText.join(', ')}]`);
+                        if (blockInputText !== '') reason.push(`Блокировка [Другая причина: ${blockInputText}]`);
+
                     }
 
                     interntoJSONitem(global.userInfo.username, 'Comparison', mainItemID, 'Open', [], reason);
@@ -246,9 +268,15 @@ function addButtonsIntern() {
         '<div class="moderateBox_item_container">' +
         ' <div class="moderateBox_item" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_694" value="694"> </div> <div class="moderateBox_data"> <div class="b-antifraud"> <div class="name">Подозрительная активность</div> <div class="progress-line" style="display: none;"><div class="progress-bar"></div></div> <div class="description" style="display: none;"></div> </div> </div> </div>' +
         '  </div>'+
+		'<div class="moderateBox_item_container">' +
+        ' <div class="moderateBox_item" data-category-ids="4,23,24,25,26,42,85,86" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_737" value="737"> </div> <div class="moderateBox_data"> <div class="b-antifraud" title="0%"> <div class="name">Дозапрос фото</div> <div class="progress-line" style="display: block; border: 1px solid rgb(47, 139, 85);"><div class="progress-bar" style="background-color: rgb(47, 139, 85); width: 0px;"></div></div> <div class="description" style="display: block;"></div> </div> </div> </div>' +
+        '  </div>' +
         '<div class="moderateBox_item_container">' +
         ' <div class="moderateBox_item" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_703" value="703"> </div> <div class="moderateBox_data"> <div class="b-antifraud"> <div class="name">Объявление о заказе</div> <div class="progress-line" style="display: none;"><div class="progress-bar"></div></div> <div class="description" style="display: none;"></div> </div> </div> </div>' +
         '  </div>'+
+		'<div class="moderateBox_item_container">' +
+        ' <div class="moderateBox_item" data-category-ids="4,24,23,25,26,85,42,86" style="display: block;"> <div class="moderateBox_check"> <input type="checkbox" name="reason" class="moderateBox_checkbox" id="reason_774" value="774"> </div> <div class="moderateBox_data"> <div class="b-antifraud" title="0%"> <div class="name">Нет фото с ID</div> <div class="progress-line" style="display: block; border: 1px solid rgb(47, 139, 85);"><div class="progress-bar" style="background-color: rgb(47, 139, 85); width: 0px;"></div></div> <div class="description" style="display: block;"></div> </div> </div> </div>' +
+        '  </div>' +
 		'<div class="moderateBox_other"> <input type="text" placeholder="Другие причины" name="reason_other" class="reason_other"> <input type="text" placeholder="Комментарий" name="reason_comment" class="reason_comment"> </div> <div class="moderateBox_buttons"> <input id="blockSubmit" class="btn red" type="button" value="Блок" data-item-block="Block" data-item-block-fake="Unblock" data-item-reject="Reject" data-item-reject-fake="Allow" data-user-block="Block" style="color: rgb(47, 139, 85);"> <input class="btn" type="reset" value="Отмена"> </div>' +
         ' </form>' +
         '</div>');
