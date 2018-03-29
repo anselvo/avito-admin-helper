@@ -2,16 +2,48 @@
 function linksOnComments(tableClass, currentUserID) {
     $(tableClass+' .sh-unicode-links').detach();
 
-    const n = $(tableClass).length;
+    const $tableList = $(tableClass);
 
     // Patterns
     let duplicateReg = /duplicate.+/i;
     let duplicatePluralReg = /(duplicates|duplicate items):.+/i;
 
-    for (let j = 0; j < n; j++) {
-        let commentBlock = $(tableClass).slice(j, j + 1);
+    for (let j = 0; j < $tableList.length; j++) {
+        let commentBlock = $tableList[j];
         let commentText = $(commentBlock).html();
-        
+
+        commentText = commentText.replace(/\[Admin.Helper\D+]/, pattern => {
+            return `<b style="color: red">[</b><b>${pattern.substring(1, pattern.length-1)}</b><b style="color: red">]</b>`;
+        });
+
+        if (~commentText.indexOf('Admin.Helper')) { // Admin.Helper comments
+            let text = commentText;
+            const regIds = /\d+(?![\].])\b/g;
+            const ids = text.match(regIds);
+
+            if (~text.indexOf('Item')) {
+                text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
+            }
+            if (~text.indexOf('User')) {
+                text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/users/user/info/$&" target="_blank">$&</a>`);
+            }
+
+            if (~text.indexOf('Item.Comparison')) {
+                text += '(';
+                text += generateCommentCompareItems(ids);
+                text += generateCommentLinkOnItemComparison(ids);
+                text += generateCommentLinkOnItemsSearch(ids);
+                text += ')';
+            }
+            if (~text.indexOf('User.Comparison')) {
+                text += '(';
+                text += generateCommentCompareUsers(ids);
+                text += ')';
+            }
+
+            $(commentBlock).html(text);
+        }
+
         if (duplicateReg.test(commentText)) { // dublicate
             let text = commentText;
             text = text.replace(/\d{2,}/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
@@ -34,7 +66,12 @@ function linksOnComments(tableClass, currentUserID) {
             const regIds = /\d+(?![\].])\b/g;
             const regIdsStatus = /\d+: \[[a-z]+](?![\].])/g;
 
-            const items = text.match(regIdsStatus).map(item => {
+            const itemIds = text.match(regIds);
+            const itemIdsStatus = text.match(regIdsStatus);
+
+            if (!itemIdsStatus) break;
+
+            const items = itemIdsStatus.map(item => {
                 const obj = {};
                 obj.id = item.match(/\d+/)[0];
                 obj.status = item.match(/[a-z]+/)[0];
@@ -43,16 +80,14 @@ function linksOnComments(tableClass, currentUserID) {
 
             text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
-            let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${items[0].id}/archive?`;
-            const len = items.length < 4 ? items.length : 4;
-            for (let i = 0; i < len; ++i) itemComparison += `ids[]=${items[i].id}&${items[i].status}&`;
-
             let itemSearch = items[0].id;
             for (let i = 1; i < items.length; ++i) itemSearch += `|${items[i].id}`;
 
-            text += ` <a class="glyphicon glyphicon-new-window" href="${itemComparison}"  style="margin-right: 4px;" target="_blank"></a>`;
-
-            text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${itemSearch}" target="_blank"></a>`;
+            text += '(';
+            text += generateCommentCompareItems(itemIds);
+            text += generateCommentLinkOnItemComparisonWithStatus(items);
+            text += generateCommentLinkOnItemsSearch(items);
+            text += ')';
 
             $(commentBlock).html(text);
         }
@@ -71,30 +106,29 @@ function linksOnComments(tableClass, currentUserID) {
             }
 
             text += ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${ids.join('|')}" target="_blank"></a>`;
+            text += generateCommentCompareItems(ids);
 
             $(commentBlock).html(text);
         }
 
-        if (~commentText.indexOf(`.avito.ru/`)) { // user links
-            let text1 = commentText;
-            if (text1 === undefined) continue;
-            let links = text1.split(/(?: |<br>|\n)/);
-            let avito = `${global.connectInfo.adm_url}/`;
+        if (~commentText.indexOf(`http`)) { // links
+            let text = commentText;
+            const regUrl = /(https?|ftp):\/\/[^\s/$.?#].[^\s<]*/gi;
 
-            let shortUserLinkReg = /https\:\/\/adm\.avito\.ru\/\d+u(?!\/)\b/i;
+            text = text.replace(regUrl, url => {
+                const ids = url.match(/\d{2,}/g);
+                let tmp = '';
 
-            for (let i = 0; i < links.length; i++){
-                if ((links[i].indexOf(avito) + 1) && (text1.indexOf('href="' + links[i]) + 1) === 0){
-                    if (~links[i].indexOf(`.avito.ru/users/user/info/`) || shortUserLinkReg.test(links[i])) {
-                        let userID = links[i].replace(/\D/gi, '');
-                        text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="' + userID + '" title="Сравнить учетные записи">&#8644</button>)</span>');
-                        $(commentBlock).html(text1);
-                    } else {
-                        text1 = text1.replace(links[i], '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a>');
-                        $(commentBlock).html(text1);
-                    }
-                }
-            }
+                if (~url.indexOf('users/user/info') && ~global.currentUrl.indexOf('users/user/info'))
+                    tmp += generateCommentCompareUsers(ids);
+
+                if (~url.indexOf('items/item/info') && ~global.currentUrl.indexOf('items/item/info'))
+                    tmp += generateCommentCompareItems(ids);
+
+                return `<a href="${url}" target="_blank">${url}</a>${tmp ? ' (' + tmp + ')' : ''}`;
+            });
+
+            $(commentBlock).html(text);
         }
 
         if (~commentText.indexOf('Alive user ID:')) { // comparison on User
@@ -103,13 +137,13 @@ function linksOnComments(tableClass, currentUserID) {
             let tmp = text.split("Alive user ID: ");
             if (tmp[1] === undefined) continue;
             let users = tmp[1].split(/\D/);
-            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/users/user/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users[0]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
+            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/users/user/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(${generateCommentCompareUsers(users[0])})</span>`);
             $(commentBlock).html(text);
 
             let tmp2 = text.split("Base item ID: ");
             if (tmp2[1] === undefined) continue;
             let users2 = tmp2[1].split(/\D/);
-            text = text.replace(users2[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users2[0]}" target="_blank">${users2[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users2[0]}" target="_blank">%</span>)</span>`);
+            text = text.replace(users2[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users2[0]}" target="_blank">${users2[0]}</a><span class="sh-unicode-links">(${generateCommentCompareItems(users2[0])})</span>`);
             $(commentBlock).html(text);
 
             let part = text.split(", ");
@@ -118,7 +152,7 @@ function linksOnComments(tableClass, currentUserID) {
             let sii1 = sii[1].split(",");
             for (let i = 0; i < sii1.length; i++) {
                 let siiLinks = sii1[i].split(" -");
-                text = text.replace(siiLinks[0],`<a href="${global.connectInfo.adm_url}/items/item/info/${siiLinks[0]}" target="_blank">${siiLinks[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${siiLinks[0]}" target="_blank">%</span>)</span>`);
+                text = text.replace(siiLinks[0],`<a href="${global.connectInfo.adm_url}/items/item/info/${siiLinks[0]}" target="_blank">${siiLinks[0]}</a><span class="sh-unicode-links">(${generateCommentCompareItems(siiLinks[0])})</span>`);
             }
             $(tableClass).slice(j,j+1).html(text);
         }
@@ -129,14 +163,14 @@ function linksOnComments(tableClass, currentUserID) {
             let tmp = text.split("Base item ID: ");
             if (tmp[1] === undefined) continue;
             let users = tmp[1].split(/\D/);
-            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(<span class="pseudo-link compareItems" itemID="${users[0]}" target="_blank">%</span>)</span>`);
+            text = text.replace(users[0], `<a href="${global.connectInfo.adm_url}/items/item/info/${users[0]}" target="_blank">${users[0]}</a><span class="sh-unicode-links">(${generateCommentCompareItems(users[0])})</span>`);
             $(commentBlock).html(text);
 
             let tmp2 = text.split("Similar accounts: ");
             if (tmp2[1] === undefined) continue;
             let users2 = tmp2[1].split(/\D/);
             for (let i = 1; i < users2.length; i++) { // Цикл с 1, т.к. ID дублируются
-                text = text.replace(users2[i], `<a href="${global.connectInfo.adm_url}/users/user/info/${users2[i]}" target="_blank">${users2[i]}</a><span class="sh-unicode-links">(<button class="btn btn-link ah-pseudo-link compareUser" userID="${users2[i]}" title="Сравнить учетные записи">&#8644</button>)</span>`);
+                text = text.replace(users2[i], `<a href="${global.connectInfo.adm_url}/users/user/info/${users2[i]}" target="_blank">${users2[i]}</a><span class="sh-unicode-links">(${generateCommentCompareUsers(users2[i])}</span>`);
                 $(commentBlock).html(text);
             }
         }
@@ -166,42 +200,70 @@ function linksOnComments(tableClass, currentUserID) {
         }
     }
 
-    $('.compareUser').unbind('click').click(function () {
-        const similarUserID = $(this).attr('userID');
+    $('.ah-compare-item-action-link').click(function () {
+        const itemsIds = $(this).data('compared');
+        if (~currentUserID.indexOf('https')) {
+            currentUserID = currentUserID.replace(/\D/gi, '');
+        }
 
-        const btn = this;
+        const items = {};
+        items.abutment = currentUserID;
+        items.compared = itemsIds;
+
+        btnLoaderOn(this);
+        const comparison = new ItemsComparison(items);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(this));
+    });
+
+    $('.ah-compare-user-action-link').click(function () {
+        const usersIds = $(this).data('compared');
         if (~currentUserID.indexOf('https')) {
             currentUserID = currentUserID.replace(/\D/gi, '');
         }
 
         const users = {};
-        users.compared = [similarUserID];
         users.abutment = currentUserID;
+        users.compared = [usersIds];
 
-        btnLoaderOn(btn);
+        btnLoaderOn(this);
         const comparison = new UsersComparison(users);
         comparison.render()
             .then(() => {
                 comparison.showModal();
             }, error => alert(error))
-            .then(() => btnLoaderOff(btn));
+            .then(() => btnLoaderOff(this));
 
     });
+}
 
-    $('.compareItems').unbind('click').click(function () {
-        var itemID = $(this).attr('itemID');
-        if (!itemID) return;
+function generateCommentCompareUsers(ids) {
+    return `<button class="btn btn-link ah-pseudo-link ah-compare-user-action-link" title="Сравнение пользователей" data-compared="[${ids}]">⇄</button>`;
+}
 
-        $('#ah-loading-layer').show();
+function generateCommentCompareItems(ids) {
+    return `<button class="btn btn-link ah-pseudo-link ah-compare-item-action-link" title="Сравнение объявлений" data-compared="[${ids}]">%</button>`;
+}
 
-        $('.images-preview-gallery').remove();
-        $('body').append('<div class="images-preview-gallery" style="display: none; position:fixed; z-index: 1080; background-color: rgba(255, 255, 255, 0.95); text-align: center; border-radius: 0; padding: 10px; border: 1px solid rgba(153, 153, 153, 0.56);"></div>');
+function generateCommentLinkOnItemsSearch(ids) {
+    return ` <a class="glyphicon glyphicon-search" href="${global.connectInfo.adm_url}/items/search?query=${ids.join('|')}" target="_blank"></a>`
+}
 
-        if (~currentUserID.indexOf('https')) {
-            currentUserID = currentUserID.replace(/\D/gi, '');
-        }
-        loadComperison(itemID, currentUserID);
-    });
+function generateCommentLinkOnItemComparison(ids) {
+    let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${ids[0]}/archive?`;
+    const len = ids.length < 4 ? ids.length : 4;
+    for (let i = 0; i < len; ++i) itemComparison += `ids[]=${ids[i]}&`;
+    return ` <a class="glyphicon glyphicon-new-window" href="${itemComparison}"  style="margin-right: 4px;" target="_blank"></a>`;
+}
+
+function generateCommentLinkOnItemComparisonWithStatus(ids) {
+    let itemComparison = `${global.connectInfo.adm_url}/items/comparison/${ids[0].id}/archive?`;
+    const len = ids.length < 4 ? ids.length : 4;
+    for (let i = 0; i < len; ++i) itemComparison += `ids[]=${ids[i].id}&${ids[i].status}&`;
+    return ` <a class="glyphicon glyphicon-new-window" href="${itemComparison}"  style="margin-right: 4px;" target="_blank"></a>`;
 }
 
 function loadComperison(itemID, currentUserID) {

@@ -114,7 +114,7 @@ function comparePhotoPre() {
         const item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
         const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">%</button>)</span>');
         $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
         photoSelector.slice(i, i+1).after($pseudoLink);
     }
@@ -143,7 +143,7 @@ function comparePhotoPreNew() {
         const item1id = photoSelector.slice(i, i+1).parents('tr').attr('id').split('_')[1];
         const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">%</button>)</span>');
         $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
         photoSelector.slice(i, i+1).after($pseudoLink);
     }
@@ -172,7 +172,7 @@ function comparePhotoPost() {
         const item1id = photoSelector.slice(i, i+1).parents('tr').attr('data-id');
         const item2id = photoSelector.slice(i, i+1).attr('href').match(/\d{5,}/g);
 
-        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">&#8644</button>)</span>');
+        const $pseudoLink = $(' <span class="ah-comparePhotoPre-wrapper">(<button class="btn btn-link ah-pseudo-link ah-comparePhotoPre" item1id="'+item1id+'">%</button>)</span>');
         $pseudoLink.find('.ah-comparePhotoPre').attr('item2id', JSON.stringify(item2id));
         photoSelector.slice(i, i+1).after($pseudoLink);
     }
@@ -355,8 +355,8 @@ function comparePhotoActionWithButtons(item1id, item2id) {
     if (blockItemBlock === 'first') {
         comparePhotoDecideBlockReason(item1id, item1Category, item1Type);
 
-        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Alive]`);
-        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Blocked]`);
+        commentOnItemModer(item1id, `[Admin.Helper.Duplicate.Photo] Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Alive]`);
+        commentOnItemModer(item2id, `[Admin.Helper.Duplicate.Photo] Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Blocked]`);
         $('#item_'+item1id).detach();
 
         outTextFrame('Опорное объявление было<br>заблокировано/отклонено');
@@ -364,8 +364,8 @@ function comparePhotoActionWithButtons(item1id, item2id) {
     if (blockItemBlock === 'second') {
         comparePhotoDecideBlockReason(item2id, item2Category, item2Type);
 
-        commentOnItemModer(item1id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Blocked]`);
-        commentOnItemModer(item2id, `Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Alive]`);
+        commentOnItemModer(item1id, `[Admin.Helper.Duplicate.Photo] Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item2id} [Blocked]`);
+        commentOnItemModer(item2id, `[Admin.Helper.Duplicate.Photo] Duplicate photo: ${global.connectInfo.adm_url}/items/item/info/${item1id} [Alive]`);
 
         outTextFrame('Второстепенное объявление было<br>заблокировано/отклонено');
     }

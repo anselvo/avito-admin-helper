@@ -23,7 +23,7 @@ function commentOnItem(id, comment, action){
 }
 
 function commentOnUserSupport(id, comment, action){
-	action = action || '';
+    action = action || '';
     var request = new XMLHttpRequest();
     request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -104,7 +104,7 @@ function changeEmail(email, domen, id, status) {
             if (r.indexOf("success") + 1) {
                 notfake(email, domen);
                 sendNewPassword(id);
-                commentOnUserHack(id, email, domen, " вернул, взлом.");
+                commentOnUserHack(id, email, domen, "[Admin.Helper.Email] вернул, взлом.");
                 if (status.indexOf("Blocked") + 1) {
                     unblockUserHack(id);
                 }

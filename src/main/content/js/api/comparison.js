@@ -335,6 +335,74 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
+AhComparison.prototype.compareTime = function () {
+    const allCompareNodes = this.modal.querySelectorAll('[data-compare-time]');
+    const allNodesByName = {};
+
+    allCompareNodes.forEach(node => {
+        const nodeName = node.dataset.compareTime;
+
+        if (!allNodesByName.hasOwnProperty(nodeName)) {
+            allNodesByName[node.dataset.compareTime] = [];
+        }
+
+       allNodesByName[node.dataset.compareTime].push(node);
+    });
+
+    for (let key in allNodesByName) {
+        let maxTime = Number.NEGATIVE_INFINITY;
+        let maxTimeNode = null;
+        let minTime = Number.POSITIVE_INFINITY;
+        let minTimeNode = null;
+
+        allNodesByName[key].forEach(node => {
+            const time = parseRuDate(node.textContent.trim());
+
+            if (time) {
+                if (time > maxTime) {
+                    maxTime = time;
+                    maxTimeNode = node;
+                }
+                if (time < minTime) {
+                    minTime = time;
+                    minTimeNode = node;
+                }
+            }
+        });
+
+        if (maxTimeNode) maxTimeNode.className = 'ah-compare-max-time';
+        if (minTimeNode) minTimeNode.className = 'ah-compare-min-time';
+    }
+};
+
+AhComparison.prototype.actionButtons = function (className, buttonName, entityId, reasonJson, clickReasonAction) {
+    const dropdownNode = document.createElement('div');
+    dropdownNode.className = 'ah-compare-dropdown dropdown';
+    dropdownNode.innerHTML = `
+        <button id="ah-compare-dropdown-btn-${className}"
+                class="btn btn-default green dropdown-toggle ah-compare-item-btn"
+                data-toggle="dropdown"
+                data-entity-id="${entityId}"
+                aria-haspopup="true"
+                aria-expanded="false">
+            ${buttonName}
+        </button>
+        <div class="ah-compare-dropdown-menu dropdown-menu dropdown-menu-right" aria-labelledby="ah-compare-dropdown-btn-${className}">
+            ${reasonJson.map(reason => 
+                `<span class="ah-compare-dropdown-reason" data-entity-id="${entityId}" data-reason="${className}" data-reason-id="${reason.id}">${reason.text}</span>`
+            )}
+        </div>        
+    `;
+
+    dropdownNode.addEventListener('click', elem => {
+        const target = elem.target;
+        if (target.classList.contains('ah-compare-dropdown-reason')) {
+            clickReasonAction(target);
+        }
+    });
+
+    return dropdownNode;
+};
 
 function ItemsComparison() {
     AhComparison.apply(this, arguments);
@@ -357,7 +425,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     let rows = {
         id_title_price: '',
         status_reasons: '',
-        sortTime: '',
+        time: '',
         photos: '',
         description: '',
         microCategory: '',
@@ -368,7 +436,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
     };
 
     const abutmentId = this._ids.abutment;
-    let abutmentUserId = null;
+    const itemIds = [];
+    let abutment = {};
 
     for (let key in parsedEntities) {
         if (!parsedEntities.hasOwnProperty(key)) continue;
@@ -377,14 +446,21 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         let mainPhoto = '';
         let prevPhotos = '';
         let reasons = '';
-        let microCategoryes = [];
+        let microCategories = [];
+
+        itemIds.push(item.id);
 
         // превьюшки
-        item.photos.forEach(function(photo, i) {
+        item.photos.forEach(function (photo, i) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
+            const date = new Date(photo.date);
             prevPhotos += `
-                    <div class="ah-photo-prev-wrap">
+                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
+                        <div class="ah-photo-prev-img-date" title="${photo.date}">
+                            ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth() + 1)} 
+                            ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
+                        </div>
                     </div>
                 `;
         });
@@ -392,11 +468,14 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
+                    <div class="ah-compare-photo-date">${item.photos[0].date}</div>
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
-                    <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" 
-                        class="ah-photo-link">
-                    </a>
+                    <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
+
+            if (item.category === 'Недвижимость' && abutment.category === 'Недвижимость') {
+                mainPhoto += `<div class="ah-compare-photo-check">Требуется проверка фото</div>`
+            }
         } else {
             mainPhoto = `<div class="text-muted">Нет Фото</div>`;
         }
@@ -407,14 +486,14 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
 
         // микрокатегория
-        item.microCategoryes.forEach(function(mircoCategory, i) {
-            microCategoryes.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${mircoCategory}</span>`);
+        item.microCategoryes.forEach(function (microCategory, i) {
+            microCategories.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${microCategory}</span>`);
         });
 
         // статусы
         if (statusPatterns.blocked.test(item.status)) {
             item.status = item.status.replace(statusPatterns.blocked, `
-                    <span class="text-danger" title="${reasons}">
+                    <span class="text-danger">
                         $& <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="${reasons}"></span>
                     </span>`);
         }
@@ -448,14 +527,22 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             `;
 
         rows.status_reasons += `
-                <div class="ah-compare-cell" data-entity-id="${item.id}">
+                <div class="ah-compare-cell ah-compare-items-row-status" data-entity-id="${item.id}">
                     <span class="ah-compare-items-status">${item.status}</span>
+                    <span class="ah-compare-items-status-button" data-entity-id="${item.id}"></span>
                 </div>
             `;
 
-        rows.sortTime += `
+        rows.time += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <span title="Sort Time">${item.sortTime}</span>
+                    <div>
+                        <span class="ah-compare-items-label">Sort time: </span>
+                        <span data-compare-time="sort" data-entity-id="${item.id}" title="Sort Time">${item.time}</span>
+                    </div>
+                    <div>
+                        <span class="ah-compare-items-label">Start time: </span>
+                        <span data-compare-time="start" data-entity-id="${item.id}" title="Start Time">${item.startTime}</span>
+                    </div>
                 </div>
             `;
 
@@ -472,7 +559,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
         rows.microCategory += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <i>${microCategoryes.join(' / ')}</i>
+                    <i>${microCategories.join(' / ')}</i>
                 </div>
             `;
 
@@ -485,8 +572,16 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
         rows.region += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <span class="ah-compare-items-label">Город:</span>
-                    <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
+                    <div class="ah-compare-city">
+                        <span class="ah-compare-items-label">Город:</span>
+                        <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
+                    </div>
+                    <div class="ah-compare-address">
+                        <span class="ah-compare-items-label">Адресс:</span>
+                        <span data-compare="address" data-entity-id="${item.id}" title="${item.address}">
+                            <a href="https://yandex.ru/maps?text=${item.region + item.address}" target="_blank">${item.address ? item.address : '-'}</a>
+                        </span>
+                    </div>
                 </div>
             `;
 
@@ -516,7 +611,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                     <span class="ah-compare-items-label">Пользователь:</span>
                     <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userMail" data-entity-id="${item.id}">
                     ${item.userMail}</a>
-                    ${(abutmentId !== item.id && abutmentUserId !== item.userId) ? `
+                    ${(abutmentId !== item.id && abutment.userId !== item.userId) ? `
                         (<button class="btn btn-link ah-pseudo-link ah-compare-users-btn" data-user-id="${item.userId}" title="Сравнить УЗ">&#8644</button>)
                     ` : ``}
                     <div><span class="ah-compare-items-label">Объявления:</span> <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a></div>
@@ -524,7 +619,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             `;
 
         if (abutmentId === item.id) {
-            abutmentUserId = item.userId;
+            abutment = item;
         }
     }
 
@@ -536,7 +631,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             ${rows.status_reasons}
         </div>
         <div class="ah-compare-row">
-            ${rows.sortTime}
+            ${rows.time}
         </div>
         <div class="ah-compare-row ah-compare-items-row-photos">
             ${rows.photos}
@@ -629,14 +724,19 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             const preview = target.closest('.ah-photo-prev-wrap');
 
             const allPreviews = preview.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
-            const mainPhoto = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main .ah-photo-link');
+            const main = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main');
+            const mainPhoto = main.querySelector('.ah-photo-link');
+            const mainPhotoDate = main.querySelector('.ah-compare-photo-date');
             const currPreview = preview.querySelector('.ah-photo-prev-img');
+            const photoDate = preview.querySelector('.ah-photo-prev-img-date');
             const originalImg = currPreview.dataset.originalImage;
 
             allPreviews.forEach(item => item.classList.remove('ah-photo-prev-img-active'));
             currPreview.classList.add('ah-photo-prev-img-active');
             mainPhoto.style.backgroundImage = `url(${originalImg})`;
             mainPhoto.href = originalImg;
+
+            mainPhotoDate.textContent = photoDate.title;
         }
     });
 
@@ -648,7 +748,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         if (target.classList.contains('ah-compare-users-btn')) {
             const users = {};
             users.compared = [target.dataset.userId];
-            users.abutment = abutmentUserId;
+            users.abutment = abutment.userId;
 
             btnLoaderOn(target);
 
@@ -663,7 +763,64 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
     });
 
+    const actionButton = this.modal.querySelectorAll('.ah-compare-items-status-button');
+    actionButton.forEach(button => {
+        const itemId = button.dataset.entityId;
+        button.appendChild(this.actionButtons('reject', 'Отклонить', itemId, global.compareDropdownItemReject, reason => {
+            rejectItem(reason.dataset.entityId, reason.dataset.reasonId);
+            commentOnItem(reason.dataset.entityId, `[Admin.Helper.Item.Comparison] ${itemIds.join(', ')}`);
+            const rowStatusNode = reason.closest('.ah-compare-items-row-status');
+            const itemStatusNode = rowStatusNode.querySelector('.ah-compare-items-status');
+            itemStatusNode.innerHTML = `
+                <span class="text-warning">
+                    Rejected
+                    <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="(${reason.textContent})"></span>
+                </span>
+            `;
+
+            $(this.modal.querySelectorAll(`.ah-compare-items-reason-tooltip`)).tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+        }));
+        button.appendChild(this.actionButtons('block', 'Блок', itemId, global.compareDropdownItemBlock, reason => {
+            blockItem(reason.dataset.entityId, reason.dataset.reasonId);
+            commentOnItem(reason.dataset.entityId, `[Admin.Helper.Item.Comparison] ${itemIds.join(', ')}`);
+            const rowStatusNode = reason.closest('.ah-compare-items-row-status');
+            const itemStatusNode = rowStatusNode.querySelector('.ah-compare-items-status');
+            itemStatusNode.innerHTML = `
+                <span class="text-danger">
+                    Blocked
+                    <span class="glyphicon glyphicon-info-sign ah-compare-items-reason-tooltip" title="(${reason.textContent})"></span>
+                </span>
+            `;
+
+            $(this.modal.querySelectorAll(`.ah-compare-items-reason-tooltip`)).tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+        }));
+    });
+
+
     this.compareStrict();
+    this.compareTime();
+    // this.similarPhotos(abutmentId);
+};
+
+ItemsComparison.prototype.similarPhotos = function (id) {
+    getItemAntifraudInfo(id).then(response => {
+        const similarGroup = response.similar_images_grouped;
+
+        for (let similar of similarGroup) {
+            const color = gerRandomColor();
+
+            for (let imageId of similar) {
+                const photoNode = document.querySelectorAll(`data-image-id="${imageId}"`)[0];
+                photoNode.style.borderColor = color;
+            }
+        }
+    });
 };
 
 ItemsComparison.prototype.render = function() {
@@ -682,7 +839,6 @@ ItemsComparison.prototype.render = function() {
                 reject(error);
             });
     });
-
 };
 
 function UsersComparison() {
@@ -842,7 +998,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
         `);
 
         cellRegTime.insertAdjacentHTML('beforeend',`
-            <b>Зарегистрирован:</b> <span>${info.regTime}</span>
+            <b>Зарегистрирован:</b> <span data-compare-time="registry" data-entity-id="${info.id}">${info.regTime}</span>
         `);
 
         cellNameManager.insertAdjacentHTML('beforeend',`
@@ -1108,6 +1264,7 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
     // сравнение
     this.compareStrict();
+    this.compareTime();
 
     // проверить совпадения
     const similarBtns = modalContainer.querySelectorAll(`.ah-compare-show-abutment-similar-btn`);

@@ -346,7 +346,7 @@ function unverifyPhones(id) {
 
                 if (mailPattern.test(url)) {
                     try {
-                        commentOnUserSupport(id, phone + " отвязан для " + url);
+                        commentOnUserSupport(id, "[Admin.Helper.Phone]" + phone + " отвязан для " + url);
                         unverify(o, reloadPage);
                         return;
                     } catch (e) {
@@ -356,7 +356,7 @@ function unverifyPhones(id) {
 
                 if (helpdeskLinkPatter.test(url)) {
                     try {
-                        commentOnUserSupport(id, phone + " отвязан, тикет: " + url);
+                        commentOnUserSupport(id, "[Admin.Helper.Phone]" + phone + " отвязан, тикет: " + url);
                         unverify(o, reloadPage);
                         return;
                     } catch (e) {
@@ -366,8 +366,8 @@ function unverifyPhones(id) {
 
                 if (userLinkPatter.test(url) || shortUserLinkReg.test(url)) {
                     try {
-                        commentOnUserSupport(getUserIdFromUrl(url), phone + " отвязан от " + window.location.href);
-                        commentOnUserSupport(id, phone + " отвязан для " + url);
+                        commentOnUserSupport(getUserIdFromUrl(url), "[Admin.Helper.Phone]" + phone + " отвязан от " + window.location.href);
+                        commentOnUserSupport(id, "[Admin.Helper.Phone]" + phone + " отвязан для " + url);
                         unverify(o, reloadPage);
                         return;
                     } catch (e) {
@@ -462,7 +462,7 @@ function unverifyPhones(id) {
 
                     $('#ah-loading-layer').show();
 
-                    commentOnUserSupport(id, comment);
+                    commentOnUserSupport(id, "[Admin.Helper.Phone]" + comment);
 
                     var reloadPage = false;
                     for (var i = 0; i < $('.sh-added-phone-multi-unverify').length; i++) {
@@ -506,7 +506,7 @@ function unverifyPhones(id) {
 
                         if (mailPattern.test(url)) {
                             try {
-                                commentOnUserSupport(id, telStr + ' ' + phrase + ' для ' + url);
+                                commentOnUserSupport(id, "[Admin.Helper.Phone]" + telStr + ' ' + phrase + ' для ' + url);
                                 for (var i = 0; i < $('.sh-added-phone-multi-unverify').length; i++) {
                                     var phone = $('.sh-added-phone-multi-unverify').slice(i, i + 1).text();
                                     var obj = {id: id, phone: phone};
@@ -520,7 +520,7 @@ function unverifyPhones(id) {
 
                         if (helpdeskLinkPatter.test(url)) {
                             try {
-                                commentOnUserSupport(id, telStr + ' ' + phrase + ',  тикет: ' + url);
+                                commentOnUserSupport(id, "[Admin.Helper.Phone]" + telStr + ' ' + phrase + ',  тикет: ' + url);
                                 for (var i = 0; i < $('.sh-added-phone-multi-unverify').length; i++) {
                                     var phone = $('.sh-added-phone-multi-unverify').slice(i, i + 1).text();
                                     var obj = {id: id, phone: phone};
@@ -534,8 +534,8 @@ function unverifyPhones(id) {
 
                         if (userLinkPatter.test(url) || shortUserLinkReg.test(url)) {
                             try {
-                                commentOnUserSupport(getUserIdFromUrl(url), telStr + ' ' + phrase + ' от ' + window.location.href);
-                                commentOnUserSupport(id, telStr + ' ' + phrase + ' для ' + url);
+                                commentOnUserSupport(getUserIdFromUrl(url), "[Admin.Helper.Phone]" + telStr + ' ' + phrase + ' от ' + window.location.href);
+                                commentOnUserSupport(id, "[Admin.Helper.Phone]" + telStr + ' ' + phrase + ' для ' + url);
                                 for (var i = 0; i < $('.sh-added-phone-multi-unverify').length; i++) {
                                     var phone = $('.sh-added-phone-multi-unverify').slice(i, i + 1).text();
                                     var obj = {id: id, phone: phone};
