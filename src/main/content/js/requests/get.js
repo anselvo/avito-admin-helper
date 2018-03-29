@@ -265,3 +265,14 @@ function getSpringJsonTable(uuid) {
         );
     });
 }
+
+function unlinkPaymentSource(url) {
+    return fetch(url, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.text();
+    });
+}

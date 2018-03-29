@@ -311,6 +311,9 @@ function handleRoles() {
     if (isAuthority('ROLE_USER_CHANGE_EMAIL')) { // изменение е-майла для взломов
         roleHandler.userChangeEmail();
     }
+    if (isAuthority('ROLE_LINKED_PAYMENT_SOURCES')) { // привязанные плятежные источники
+        roleHandler.userLinkedPaymentSources();
+    }
     if (isAuthority('ROLE_USER_INDICATORS')) { // индикаторы на юзере
         roleHandler.userIndicators();
     }
@@ -981,6 +984,12 @@ RoleHandler.prototype.userCheckDoubles = function() {
 RoleHandler.prototype.userChangeEmail = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
         userChangeEmail();
+    }
+};
+
+RoleHandler.prototype.userLinkedPaymentSources = function() {
+    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
+        userLinkedPaymentSources();
     }
 };
 
