@@ -4246,6 +4246,12 @@ select.ah-form-control:focus {
     font-weight: 700;
 }
 
+.ah-compare-address {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .ah-compare-photo-main {
     position: relative;
     border: 1px solid #e5e5e5;

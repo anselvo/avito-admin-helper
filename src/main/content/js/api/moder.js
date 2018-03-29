@@ -474,7 +474,8 @@ function postBlockReasonList(reasonId) {
     if (reasonId === '128') reason = 'МОШЕННИК';
     const moderComment = document.getElementById('ah-post-block-comment');
 
-    const comment = `${reason} ${moderComment.value ? '(' + moderComment.value + ')' : ''}
+    const comment = `[Admin.Helper.Users.Block]
+    ${reason} ${moderComment.value ? '(' + moderComment.value + ')' : ''}
     Ссылка открытая модератором при блокировке:
     ${url}
     Ссылка на активного пользователя:

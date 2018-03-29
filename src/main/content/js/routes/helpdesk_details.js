@@ -1882,7 +1882,7 @@ function addCommentOnUserFromTicket() {
 		}
 		
 		$('#ah-loading-layer').show();
-        commentOnUserSupport(userId, comment, 'fromTicket');
+        commentOnUserSupport(userId, comment, '[Admin.Helper.Helpdesk] fromTicket');
     });
 }
 
@@ -1914,7 +1914,7 @@ function unblockUserHD() {
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
@@ -1932,7 +1932,7 @@ function unblockUserHD() {
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
@@ -1950,7 +1950,7 @@ function unblockUserHD() {
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, 1); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
@@ -2733,7 +2733,7 @@ function rightPanelUnblockUser() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
@@ -2749,7 +2749,7 @@ function rightPanelUnblockUser() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();
@@ -2765,7 +2765,7 @@ function rightPanelUnblockUser() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
 
-        commentOnUserSupport(id, 'Восстановил по обращению №'+ticketid);
+        commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
         chanceUser(id, chance); //RK всегда первый шанс
 
         var request = new XMLHttpRequest();

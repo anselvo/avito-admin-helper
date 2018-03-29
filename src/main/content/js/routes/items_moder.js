@@ -158,7 +158,7 @@ function abTestCheckedPhoto($items) {
                         'Фото проверены <i class="glyphicon glyphicon-thumbs-up"></i>' +
                     '</span>');
 
-                commentOnItem($id, '#ab-photos-checked');
+                commentOnItem($id, '[Admin.Helper.Photo.Check] #ab-photos-checked');
             });
         });
     }

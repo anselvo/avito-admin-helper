@@ -168,12 +168,12 @@ function rejectByCall() {
     $('.calls .col-xs-9').append(`<input data-html="true" data-toggle="popover" data-trigger="hover" title="" data-content="${$(usersTable).html().replace(/"/g, "&quot;")}" 
         id="rbc" type="button" class="btn btn-sm btn-default calls-btn_good" value="RBC ${allRbcCount}" style="color: #a12fff">`);
 
-    $('#rbc').popover();
-
-    $('#rbc').click(function () {
-        commentOnItem(id, 'action_by_call обработано телефонной модерацией RE #rbc');
-        location.reload();
-    });
+    $('#rbc')
+        .popover()
+        .click(function () {
+            commentOnItem(id, '[Admin.Helper.Action.Call] обработано телефонной модерацией RE #rbc');
+            location.reload();
+        });
 }
 
 function timeInCity() {
@@ -214,7 +214,7 @@ function allowItemRequest(id) {
             outTextFrame(response);
 
             if (response === 'Item activated') {
-                commentOnItem(id, 'одобрил(а)');
+                commentOnItem(id, '[Admin.Helper.Item.Allow] одобрил(а)');
 
                 location.reload();
             }

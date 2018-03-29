@@ -437,7 +437,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
     const abutmentId = this._ids.abutment;
     const itemIds = [];
-    let abutmentUserId = null;
+    let abutment = {};
 
     for (let key in parsedEntities) {
         if (!parsedEntities.hasOwnProperty(key)) continue;
@@ -451,14 +451,14 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         itemIds.push(item.id);
 
         // превьюшки
-        item.photos.forEach(function(photo, i) {
+        item.photos.forEach(function (photo, i) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
             const date = new Date(photo.date);
             prevPhotos += `
                     <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
                         <div class="ah-photo-prev-img-date" title="${photo.date}">
-                            ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth()+1)} 
+                            ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth() + 1)} 
                             ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
                         </div>
                     </div>
@@ -472,7 +472,10 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
                     <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
-            if (item.category === 'Недвижимость') mainPhoto += `<div class="ah-compare-photo-check">Требуется проверка фото</div>`
+
+            if (item.category === 'Недвижимость' && abutment.category === 'Недвижимость') {
+                mainPhoto += `<div class="ah-compare-photo-check">Требуется проверка фото</div>`
+            }
         } else {
             mainPhoto = `<div class="text-muted">Нет Фото</div>`;
         }
@@ -483,7 +486,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         }
 
         // микрокатегория
-        item.microCategoryes.forEach(function(microCategory, i) {
+        item.microCategoryes.forEach(function (microCategory, i) {
             microCategories.push(`<span data-compare="microCategory[${i}]" data-entity-id="${item.id}">${microCategory}</span>`);
         });
 
@@ -569,8 +572,16 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
         rows.region += `
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
-                    <span class="ah-compare-items-label">Город:</span>
-                    <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
+                    <div class="ah-compare-city">
+                        <span class="ah-compare-items-label">Город:</span>
+                        <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
+                    </div>
+                    <div class="ah-compare-address">
+                        <span class="ah-compare-items-label">Адресс:</span>
+                        <span data-compare="address" data-entity-id="${item.id}" title="${item.address}">
+                            <a href="https://yandex.ru/maps?text=${item.region + item.address}" target="_blank">${item.address ? item.address : '-'}</a>
+                        </span>
+                    </div>
                 </div>
             `;
 
@@ -600,7 +611,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                     <span class="ah-compare-items-label">Пользователь:</span>
                     <a target="_blank" href="/users/user/info/${item.userId}" data-compare="userMail" data-entity-id="${item.id}">
                     ${item.userMail}</a>
-                    ${(abutmentId !== item.id && abutmentUserId !== item.userId) ? `
+                    ${(abutmentId !== item.id && abutment.userId !== item.userId) ? `
                         (<button class="btn btn-link ah-pseudo-link ah-compare-users-btn" data-user-id="${item.userId}" title="Сравнить УЗ">&#8644</button>)
                     ` : ``}
                     <div><span class="ah-compare-items-label">Объявления:</span> <a target="_blank" href="/items/search?user_id=${item.userId}">${item.userItems}</a></div>
@@ -608,7 +619,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             `;
 
         if (abutmentId === item.id) {
-            abutmentUserId = item.userId;
+            abutment = item;
         }
     }
 
@@ -737,7 +748,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         if (target.classList.contains('ah-compare-users-btn')) {
             const users = {};
             users.compared = [target.dataset.userId];
-            users.abutment = abutmentUserId;
+            users.abutment = abutment.userId;
 
             btnLoaderOn(target);
 
