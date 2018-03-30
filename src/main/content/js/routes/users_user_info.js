@@ -19,22 +19,22 @@ function adminTableCategory() {
         method: "GET",
         url: `${global.connectInfo.ext_url}/journal/include/php/user/getAllUsers.php`,
     },
-            function (response) {
-                var jsonParse = JSON.parse(response);
+        function (response) {
+            var jsonParse = JSON.parse(response);
 
-                var usersList = jsonParse.table;
+            var usersList = jsonParse.table;
 
-                for (var i = 1; i < len; i++) {
-                    var currentLogin = $('.table tr').slice(i, i + 1).find('td:eq(2)').text();
+            for (var i = 1; i < len; i++) {
+                var currentLogin = $('.table tr').slice(i, i + 1).find('td:eq(2)').text();
 
-                    for (var j = 0; j < usersList.length; ++j) {
-                        if (currentLogin == usersList[j].username) {
-                            $('.table tr').slice(i, i + 1).find('td:eq(2)').html('<span class="label" title="' + usersList[j].subdivision_name + ' (' + usersList[j].teamlead + ')\nСмена: ' + usersList[j].shift + '\nВыходные: ' + usersList[j].weekend + '"  style="background:#' + usersList[j].sub_color + ';">' + usersList[j].subdivision + '</span><span style="margin-left:5px;">' + usersList[j].username + '</span>');
-                            break;
-                        }
+                for (var j = 0; j < usersList.length; ++j) {
+                    if (currentLogin == usersList[j].username) {
+                        $('.table tr').slice(i, i + 1).find('td:eq(2)').html('<span class="label" title="' + usersList[j].subdivision_name + ' (' + usersList[j].teamlead + ')\nСмена: ' + usersList[j].shift + '\nВыходные: ' + usersList[j].weekend + '"  style="background:#' + usersList[j].sub_color + ';">' + usersList[j].subdivision + '</span><span style="margin-left:5px;">' + usersList[j].username + '</span>');
+                        break;
                     }
                 }
             }
+        }
     );
 }
 

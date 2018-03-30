@@ -104,7 +104,7 @@ function changeEmail(email, domen, id, status) {
             if (r.indexOf("success") + 1) {
                 notfake(email, domen);
                 sendNewPassword(id);
-                commentOnUserHack(id, email, domen, "[Admin.Helper.Email] вернул, взлом.");
+                commentOnUserHack(id, email, domen, " вернул, взлом.");
                 if (status.indexOf("Blocked") + 1) {
                     unblockUserHack(id);
                 }
@@ -147,7 +147,7 @@ function notfake(emailCheck, domen) {
 }
 
 function commentOnUserHack(id, email, domen, comment) {
-    var commentFull = email + "@" + domen + comment;
+    var commentFull = "[Admin.Helper.Email] " + email + "@" + domen + comment;
     var request = new XMLHttpRequest();
     request.open("POST", `${global.connectInfo.adm_url}/comment`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

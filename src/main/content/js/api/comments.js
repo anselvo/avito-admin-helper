@@ -69,27 +69,27 @@ function linksOnComments(tableClass, currentUserID) {
             const itemIds = text.match(regIds);
             const itemIdsStatus = text.match(regIdsStatus);
 
-            if (!itemIdsStatus) break;
+            if (itemIdsStatus) {
+                const items = itemIdsStatus.map(item => {
+                    const obj = {};
+                    obj.id = item.match(/\d+/)[0];
+                    obj.status = item.match(/[a-z]+/)[0];
+                    return obj;
+                });
 
-            const items = itemIdsStatus.map(item => {
-                const obj = {};
-                obj.id = item.match(/\d+/)[0];
-                obj.status = item.match(/[a-z]+/)[0];
-                return obj;
-            });
+                text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
 
-            text = text.replace(regIds, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
+                let itemSearch = items[0].id;
+                for (let i = 1; i < items.length; ++i) itemSearch += `|${items[i].id}`;
 
-            let itemSearch = items[0].id;
-            for (let i = 1; i < items.length; ++i) itemSearch += `|${items[i].id}`;
+                text += '(';
+                text += generateCommentCompareItems(itemIds);
+                text += generateCommentLinkOnItemComparisonWithStatus(items);
+                text += generateCommentLinkOnItemsSearch(itemIds);
+                text += ')';
 
-            text += '(';
-            text += generateCommentCompareItems(itemIds);
-            text += generateCommentLinkOnItemComparisonWithStatus(items);
-            text += generateCommentLinkOnItemsSearch(items);
-            text += ')';
-
-            $(commentBlock).html(text);
+                $(commentBlock).html(text);
+            }
         }
 
         if (~commentText.indexOf('revived')) { //comparison on Item
