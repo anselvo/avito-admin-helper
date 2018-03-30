@@ -1882,7 +1882,7 @@ function addCommentOnUserFromTicket() {
 		}
 		
 		$('#ah-loading-layer').show();
-        commentOnUserSupport(userId, comment, '[Admin.Helper.Helpdesk] fromTicket');
+        commentOnUserSupport(userId, comment, 'fromTicket');
     });
 }
 
