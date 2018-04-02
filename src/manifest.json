@@ -3,7 +3,7 @@
     "name": "Admin.Helper",
 	"short_name": "AH", 
     "version": "5.2.0",
-	
+
 	"background": {
 		"scripts": [
 			"include/library/jquery.min.js",
@@ -11,7 +11,9 @@
 			"include/library/sockjs.js",
             "include/library/stomp.min.js",
 			"main/background/background.js",
-			"main/background/contextMenu.js"
+			"main/background/contextMenu.js",
+			"main/background/shortcuts.js"
+
 		]
     },
 
@@ -75,6 +77,24 @@
     ],
 
 	"web_accessible_resources" : ["main/inject/helpdesk.js"],
+
+	"commands": {
+		"open-ticket": {
+			"description": "Открыть тикет"
+		},
+		"open-item": {
+			"description": "Открыть объявление"
+		},
+		"open-comparison": {
+			"description": "Открыть комперисон"
+		},
+		"open-user": {
+			"description": "Открыть пользователя"
+		},
+		"open-account": {
+			"description": "Открыть кошелек"
+		}
+	},
 
 	"permissions": [
 		"webRequest",
