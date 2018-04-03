@@ -51,14 +51,17 @@ chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name === 'helpDeskQueueChecker') helpDeskQueueChecker();
 });
 
-// ОПРЕДЕЛЯЕТ КАКАЯ ВКЛАДКА АКТИВНАЯ
-chrome.tabs.onActivated.addListener(info => {
-
+// АКТИВАЦИЯ ВКЛАДКИ
+chrome.tabs.onActivated.addListener(() => {
+    updateContextMenu();
 });
 
 // ЛОВИТ ИЗМЕНЕНИЯ ВО ВКЛАДКАХ
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-	if (changeInfo.status === 'complete') chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
+	if (changeInfo.status === 'complete') {
+	    chrome.tabs.sendMessage(tabId, {onUpdated: 'complete'});
+        updateContextMenu();
+    }
 });
 
 // ЛОВИТ КАКИЕ ЗАПРОСЫ ОТПРАВЛЕНЫ НА СЕРВЕР

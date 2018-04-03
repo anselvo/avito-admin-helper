@@ -2,7 +2,7 @@ chrome.commands.onCommand.addListener((command) => {
     chrome.tabs.executeScript({
         code: 'window.getSelection().toString();'
     }, (selection) => {
-        const selectionText = selection[0];
+        const selectionText = selection ? selection[0] : null;
 
         if (selectionText && selectionText.trim()) {
             switch (command) {
@@ -23,7 +23,7 @@ chrome.commands.onCommand.addListener((command) => {
                     break;
             }
         } else {
-            addChromeNotification(`Сначала выделите ID${command === 'open-user' ? ' или email' : ''}`);
+            addChromeNotification(`Выделите ID ${command === 'open-user' ? 'или email' : ''}, чтобы выполнить переход`);
         }
     });
 });

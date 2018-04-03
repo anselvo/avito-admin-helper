@@ -80,20 +80,32 @@
 
 	"commands": {
 		"open-ticket": {
-			"description": "Открыть тикет"
+			"description": "Открыть тикет",
+            "suggested_key": {
+              "default": "Alt+T"
+            }
 		},
 		"open-item": {
-			"description": "Открыть объявление"
-		},
-		"open-comparison": {
-			"description": "Открыть комперисон"
+			"description": "Открыть объявление",
+            "suggested_key": {
+              "default": "Alt+I"
+            }
 		},
 		"open-user": {
-			"description": "Открыть пользователя"
+			"description": "Открыть пользователя",
+            "suggested_key": {
+              "default": "Alt+U"
+            }
 		},
 		"open-account": {
-			"description": "Открыть кошелек"
-		}
+			"description": "Открыть кошелек",
+            "suggested_key": {
+              "default": "Alt+W"
+            }
+		},
+        "open-comparison": {
+          "description": "Открыть комперисон"
+        }
 	},
 
 	"permissions": [

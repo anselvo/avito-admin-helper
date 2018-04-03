@@ -31,12 +31,35 @@ function goToMoney(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-const openLink = chrome.contextMenus.create({title: "Открыть по ID", contexts: contextSearchAdm});
-chrome.contextMenus.create({title: "тикет", contexts: contextSearchAdm, parentId: openLink, onclick: goToTicket});
-chrome.contextMenus.create({title: "объявление", contexts: contextSearchAdm, parentId: openLink, onclick: goToItem});
-chrome.contextMenus.create({title: "комперисон", contexts: contextSearchAdm, parentId: openLink, onclick: goToComparison});
-chrome.contextMenus.create({title: "пользователя", contexts: contextSearchAdm, parentId: openLink, onclick: goToUser});
-chrome.contextMenus.create({title: "кошелек", contexts: contextSearchAdm, parentId: openLink, onclick: goToMoney});
+
+
+const openLink = chrome.contextMenus.create({title: "Открыть по ID", contexts: contextSearchAdm, documentUrlPatterns: ['http://*/*', 'https://*/*']});
+const openLinkTitles = {
+    ticket: 'тикет',
+    item: 'объявление',
+    comparison: 'комперисон',
+    user: 'пользователя',
+    account: 'кошелек'
+};
+
+chrome.contextMenus.create({id: 'open-ticket', title: openLinkTitles.ticket, contexts: contextSearchAdm, parentId: openLink, onclick: goToTicket});
+chrome.contextMenus.create({id: 'open-item', title: openLinkTitles.item, contexts: contextSearchAdm, parentId: openLink, onclick: goToItem});
+chrome.contextMenus.create({id: 'open-comparison', title: openLinkTitles.comparison, contexts: contextSearchAdm, parentId: openLink, onclick: goToComparison});
+chrome.contextMenus.create({id: 'open-user', title: openLinkTitles.user, contexts: contextSearchAdm, parentId: openLink, onclick: goToUser});
+chrome.contextMenus.create({id: 'open-account', title: openLinkTitles.account, contexts: contextSearchAdm, parentId: openLink, onclick: goToMoney});
+
+updateContextMenu();
+
+function updateContextMenu() {
+    chrome.commands.getAll(commands => {
+        commands.forEach(({ name, shortcut }) => {
+            if (!['_execute_browser_action', '_execute_page_action'].includes(name)) {
+                chrome.contextMenus.update(name, {title: `${openLinkTitles[name.slice(5)]} ${shortcut ? `(${shortcut})` : ''}`});
+            }
+        });
+        console.log('menu updated');
+    });
+}
 
 chrome.contextMenus.create({type: 'separator', contexts: contextSearchAdm});
 
