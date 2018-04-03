@@ -31,38 +31,53 @@ function goToMoney(info) {
     chrome.tabs.create({ url: newURL });
 }
 
-
-
 const openLink = chrome.contextMenus.create({title: "Открыть по ID", contexts: contextSearchAdm, documentUrlPatterns: ['http://*/*', 'https://*/*']});
-const openLinkTitles = {
-    ticket: 'тикет',
-    item: 'объявление',
-    comparison: 'комперисон',
-    user: 'пользователя',
-    account: 'кошелек'
-};
 
-chrome.contextMenus.create({id: 'open-ticket', title: openLinkTitles.ticket, contexts: contextSearchAdm, parentId: openLink, onclick: goToTicket});
-chrome.contextMenus.create({id: 'open-item', title: openLinkTitles.item, contexts: contextSearchAdm, parentId: openLink, onclick: goToItem});
-chrome.contextMenus.create({id: 'open-comparison', title: openLinkTitles.comparison, contexts: contextSearchAdm, parentId: openLink, onclick: goToComparison});
-chrome.contextMenus.create({id: 'open-user', title: openLinkTitles.user, contexts: contextSearchAdm, parentId: openLink, onclick: goToUser});
-chrome.contextMenus.create({id: 'open-account', title: openLinkTitles.account, contexts: contextSearchAdm, parentId: openLink, onclick: goToMoney});
+// Для корректной синхронизации с shortcuts в качестве id нужно использовать названия команд из манифеста
+const openLinkChildren = [{
+    id: 'open-ticket',
+    title: 'тикет',
+    onclick: goToTicket
+}, {
+    id: 'open-item',
+    title: 'объявление',
+    onclick: goToItem
+}, {
+    id: 'open-comparison',
+    title: 'комперисон',
+    onclick: goToComparison
+}, {
+    id: 'open-user',
+    title: 'пользователя',
+    onclick: goToUser
+}, {
+    id: 'open-account',
+    title: 'кошелек',
+    onclick: goToMoney
+}];
 
+openLinkChildren.forEach((child) => {
+    chrome.contextMenus.create({ contexts: contextSearchAdm, parentId: openLink, ...child });
+});
 updateContextMenu();
 
+// Синхронизация контекстного меню с shortcuts
 function updateContextMenu() {
-    chrome.commands.getAll(commands => {
+    chrome.commands.getAll((commands) => {
         commands.forEach(({ name, shortcut }) => {
-            if (!['_execute_browser_action', '_execute_page_action'].includes(name)) {
-                chrome.contextMenus.update(name, {title: `${openLinkTitles[name.slice(5)]} ${shortcut ? `(${shortcut})` : ''}`});
+            if (!['_execute_browser_action', '_execute_page_action'].includes(name)) { // исключить зарезервированные комманды
+                try {
+                    const { title } = openLinkChildren.find(({ id }) => id === name);
+                    chrome.contextMenus.update(name, {title: `${title} ${shortcut ? `(${shortcut})` : ''}`});
+                } catch (error) {
+                    console.log(error);
+                }
             }
         });
-        console.log('menu updated');
     });
 }
 
 chrome.contextMenus.create({type: 'separator', contexts: contextSearchAdm});
-
 
 // Create contextMenu for items/search
 function searchInItemByQuery(info) {
