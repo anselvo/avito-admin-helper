@@ -60,10 +60,12 @@ const global = {
         { flagName: "Нет фото с ID", button: { reason: 774, value: "NoPhotoID", action: "reject" } }
     ],
     compareDropdownItemBlock: [
-        { id: 384, text: "Неактуальное предложение" }
+        { id: 384, text: "Неактуальное предложение" },
+        { id: 20, text: "Повторная подача объявления" }
     ],
     compareDropdownItemReject: [
-        { id: 15, text: "Несоответствующее фото" }
+        { id: 15, text: "Несоответствующее фото" },
+        { id: 178, text: "Неправильная категория" }
     ]
 };
 
