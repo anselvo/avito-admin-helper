@@ -390,7 +390,7 @@ AhComparison.prototype.actionButtons = function (className, buttonName, entityId
         <div class="ah-compare-dropdown-menu dropdown-menu dropdown-menu-right" aria-labelledby="ah-compare-dropdown-btn-${className}">
             ${reasonJson.map(reason => 
                 `<span class="ah-compare-dropdown-reason" data-entity-id="${entityId}" data-reason="${className}" data-reason-id="${reason.id}">${reason.text}</span>`
-            )}
+            ).join('')}
         </div>        
     `;
 
