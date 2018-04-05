@@ -569,9 +569,6 @@ function handleRoles() {
             let iconLink = $('head').find('[rel="shortcut icon"]');
             $(iconLink).attr('href', 'https://43.img.avito.st/640x480/2839321043.jpg');
 
-            // ID агента
-            findAgentID();
-
             // инфа обо всех пользователях
             getAllUsers();
         }

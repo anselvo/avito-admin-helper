@@ -2815,7 +2815,7 @@ function changeAssignee() {
         let agentId;
         switch (btn) {
             case 'ah-change-assignee-to-me-btn':
-                agentId = localStorage.agentID;
+                agentId = getAgentId();
                 break;
                 
             case 'ah-clear-assignee-btn':
@@ -3707,7 +3707,7 @@ function getReevaluateTLTagId(leaderLogin) {
             }
             let tags = [tlTagId, 1265];
 
-            addExtraAssigneeId(localStorage.agentID);
+            addExtraAssigneeId(getAgentId());
             addTagToTicket(tags.join(', '));
         }
     );
