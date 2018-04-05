@@ -2140,8 +2140,19 @@ function infoAboutUser() {
 
     $('.helpdesk-additional-info-panel').before('<div id="ah-rightPanel"><div>');
 
-    // ищем пользователя
-    searchUser(email, currentTicketId);
+    const rightPanelHiddenCondition = localStorage.shAddRightPanel === "false" || !localStorage.shAddRightPanel;
+    const $userIdLink = $('.helpdesk-additional-info-panel').find('a[href^="/users/search?user_id"]');
+    let wasSearchUserRequestSent = false;
+
+    if (!rightPanelHiddenCondition) {
+        solveUserSearchMethod();
+        wasSearchUserRequestSent = true;
+    } else {
+        if (!$userIdLink.length) {
+            searchUser(email, currentTicketId);
+            wasSearchUserRequestSent = true;
+        }
+    }
 
     // ИЗМЕНЕНИЯ ПРАВОЙ ПАНЕЛИ
     if ($('#sh-AddRightPanel').length == 0) {
@@ -2156,16 +2167,17 @@ function infoAboutUser() {
         $('#ah-rightPanel').show();
     }
 
-    if (localStorage.shAddRightPanel == "false" || !localStorage.shAddRightPanel) {
-        $("#sh-AddRightPanel").prop("checked", false);
-        $('#ah-rightPanel').hide();
-        $('.helpdesk-additional-info-panel').show();
-        $('#sh-expected-hacked-userid').show();
+    if (rightPanelHiddenCondition) {
+        hideRightPanel();
     }
 
     $('#sh-AddRightPanel').click(function() {
         if($("#sh-AddRightPanel").prop("checked")) {
             localStorage.shAddRightPanel = 'true';
+            if (!wasSearchUserRequestSent) {
+                solveUserSearchMethod();
+            }
+            wasSearchUserRequestSent = true;
             $('.helpdesk-additional-info-panel').hide();
             $('#sh-expected-hacked-userid').hide();
             $('#ah-rightPanel').show();
@@ -2176,6 +2188,22 @@ function infoAboutUser() {
             $('#sh-expected-hacked-userid').show();
         }
     });
+
+    function hideRightPanel() {
+        $("#sh-AddRightPanel").prop("checked", false);
+        $('#ah-rightPanel').hide();
+        $('.helpdesk-additional-info-panel').show();
+        $('#sh-expected-hacked-userid').show();
+    }
+
+    function solveUserSearchMethod() {
+        if (!$userIdLink.length) {
+            searchUser(email, currentTicketId);
+        } else {
+            loadingBar('#ah-rightPanel', 80);
+            showUserByID($userIdLink.text(), email, currentTicketId, false);
+        }
+    }
 }
 
 function addRightPanelSettings(response, assume, currentTicketId) {
@@ -2335,7 +2363,7 @@ function searchIdInItems(mail, currentTicketId) {
     };
 }
 
-function showUserByID(admIdUser, mail, currentTicketId) {
+function showUserByID(admIdUser, mail, currentTicketId, assume = true) {
     var hrefAdmShowUserByID = `${global.connectInfo.adm_url}/users/user/info/${admIdUser}`;
 
     var requestShowUserByID = new XMLHttpRequest();
@@ -2348,11 +2376,13 @@ function showUserByID(admIdUser, mail, currentTicketId) {
             var statusUser = $(rShowUserByID).find('.form-group:eq(2) b').text();
 
             // настройки правой панели
-            addRightPanelSettings(rShowUserByID, true, currentTicketId);
+            addRightPanelSettings(rShowUserByID, assume, currentTicketId);
 
-            displayUserInfoOnRightPanel(rShowUserByID, true, currentTicketId);
-            // showHistoryEmail(admIdUser, statusUser, mail, currentTicketId);
-            displaySuggestUser(admIdUser, statusUser, mail);
+            displayUserInfoOnRightPanel(rShowUserByID, assume, currentTicketId);
+
+            if (assume) {
+                displaySuggestUser(admIdUser, statusUser, mail);
+            }
         }
     };
 }
