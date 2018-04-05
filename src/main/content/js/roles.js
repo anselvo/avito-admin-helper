@@ -19,9 +19,6 @@ function handleRoles() {
         if (request.onUpdated === 'ticketQueue')
             setTimeout(helpdeskQueueInfoEvent, 100);
 
-        if (request.onUpdated === 'ticketEnter')
-            setTimeout(skipersMonitoring, 100);
-
         if (request.onUpdated === 'ticketOnHold')
             helpdeskTicketHoldEvent();
 
