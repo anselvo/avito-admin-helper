@@ -2345,18 +2345,19 @@ function showUserByID(admIdUser, mail, currentTicketId) {
         if (requestShowUserByID.readyState === 4 && requestShowUserByID.status === 200 && localStorage.currentTicketEmail === mail)  {
             var rShowUserByID = requestShowUserByID.responseText;
 
-            var statusUser = $(rShowUserByID).find('.form-group:eq(1) b').text();
+            var statusUser = $(rShowUserByID).find('.form-group:eq(2) b').text();
 
             // настройки правой панели
             addRightPanelSettings(rShowUserByID, true, currentTicketId);
 
             displayUserInfoOnRightPanel(rShowUserByID, true, currentTicketId);
-            showHistoryEmail(admIdUser, statusUser, mail, currentTicketId);
+            // showHistoryEmail(admIdUser, statusUser, mail, currentTicketId);
+            displaySuggestUser(admIdUser, statusUser, mail);
         }
     };
 }
 
-function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
+function showHistoryEmail(admIdUser, mail) {
     var hrefAdmShowHistoryEmail = `${global.connectInfo.adm_url}/users/user/${admIdUser}/emails/history`;
 
     var requestHistory = new XMLHttpRequest();
@@ -2383,7 +2384,8 @@ function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
             if (countEmailsHistory > 1 && countEmailsHistory < 5) countPhrase = ' раза';
 
             $('#changedEmailTimes').text(' - '+countEmailsHistory);
-            displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhrase);
+
+            $('#ah-change-email-count').replaceWith(`<b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
         }
     };
 }
@@ -2398,11 +2400,12 @@ function displayUserNotFound() {
     $('.ah-cssload-loader').detach();
 }
 
-function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhrase) {
+function displaySuggestUser(admIdUser, statusUser, mail) {
     $('#sh-expected-hacked-userid-current').detach();
     $('#sh-expected-hacked-userid').append('<div id="sh-expected-hacked-userid-current"></div>');
 
-    $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
+    // $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
+    $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <button type="button" class="btn btn-link btn-xs ah-pseudo-link" id="ah-change-email-count">Кол-во смены email</button>`);
 
     if (statusUser.indexOf('Blocked') + 1) {
         $('span.sh-expected-user-status').css('color', 'red');
@@ -2410,6 +2413,12 @@ function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhra
     if (statusUser.indexOf('Active') + 1) {
         $('span.sh-expected-user-status').css('color', '#3c763d');
     }
+
+    let wasEmailHistoryRequestSent = false;
+    $('#ah-change-email-count').click(function() {
+        wasEmailHistoryRequestSent = true;
+        showHistoryEmail(admIdUser, mail);
+    });
 }
 
 function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
@@ -2461,7 +2470,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 </div></td>
             </tr>`);
 
-        emailHistory('#ah-rp-email', id);
+        emailHistory('#ah-rp-email', id, false);
 
         $('#sh-automail-right-panel').click(function () {
             let text = getMailForAnswer(email);
