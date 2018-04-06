@@ -61,7 +61,8 @@ const global = {
     ],
     compareDropdownItemBlock: [
         { id: 384, text: "Неактуальное предложение" },
-        { id: 20, text: "Повторная подача объявления" }
+        { id: 20, text: "Повторная подача объявления" },
+        { id: 25, text: "Неправильный город" }
     ],
     compareDropdownItemReject: [
         { id: 15, text: "Несоответствующее фото" },
