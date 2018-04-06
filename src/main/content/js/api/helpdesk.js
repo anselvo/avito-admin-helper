@@ -68,22 +68,16 @@ function getHelpdeskProblems() {
 //++++++++++ Записываем в глобальную JSON строку всех проблем HD ++++++++++//
 
 //---------- Agent ID ----------//
-function findAgentID() {
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/permissions`;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, false);
-    xhr.send(null);
-
-    var json = JSON.parse(xhr.responseText);
-
-    localStorage.agentID = json.id;
-    localStorage.agentEmail = json.email;
-    localStorage.agentName = json.name;
-
-    return json.id;
+function getAgentId() {
+    document.dispatchEvent(new Event('requestHelpdeskStore'));
+    try {
+        return global.hdSettings.helpdeskStore.auth.id;
+    } catch (e) {
+        return null;
+    }
 }
 //+++++++++ Agent ID ++++++++++//
+
 
 // информация о тегах
 function getTagsInfo() {
@@ -640,12 +634,9 @@ function renderCreateNewTicketWindow(route) {
         });
 
         // сабмиттер
-        if (!localStorage.agentID) {
-            findAgentID();
-        }
         data.push({
             name: 'submitterId',
-            value: localStorage.agentID
+            value: getAgentId()
         });
 
         if (errors.length == 0) {

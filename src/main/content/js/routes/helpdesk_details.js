@@ -1802,9 +1802,10 @@ function showReasonBlockedUser() {
     $('div.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
 
     var startTicketId = getCurrentTicketId(window.location.href);
+    const rightPanelHiddenCondition = localStorage.shAddRightPanel === "false" || !localStorage.shAddRightPanel;
 
-    if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1) {
-        var blockedUserId = $('.helpdesk-additional-info-panel:eq(0) div div:eq(0) a').text();
+    if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1 && rightPanelHiddenCondition) {
+        var blockedUserId = $('.helpdesk-additional-info-panel').find('a[href^="/users/search?user_id"]').text();
         $('div.helpdesk-usersidebar-status:first').addClass('ah-blocked-user');
 
         var url = `${global.connectInfo.adm_url}/users/user/info/${blockedUserId}`;
@@ -2140,8 +2141,19 @@ function infoAboutUser() {
 
     $('.helpdesk-additional-info-panel').before('<div id="ah-rightPanel"><div>');
 
-    // ищем пользователя
-    searchUser(email, currentTicketId);
+    const rightPanelHiddenCondition = localStorage.shAddRightPanel === "false" || !localStorage.shAddRightPanel;
+    const $userIdLink = $('.helpdesk-additional-info-panel').find('a[href^="/users/search?user_id"]');
+    let wasSearchUserRequestSent = false;
+
+    if (!rightPanelHiddenCondition) {
+        solveUserSearchMethod();
+        wasSearchUserRequestSent = true;
+    } else {
+        if (!$userIdLink.length) {
+            searchUser(email, currentTicketId);
+            wasSearchUserRequestSent = true;
+        }
+    }
 
     // ИЗМЕНЕНИЯ ПРАВОЙ ПАНЕЛИ
     if ($('#sh-AddRightPanel').length == 0) {
@@ -2156,16 +2168,19 @@ function infoAboutUser() {
         $('#ah-rightPanel').show();
     }
 
-    if (localStorage.shAddRightPanel == "false" || !localStorage.shAddRightPanel) {
-        $("#sh-AddRightPanel").prop("checked", false);
-        $('#ah-rightPanel').hide();
-        $('.helpdesk-additional-info-panel').show();
-        $('#sh-expected-hacked-userid').show();
+    if (rightPanelHiddenCondition) {
+        hideRightPanel();
     }
 
     $('#sh-AddRightPanel').click(function() {
+        localStorage.currentTicketEmail = email;
+
         if($("#sh-AddRightPanel").prop("checked")) {
             localStorage.shAddRightPanel = 'true';
+            if (!wasSearchUserRequestSent) {
+                solveUserSearchMethod();
+            }
+            wasSearchUserRequestSent = true;
             $('.helpdesk-additional-info-panel').hide();
             $('#sh-expected-hacked-userid').hide();
             $('#ah-rightPanel').show();
@@ -2176,6 +2191,22 @@ function infoAboutUser() {
             $('#sh-expected-hacked-userid').show();
         }
     });
+
+    function hideRightPanel() {
+        $("#sh-AddRightPanel").prop("checked", false);
+        $('#ah-rightPanel').hide();
+        $('.helpdesk-additional-info-panel').show();
+        $('#sh-expected-hacked-userid').show();
+    }
+
+    function solveUserSearchMethod() {
+        if (!$userIdLink.length) {
+            searchUser(email, currentTicketId);
+        } else {
+            loadingBar('#ah-rightPanel', 80);
+            showUserByID($userIdLink.text(), email, currentTicketId, false);
+        }
+    }
 }
 
 function addRightPanelSettings(response, assume, currentTicketId) {
@@ -2335,7 +2366,7 @@ function searchIdInItems(mail, currentTicketId) {
     };
 }
 
-function showUserByID(admIdUser, mail, currentTicketId) {
+function showUserByID(admIdUser, mail, currentTicketId, assume = true) {
     var hrefAdmShowUserByID = `${global.connectInfo.adm_url}/users/user/info/${admIdUser}`;
 
     var requestShowUserByID = new XMLHttpRequest();
@@ -2345,18 +2376,21 @@ function showUserByID(admIdUser, mail, currentTicketId) {
         if (requestShowUserByID.readyState === 4 && requestShowUserByID.status === 200 && localStorage.currentTicketEmail === mail)  {
             var rShowUserByID = requestShowUserByID.responseText;
 
-            var statusUser = $(rShowUserByID).find('.form-group:eq(1) b').text();
+            var statusUser = $(rShowUserByID).find('.form-group:eq(2) b').text();
 
             // настройки правой панели
-            addRightPanelSettings(rShowUserByID, true, currentTicketId);
+            addRightPanelSettings(rShowUserByID, assume, currentTicketId);
 
-            displayUserInfoOnRightPanel(rShowUserByID, true, currentTicketId);
-            showHistoryEmail(admIdUser, statusUser, mail, currentTicketId);
+            displayUserInfoOnRightPanel(rShowUserByID, assume, currentTicketId);
+
+            if (assume) {
+                displaySuggestUser(admIdUser, statusUser, mail);
+            }
         }
     };
 }
 
-function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
+function showHistoryEmail(admIdUser, mail) {
     var hrefAdmShowHistoryEmail = `${global.connectInfo.adm_url}/users/user/${admIdUser}/emails/history`;
 
     var requestHistory = new XMLHttpRequest();
@@ -2383,7 +2417,8 @@ function showHistoryEmail(admIdUser, statusUser, mail, currentTicketId) {
             if (countEmailsHistory > 1 && countEmailsHistory < 5) countPhrase = ' раза';
 
             $('#changedEmailTimes').text(' - '+countEmailsHistory);
-            displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhrase);
+
+            $('#ah-change-email-count').replaceWith(`<b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
         }
     };
 }
@@ -2398,11 +2433,12 @@ function displayUserNotFound() {
     $('.ah-cssload-loader').detach();
 }
 
-function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhrase) {
+function displaySuggestUser(admIdUser, statusUser, mail) {
     $('#sh-expected-hacked-userid-current').detach();
     $('#sh-expected-hacked-userid').append('<div id="sh-expected-hacked-userid-current"></div>');
 
-    $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
+    // $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <b>E-mail был изменен <span style="color:blue;">${countEmailsHistory}</span>${countPhrase}<b>`);
+    $('#sh-expected-hacked-userid-current').append(`<b>Предполагаемый ID:</b> <a  href="${global.connectInfo.adm_url}/users/user/info/${admIdUser}" target="_blank">${admIdUser}</a> | <b>Статус:</b> <span class="sh-expected-user-status"><b>${statusUser}</b></span> | <button type="button" class="btn btn-link btn-xs ah-pseudo-link" id="ah-change-email-count">Кол-во смены email</button>`);
 
     if (statusUser.indexOf('Blocked') + 1) {
         $('span.sh-expected-user-status').css('color', 'red');
@@ -2410,6 +2446,12 @@ function displaySuggestUser(admIdUser, statusUser, countEmailsHistory, countPhra
     if (statusUser.indexOf('Active') + 1) {
         $('span.sh-expected-user-status').css('color', '#3c763d');
     }
+
+    let wasEmailHistoryRequestSent = false;
+    $('#ah-change-email-count').click(function() {
+        wasEmailHistoryRequestSent = true;
+        showHistoryEmail(admIdUser, mail);
+    });
 }
 
 function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
@@ -2425,7 +2467,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     if (assume) $(mainTable).before('<div style="text-align:center; color: #FFC107; font-weight:bold;" title="Внимание! Данная учетная запись является предполагаемой и была найдена с помощию созданного алгоритма поиска.">Предполагаемая УЗ</div>');
 
     let id = $(response).find('.form-group:contains(ID) .js-user-id').attr('data-user-id');
-    
+
     if (rightPanelSettings.indexOf('rp-name')+1) {
         let name = $(response).find('.form-group:contains(Название) .form-control').val();
         $(mainTable).append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
@@ -2461,7 +2503,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 </div></td>
             </tr>`);
 
-        emailHistory('#ah-rp-email', id);
+        emailHistory('#ah-rp-email', id, false);
 
         $('#sh-automail-right-panel').click(function () {
             let text = getMailForAnswer(email);
@@ -2815,7 +2857,7 @@ function changeAssignee() {
         let agentId;
         switch (btn) {
             case 'ah-change-assignee-to-me-btn':
-                agentId = localStorage.agentID;
+                agentId = getAgentId();
                 break;
                 
             case 'ah-clear-assignee-btn':
@@ -3707,7 +3749,7 @@ function getReevaluateTLTagId(leaderLogin) {
             }
             let tags = [tlTagId, 1265];
 
-            addExtraAssigneeId(localStorage.agentID);
+            addExtraAssigneeId(getAgentId());
             addTagToTicket(tags.join(', '));
         }
     );
@@ -4033,63 +4075,3 @@ function getUserInfoByItem(userId) {
     }
 }
 //---------- парсинг айди айтемов в комменте ----------//
-
-// мониторинг скиперов
-function skipersMonitoring() {
-    // console.log('skipersMonitoring FUNC');
-    var ticketId, userName, userLogin;
-    var dataObj;
-    var ticketStatus;
-
-    ticketId = getCurrentTicketId(window.location.href);
-    userName = global.userInfo.name +' '+ global.userInfo.surname;
-    userLogin = global.userInfo.username;
-
-    var regExpNotSkiped = /ticket(Edit|Comment|Pending|Solve|OnHold|Spam|Duplicate)/i;
-
-    ticketStatus = getTicketStatusText();
-    var regExpTicketStatus = /новое|открытое|переоткрытое/i;
-
-    chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-
-        if (request.onUpdated) {
-            if (~request.onUpdated.search(regExpNotSkiped)) {
-                chrome.runtime.onMessage.removeListener(arguments.callee);
-            }
-
-            if (request.onUpdated == 'ticketEnter') {
-                if (~ticketStatus.search(regExpTicketStatus)) {
-                    dataObj = {
-                        ticketId: ticketId,
-                        userName: userName,
-                        userLogin: userLogin,
-                        ticketStatus: ticketStatus
-                    }
-                    addSkipedTicketToDatabase(dataObj);
-                }
-
-                chrome.runtime.onMessage.removeListener(arguments.callee);
-            }
-        }
-    });
-}
-
-function addSkipedTicketToDatabase(data) {
-    // console.log('addSkipedTicketToDatabase FUNC', data);
-    chrome.runtime.sendMessage({
-            action: 'XMLHttpRequest',
-            method: "POST",
-            url: `${global.connectInfo.ext_url}/support_helper/other/addSkipedTicket.php`,
-            data: "param=" + JSON.stringify(data),
-        },
-
-        function(response) {
-            // console.log(response);
-
-            if (~response.indexOf('Неверный запрос')) {
-                // console.log('Произошла техническая ошибка.');
-                return;
-            }
-        }
-    );
-}
