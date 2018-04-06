@@ -379,7 +379,9 @@ function ipHistory(selector, id, response) {
 
 // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
 
-function emailHistory(selector, id) {
+function emailHistory(selector, id, autoload = true) {
+    let wasRequestSent = false;
+
     $(selector)
         .append('<span class="ah-info-history-email-link ah-info-link" user-id="' + id + '" title="История изменения электронного адреса">' +
                 '<i class="glyphicon glyphicon-list-alt"></i>' +
@@ -388,10 +390,22 @@ function emailHistory(selector, id) {
 
 
     $('.ah-info-history-email-link').click(function () {
+        if (!autoload && !wasRequestSent) {
+            $('#ah-loading-layer').show();
+            getEmailHistory(id);
+            wasRequestSent = true;
+        }
         $('.ah-info-history-email').toggle("slow");
     });
 
+    if (autoload) {
+        getEmailHistory(id);
+    }
+}
+
+function getEmailHistory(id) {
     let historyUrl = `${global.connectInfo.adm_url}/users/user/${id}/emails/history`;
+
     $.ajax({
         type: 'GET',
         url: historyUrl,
@@ -402,13 +416,16 @@ function emailHistory(selector, id) {
                 let trList = $(content).find('tbody tr');
 
                 $('.ah-info-history-email').append('<table class="ah-info-history-email-table ah-info-table">' +
-                        '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
-                        '<tbody></tbody>' +
+                    '<thead><tr><th>До</th><th>После</th><th>Время</th></tr></thead>' +
+                    '<tbody></tbody>' +
                     '</table>');
 
                 $('.ah-info-history-email-table').append(trList);
             }
         }
+    })
+    .always(function() {
+        $('#ah-loading-layer').hide();
     });
 }
 
