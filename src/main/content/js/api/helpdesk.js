@@ -644,9 +644,6 @@ function renderCreateNewTicketWindow(route) {
             value: submitterId
         });
 
-        console.log(getAgentId());
-        return;
-
         if (errors.length == 0) {
             var pattern = /^.+@.+\..+$/;
             if (!pattern.test(requesterEmail)) {
