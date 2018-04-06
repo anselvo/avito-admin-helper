@@ -717,7 +717,7 @@ RoleHandler.prototype.helpdeskUnblockUser = function() {
 };
 
 RoleHandler.prototype.helpdeskUserInfo = function() {
-    infoAboutUser();
+    infoAboutUser(false);
 };
 
 RoleHandler.prototype.helpdeskMessengerLink = function() {
