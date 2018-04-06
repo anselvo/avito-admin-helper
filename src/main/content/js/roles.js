@@ -13,9 +13,6 @@ function handleRoles() {
         if (request.onUpdated === 'ticketInfo')
             setTimeout(helpdeskTicketInfoEvent, 100);
 
-        if (request.onUpdated === 'ticketUser')
-            setTimeout(helpdeskUserInfoEvent, 200);
-
         if (request.onUpdated === 'ticketQueue')
             setTimeout(helpdeskQueueInfoEvent, 100);
 
@@ -43,21 +40,10 @@ function handleRoles() {
             roleHandler.helpdeskQuickButtons();
         }
 
-        // фиксированный контейнер (настройки, кнопка наверх)
-        if (isAuthority('ROLE_HELPDESK_FIXED_TOOLS')) {
-            roleHandler.helpdeskFixedTools();
-        }
-
         // айпи в техинфе
         if (isAuthority('ROLE_HELPDESK_TECH_INFO_IP_LINK')) {
             roleHandler.helpdeskTechInfoIpLink();
         }
-
-        // альтернативный поиск в переписке
-        if (isAuthority('ROLE_HELPDESK_ALTERNATE_SEARCH')) {
-            roleHandler.helpdeskAlternateSearch();
-        }
-
         // смена ассигни
         if (isAuthority('ROLE_HELPDESK_CHANGE_ASSIGNEE')) {
             roleHandler.helpdeskChangeAssignee();
@@ -66,11 +52,6 @@ function handleRoles() {
         // очистка цитат
         if (isAuthority('ROLE_HELPDESK_BLOCKQUOTE_CLEAR')) {
             roleHandler.helpdeskBlockquoteClear();
-        }
-
-        // показывать скрывать цитаты
-        if (isAuthority('ROLE_HELPDESK_BLOCKQUOTE_TOGGLE')) {
-            roleHandler.helpdeskBlockquoteToggle();
         }
 
         // инфа об агента
@@ -146,6 +127,21 @@ function handleRoles() {
 
     // TICKET USER
     function helpdeskUserInfoEvent() {
+        // фиксированный контейнер (настройки, кнопка наверх)
+        if (isAuthority('ROLE_HELPDESK_FIXED_TOOLS')) {
+            roleHandler.helpdeskFixedTools();
+        }
+
+        // альтернативный поиск в переписке
+        if (isAuthority('ROLE_HELPDESK_ALTERNATE_SEARCH')) {
+            roleHandler.helpdeskAlternateSearch();
+        }
+
+        // показывать скрывать цитаты
+        if (isAuthority('ROLE_HELPDESK_BLOCKQUOTE_TOGGLE')) {
+            roleHandler.helpdeskBlockquoteToggle();
+        }
+
         // Рядом с Blocked - причина блокировки в HD
         if (isAuthority('ROLE_HELPDESK_BLOCKED_REASON')) {
             roleHandler.helpdeskBlockedReason();
@@ -556,6 +552,17 @@ function handleRoles() {
                             helpdeskTicketInfoEvent();
                         }
                     });
+
+                    // рендер правой панели завершен
+                    if (mutation.target.classList.contains('helpdesk-additional-info-panel')) {
+                        const addedNode = mutation.addedNodes[0];
+                        if (!addedNode) return;
+
+                        if ( (addedNode.nodeName === 'DIV' && addedNode.className === '')
+                            || addedNode.nodeName === '#comment') {
+                            helpdeskUserInfoEvent();
+                        }
+                    }
                 });
             });
 

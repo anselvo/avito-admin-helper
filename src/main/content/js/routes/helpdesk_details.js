@@ -1802,9 +1802,10 @@ function showReasonBlockedUser() {
     $('div.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
 
     var startTicketId = getCurrentTicketId(window.location.href);
+    const rightPanelHiddenCondition = localStorage.shAddRightPanel === "false" || !localStorage.shAddRightPanel;
 
-    if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1) {
-        var blockedUserId = $('.helpdesk-additional-info-panel:eq(0) div div:eq(0) a').text();
+    if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1 && rightPanelHiddenCondition) {
+        var blockedUserId = $('.helpdesk-additional-info-panel').find('a[href^="/users/search?user_id"]').text();
         $('div.helpdesk-usersidebar-status:first').addClass('ah-blocked-user');
 
         var url = `${global.connectInfo.adm_url}/users/user/info/${blockedUserId}`;
@@ -2172,6 +2173,8 @@ function infoAboutUser() {
     }
 
     $('#sh-AddRightPanel').click(function() {
+        localStorage.currentTicketEmail = email;
+
         if($("#sh-AddRightPanel").prop("checked")) {
             localStorage.shAddRightPanel = 'true';
             if (!wasSearchUserRequestSent) {
@@ -2464,7 +2467,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     if (assume) $(mainTable).before('<div style="text-align:center; color: #FFC107; font-weight:bold;" title="Внимание! Данная учетная запись является предполагаемой и была найдена с помощию созданного алгоритма поиска.">Предполагаемая УЗ</div>');
 
     let id = $(response).find('.form-group:contains(ID) .js-user-id').attr('data-user-id');
-    
+
     if (rightPanelSettings.indexOf('rp-name')+1) {
         let name = $(response).find('.form-group:contains(Название) .form-control').val();
         $(mainTable).append('<tr><td>Name</td><td><span id="ahCopyUserNameRp">'+name+'</span></td></tr>');
