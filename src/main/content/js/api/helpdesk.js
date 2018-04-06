@@ -633,11 +633,19 @@ function renderCreateNewTicketWindow(route) {
             })
         });
 
+        const submitterId = getAgentId() || localStorage.getItem('agentID');
+        if (!submitterId) {
+            alert('Не удалось определить ваш ID');
+            return;
+        }
         // сабмиттер
         data.push({
             name: 'submitterId',
-            value: getAgentId()
+            value: submitterId
         });
+
+        console.log(getAgentId());
+        return;
 
         if (errors.length == 0) {
             var pattern = /^.+@.+\..+$/;
@@ -1025,7 +1033,18 @@ function addCreateTicketBtn(route) {
     var btnShow = $('#ah-outgoing-mail-btn');
 
     $(btnShow).click(function () {
-        showCreateNewTicketWindow();
+        if (!localStorage.getItem('agentID') && route === '/users/user/info') {
+            getPermissions()
+                .then(({ id }) => {
+                    localStorage.setItem('agentID', id);
+                    showCreateNewTicketWindow();
+                }, () => {
+                    localStorage.setItem('agentID', null);
+                });
+        } else {
+            showCreateNewTicketWindow();
+        }
+
     });
 }
 function showCreateNewTicketWindow() {

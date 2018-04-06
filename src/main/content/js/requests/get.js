@@ -311,3 +311,14 @@ function unlinkPaymentSource(url) {
         return response.text();
     });
 }
+
+function getPermissions() {
+    return fetch('https://adm.avito.ru/helpdesk/api/1/permissions', {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
