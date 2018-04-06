@@ -2119,8 +2119,7 @@ function addHelpdeskCheckVasUsage() {
 }
 
 //---------- предполагаемая УЗ ----------//
-function infoAboutUser() {
-    // console.log('infoAboutUser func');
+function infoAboutUser(searchInUsers = true) {
     $('#ah-rightPanel').detach();
     $('#sh-expected-hacked-userid').detach();
     $('.ah-cssload-loader').detach();
@@ -2200,7 +2199,7 @@ function infoAboutUser() {
     }
 
     function solveUserSearchMethod() {
-        if (!$userIdLink.length) {
+        if (!$userIdLink.length || searchInUsers) {
             searchUser(email, currentTicketId);
         } else {
             loadingBar('#ah-rightPanel', 80);
