@@ -474,7 +474,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                 `;
 
             if (item.category === 'Недвижимость' && abutment.category === 'Недвижимость') {
-                mainPhoto += `<div class="ah-compare-photo-check">Требуется проверка фото</div>`
+                mainPhoto += `<div class="ah-compare-photo-check" title="Требуется проверка фото"><i class="glyphicon glyphicon-camera"></i></div>`
             }
         } else {
             mainPhoto = `<div class="text-muted">Нет Фото</div>`;
@@ -805,19 +805,39 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
     this.compareStrict();
     this.compareTime();
-    // this.similarPhotos(abutmentId);
+    this.similarPhotos(abutmentId);
 };
 
 ItemsComparison.prototype.similarPhotos = function (id) {
     getItemAntifraudInfo(id).then(response => {
-        const similarGroup = response.similar_images_grouped;
+        const similarGroup = response.success.similar_images_grouped;
 
         for (let similar of similarGroup) {
             const color = gerRandomColor();
+            const shadowOut = `inset 0 0 5px 0 ${color}`;
+            const shadowIn = `inset 0 0 5px 0 ${color}, 0 0 5px 1px ${color}`;
+
+            const border = {
+                "border-color": color,
+                "box-shadow": shadowOut
+            };
 
             for (let imageId of similar) {
-                const photoNode = document.querySelectorAll(`data-image-id="${imageId}"`)[0];
-                photoNode.style.borderColor = color;
+                $(`[data-image-id="${imageId}"]`).attr("data-image-group-color", color).css(border);
+            }
+
+            const $imageGroupColor = $(`[data-image-group-color="${color}"]`);
+
+            $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);
+
+            function inImageGroupColor() {
+                border["box-shadow"] = shadowIn;
+                $imageGroupColor.css(border);
+            }
+
+            function outImageGroupColor() {
+                border["box-shadow"] = shadowOut;
+                $imageGroupColor.css(border);
             }
         }
     });
