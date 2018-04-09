@@ -31,7 +31,7 @@ function parseRuDate(string) {
         const minute = parseInt(time[1] || 0);
         const second = parseInt(time[2] || 0);
 
-        return new Date(year, month, day, hour, minute, second);
+        return new Date(year, month, day, hour, minute, second).getTime();
     } catch (e) {
         return null;
     }

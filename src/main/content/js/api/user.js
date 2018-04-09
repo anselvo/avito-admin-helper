@@ -333,8 +333,8 @@ function usersInfo(id, itemid, offset, query) {
 }
 
 function dateForSearch(period) {
-    const dateStart = new Date(new Date() - period);
-    const dateEnd = new Date();
+    const dateStart = new Date(new Date().getTime() - period);
+    const dateEnd = new Date(new Date().getTime() + 60000);
     const formatDateStart = parseDateToSearchFormat(dateStart);
     const formatDateEnd = parseDateToSearchFormat(dateEnd);
     return formatDateStart + '+-+' + formatDateEnd;
