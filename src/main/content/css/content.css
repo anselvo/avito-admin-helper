@@ -4268,7 +4268,12 @@ select.ah-form-control:focus {
 }
 
 .ah-compare-photo-check {
+    position: absolute;
+    right: 0;
+    top: 0;
     text-align: center;
+    padding: 2px 4px;
+    min-width: 22px;
     color: orangered;
     background: #f5f5f5;
 }
