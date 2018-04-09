@@ -335,8 +335,9 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
-AhComparison.prototype.compareTime = function () {
-    const allCompareNodes = this.modal.querySelectorAll('[data-compare-time]');
+AhComparison.prototype.compareTime = function (node) {
+    const searchNode = node ? `[data-compare-time="${node}"]` : `[data-compare-time]`;
+    const allCompareNodes = this.modal.querySelectorAll(searchNode);
     const allNodesByName = {};
 
     allCompareNodes.forEach(node => {
@@ -356,7 +357,10 @@ AhComparison.prototype.compareTime = function () {
         let minTimeNode = null;
 
         allNodesByName[key].forEach(node => {
-            const time = parseRuDate(node.textContent.trim());
+            node.classList.remove("ah-compare-max-time");
+            node.classList.remove("ah-compare-min-time");
+
+            const time = node.dataset.currentTimeMs;
 
             if (time) {
                 if (time > maxTime) {
@@ -370,8 +374,8 @@ AhComparison.prototype.compareTime = function () {
             }
         });
 
-        if (maxTimeNode) maxTimeNode.className = 'ah-compare-max-time';
-        if (minTimeNode) minTimeNode.className = 'ah-compare-min-time';
+        if (maxTimeNode) maxTimeNode.className += ' ah-compare-max-time';
+        if (minTimeNode) minTimeNode.className += ' ah-compare-min-time';
     }
 };
 
@@ -457,7 +461,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             prevPhotos += `
                     <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
-                        <div class="ah-photo-prev-img-date" title="${photo.date}">
+                        <div class="ah-photo-prev-img-date" data-current-time-ms="${new Date(photo.date).getTime()}" title="${photo.date}">
                             ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth() + 1)} 
                             ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
                         </div>
@@ -468,7 +472,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
-                    <div class="ah-compare-photo-date">${item.photos[0].date}</div>
+                    <div class="ah-compare-photo-date" data-compare-time="big-photo" data-current-time-ms="${new Date(item.photos[0].date).getTime()}">${item.photos[0].date}</div>
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
                     <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
@@ -537,11 +541,11 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                 <div class="ah-compare-cell" data-entity-id="${item.id}">
                     <div>
                         <span class="ah-compare-items-label">Sort time: </span>
-                        <span data-compare-time="sort" data-entity-id="${item.id}" title="Sort Time">${item.time}</span>
+                        <span data-compare-time="sort" data-entity-id="${item.id}" data-current-time-ms="${parseRuDate(item.time)}" title="Sort Time">${item.time}</span>
                     </div>
                     <div>
                         <span class="ah-compare-items-label">Start time: </span>
-                        <span data-compare-time="start" data-entity-id="${item.id}" title="Start Time">${item.startTime}</span>
+                        <span data-compare-time="start" data-entity-id="${item.id}" data-current-time-ms="${parseRuDate(item.startTime)}" title="Start Time">${item.startTime}</span>
                     </div>
                 </div>
             `;
@@ -737,6 +741,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             mainPhoto.href = originalImg;
 
             mainPhotoDate.textContent = photoDate.title;
+            mainPhotoDate.dataset.currentTimeMs = photoDate.dataset.currentTimeMs;
+
+            this.compareTime("big-photo");
         }
     });
 
@@ -814,6 +821,7 @@ ItemsComparison.prototype.similarPhotos = function (id) {
 
         for (let similar of similarGroup) {
             const color = gerRandomColor();
+            const colorId = color.substr(1);
             const shadowOut = `inset 0 0 5px 0 ${color}`;
             const shadowIn = `inset 0 0 5px 0 ${color}, 0 0 5px 1px ${color}`;
 
@@ -823,22 +831,29 @@ ItemsComparison.prototype.similarPhotos = function (id) {
             };
 
             for (let imageId of similar) {
-                $(`[data-image-id="${imageId}"]`).attr("data-image-group-color", color).css(border);
+                const $imageNode = $(`[data-image-id="${imageId}"]`);
+                $imageNode.attr("data-image-group-color", colorId).css(border);
+                $imageNode.find('.ah-photo-prev-img-date').attr("data-compare-time", colorId);
             }
 
-            const $imageGroupColor = $(`[data-image-group-color="${color}"]`);
+            const $imageGroupColor = $(`[data-image-group-color="${colorId}"]`);
 
-            $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);
-
-            function inImageGroupColor() {
+            const inImageGroupColor = () => {
+                this.compareTime(colorId);
                 border["box-shadow"] = shadowIn;
                 $imageGroupColor.css(border);
-            }
+            };
 
-            function outImageGroupColor() {
+            const outImageGroupColor = () => {
                 border["box-shadow"] = shadowOut;
                 $imageGroupColor.css(border);
-            }
+                $imageGroupColor
+                    .find('.ah-photo-prev-img-date')
+                    .removeClass('ah-compare-max-time')
+                    .removeClass('ah-compare-min-time');
+            };
+
+            $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);
         }
     });
 };
