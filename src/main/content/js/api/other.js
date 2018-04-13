@@ -1,6 +1,5 @@
 function gerRandomColor() {
-    const color = '#'+Math.floor(Math.random()*16777215).toString(16);
-    return color.length < 7 ? `${color}0` : color;
+    return '#'+(Math.floor(Math.random()*16777215).toString(16)  + "000000").substring(0,6);
 }
 
 function currentTime() {
