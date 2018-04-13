@@ -335,7 +335,7 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
-AhComparison.prototype.compareTime = function (node) {
+AhComparison.prototype.compareTime = function (node, right, top) {
     const searchNode = node ? `[data-compare-time="${node}"]` : `[data-compare-time]`;
     const allCompareNodes = this.modal.querySelectorAll(searchNode);
     const allNodesByName = {};
@@ -356,9 +356,32 @@ AhComparison.prototype.compareTime = function (node) {
         let minTime = Number.POSITIVE_INFINITY;
         let minTimeNode = null;
 
+        const min = document.createElement('div');
+        min.textContent = 'min';
+        min.className = 'ah-compare-min-time';
+
+        const max = document.createElement('div');
+        max.textContent = 'max';
+        max.className = 'ah-compare-max-time';
+
+        if (right) {
+            min.style.right = right;
+            max.style.right = right;
+        }
+
+        if (top) {
+            min.style.top = top;
+            max.style.top = top;
+        }
+
+
         allNodesByName[key].forEach(node => {
-            node.classList.remove("ah-compare-max-time");
-            node.classList.remove("ah-compare-min-time");
+            node.classList.remove("ah-compare-time");
+            const minNode = node.getElementsByClassName('ah-compare-min-time')[0];
+            const maxNode = node.getElementsByClassName('ah-compare-max-time')[0];
+
+            if (minNode) minNode.remove();
+            if (maxNode) maxNode.remove();
 
             const time = node.dataset.currentTimeMs;
 
@@ -374,8 +397,14 @@ AhComparison.prototype.compareTime = function (node) {
             }
         });
 
-        if (maxTimeNode) maxTimeNode.className += ' ah-compare-max-time';
-        if (minTimeNode) minTimeNode.className += ' ah-compare-min-time';
+        if (maxTimeNode) {
+            maxTimeNode.classList.add('ah-compare-time');
+            maxTimeNode.appendChild(max);
+        }
+        if (minTimeNode) {
+            minTimeNode.classList.add('ah-compare-time');
+            minTimeNode.appendChild(min);
+        }
     }
 };
 
@@ -459,9 +488,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
             const date = new Date(photo.date);
             prevPhotos += `
-                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
+                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}" data-current-time-ms="${new Date(photo.date).getTime()}" title="${photo.date}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
-                        <div class="ah-photo-prev-img-date" data-current-time-ms="${new Date(photo.date).getTime()}" title="${photo.date}">
+                        <div class="ah-photo-prev-img-date">
                             ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth() + 1)} 
                             ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
                         </div>
@@ -472,7 +501,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
-                    <div class="ah-compare-photo-date" data-compare-time="big-photo" data-current-time-ms="${new Date(item.photos[0].date).getTime()}">${item.photos[0].date}</div>
+                    <div class="ah-compare-photo-date">
+                        <span data-compare-time="big-photo" data-current-time-ms="${new Date(item.photos[0].date).getTime()}">${item.photos[0].date}</span>
+                    </div>
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
                     <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
@@ -730,9 +761,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             const allPreviews = preview.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
             const main = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main');
             const mainPhoto = main.querySelector('.ah-photo-link');
-            const mainPhotoDate = main.querySelector('.ah-compare-photo-date');
+            const mainPhotoDate = main.querySelector('.ah-compare-photo-date span');
             const currPreview = preview.querySelector('.ah-photo-prev-img');
-            const photoDate = preview.querySelector('.ah-photo-prev-img-date');
             const originalImg = currPreview.dataset.originalImage;
 
             allPreviews.forEach(item => item.classList.remove('ah-photo-prev-img-active'));
@@ -740,8 +770,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             mainPhoto.style.backgroundImage = `url(${originalImg})`;
             mainPhoto.href = originalImg;
 
-            mainPhotoDate.textContent = photoDate.title;
-            mainPhotoDate.dataset.currentTimeMs = photoDate.dataset.currentTimeMs;
+            mainPhotoDate.textContent = preview.title;
+            mainPhotoDate.dataset.currentTimeMs = preview.dataset.currentTimeMs;
 
             this.compareTime("big-photo");
         }
@@ -832,25 +862,25 @@ ItemsComparison.prototype.similarPhotos = function (id) {
 
             for (let imageId of similar) {
                 const $imageNode = $(`[data-image-id="${imageId}"]`);
-                $imageNode.attr("data-image-group-color", colorId).css(border);
-                $imageNode.find('.ah-photo-prev-img-date').attr("data-compare-time", colorId);
+                $imageNode
+                    .attr("data-image-group-color", colorId)
+                    .attr("data-compare-time", colorId)
+                    .css(border);
             }
 
             const $imageGroupColor = $(`[data-image-group-color="${colorId}"]`);
 
             const inImageGroupColor = () => {
-                this.compareTime(colorId);
+                this.compareTime(colorId, '1px', '1px');
                 border["box-shadow"] = shadowIn;
                 $imageGroupColor.css(border);
             };
 
             const outImageGroupColor = () => {
                 border["box-shadow"] = shadowOut;
-                $imageGroupColor.css(border);
-                $imageGroupColor
-                    .find('.ah-photo-prev-img-date')
-                    .removeClass('ah-compare-max-time')
-                    .removeClass('ah-compare-min-time');
+                $imageGroupColor.removeClass('ah-compare-time').css(border);
+                $imageGroupColor.find('.ah-compare-min-time').remove();
+                $imageGroupColor.find('.ah-compare-max-time').remove();
             };
 
             $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);

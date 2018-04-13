@@ -4283,20 +4283,26 @@ select.ah-form-control:focus {
     text-align: center;
 }
 
-.ah-compare-min-time::after, .ah-compare-max-time::after {
-    vertical-align: super;
+.ah-compare-time {
+    position: relative;
+}
+
+.ah-compare-min-time, .ah-compare-max-time {
+    position: absolute;
+    top: -5px;
+    right: -22px;
     font-size: 10px;
     padding: 0 1px;
     font-weight: bold;
 }
 
-.ah-compare-min-time::after {
+.ah-compare-min-time {
     content: "min";
     background: #e7ecff;
     color: #394d99;
 }
 
-.ah-compare-max-time::after {
+.ah-compare-max-time {
     content: "max";
     background: #fff1ff;
     color: #a21918;
@@ -4339,6 +4345,7 @@ select.ah-form-control:focus {
 
 .ah-compare-photo-prev {
     max-height: 130px;
+    overflow-x: hidden;
 }
 
 .ah-compare-items-row-description .ah-compare-cell {
