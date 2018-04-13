@@ -862,28 +862,30 @@ ItemsComparison.prototype.similarPhotos = function (id) {
 
             for (let imageId of similar) {
                 const $imageNode = $(`[data-image-id="${imageId}"]`);
-                $imageNode
-                    .attr("data-image-group-color", colorId)
-                    .attr("data-compare-time", colorId)
-                    .css(border);
+                $imageNode.attr("data-image-group-color", colorId);
             }
 
             const $imageGroupColor = $(`[data-image-group-color="${colorId}"]`);
 
-            const inImageGroupColor = () => {
-                this.compareTime(colorId, '1px', '1px');
-                border["box-shadow"] = shadowIn;
-                $imageGroupColor.css(border);
-            };
+            if ($imageGroupColor.length > 1) {
+                const inImageGroupColor = () => {
+                    this.compareTime(colorId, '1px', '1px');
+                    border["box-shadow"] = shadowIn;
+                    $imageGroupColor.css(border);
+                };
 
-            const outImageGroupColor = () => {
-                border["box-shadow"] = shadowOut;
-                $imageGroupColor.removeClass('ah-compare-time').css(border);
-                $imageGroupColor.find('.ah-compare-min-time').remove();
-                $imageGroupColor.find('.ah-compare-max-time').remove();
-            };
+                const outImageGroupColor = () => {
+                    border["box-shadow"] = shadowOut;
+                    $imageGroupColor.removeClass('ah-compare-time').css(border);
+                    $imageGroupColor.find('.ah-compare-min-time').remove();
+                    $imageGroupColor.find('.ah-compare-max-time').remove();
+                };
 
-            $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);
+                $imageGroupColor
+                    .attr("data-compare-time", colorId)
+                    .css(border)
+                    .hover(inImageGroupColor, outImageGroupColor);
+            }
         }
     });
 };
