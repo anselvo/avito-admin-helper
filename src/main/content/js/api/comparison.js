@@ -335,6 +335,34 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
+AhComparison.prototype.compareMapDistance = function () {
+    const allCompareNodes = this.modal.querySelectorAll('[data-compare-map]');
+    const abutmentNodes = [].filter.call(allCompareNodes, node => node.dataset.entityId === this._ids.abutment);
+    const comparingNodes = [].filter.call(allCompareNodes, node => node.dataset.entityId !== this._ids.abutment);
+
+    abutmentNodes.forEach(abutment => {
+        const abutmentLat = abutment.dataset.mapLat;
+        const abutmentLng= abutment.dataset.mapLng;
+        const abutmentGeo = { lat: abutmentLat, lng: abutmentLng };
+
+        comparingNodes.forEach(comparing => {
+            const comparingLat = comparing.dataset.mapLat;
+            const comparingLng = comparing.dataset.mapLng;
+            const comparingGeo = { lat: comparingLat, lng: comparingLng };
+            const haversin = haversineDistance(abutmentGeo, comparingGeo);
+            const haversinKm = (haversin / 1000).toFixed(2);
+
+            const haversinNode = document.createElement('div');
+            haversinNode.textContent = `~ ${haversinKm} км`;
+            haversinNode.className = 'ah-compare-haversin-node';
+            haversinNode.title = `Разница в расстоянии между опорным и текущим объявлением составляет ${Math.floor(haversin)} м.`;
+
+            comparing.classList.add('ah-compare-haversin');
+            comparing.appendChild(haversinNode);
+        });
+    });
+};
+
 AhComparison.prototype.compareTime = function (node, right, top) {
     const searchNode = node ? `[data-compare-time="${node}"]` : `[data-compare-time]`;
     const allCompareNodes = this.modal.querySelectorAll(searchNode);
@@ -373,7 +401,6 @@ AhComparison.prototype.compareTime = function (node, right, top) {
             min.style.top = top;
             max.style.top = top;
         }
-
 
         allNodesByName[key].forEach(node => {
             node.classList.remove("ah-compare-time");
@@ -611,8 +638,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                         <span class="ah-compare-items-label">Город:</span>
                         <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
                     </div>
-                    <div class="ah-compare-address">
-                        <span class="ah-compare-items-label">Адресс:</span>
+                    <div class="ah-compare-address" data-compare-map="address" data-entity-id="${item.id}" data-map-lat="${item.geotag.lat}" data-map-lng="${item.geotag.lng}">
+                        <span class="ah-compare-items-label">Адрес:</span>
                         <span data-compare="address" data-entity-id="${item.id}" title="${item.address}">
                             <a href="https://yandex.ru/maps?text=${item.region + item.address}" target="_blank">${item.address ? item.address : '-'}</a>
                         </span>
@@ -841,6 +868,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
 
     this.compareStrict();
+    this.compareMapDistance();
     this.compareTime();
     this.similarPhotos(abutmentId);
 };

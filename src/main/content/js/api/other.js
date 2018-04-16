@@ -861,6 +861,10 @@ function getParamsItemInfo(html) {
         return res;
     });
     res.siteLink = $(searchNode).find('a[href^="https://www.avito.ru/"]').attr('href');
+    res.geotag = {
+        lat: $(searchNode).find('.js-item-map-wrapper').data('mapLat'),
+        lng: $(searchNode).find('.js-item-map-wrapper').data('mapLon')
+    };
 
     return res;
 }
@@ -1480,4 +1484,30 @@ function handleCheckVasUsage(btn) {
             </div>`
         }).popover('show');
     }
+}
+
+function squared (x) { return x * x }
+function toRad (x) { return x * Math.PI / 180.0 }
+
+function haversineDistance(a, b) {
+    const atan2 = Math.atan2;
+    const cos = Math.cos;
+    const sin = Math.sin;
+    const sqrt = Math.sqrt;
+
+    // (mean) radius of Earth (meters)
+    const R = 6378137;
+
+    const aLat = a.latitude || a.lat;
+    const bLat = b.latitude || b.lat;
+    const aLng = a.longitude || a.lng || a.lon;
+    const bLng = b.longitude || b.lng || b.lon;
+
+    const dLat = toRad(bLat - aLat);
+    const dLon = toRad(bLng - aLng);
+
+    const f = squared(sin(dLat / 2.0)) + cos(toRad(aLat)) * cos(toRad(bLat)) * squared(sin(dLon / 2.0));
+    const c = 2 * atan2(sqrt(f), sqrt(1 - f));
+
+    return R * c;
 }

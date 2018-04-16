@@ -4283,6 +4283,22 @@ select.ah-form-control:focus {
     text-align: center;
 }
 
+.ah-compare-haversin {
+    position: relative;
+}
+
+.ah-compare-haversin-node {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 10px;
+    padding: 0 1px;
+    font-weight: bold;
+    background: #e5ffe7;
+    color: #109a3c;
+    cursor: default;
+}
+
 .ah-compare-time {
     position: relative;
 }
@@ -4292,6 +4308,7 @@ select.ah-form-control:focus {
     top: -5px;
     right: -22px;
     font-size: 10px;
+    cursor: default;
     padding: 0 1px;
     font-weight: bold;
 }
