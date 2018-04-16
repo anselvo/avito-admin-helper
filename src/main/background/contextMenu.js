@@ -100,8 +100,22 @@ function searchInItemByIP(info) {
     chrome.tabs.create({ url: newURL });
 }
 
+function searchInItemByItemID(info) {
+    const ids = info.selectionText.match(/\d{5,}/g);
+    let newURL = `${connectInfo.adm_url}/items/search?query=${ids.join('|')}`;
+    chrome.tabs.create({ url: newURL });
+}
+
+function searchInItemByUserID(info) {
+    const ids = info.selectionText.match(/\d{5,}/g);
+    let newURL = `${connectInfo.adm_url}/items/search?user=${ids.join('|')}`;
+    chrome.tabs.create({ url: newURL });
+}
+
 const itemSearch = chrome.contextMenus.create({title: "Искать в items/search", contexts: contextSearchAdm});
 chrome.contextMenus.create({title: "по тексту", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByQuery});
+chrome.contextMenus.create({title: "по тексту (находя ID объявлений)", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByItemID});
+chrome.contextMenus.create({title: "по тексту (находя ID пользователей)", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByUserID});
 chrome.contextMenus.create({title: "по телефону", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByPhone});
 chrome.contextMenus.create({title: "по IP", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByIP});
 chrome.contextMenus.create({title: "по пользователю", contexts: contextSearchAdm, parentId: itemSearch, onclick: searchInItemByUser});
@@ -127,7 +141,16 @@ function searchInUserByEmail(info) {
     chrome.tabs.create({ url: newURL });
 }
 
+function searchInItemByUserPublicID(info) {
+    const ids = info.selectionText.match(/\w{32}/g);
+    for (let i = 0; i < ids.length; ++i) {
+        let newURL = `${connectInfo.adm_url}/users/search?user_hash=${ids[0]}`;
+        chrome.tabs.create({url: newURL});
+    }
+}
+
 const userSearch = chrome.contextMenus.create({title: "Искать в users/search", contexts: contextSearchAdm});
+chrome.contextMenus.create({title: "по публичному ID", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInItemByUserPublicID});
 chrome.contextMenus.create({title: "по email", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByEmail});
 chrome.contextMenus.create({title: "по имени", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByName});
 chrome.contextMenus.create({title: "по телефону", contexts: contextSearchAdm, parentId: userSearch, onclick: searchInUserByPhone});
