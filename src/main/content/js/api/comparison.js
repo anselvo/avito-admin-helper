@@ -335,7 +335,35 @@ AhComparison.prototype.compareStrict = function() {
     });
 };
 
-AhComparison.prototype.compareTime = function (node) {
+AhComparison.prototype.compareMapDistance = function () {
+    const allCompareNodes = this.modal.querySelectorAll('[data-compare-map]');
+    const abutmentNodes = [].filter.call(allCompareNodes, node => node.dataset.entityId === this._ids.abutment);
+    const comparingNodes = [].filter.call(allCompareNodes, node => node.dataset.entityId !== this._ids.abutment);
+
+    abutmentNodes.forEach(abutment => {
+        const abutmentLat = abutment.dataset.mapLat;
+        const abutmentLng= abutment.dataset.mapLng;
+        const abutmentGeo = { lat: abutmentLat, lng: abutmentLng };
+
+        comparingNodes.forEach(comparing => {
+            const comparingLat = comparing.dataset.mapLat;
+            const comparingLng = comparing.dataset.mapLng;
+            const comparingGeo = { lat: comparingLat, lng: comparingLng };
+            const haversin = haversineDistance(abutmentGeo, comparingGeo);
+            const haversinKm = (haversin / 1000).toFixed(2);
+
+            const haversinNode = document.createElement('div');
+            haversinNode.textContent = `~ ${haversinKm} км`;
+            haversinNode.className = 'ah-compare-haversin-node';
+            haversinNode.title = `Разница в расстоянии между опорным и текущим объявлением составляет ${Math.floor(haversin)} м.`;
+
+            comparing.classList.add('ah-compare-haversin');
+            comparing.appendChild(haversinNode);
+        });
+    });
+};
+
+AhComparison.prototype.compareTime = function (node, right, top) {
     const searchNode = node ? `[data-compare-time="${node}"]` : `[data-compare-time]`;
     const allCompareNodes = this.modal.querySelectorAll(searchNode);
     const allNodesByName = {};
@@ -356,9 +384,31 @@ AhComparison.prototype.compareTime = function (node) {
         let minTime = Number.POSITIVE_INFINITY;
         let minTimeNode = null;
 
+        const min = document.createElement('div');
+        min.textContent = 'min';
+        min.className = 'ah-compare-min-time';
+
+        const max = document.createElement('div');
+        max.textContent = 'max';
+        max.className = 'ah-compare-max-time';
+
+        if (right) {
+            min.style.right = right;
+            max.style.right = right;
+        }
+
+        if (top) {
+            min.style.top = top;
+            max.style.top = top;
+        }
+
         allNodesByName[key].forEach(node => {
-            node.classList.remove("ah-compare-max-time");
-            node.classList.remove("ah-compare-min-time");
+            node.classList.remove("ah-compare-time");
+            const minNode = node.getElementsByClassName('ah-compare-min-time')[0];
+            const maxNode = node.getElementsByClassName('ah-compare-max-time')[0];
+
+            if (minNode) minNode.remove();
+            if (maxNode) maxNode.remove();
 
             const time = node.dataset.currentTimeMs;
 
@@ -374,8 +424,14 @@ AhComparison.prototype.compareTime = function (node) {
             }
         });
 
-        if (maxTimeNode) maxTimeNode.className += ' ah-compare-max-time';
-        if (minTimeNode) minTimeNode.className += ' ah-compare-min-time';
+        if (maxTimeNode) {
+            maxTimeNode.classList.add('ah-compare-time');
+            maxTimeNode.appendChild(max);
+        }
+        if (minTimeNode) {
+            minTimeNode.classList.add('ah-compare-time');
+            minTimeNode.appendChild(min);
+        }
     }
 };
 
@@ -459,9 +515,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             let activeImgClass = (i === 0) ? 'ah-photo-prev-img-active' : '';
             const date = new Date(photo.date);
             prevPhotos += `
-                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}">
+                    <div class="ah-photo-prev-wrap" data-image-id="${photo.imageId}" data-current-time-ms="${new Date(photo.date).getTime()}" title="${photo.date}">
                         <img class="ah-photo-prev-img ${activeImgClass}" src="${photo.thumbUrl}" data-original-image="${photo.url}">
-                        <div class="ah-photo-prev-img-date" data-current-time-ms="${new Date(photo.date).getTime()}" title="${photo.date}">
+                        <div class="ah-photo-prev-img-date">
                             ${dateWithZero(date.getDate())}.${dateWithZero(date.getMonth() + 1)} 
                             ${dateWithZero(date.getHours())}:${dateWithZero(date.getMinutes())}
                         </div>
@@ -472,7 +528,9 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         // главное фото
         if (item.photos.length !== 0) {
             mainPhoto = `
-                    <div class="ah-compare-photo-date" data-compare-time="big-photo" data-current-time-ms="${new Date(item.photos[0].date).getTime()}">${item.photos[0].date}</div>
+                    <div class="ah-compare-photo-date">
+                        <span data-compare-time="big-photo" data-current-time-ms="${new Date(item.photos[0].date).getTime()}">${item.photos[0].date}</span>
+                    </div>
                     <span class="ah-compare-photo-count">${item.photos.length}</span>
                     <a style="background-image: url(${item.photos[0].url});" target="_blank" href="${item.photos[0].url}" class="ah-photo-link"></a>
                 `;
@@ -580,8 +638,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
                         <span class="ah-compare-items-label">Город:</span>
                         <span data-compare="region" data-entity-id="${item.id}">${item.region}</span>
                     </div>
-                    <div class="ah-compare-address">
-                        <span class="ah-compare-items-label">Адресс:</span>
+                    <div class="ah-compare-address" data-compare-map="address" data-entity-id="${item.id}" data-map-lat="${item.geotag.lat}" data-map-lng="${item.geotag.lng}">
+                        <span class="ah-compare-items-label">Адрес:</span>
                         <span data-compare="address" data-entity-id="${item.id}" title="${item.address}">
                             <a href="https://yandex.ru/maps?text=${item.region + item.address}" target="_blank">${item.address ? item.address : '-'}</a>
                         </span>
@@ -730,9 +788,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             const allPreviews = preview.closest('.ah-compare-photo-prev').querySelectorAll('.ah-photo-prev-img');
             const main = preview.closest('.ah-compare-cell').querySelector('.ah-compare-photo-main');
             const mainPhoto = main.querySelector('.ah-photo-link');
-            const mainPhotoDate = main.querySelector('.ah-compare-photo-date');
+            const mainPhotoDate = main.querySelector('.ah-compare-photo-date span');
             const currPreview = preview.querySelector('.ah-photo-prev-img');
-            const photoDate = preview.querySelector('.ah-photo-prev-img-date');
             const originalImg = currPreview.dataset.originalImage;
 
             allPreviews.forEach(item => item.classList.remove('ah-photo-prev-img-active'));
@@ -740,8 +797,8 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             mainPhoto.style.backgroundImage = `url(${originalImg})`;
             mainPhoto.href = originalImg;
 
-            mainPhotoDate.textContent = photoDate.title;
-            mainPhotoDate.dataset.currentTimeMs = photoDate.dataset.currentTimeMs;
+            mainPhotoDate.textContent = preview.title;
+            mainPhotoDate.dataset.currentTimeMs = preview.dataset.currentTimeMs;
 
             this.compareTime("big-photo");
         }
@@ -811,6 +868,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
 
 
     this.compareStrict();
+    this.compareMapDistance();
     this.compareTime();
     this.similarPhotos(abutmentId);
 };
@@ -832,28 +890,30 @@ ItemsComparison.prototype.similarPhotos = function (id) {
 
             for (let imageId of similar) {
                 const $imageNode = $(`[data-image-id="${imageId}"]`);
-                $imageNode.attr("data-image-group-color", colorId).css(border);
-                $imageNode.find('.ah-photo-prev-img-date').attr("data-compare-time", colorId);
+                $imageNode.attr("data-image-group-color", colorId);
             }
 
             const $imageGroupColor = $(`[data-image-group-color="${colorId}"]`);
 
-            const inImageGroupColor = () => {
-                this.compareTime(colorId);
-                border["box-shadow"] = shadowIn;
-                $imageGroupColor.css(border);
-            };
+            if ($imageGroupColor.length > 1) {
+                const inImageGroupColor = () => {
+                    this.compareTime(colorId, '1px', '1px');
+                    border["box-shadow"] = shadowIn;
+                    $imageGroupColor.css(border);
+                };
 
-            const outImageGroupColor = () => {
-                border["box-shadow"] = shadowOut;
-                $imageGroupColor.css(border);
+                const outImageGroupColor = () => {
+                    border["box-shadow"] = shadowOut;
+                    $imageGroupColor.removeClass('ah-compare-time').css(border);
+                    $imageGroupColor.find('.ah-compare-min-time').remove();
+                    $imageGroupColor.find('.ah-compare-max-time').remove();
+                };
+
                 $imageGroupColor
-                    .find('.ah-photo-prev-img-date')
-                    .removeClass('ah-compare-max-time')
-                    .removeClass('ah-compare-min-time');
-            };
-
-            $imageGroupColor.hover(inImageGroupColor, outImageGroupColor);
+                    .attr("data-compare-time", colorId)
+                    .css(border)
+                    .hover(inImageGroupColor, outImageGroupColor);
+            }
         }
     });
 };
