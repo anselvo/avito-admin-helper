@@ -167,10 +167,10 @@ function handleRoles() {
             roleHandler.helpdeskUserInfo();
         }
 
-        // линк на мессенджер
-        if (isAuthority('ROLE_HELPDESK_MESSENGER_LINK')) {
-            roleHandler.helpdeskMessengerLink();
-        }
+        // // линк на мессенджер
+        // if (isAuthority('ROLE_HELPDESK_MESSENGER_LINK')) {
+        //     roleHandler.helpdeskMessengerLink();
+        // }
 
         // копирование мыла юзера в буфер
         if (isAuthority('ROLE_HELPDESK_COPY_USER_MAIL')) {
@@ -720,9 +720,9 @@ RoleHandler.prototype.helpdeskUserInfo = function() {
     infoAboutUser(false);
 };
 
-RoleHandler.prototype.helpdeskMessengerLink = function() {
-    addMessengerLinkInTicket();
-};
+// RoleHandler.prototype.helpdeskMessengerLink = function() {
+//     addMessengerLinkInTicket();
+// };
 
 RoleHandler.prototype.helpdeskDetailsCopyUserMail = function() {
     addCopyUserMailInTicket();

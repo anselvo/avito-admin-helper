@@ -2050,6 +2050,10 @@ function addElementsTicketTitle() {
 //++++++++++ элементы в тайтле тикета ++++++++++//
 
 // линк на мессенджер
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 function addMessengerLinkInTicket() {
 	$('div.helpdesk-additional-info-panel a.ah-messenger-link').parent().remove();
 	
