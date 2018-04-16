@@ -475,7 +475,7 @@ function postBlockReasonList(reasonId) {
     const moderComment = document.getElementById('ah-post-block-comment');
 
     const comment = `[Admin.Helper.Users.Block]
-    ${reason} ${moderComment.value ? '(' + moderComment.value + ')' : ''}
+    ${reason} ${moderComment.value ? '( ' + moderComment.value + ' )' : ''}
     Ссылка открытая модератором при блокировке:
     ${url}
     Ссылка на активного пользователя:
