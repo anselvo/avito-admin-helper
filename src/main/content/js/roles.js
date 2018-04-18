@@ -89,35 +89,35 @@ function handleRoles() {
             roleHandler.helpdeskSearchBySocial();
         }
 
-        // копирование ссылки на тикет
-        if (isAuthority('ROLE_HELPDESK_COPY_TICKET_LINK')) {
-            roleHandler.helpdeskCopyTicketLink();
-        }
+        // // копирование ссылки на тикет
+        // if (isAuthority('ROLE_HELPDESK_COPY_TICKET_LINK')) {
+        //     roleHandler.helpdeskCopyTicketLink();
+        // }
 
-        // копировать имя реквестера
-        if (isAuthority('ROLE_HELPDESK_COPY_REQUESTER_NAME')) {
-            roleHandler.helpdeskCopyRequesterName();
-        }
+        // // копировать имя реквестера
+        // if (isAuthority('ROLE_HELPDESK_COPY_REQUESTER_NAME')) {
+        //     roleHandler.helpdeskCopyRequesterName();
+        // }
 
-        // копирование айди тикета
-        if (isAuthority('ROLE_HELPDESK_COPY_TICKET_ID')) {
-            roleHandler.helpdeskCopyTicketId();
-        }
+        // // копирование айди тикета
+        // if (isAuthority('ROLE_HELPDESK_COPY_TICKET_ID')) {
+        //     roleHandler.helpdeskCopyTicketId();
+        // }
 
-        // поповер для айди айтема на левой панели
-        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_ITEM_POPOVER')) {
-            roleHandler.helpdeskLeftPanelItemPopover();
-        }
+        // // поповер для айди айтема на левой панели
+        // if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_ITEM_POPOVER')) {
+        //     roleHandler.helpdeskLeftPanelItemPopover();
+        // }
 
         // поповер для айпи на левой панели
         if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_IP_POPOVER')) {
             roleHandler.helpdeskLeftPanelIpPopover();
         }
 
-        // поповер для номера телефона на левой панели
-        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_PHONE_POPOVER')) {
-            roleHandler.helpdeskLeftPanelPhonePopover();
-        }
+        // // поповер для номера телефона на левой панели
+        // if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_PHONE_POPOVER')) {
+        //     roleHandler.helpdeskLeftPanelPhonePopover();
+        // }
 
         // нотификация о жалобах от крайне негативных юзеров
         if (isAuthority('ROLE_HELPDESK_NEGATIVE_USERS')) {
@@ -167,20 +167,20 @@ function handleRoles() {
             roleHandler.helpdeskUserInfo();
         }
 
-        // линк на мессенджер
-        if (isAuthority('ROLE_HELPDESK_MESSENGER_LINK')) {
-            roleHandler.helpdeskMessengerLink();
-        }
+        // // линк на мессенджер
+        // if (isAuthority('ROLE_HELPDESK_MESSENGER_LINK')) {
+        //     roleHandler.helpdeskMessengerLink();
+        // }
 
-        // копирование мыла юзера в буфер
-        if (isAuthority('ROLE_HELPDESK_COPY_USER_MAIL')) {
-            roleHandler.helpdeskDetailsCopyUserMail();
-        }
+        // // копирование мыла юзера в буфер
+        // if (isAuthority('ROLE_HELPDESK_COPY_USER_MAIL')) {
+        //     roleHandler.helpdeskDetailsCopyUserMail();
+        // }
 
-        // копирование имени юзера
-        if (isAuthority('ROLE_HELPDESK_COPY_USER_NAME')) {
-            roleHandler.helpdeskCopyUserName();
-        }
+        // // копирование имени юзера
+        // if (isAuthority('ROLE_HELPDESK_COPY_USER_NAME')) {
+        //     roleHandler.helpdeskCopyUserName();
+        // }
 
         // проверка использования VAS
         if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
@@ -675,29 +675,29 @@ RoleHandler.prototype.helpdeskSearchBySocial = function() {
     addSearchUserBySocialBlock();
 };
 
-RoleHandler.prototype.helpdeskCopyTicketLink = function() {
-    copyCurrentTicketLink();
-};
+// RoleHandler.prototype.helpdeskCopyTicketLink = function() {
+//     copyCurrentTicketLink();
+// };
 
-RoleHandler.prototype.helpdeskCopyRequesterName = function() {
-    copyRequesterName();
-};
+// RoleHandler.prototype.helpdeskCopyRequesterName = function() {
+//     copyRequesterName();
+// };
 
-RoleHandler.prototype.helpdeskCopyTicketId = function() {
-    copyTicketId();
-};
+// RoleHandler.prototype.helpdeskCopyTicketId = function() {
+//     copyTicketId();
+// };
 
-RoleHandler.prototype.helpdeskLeftPanelItemPopover = function() {
-    addItemIdPopoverOnLeftPanel();
-};
+// RoleHandler.prototype.helpdeskLeftPanelItemPopover = function() {
+//     addItemIdPopoverOnLeftPanel();
+// };
 
 RoleHandler.prototype.helpdeskLeftPanelIpPopover = function() {
     addIpPopoverOnLeftPanel();
 };
 
-RoleHandler.prototype.helpdeskLeftPanelPhonePopover = function() {
-    addPhoneNumberPopoverOnLeftPanel();
-};
+// RoleHandler.prototype.helpdeskLeftPanelPhonePopover = function() {
+//     addPhoneNumberPopoverOnLeftPanel();
+// };
 
 RoleHandler.prototype.helpdeskBlockedReason = function() {
     showReasonBlockedUser();
@@ -720,17 +720,17 @@ RoleHandler.prototype.helpdeskUserInfo = function() {
     infoAboutUser(false);
 };
 
-RoleHandler.prototype.helpdeskMessengerLink = function() {
-    addMessengerLinkInTicket();
-};
+// RoleHandler.prototype.helpdeskMessengerLink = function() {
+//     addMessengerLinkInTicket();
+// };
 
-RoleHandler.prototype.helpdeskDetailsCopyUserMail = function() {
-    addCopyUserMailInTicket();
-};
+// RoleHandler.prototype.helpdeskDetailsCopyUserMail = function() {
+//     addCopyUserMailInTicket();
+// };
 
-RoleHandler.prototype.helpdeskCopyUserName = function() {
-    copyUserNameOnTicket();
-};
+// RoleHandler.prototype.helpdeskCopyUserName = function() {
+//     copyUserNameOnTicket();
+// };
 
 RoleHandler.prototype.helpdeskQueueOpenTicket = function() {
     openTicketInNewTab();

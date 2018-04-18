@@ -2050,6 +2050,10 @@ function addElementsTicketTitle() {
 //++++++++++ элементы в тайтле тикета ++++++++++//
 
 // линк на мессенджер
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 function addMessengerLinkInTicket() {
 	$('div.helpdesk-additional-info-panel a.ah-messenger-link').parent().remove();
 	
@@ -2058,6 +2062,10 @@ function addMessengerLinkInTicket() {
 }
 
 // копирование мыла юзера
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 function addCopyUserMailInTicket() {
 	$('#ah-copy-mail-ticket-title, #sh-automail-ticket-title').remove();
 	
@@ -2078,6 +2086,11 @@ function addCopyUserMailInTicket() {
 }
 
 // копирование имени юзера
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
+
 function copyUserNameOnTicket() {
     if ($('#ahCopyUserName').length !== 0) return;
 
@@ -3279,6 +3292,10 @@ function addSearchUserBySocialBlock() {
 //++++++++++ поиск по соцсети ++++++++++//
 
 //---------- Копирование ссылки на тикет ----------//
+/**
+ * Перенос в helpdesk
+ * @deprecated
+ */
 function copyCurrentTicketLink() {
     $('#copyCurrentTicketLink').remove();
 
@@ -3297,6 +3314,10 @@ function copyCurrentTicketLink() {
 //++++++++++ Копирование ссылки на тикет ++++++++++//
 
 //---------- Копирование имени реквестера ----------//
+/**
+ * Перенос в helpdesk
+ * @deprecated
+ */
 function copyRequesterName() {
     if ($('#ahCopyRequesterName').length !== 0) return;
 
@@ -3313,6 +3334,10 @@ function copyRequesterName() {
 //++++++++++ Копирование имени реквестера ++++++++++//
 
 //---------- Копирование айди тикета ----------//
+/**
+ * Перенос в helpdesk
+ * @deprecated
+ */
 function copyTicketId() {
     if ($('#ahCopyTicketId').length !== 0) return;
 
@@ -3331,6 +3356,10 @@ function copyTicketId() {
 //++++++++++ Копирование айди тикета ++++++++++//
 
 //---------- поповер для айди айтема на левой панели ----------//
+/**
+ * Перенос в helpdesk
+ * @deprecated
+ */
 function addItemIdPopoverOnLeftPanel() {
     if ($('.ah-hd-item-id-left-panel-popover').length !== 0) return;
 
@@ -3454,6 +3483,10 @@ function helpdeskIpInfoHandler(xhr, options) {
 //++++++++++ поповер для айпи на левой панели ++++++++++//
 
 //---------- поповер для номера телефона на левой панели ----------//
+/**
+ * Перенос в helpdesk
+ * @deprecated
+ */
 function addPhoneNumberPopoverOnLeftPanel() {
     if ($('#ahPhoneNumberOnLeftPanelPopover').length !== 0) return;
 
