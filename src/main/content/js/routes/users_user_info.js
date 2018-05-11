@@ -2,7 +2,7 @@
 function messengerLinkOnUser() {
     var userId = getParamOnUserInfo('user-id');
 
-    $('.form-group:contains(ID) .help-inline').append('<span style="margin-left: 0;" class="ah-messenger-link-wrapper"><a title="Мессенджер" class="ah-messenger-link" href="/messenger/user/' + userId + '" target="_blank" style=""></a></span>');
+    $('.form-group:contains(ID) div').append('<span style="margin-left: 0;" class="ah-messenger-link-wrapper"><a title="Мессенджер" class="ah-messenger-link" href="/messenger/user/' + userId + '" target="_blank" style=""></a></span>');
 }
 
 // информацио о том какой мадератор относиться к какой категории

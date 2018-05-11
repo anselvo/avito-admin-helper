@@ -349,16 +349,19 @@ AhComparison.prototype.compareMapDistance = function () {
             const comparingLat = comparing.dataset.mapLat;
             const comparingLng = comparing.dataset.mapLng;
             const comparingGeo = { lat: comparingLat, lng: comparingLng };
-            const haversin = haversineDistance(abutmentGeo, comparingGeo);
-            const haversinKm = (haversin / 1000).toFixed(2);
 
-            const haversinNode = document.createElement('div');
-            haversinNode.textContent = `~ ${haversinKm} км`;
-            haversinNode.className = 'ah-compare-haversin-node';
-            haversinNode.title = `Разница в расстоянии между опорным и текущим объявлением составляет ${Math.floor(haversin)} м.`;
+            if (comparingGeo.lat && comparingGeo.lng) {
+                const haversin = haversineDistance(abutmentGeo, comparingGeo);
+                const haversinKm = (haversin / 1000).toFixed(2);
 
-            comparing.classList.add('ah-compare-haversin');
-            comparing.appendChild(haversinNode);
+                const haversinNode = document.createElement('div');
+                haversinNode.textContent = `~ ${haversinKm} км`;
+                haversinNode.className = 'ah-compare-haversin-node';
+                haversinNode.title = `Разница в расстоянии между опорным и текущим объявлением составляет ${Math.floor(haversin)} м.`;
+
+                comparing.classList.add('ah-compare-haversin');
+                comparing.appendChild(haversinNode);
+            }
         });
     });
 };

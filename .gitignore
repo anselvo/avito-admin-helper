@@ -1,5 +1,5 @@
 .idea
 /Avito Helper.iml
-/node_modules/
-/build/
-/archives/
+node_modules/
+build/
+archives/
