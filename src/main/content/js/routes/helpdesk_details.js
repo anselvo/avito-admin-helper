@@ -68,14 +68,14 @@ function renderTagsPopup() {
         column.groups.forEach(function(group) {
 
             global.hdSettings.helpdeskTags.tagGroups.forEach(function(globalGroup) {
-                if (group.id == globalGroup.id && globalGroup.is_active) {
+                if (group.id === globalGroup.id && globalGroup.is_active) {
                     $('div.ah-tags-column[data-column-id="'+ column.id +'"]').append('<div class="ah-tags-group" data-tags-group-id="'+ group.id +'"><ul class="ah-default-list"></ul></div>');
                 }
             });
             group.tags.forEach(function(tag) {
 
                 global.hdSettings.helpdeskTags.tags.forEach(function(globalTag) {
-                    if (tag == globalTag.avito_desk_id && globalTag.is_active) {
+                    if (tag === globalTag.avito_desk_id && globalTag.is_active) {
                         $('div.ah-tags-group-container [data-column-id="'+ column.id +'"] [data-tags-group-id="'+ group.id +'"] ul').append('<li class="ah-default-list-item" title="'+ globalTag.description +'"><input type="checkbox" id="popup-tag-'+ globalTag.avito_desk_id +'" value="'+ globalTag.avito_desk_id +'" class="ah-tags-checkbox"><label for="popup-tag-'+ globalTag.avito_desk_id +'"><span>'+ globalTag.name +'</span></label><button class="ah-fast-tag-add-btn" data-tag-id="'+ globalTag.avito_desk_id +'" data-tag-name="'+ globalTag.name +'">+</button></li>');
                     }
                 });

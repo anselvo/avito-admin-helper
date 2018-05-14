@@ -59,6 +59,9 @@ const global = {
         { flagName: "Вид объявления", button: { reason: 715, value: "ItemType", action: "reject" } },
         { flagName: "Нет фото с ID", button: { reason: 774, value: "NoPhotoID", action: "reject" } }
     ],
+    onlinePhotoCheck: [
+        { flagName: "Нет фото с ID" }
+    ],
     compareDropdownItemBlock: [
         { id: 384, text: "Неактуальное предложение" },
         { id: 20, text: "Повторная подача объявления" },

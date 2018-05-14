@@ -28,7 +28,7 @@ function adminTableCategory() {
                 var currentLogin = $('.table tr').slice(i, i + 1).find('td:eq(2)').text();
 
                 for (var j = 0; j < usersList.length; ++j) {
-                    if (currentLogin == usersList[j].username) {
+                    if (currentLogin === usersList[j].username) {
                         $('.table tr').slice(i, i + 1).find('td:eq(2)').html('<span class="label" title="' + usersList[j].subdivision_name + ' (' + usersList[j].teamlead + ')\nСмена: ' + usersList[j].shift + '\nВыходные: ' + usersList[j].weekend + '"  style="background:#' + usersList[j].sub_color + ';">' + usersList[j].subdivision + '</span><span style="margin-left:5px;">' + usersList[j].username + '</span>');
                         break;
                     }

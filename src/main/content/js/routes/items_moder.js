@@ -560,6 +560,7 @@ function addElementsForEachItemNew() {
         }
 
         ledItem(trList[i], trItemId, itemVersion);
+        onlinePhotoCheck(trList[i], trItemId);
     }
 
     $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
@@ -640,6 +641,29 @@ function ledItem($itemInfo, trItemId, itemVersion) {
 
                 $butBlock.append(input);
             }
+        }
+    }
+}
+
+function onlinePhotoCheck($itemInfo, trItemId) {
+    for (let i = 0; i < global.onlinePhotoCheck.length; ++i) {
+        const flagName = global.onlinePhotoCheck[i].flagName;
+        const $flagItemType = $($itemInfo).find(`.b-antifraud .name:contains(${flagName})`);
+
+        if ($flagItemType.length > 0 && $($itemInfo).find('.ah-online-photo-check').length === 0) {
+            $($itemInfo).find('.item-info-name').append(`
+                <label class="ah-online-photo-check ah-switch">
+                    <input type="checkbox" data-item-id="${trItemId}">
+                    <span class="ah-slider ah-round" title="Online проверка"></span>
+                </label>
+            `);
+
+            $(`.ah-online-photo-check input[data-item-id="${trItemId}"]`).change(function () {
+                const itemId = this.dataset.itemId;
+                const toggle = this.checked;
+
+                updateOnlinePhotoCheck(itemId, toggle);
+            });
         }
     }
 }
