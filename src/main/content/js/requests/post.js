@@ -406,3 +406,20 @@ function shopsModerationSendEmail(shopId, data) {
             return Promise.resolve();
         });
 }
+
+function updateOnlinePhotoCheck(id, status) {
+    const formDate = new FormData();
+    formDate.append('toggle', status);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${global.connectInfo.adm_url}/items/item/${id}/online_mark_toggle`, true);
+    xhr.send(formDate);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            outTextFrame(`У объявления ${id} успешно включена Online-проверка`);
+        } else {
+            $(`.ah-online-photo-check input[data-item-id="${id}"]`).prop('checked', false);
+            outTextFrame(`У объявления ${id} возникли проблемы с влючением онлайн проверки. Попробуйте еще раз.`);
+        }
+    }
+}
