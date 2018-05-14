@@ -416,7 +416,8 @@ function updateOnlinePhotoCheck(id, status) {
     xhr.send(formDate);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            outTextFrame(`У объявления ${id} успешно включена Online-проверка`);
+            if (status) outTextFrame(`У объявления ${id} успешно включена Online-проверка`);
+            else outTextFrame(`У объявления ${id} успешно отключена Online-проверка`);
         } else {
             $(`.ah-online-photo-check input[data-item-id="${id}"]`).prop('checked', false);
             outTextFrame(`У объявления ${id} возникли проблемы с влючением онлайн проверки. Попробуйте еще раз.`);
