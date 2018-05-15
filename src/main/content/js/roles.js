@@ -500,8 +500,6 @@ function handleRoles() {
     // общие функции
     function generalFunctions() {
         // FROM SUPPORT
-        // записываем в глобальную JSON строку проблем HD
-        storeHelpdeskProblems();
 
         const $body = $('body');
 

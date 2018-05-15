@@ -409,7 +409,7 @@ function updateQBInfo() {
                     });
 
                     const changedButtons = unique([tagNames, removedThemesButtons]);
-                    alert('Некоторые Quick Buttons были автоматически изменены после синхронизации. Названия кнопок перечислены ниже:\n'+ changedButtons.join('\n - '));
+                    alert('Параметры некоторых Quick Buttons были автоматически изменены после синхронизации. Названия кнопок перечислены ниже:\n'+ changedButtons.join('\n - '));
                 }
 
                 localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
