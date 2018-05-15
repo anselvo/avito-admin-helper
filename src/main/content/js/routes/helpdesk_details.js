@@ -383,20 +383,40 @@ function updateQBInfo() {
             }
         }
     });
-
-    if (removedTags.length > 0) {
-        let tagNames = [];
-        removedTags.forEach(function(tag) {
-            tagNames.push('"'+ tag.QBname+ '"');
-        });
-
-        tagNames = unique(tagNames);
-
-        alert('Один или несколько тегов были удалены из созданных/импортированных Quick Buttons. Названия кнопок перечислены ниже:\n - '+ tagNames.join('\n - '));
-    }
     // синхронизация тегов +++
 
-    localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
+
+    helpdeskLoadingEnd().
+        then(
+            () => {
+                const removedThemesButtons = [];
+                for (let i = 0; i < LSobj.buttons.length; i++) {
+                    const helpdeskProblem = getHelpdeskProblems().find(({ id }) => LSobj.buttons[i].problemId === id);
+
+                    if (helpdeskProblem && helpdeskProblem.isArchive) {
+                        removedThemesButtons.push(LSobj.buttons[i].name);
+                        LSobj.buttons[i].problemId = 0;
+                        LSobj.buttons[i].theme = '';
+                        LSobj.buttons[i].problem = '';
+                    }
+                }
+
+                // нотификация об изменениях
+                if (removedTags.length || removedThemesButtons.length) {
+                    let tagNames = [];
+                    removedTags.forEach(function(tag) {
+                        tagNames.push('"'+ tag.QBname+ '"');
+                    });
+
+                    const changedButtons = unique([tagNames, removedThemesButtons]);
+                    alert('Некоторые Quick Buttons были автоматически изменены после синхронизации. Названия кнопок перечислены ниже:\n'+ changedButtons.join('\n - '));
+                }
+
+                localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
+            },
+            error => {
+                console.log(error);
+            });
 
 }
 
