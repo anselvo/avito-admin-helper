@@ -212,32 +212,13 @@ function renderCreateNewTicketWindow(route) {
     $(body).append('<div class="ah-clearfix" style="margin-bottom: 15px;"></div>');
 
     // Тема запроса
-    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тема запроса</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-theme"><option value="" hidden="">Тема запроса</option></select></div></div>');
+    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тема запроса</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-theme"><option value="" hidden="">--</option></select></div></div>');
 
     // Тип проблемы (вопрос)
-    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы (вопрос)</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-problem"></select></div></div>');
-
-    try {
-        var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
-    } catch (e) {
-        var helpdeskProblemsStr = '[]';
-    }
+    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы (вопрос)</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-problem"><option value="" hidden="">--</option></select></div></div>');
 
     var themesSelect = $(modal).find('[name="create-ticket-theme"]');
-    var problemsArr = JSON.parse(helpdeskProblemsStr);
-    problemsArr.forEach(function (problem) {
-        if (!problem.parentId) {
-            $(themesSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
-        }
-    });
-
     var problemsSelect = $(modal).find('[name="create-ticket-problem"]');
-    var selectedThemeId = +$(themesSelect).find('option:selected').val();
-    problemsArr.forEach(function (problem) {
-        if (problem.parentId == selectedThemeId) {
-            $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
-        }
-    });
 
     // Инструменты
     $(body).append('<div class="ah-field-group" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;"><div class="ah-field-horizontal"><label for="create-ticket-statusId-1" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-1" value="1" checked>Новое</label><label for="create-ticket-statusId-5" class="ah-radio-inline"><input type="radio"  name="create-ticket-statusId" id="create-ticket-statusId-5" value="5">В решено</label><label for="create-ticket-statusId-3" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-3" value="3">На ожидании</label></div><div class="ah-field-horizontal" style=""><div class="ah-dropmenu-holder btn-group" style="display: inline-block;"><input type="text" class="ah-form-control ah-btn-group-left" style="height: 30px; width: 200px; display: none;" id="create-ticket-search-templates-input"><button type="button" class="ah-default-btn ah-btn-small ah-btn-group-left" id="ah-create-ticket-choose-templates" style="height: 30px;    padding: 1px 10px;" disabled>Шаблоны<span class="ah-caret"></span></button><ul class="ah-dropdown-menu-templates" style="width: 350px; max-height: 50vh; overflow: auto;"></ul></div><label class="ah-default-btn ah-btn-small ah-btn-group-right" style="line-height: 1; margin-bottom: 0; height: 30px;"><input type="file" multiple style="display: none;" name="create-ticket-attaches[]"><i class="ah-btn-icon ah-icon-paperclip"></i></label></div></div>');
@@ -499,6 +480,7 @@ function renderCreateNewTicketWindow(route) {
 
         var selectedThemeId = +$(this).find('option:selected').val();
         $(problemsSelect).find('option').remove();
+        const problemsArr = getHelpdeskProblems() || [];
         problemsArr.forEach(function (problem) {
             if (problem.parentId == selectedThemeId) {
                 $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
@@ -1052,29 +1034,32 @@ function addCreateTicketBtn(route) {
 }
 function showCreateNewTicketWindow() {
     var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-    substituteCreateTicketValues();
     $(modal).show();
     $('#ah-layer-blackout-modal').addClass('ah-layer-flex');
     $('#ah-layer-blackout-modal').addClass('ah-layer-y-scroll');
     showModal();
+
+    let helpdeskProblems = getHelpdeskProblems();
+
+    if (!helpdeskProblems) {
+        helpdeskProblems = [];
+    }
+
+    const $themesSelect = $('[name="create-ticket-theme"]');
+    $themesSelect.html('');
+    $themesSelect.append('<option value="" hidden="">--</option><');
+
+    const problemsArr = helpdeskProblems;
+    problemsArr.forEach(function (problem) {
+        if (!problem.parentId) {
+            $themesSelect.append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
+        }
+    });
+
+    substituteCreateTicketValues();
 }
 function substituteCreateTicketValues() {
     var sourceId = 2;
-
-    var problemId = $('[name="problemId"]').val();
-    var theme = '';
-
-    var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
-    if (!global.hdSettings.helpdeskProblemsJSON) {
-        helpdeskProblemsStr = '[]';
-    }
-
-    var problems = JSON.parse(helpdeskProblemsStr);
-    problems.forEach(function (item) {
-        if (item.id == problemId) {
-            theme = item.parentId;
-        }
-    });
 
     var description = $('.helpdesk-html-view:last').html();
     if (!description) {
@@ -1094,8 +1079,6 @@ function substituteCreateTicketValues() {
 
     var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     $(modal).find('[name="create-ticket-sourceId"]').val(sourceId);
-    $(modal).find('[name="create-ticket-theme"]').val(theme).change();
-    $(modal).find('[name="create-ticket-problem"]').val(problemId);
     $(modal).find('[name="create-ticket-description"]').val(description);
     $(modal).find('[name="create-ticket-requesterEmail"]').val(requesterEmail);
     $(modal).find('[name="create-ticket-requesterName"]').val(requesterName);
