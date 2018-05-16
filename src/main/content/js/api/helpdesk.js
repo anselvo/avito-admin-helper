@@ -480,9 +480,9 @@ function renderCreateNewTicketWindow(route) {
 
         var selectedThemeId = +$(this).find('option:selected').val();
         $(problemsSelect).find('option').remove();
-        const problemsArr = getHelpdeskProblems() || [];
+        const problemsArr = getHelpdeskProblems() || global.hdSettings.problems.info;
         problemsArr.forEach(function (problem) {
-            if (problem.parentId == selectedThemeId) {
+            if (problem.parentId == selectedThemeId && !problem.isArchive) {
                 $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
                 $(problemsSelect).css('color', '#000');
             }
@@ -1017,15 +1017,49 @@ function addCreateTicketBtn(route) {
 
     var btnShow = $('#ah-outgoing-mail-btn');
 
+    global.hdSettings.problems = {
+        isLoaded: false,
+        info: []
+    };
+
     $(btnShow).click(function () {
-        if (!localStorage.getItem('agentID') && route === '/users/user/info') {
-            getPermissions()
-                .then(({ id }) => {
-                    localStorage.setItem('agentID', id);
-                    showCreateNewTicketWindow();
-                }, () => {
-                    localStorage.setItem('agentID', null);
-                });
+        if (route === '/users/user/info') {
+            if (!localStorage.getItem('agentID')) {
+                getPermissions()
+                    .then(({ id }) => {
+                        localStorage.setItem('agentID', id);
+
+                        if (!global.hdSettings.problems.isLoaded) {
+                            getHDProblems()
+                                .then(response => {
+                                    global.hdSettings.problems.isLoaded = true;
+                                    global.hdSettings.problems.info = response;
+                                    showCreateNewTicketWindow();
+                                }, error => {
+                                    console.log(error);
+                                })
+                        } else {
+                            showCreateNewTicketWindow();
+                        }
+                    }, () => {
+                        localStorage.setItem('agentID', null);
+                    });
+                return;
+            }
+
+            if (!global.hdSettings.problems.isLoaded) {
+                getHDProblems()
+                    .then(response => {
+                        global.hdSettings.problems.isLoaded = true;
+                        global.hdSettings.problems.info = response;
+                        showCreateNewTicketWindow();
+                    }, error => {
+                        console.log(error);
+                    });
+                return;
+            }
+
+            showCreateNewTicketWindow();
         } else {
             showCreateNewTicketWindow();
         }
@@ -1039,7 +1073,7 @@ function showCreateNewTicketWindow() {
     $('#ah-layer-blackout-modal').addClass('ah-layer-y-scroll');
     showModal();
 
-    let helpdeskProblems = getHelpdeskProblems();
+    let helpdeskProblems = getHelpdeskProblems() || global.hdSettings.problems.info;
 
     if (!helpdeskProblems) {
         helpdeskProblems = [];
@@ -1051,7 +1085,7 @@ function showCreateNewTicketWindow() {
 
     const problemsArr = helpdeskProblems;
     problemsArr.forEach(function (problem) {
-        if (!problem.parentId) {
+        if (!problem.parentId && !problem.isArchive) {
             $themesSelect.append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
         }
     });

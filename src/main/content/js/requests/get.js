@@ -289,9 +289,19 @@ function getHDTemplates() {
     });
 }
 
-
 function getHDTags() {
     return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`, {
+        credentials: 'include'
+    }).then(response =>  {
+        if (response.status !== 200) {
+            return Promise.reject(response);
+        }
+        return response.json();
+    });
+}
+
+function getHDProblems() {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/ticket/problems`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {
