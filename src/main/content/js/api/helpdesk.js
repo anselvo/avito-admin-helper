@@ -61,11 +61,17 @@ function addExtraAssigneeId(agentId) {
     classifFrom.appendChild(additionalInput);
 }
 
-//---------- Записываем в глобальную JSON строку всех проблем HD ----------//
+
+//---------- Получить проблемы helpdesk ----------//
 function getHelpdeskProblems() {
-    global.hdSettings.helpdeskProblemsJSON = '[{"id":2,"parentId":1,"name":"Регистрация учетной записи","additions":null,"info":null},{"id":3,"parentId":1,"name":"Настройки Личного кабинета","additions":null,"info":null},{"id":4,"parentId":1,"name":"Восстановление пароля","additions":null,"info":null},{"id":5,"parentId":1,"name":"Удаление учетной записи","additions":null,"info":null},{"id":6,"parentId":1,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":8,"parentId":7,"name":"Подача нового объявления","additions":null,"info":null},{"id":9,"parentId":7,"name":"Редактирование объявления","additions":null,"info":null},{"id":10,"parentId":7,"name":"Активация объявления","additions":null,"info":null},{"id":11,"parentId":7,"name":"Снятие объявления с публикации","additions":null,"info":null},{"id":12,"parentId":7,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":14,"parentId":13,"name":"Заблокированное объявление","additions":null,"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":15,"parentId":13,"name":"Заблокированная учетная запись","additions":null,"info":null},{"id":16,"parentId":13,"name":"Отклоненное объявление","additions":null,"info":null},{"id":18,"parentId":17,"name":"Прием СМС или звонка","additions":null,"info":null},{"id":19,"parentId":17,"name":"Отвязка номера от учетной записи","additions":null,"info":null},{"id":20,"parentId":17,"name":"Технические проблемы","additions":null,"info":null},{"id":21,"parentId":17,"name":"Другие вопросы","additions":null,"info":null},{"id":23,"parentId":22,"name":"Не вижу свое оплаченное объявление","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":[{"id":1,"name":"Номер объявления","systemName":"itemId"}]},{"id":24,"parentId":22,"name":"Оплата и применение дополнительных услуг","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":25,"parentId":22,"name":"Пополнение Кошелька Avito","additions":[{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":26,"parentId":22,"name":"Другие вопросы и консультации","additions":[{"name":"Тематика","items":[{"id":2,"name":"Премиум размещение"},{"id":3,"name":"VIP-объявление"},{"id":4,"name":"Поднять объявление в поиске"},{"id":5,"name":"Выделить объявление"},{"id":6,"name":"Пакет «Турбо продажа»"},{"id":7,"name":"Пакет «Быстрая продажа»"},{"id":8,"name":"Плата за размещение"}]},{"name":"Способ оплаты","items":[{"id":10,"name":"SMS"},{"id":11,"name":"Пластиковая карта"},{"id":12,"name":"QIWI Кошелек"},{"id":13,"name":"QIWI Терминал"},{"id":14,"name":"Евросеть/Связной"},{"id":15,"name":"Яндекс Деньги"},{"id":16,"name":"WebMoney"},{"id":17,"name":"Безналичный платёж"},{"id":18,"name":"Авито Кошелек"},{"id":19,"name":"Сбербанк Онлайн"}]}],"info":null},{"id":29,"parentId":27,"name":"Пакеты размещений","additions":null,"info":null},{"id":30,"parentId":27,"name":"Разовое размещение","additions":null,"info":null},{"id":31,"parentId":27,"name":"Лимит бесплатных размещений","additions":null,"info":null},{"id":32,"parentId":27,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":34,"parentId":33,"name":"Проблемы с доступом к сайту","additions":null,"info":null},{"id":35,"parentId":33,"name":"Проблемы со входом в Личный кабинет","additions":null,"info":null},{"id":36,"parentId":33,"name":"Проблемы при подаче, активации или редактировании","additions":null,"info":null},{"id":37,"parentId":33,"name":"Проблемы при загрузке фото","additions":null,"info":null},{"id":38,"parentId":33,"name":"Ошибки отображения элементов сайта","additions":null,"info":null},{"id":39,"parentId":33,"name":"Некорректная работа поиска","additions":null,"info":null},{"id":40,"parentId":33,"name":"Проблемы с отправкой сообщений","additions":null,"info":null},{"id":41,"parentId":33,"name":"Другие технические проблемы","additions":null,"info":null},{"id":43,"parentId":42,"name":"Блокировка или отклонение объявлений","additions":null,"info":null},{"id":44,"parentId":42,"name":"Платные услуги и Кошелек Avito ","additions":null,"info":null},{"id":45,"parentId":42,"name":"Безналичные платежи","additions":null,"info":null},{"id":46,"parentId":42,"name":"Реквизиты организации","additions":null,"info":null},{"id":47,"parentId":42,"name":"Закрывающие документы","additions":null,"info":null},{"id":48,"parentId":42,"name":"Сервисы Автозагрузка, ActiAgent, ActiDealer","additions":[{"name":"Тематика","items":[{"id":47,"name":"Автозагрузка"},{"id":48,"name":"ActiDealer"},{"id":49,"name":"ActiAgent"}]}],"info":null},{"id":49,"parentId":42,"name":"Технические вопросы","additions":null,"info":null},{"id":50,"parentId":42,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":67,"parentId":42,"name":"Жалобы","additions":null,"info":null},{"id":53,"parentId":51,"name":"Avito Контекст","additions":[{"name":"Тематика в Контекст","items":[{"id":27,"name":"Создание кампании Avito Контекст"},{"id":28,"name":"Оплата компании Avito Контекст"},{"id":29,"name":"Модерация Avito Контекст"},{"id":30,"name":"Измерение результатов Avito Контекст"},{"id":31,"name":"Общие вопросы и консультации"}]}],"info":null},{"id":54,"parentId":51,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":56,"parentId":55,"name":"Обман при совершении сделки","additions":null,"info":null},{"id":57,"parentId":55,"name":"Подозрительное объявление или пользователь","additions":null,"info":null},{"id":58,"parentId":55,"name":"Мошенническое SMS, MMS или веб-сайт","additions":null,"info":null},{"id":59,"parentId":55,"name":"Мошенническое письмо","additions":null,"info":null},{"id":60,"parentId":55,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":62,"parentId":61,"name":"Приложение для iOS","additions":null,"info":null},{"id":63,"parentId":61,"name":"Приложение для Android","additions":null,"info":null},{"id":64,"parentId":61,"name":"Мобильная версия сайта","additions":null,"info":null},{"id":65,"parentId":61,"name":"Полная версия сайта с мобильного устройства","additions":null,"info":null},{"id":66,"parentId":61,"name":"Другие вопросы и консультации","additions":null,"info":null},{"id":80,"parentId":79,"name":"Вопрос по отправке заказа","additions":null,"info":null},{"id":81,"parentId":79,"name":"Вопрос по получению заказа","additions":null,"info":null},{"id":1,"parentId":null,"name":"Учетная запись и Личный кабинет","additions":null,"info":null},{"id":7,"parentId":null,"name":"Работа с объявлениями","additions":null,"info":null},{"id":13,"parentId":null,"name":"Блокировки и отклонения","additions":null,"info":null},{"id":17,"parentId":null,"name":"Подтверждение телефонных номеров","additions":null,"info":[{"id":2,"name":"Телефон","systemName":"phone"}]},{"id":22,"parentId":null,"name":"Платные услуги и сервисы","additions":null,"info":null},{"id":27,"parentId":null,"name":"Платное размещение объявлений","additions":null,"info":null},{"id":33,"parentId":null,"name":"Технические проблемы","additions":null,"info":null},{"id":42,"parentId":null,"name":"Магазины, Автозагрузка и юридические лица","additions":null,"info":null},{"id":51,"parentId":null,"name":"Рекламные сервисы (Avito Контекст)","additions":null,"info":null},{"id":55,"parentId":null,"name":"Безопасность на Avito","additions":null,"info":null},{"id":61,"parentId":null,"name":"Мобильный Avito","additions":null,"info":null},{"id":79,"parentId":null,"name":"Avito Доставка","additions":null,"info":null}]';
+    document.dispatchEvent(new Event('requestHelpdeskStore'));
+    try {
+        return global.hdSettings.helpdeskStore.dictionaries.problems;
+    } catch (e) {
+        return null;
+    }
 }
-//++++++++++ Записываем в глобальную JSON строку всех проблем HD ++++++++++//
+//++++++++++ Получить проблемы helpdesk ++++++++++//
 
 //---------- Agent ID ----------//
 function getAgentId() {
@@ -206,32 +212,13 @@ function renderCreateNewTicketWindow(route) {
     $(body).append('<div class="ah-clearfix" style="margin-bottom: 15px;"></div>');
 
     // Тема запроса
-    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тема запроса</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-theme"><option value="" hidden="">Тема запроса</option></select></div></div>');
+    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тема запроса</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-theme"><option value="" hidden="">--</option></select></div></div>');
 
     // Тип проблемы (вопрос)
-    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы (вопрос)</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-problem"></select></div></div>');
-
-    try {
-        var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
-    } catch (e) {
-        var helpdeskProblemsStr = '[]';
-    }
+    $(body).append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы (вопрос)</div><div class="" style=""><select class="ah-form-control" style="" name="create-ticket-problem"><option value="" hidden="">--</option></select></div></div>');
 
     var themesSelect = $(modal).find('[name="create-ticket-theme"]');
-    var problemsArr = JSON.parse(helpdeskProblemsStr);
-    problemsArr.forEach(function (problem) {
-        if (!problem.parentId) {
-            $(themesSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
-        }
-    });
-
     var problemsSelect = $(modal).find('[name="create-ticket-problem"]');
-    var selectedThemeId = +$(themesSelect).find('option:selected').val();
-    problemsArr.forEach(function (problem) {
-        if (problem.parentId == selectedThemeId) {
-            $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
-        }
-    });
 
     // Инструменты
     $(body).append('<div class="ah-field-group" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;"><div class="ah-field-horizontal"><label for="create-ticket-statusId-1" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-1" value="1" checked>Новое</label><label for="create-ticket-statusId-5" class="ah-radio-inline"><input type="radio"  name="create-ticket-statusId" id="create-ticket-statusId-5" value="5">В решено</label><label for="create-ticket-statusId-3" class="ah-radio-inline"><input type="radio" name="create-ticket-statusId" id="create-ticket-statusId-3" value="3">На ожидании</label></div><div class="ah-field-horizontal" style=""><div class="ah-dropmenu-holder btn-group" style="display: inline-block;"><input type="text" class="ah-form-control ah-btn-group-left" style="height: 30px; width: 200px; display: none;" id="create-ticket-search-templates-input"><button type="button" class="ah-default-btn ah-btn-small ah-btn-group-left" id="ah-create-ticket-choose-templates" style="height: 30px;    padding: 1px 10px;" disabled>Шаблоны<span class="ah-caret"></span></button><ul class="ah-dropdown-menu-templates" style="width: 350px; max-height: 50vh; overflow: auto;"></ul></div><label class="ah-default-btn ah-btn-small ah-btn-group-right" style="line-height: 1; margin-bottom: 0; height: 30px;"><input type="file" multiple style="display: none;" name="create-ticket-attaches[]"><i class="ah-btn-icon ah-icon-paperclip"></i></label></div></div>');
@@ -493,8 +480,9 @@ function renderCreateNewTicketWindow(route) {
 
         var selectedThemeId = +$(this).find('option:selected').val();
         $(problemsSelect).find('option').remove();
+        const problemsArr = getHelpdeskProblems() || global.hdSettings.problems.info;
         problemsArr.forEach(function (problem) {
-            if (problem.parentId == selectedThemeId) {
+            if (problem.parentId == selectedThemeId && !problem.isArchive) {
                 $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
                 $(problemsSelect).css('color', '#000');
             }
@@ -1029,15 +1017,49 @@ function addCreateTicketBtn(route) {
 
     var btnShow = $('#ah-outgoing-mail-btn');
 
+    global.hdSettings.problems = {
+        isLoaded: false,
+        info: []
+    };
+
     $(btnShow).click(function () {
-        if (!localStorage.getItem('agentID') && route === '/users/user/info') {
-            getPermissions()
-                .then(({ id }) => {
-                    localStorage.setItem('agentID', id);
-                    showCreateNewTicketWindow();
-                }, () => {
-                    localStorage.setItem('agentID', null);
-                });
+        if (route === '/users/user/info') {
+            if (!localStorage.getItem('agentID')) {
+                getPermissions()
+                    .then(({ id }) => {
+                        localStorage.setItem('agentID', id);
+
+                        if (!global.hdSettings.problems.isLoaded) {
+                            getHDProblems()
+                                .then(response => {
+                                    global.hdSettings.problems.isLoaded = true;
+                                    global.hdSettings.problems.info = response;
+                                    showCreateNewTicketWindow();
+                                }, error => {
+                                    console.log(error);
+                                })
+                        } else {
+                            showCreateNewTicketWindow();
+                        }
+                    }, () => {
+                        localStorage.setItem('agentID', null);
+                    });
+                return;
+            }
+
+            if (!global.hdSettings.problems.isLoaded) {
+                getHDProblems()
+                    .then(response => {
+                        global.hdSettings.problems.isLoaded = true;
+                        global.hdSettings.problems.info = response;
+                        showCreateNewTicketWindow();
+                    }, error => {
+                        console.log(error);
+                    });
+                return;
+            }
+
+            showCreateNewTicketWindow();
         } else {
             showCreateNewTicketWindow();
         }
@@ -1046,29 +1068,32 @@ function addCreateTicketBtn(route) {
 }
 function showCreateNewTicketWindow() {
     var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
-    substituteCreateTicketValues();
     $(modal).show();
     $('#ah-layer-blackout-modal').addClass('ah-layer-flex');
     $('#ah-layer-blackout-modal').addClass('ah-layer-y-scroll');
     showModal();
+
+    let helpdeskProblems = getHelpdeskProblems() || global.hdSettings.problems.info;
+
+    if (!helpdeskProblems) {
+        helpdeskProblems = [];
+    }
+
+    const $themesSelect = $('[name="create-ticket-theme"]');
+    $themesSelect.html('');
+    $themesSelect.append('<option value="" hidden="">--</option><');
+
+    const problemsArr = helpdeskProblems;
+    problemsArr.forEach(function (problem) {
+        if (!problem.parentId && !problem.isArchive) {
+            $themesSelect.append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
+        }
+    });
+
+    substituteCreateTicketValues();
 }
 function substituteCreateTicketValues() {
     var sourceId = 2;
-
-    var problemId = $('[name="problemId"]').val();
-    var theme = '';
-
-    var helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
-    if (!global.hdSettings.helpdeskProblemsJSON) {
-        helpdeskProblemsStr = '[]';
-    }
-
-    var problems = JSON.parse(helpdeskProblemsStr);
-    problems.forEach(function (item) {
-        if (item.id == problemId) {
-            theme = item.parentId;
-        }
-    });
 
     var description = $('.helpdesk-html-view:last').html();
     if (!description) {
@@ -1088,8 +1113,6 @@ function substituteCreateTicketValues() {
 
     var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
     $(modal).find('[name="create-ticket-sourceId"]').val(sourceId);
-    $(modal).find('[name="create-ticket-theme"]').val(theme).change();
-    $(modal).find('[name="create-ticket-problem"]').val(problemId);
     $(modal).find('[name="create-ticket-description"]').val(description);
     $(modal).find('[name="create-ticket-requesterEmail"]').val(requesterEmail);
     $(modal).find('[name="create-ticket-requesterName"]').val(requesterName);

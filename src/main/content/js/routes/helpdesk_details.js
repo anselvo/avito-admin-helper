@@ -258,6 +258,27 @@ function showQBWindow() {
     var modal = $('[data-modal-info="qb-modal-create"]');
     var closeBtn = $(modal).find('.ah-modal-close');
 
+    let helpdeskProblems = getHelpdeskProblems();
+
+    if (!helpdeskProblems) {
+        helpdeskProblems = [];
+    }
+
+    $('#sh-qb-problems-select').html('');
+    $('#sh-qb-problems-select').append('<option value="">Не выбрано</option>');
+
+    let problemsArr = helpdeskProblems;
+    problemsArr.forEach(function(problem) {
+        if (problem.parentId && !problem.isArchive) {
+            $('#sh-qb-problems-select').append('<option value="'+ problem.id +'" data-parent-id="'+ problem.parentId +'">--'+ problem.name +'</option>');
+        }
+    });
+    problemsArr.forEach(function(problem) {
+        if (!problem.parentId && !problem.isArchive) {
+            $('#sh-qb-problems-select option[data-parent-id="'+ problem.id +'"]:eq(0)').before('<option disabled></option><option value="'+ problem.id +'" disabled>'+ problem.name +'</option>');
+        }
+    });
+
     $('.ah-modal-close').click(function() {
         $('[data-modal-info]').hide();
         $('#ah-layer-blackout-modal').removeClass('ah-layer-flex ah-layer-y-scroll');
@@ -362,20 +383,40 @@ function updateQBInfo() {
             }
         }
     });
-
-    if (removedTags.length > 0) {
-        let tagNames = [];
-        removedTags.forEach(function(tag) {
-            tagNames.push('"'+ tag.QBname+ '"');
-        });
-
-        tagNames = unique(tagNames);
-
-        alert('Один или несколько тегов были удалены из созданных/импортированных Quick Buttons. Названия кнопок перечислены ниже:\n - '+ tagNames.join('\n - '));
-    }
     // синхронизация тегов +++
 
-    localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
+
+    helpdeskLoadingEnd().
+        then(
+            () => {
+                const removedThemesButtons = [];
+                for (let i = 0; i < LSobj.buttons.length; i++) {
+                    const helpdeskProblem = getHelpdeskProblems().find(({ id }) => LSobj.buttons[i].problemId === id);
+
+                    if (helpdeskProblem && helpdeskProblem.isArchive) {
+                        removedThemesButtons.push(LSobj.buttons[i].name);
+                        LSobj.buttons[i].problemId = 0;
+                        LSobj.buttons[i].theme = '';
+                        LSobj.buttons[i].problem = '';
+                    }
+                }
+
+                // нотификация об изменениях
+                if (removedTags.length || removedThemesButtons.length) {
+                    let tagNames = [];
+                    removedTags.forEach(function(tag) {
+                        tagNames.push('"'+ tag.QBname+ '"');
+                    });
+
+                    const changedButtons = unique([tagNames, removedThemesButtons]);
+                    alert('Параметры некоторых Quick Buttons были автоматически изменены после синхронизации. Названия кнопок перечислены ниже:\n'+ changedButtons.join('\n - '));
+                }
+
+                localStorage.setItem('/helpdesk/quickbuttons', JSON.stringify(LSobj));
+            },
+            error => {
+                console.log(error);
+            });
 
 }
 
@@ -397,24 +438,6 @@ function renderQBWindow() {
 
     // ПРОБЛЕМЫ
     $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Тип проблемы</div><div class="ah-btn-group ah-field-flex" style=""><select class="ah-form-control ah-btn-group-left ah-flex-grow-extended" id="sh-qb-problems-select" style="margin-bottom: 0;"></select><button type="button" class="ah-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-selected-problem">✕</button></div></div>');
-
-    let helpdeskProblemsStr = global.hdSettings.helpdeskProblemsJSON;
-    if (!global.hdSettings.helpdeskProblemsJSON) {
-        helpdeskProblemsStr = '[]';
-    }
-    $('#sh-qb-problems-select').append('<option value="">Не выбрано</option>');
-
-    let problemsArr = JSON.parse(helpdeskProblemsStr);
-    problemsArr.forEach(function(problem) {
-        if (problem.parentId) {
-            $('#sh-qb-problems-select').append('<option value="'+ problem.id +'" data-parent-id="'+ problem.parentId +'">--'+ problem.name +'</option>');
-        }
-    });
-    problemsArr.forEach(function(problem) {
-        if (!problem.parentId) {
-            $('#sh-qb-problems-select option[data-parent-id="'+ problem.id +'"]:eq(0)').before('<option disabled></option><option value="'+ problem.id +'" disabled>'+ problem.name +'</option>');
-        }
-    });
 
     // ТЕГИ
     $('#sh-quick-btns-create .ah-modal-body').append('<div class="ah-field-group"><div class="ah-field-title">Теги</div><div class="ah-btn-group ah-field-flex" style=""><button type="button" class="ah-default-btn ah-btn-group-left ah-flex-grow-extended" id="sh-qb-tags-select-btn" style=""><span class="ah-btn-name-left">Не выбрано</span><b class="ah-caret-right"></b></button><button type="button" class="ah-default-btn ah-btn-group-right ah-reset-all-btn" id="qb-reset-all-selected-tags">✕</button><ul id="ah-qb-tags-multiselect" class="ah-dropdown-menu ah-multiselect" style="top: 35px; width: 100%;"></ul></div></div>');
