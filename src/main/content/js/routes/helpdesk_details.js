@@ -1780,6 +1780,10 @@ function chekCurrentTags(newTag, currentTagsArr) {
 }
 //++++++++++ Tags ++++++++++//
 
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 //---------- Hyperlinks ----------//
 function createHyperLinksIpInTechInfo() {
 
@@ -3271,6 +3275,10 @@ function parseIPInDetailsPanel(block, className) {
 }
 
 // Одобрение IP в техинфо
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 function sanctionIPTechInfo() {
     $('#ah-tech-info-sanction-ip-btn').remove();
 
@@ -3425,6 +3433,10 @@ function addItemIdPopoverOnLeftPanel() {
 }
 //++++++++++ поповер для айди айтема на левой панели ++++++++++//
 
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 //---------- поповер для айпи на левой панели ----------//
 function addIpPopoverOnLeftPanel() {
     if ($('#ahIpOnLeftPanelPopover').length !== 0) return;

@@ -40,10 +40,10 @@ function handleRoles() {
             roleHandler.helpdeskQuickButtons();
         }
 
-        // айпи в техинфе
-        if (isAuthority('ROLE_HELPDESK_TECH_INFO_IP_LINK')) {
-            roleHandler.helpdeskTechInfoIpLink();
-        }
+        // // айпи в техинфе
+        // if (isAuthority('ROLE_HELPDESK_TECH_INFO_IP_LINK')) {
+        //     roleHandler.helpdeskTechInfoIpLink();
+        // }
         // смена ассигни
         if (isAuthority('ROLE_HELPDESK_CHANGE_ASSIGNEE')) {
             roleHandler.helpdeskChangeAssignee();
@@ -79,10 +79,10 @@ function handleRoles() {
             roleHandler.helpdeskDescriptionIp();
         }
 
-        // одобрение IP в техинфо
-        if (isAuthority('ROLE_SANCTION_IP')) {
-            roleHandler.helpdeskTechInfoSanctionIp();
-        }
+        // // одобрение IP в техинфо
+        // if (isAuthority('ROLE_SANCTION_IP')) {
+        //     roleHandler.helpdeskTechInfoSanctionIp();
+        // }
 
         // поиск юзера по айди в соцсети
         if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
@@ -109,10 +109,10 @@ function handleRoles() {
         //     roleHandler.helpdeskLeftPanelItemPopover();
         // }
 
-        // поповер для айпи на левой панели
-        if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_IP_POPOVER')) {
-            roleHandler.helpdeskLeftPanelIpPopover();
-        }
+        // // поповер для айпи на левой панели
+        // if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_IP_POPOVER')) {
+        //     roleHandler.helpdeskLeftPanelIpPopover();
+        // }
 
         // // поповер для номера телефона на левой панели
         // if (isAuthority('ROLE_HELPDESK_LEFT_PANEL_PHONE_POPOVER')) {
@@ -627,9 +627,9 @@ RoleHandler.prototype.helpdeskFixedTools = function() {
     addFixedTools($('div.col-xs-3:eq(1)'), arr);
 };
 
-RoleHandler.prototype.helpdeskTechInfoIpLink = function() {
-    createHyperLinksIpInTechInfo();
-};
+// RoleHandler.prototype.helpdeskTechInfoIpLink = function() {
+//     createHyperLinksIpInTechInfo();
+// };
 
 RoleHandler.prototype.helpdeskAlternateSearch = function() {
     setAlternateSearchInTicketCorresp();
@@ -665,9 +665,9 @@ RoleHandler.prototype.helpdeskDescriptionIp = function() {
     parseIPInDetailsPanel(description, className);
 };
 
-RoleHandler.prototype.helpdeskTechInfoSanctionIp = function() {
-    sanctionIPTechInfo();
-};
+// RoleHandler.prototype.helpdeskTechInfoSanctionIp = function() {
+//     sanctionIPTechInfo();
+// };
 
 RoleHandler.prototype.helpdeskSearchBySocial = function() {
     addSearchUserBySocialBlock();
@@ -689,9 +689,9 @@ RoleHandler.prototype.helpdeskSearchBySocial = function() {
 //     addItemIdPopoverOnLeftPanel();
 // };
 
-RoleHandler.prototype.helpdeskLeftPanelIpPopover = function() {
-    addIpPopoverOnLeftPanel();
-};
+// RoleHandler.prototype.helpdeskLeftPanelIpPopover = function() {
+//     addIpPopoverOnLeftPanel();
+// };
 
 // RoleHandler.prototype.helpdeskLeftPanelPhonePopover = function() {
 //     addPhoneNumberPopoverOnLeftPanel();
