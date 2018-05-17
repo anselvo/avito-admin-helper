@@ -498,6 +498,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
         user: ''
     };
 
+    const bleachClass = 'ah-compare-items-status-bleach';
     const abutmentId = this._ids.abutment;
     const itemIds = [];
     let abutment = {};
@@ -592,7 +593,7 @@ ItemsComparison.prototype.renderEntities = function(parsedEntities) {
             `;
 
         rows.status_reasons += `
-                <div class="ah-compare-cell ah-compare-items-row-status" data-entity-id="${item.id}">
+                <div class="ah-compare-cell ah-compare-items-row-status ${item.bleach ? bleachClass : null}" data-entity-id="${item.id}">
                     <span class="ah-compare-items-status">${item.status}</span>
                     <span class="ah-compare-items-status-button" data-entity-id="${item.id}"></span>
                 </div>

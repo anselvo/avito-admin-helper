@@ -4388,6 +4388,10 @@ select.ah-form-control:focus {
     font-weight: 700;
 }
 
+.ah-compare-items-status-bleach {
+    background: #d9edf7;
+}
+
 .ah-compare-items-status-button {
     float: right;
 }
