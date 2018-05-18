@@ -279,7 +279,7 @@ function smartSNP(id) {
             let countPass = 0;
             for (let i = 0; i < comments.length; ++i) {
                 const com = comments.slice(i, i+1).text();
-                if (com.indexOf('#SNP')+1) ++countPass;
+                if (com.indexOf('SNP')+1) ++countPass;
                 if (countPass >= 3) {
                     $('#isUseSNP').css('background','#fb615f');
                     break;
