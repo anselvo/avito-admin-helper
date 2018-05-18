@@ -865,6 +865,7 @@ function getParamsItemInfo(html) {
         lat: $(searchNode).find('.js-item-map-wrapper').data('mapLat'),
         lng: $(searchNode).find('.js-item-map-wrapper').data('mapLon')
     };
+    res.bleach = $(searchNode).find('a[href^="/items/item/soil/"]').length > 0;
 
     return res;
 }
