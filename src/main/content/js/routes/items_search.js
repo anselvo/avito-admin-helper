@@ -240,70 +240,83 @@ function addChooseButton() {
 
 // Отправка письма пользователю о взломе и смена пароля
 function smartSNP(id) {
-    $('.pull-right').append('<span id="isEmailChange" class="ah-wheelSNP" title="Информирует о смене email:\n- СЕРЫЙ - email не был изменен\n- ЗЕЛЕНЫЙ - на учетной записи уже менялся email адрес">EML</span>' +
-        '<span id="isUseSNP" class="ah-wheelSNP" title="Информирует о смене пароля:\n- СЕРЫЙ - пароль (snp) был отправлен менее 3 раз\n- КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз">SNP</span>' +
-        '<input id="snp" type="button" class="btn btn-primary" value="SNP" title="Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана" style="margin-left: 5px;" disabled/>');
+    const titleEmail = `
+    Информирует о смене email:
+        - СЕРЫЙ - email не был изменен
+        - ЗЕЛЕНЫЙ - на учетной записи уже менялся email адрес
+    `;
 
-    var href = `${global.connectInfo.adm_url}/users/user/info/${id}`;
-    var cancelLoadSNP = 0;
+    const titlePass = `
+    Информирует о смене пароля:
+        - СЕРЫЙ - пароль (snp) был отправлен менее 3 раз
+        - КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз
+    `;
 
-    var request = new XMLHttpRequest();
-    request.open("GET", href, true);
-    request.send(null);
-    request.onreadystatechange=function() {
-        if (request.readyState === 4 && request.status === 200) {
-            var r = request.responseText;
+    const titleSnp = `Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана`;
 
-            var email = $(r).find('.js-fakeemail-field').text();
-            var name = $(r).find('[name="name"]').val();
+    $('.pull-right').append(`
+        <span id="isEmailChange" class="ah-wheelSNP" title="${titleEmail}">EML</span>
+        <span id="isUseSNP" class="ah-wheelSNP" title="${titlePass}">SNP</span>
+        <input id="snp" type="button" class="btn btn-primary" value="SNP" title="${titleSnp}" style="margin-left: 5px;" disabled/>
+    `);
 
-            $('#snp').attr('email', email);
-            $('#snp').attr('name', name);
+    let cancelLoadSNP = 0;
 
-            var comments = $(r).find('#dataTable td.is-break');
-            var countSNP = 0;
+    const hrefPassHistory = `${global.connectInfo.adm_url}/users/user/info/${id}`;
+    const xhrPassHistory = new XMLHttpRequest();
+    xhrPassHistory.open("GET", hrefPassHistory, true);
+    xhrPassHistory.send(null);
+    xhrPassHistory.onreadystatechange=function() {
+        if (xhrPassHistory.readyState === 4 && xhrPassHistory.status === 200) {
+            const r = xhrPassHistory.responseText;
 
-            for (var i = 0; i < comments.length; ++i) {
-                var com = comments.slice(i, i+1).text();
-                if (com.indexOf('#SNP')+1) ++countSNP;
-                if (countSNP >= 3) {
+            const email = $(r).find('.js-fakeemail-field').text();
+            const name = $(r).find('[name="name"]').val();
+            const comments = $(r).find('#dataTable td.is-break');
+
+            $('#snp').attr('email', email).attr('name', name);
+
+            let countPass = 0;
+            for (let i = 0; i < comments.length; ++i) {
+                const com = comments.slice(i, i+1).text();
+                if (com.indexOf('#SNP')+1) ++countPass;
+                if (countPass >= 3) {
                     $('#isUseSNP').css('background','#fb615f');
                     break;
                 }
             }
 
             ++cancelLoadSNP;
-            if (cancelLoadSNP == 2) {
+            if (cancelLoadSNP === 2) {
                 $('#snp').prop('disabled', false);
             }
         }
     };
 
-    var hrefEmailHistory = `${global.connectInfo.adm_url}/users/user/${id}/emails/history`;
-
-    var xhrEmailHistory = new XMLHttpRequest();
+    const hrefEmailHistory = `${global.connectInfo.adm_url}/users/user/${id}/emails/history`;
+    const xhrEmailHistory = new XMLHttpRequest();
     xhrEmailHistory.open("GET", hrefEmailHistory, true);
     xhrEmailHistory.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
     xhrEmailHistory.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhrEmailHistory.send(null);
     xhrEmailHistory.onreadystatechange=function() {
-        if (xhrEmailHistory.readyState == 4 && xhrEmailHistory.status == 200) {
-            var json = JSON.parse(xhrEmailHistory.responseText);
+        if (xhrEmailHistory.readyState === 4 && xhrEmailHistory.status === 200) {
+            const json = JSON.parse(xhrEmailHistory.responseText);
 
-            if (json.content != '') {
+            if (json.content !== '') {
                 $('#isEmailChange').css('background','#0ce00c');
             }
 
             ++cancelLoadSNP;
-            if (cancelLoadSNP == 2) {
+            if (cancelLoadSNP === 2) {
                 $('#snp').prop('disabled', false);
             }
         }
     };
 
     $('#snp').click(function () {
-        var email = $(this).attr('email');
-        var name = $(this).attr('name');
+        const email = $(this).attr('email');
+        const name = $(this).attr('name');
 
         sendNewPassword(id);
 
