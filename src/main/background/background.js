@@ -205,7 +205,7 @@ function connect() {
                         error.status = "(failed)";
                         connectInfo.status = null;
                     }
-                    if (error.message === 'Authentication with ajax is failure') {
+                    if (error.message === 'Bad credentials with Ajax') {
                         if (password) error.status = 4012;
                         else error.status = 4011;
                     }
@@ -246,7 +246,7 @@ function login(username, password) {
     const headers = {
         method: 'POST',
         credentials: 'include',
-        headers: { "X-Ajax-call": 'true' },
+        headers: { "X-Ajax-Request": true },
         body: formData
     };
 
@@ -317,7 +317,13 @@ function setConnectInfoToStorage() {
 }
 
 function errorListener(response) {
-    return response.json().then(json => { throw json }, () => { throw { message: response.statusText, status: response.status }; });
+    return response.json().then(
+            json => { throw json },
+            json => {
+                response.statusText = response.statusText ? response.statusText : (json.message ? json.message : json);
+                throw { message: response.statusText, status: response.status };
+            }
+        );
 }
 
 function errorMessage(status, error) {
