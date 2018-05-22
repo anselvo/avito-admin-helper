@@ -1,33 +1,30 @@
 function consultationCount() {
-    $('body').append(`<div class="ah-consultation">
-                        <div class="ah-consultation-main">
-                            <div class="ah-consultation-name ah-cons-name" style="display: none">Выберите консультацию</div>
-                            <div class="ah-consultation-count ah-cons-count ah-cons-big-digit">-</div>
-                            <div class="ah-consultation-link ah-cons-link"><a href="#" target="_blank">&#10132;</a></div>
-                        </div>
-                        <div class="ah-consultation-selector" style="display: none"></div>
-                     </div>`);
+    if (!localStorage.consultation) localStorage.consultation = `{}`;
+
+    $('body').append(`
+        <div class="ah-consultation">
+            <div class="ah-consultation-main"></div>
+            <div class="ah-consultation-selector" style="display: none"></div>
+         </div>
+    `);
 
     const $consultation = $('.ah-consultation');
-    const $consultationCount = $('.ah-cons-count');
-    const $consultationName = $('.ah-cons-name');
     const $consultationSelector = $('.ah-consultation-selector');
 
-    $consultationCount.mouseover(() => {
-        $consultationName.show();
-        $consultationCount.removeClass("ah-cons-big-digit");
+    $consultation.mouseenter(() => {
+        $consultationSelector.show();
     });
     $consultation.mouseleave(() => {
-        $consultationName.hide();
         $consultationSelector.hide();
-        $consultationCount.addClass("ah-cons-big-digit");
     });
 
-    $consultationName.click(() => $consultationSelector.toggle());
+    $consultationSelector.change(checkbox => {
+        const consultationList = JSON.parse(localStorage.consultation);
 
-    $consultationSelector.change(radio => {
-        localStorage.consultation = $(radio.target).parent().data("queueId");
-        consultationNotificationSwap(localStorage.consultation);
+        consultationList[$(checkbox.target).parent().data("queueId")] = checkbox.target.checked;
+
+        localStorage.consultation = JSON.stringify(consultationList);
+        consultationNotificationHot(consultationList);
     });
 
     chrome.storage.local.get("helpDeskQueueChecker", result => {
@@ -46,32 +43,45 @@ function consultationCountShow($consultationSelector, response) {
         $consultationSelector.html('');
 
         for (let i = 0; i < response.length; ++i) {
-            $consultationSelector.append(`<div class="ah-radio" data-queue-id="${response[i].queue.id}">
-                                           <input id="radio-${i}" name="radio" type="radio">
-                                           <label for="radio-${i}" class="ah-radio-label ah-cons-radio-flex">
-                                               <div class="ah-consultation-name ah-cons-radio-name">${response[i].queue.name}</div>
-                                               <div class="ah-consultation-count ah-cons-radio-count">${response[i].count}</div>
+            $consultationSelector.append(`<div class="ah-checkbox" data-queue-id="${response[i].queue.id}">
+                                           <input id="checkbox-${i}" name="checkbox" type="checkbox">
+                                           <label for="checkbox-${i}" class="ah-checkbox-label ah-cons-checkbox-flex">
+                                               <div class="ah-consultation-name ah-cons-checkbox-name">${response[i].queue.name}</div>
+                                               <div class="ah-consultation-count ah-cons-checkbox-count">${response[i].count}</div>
                                            </label>
                                       </div>`);
         }
 
-        if (localStorage.consultation) {
-            $(`.ah-radio[data-queue-id="${localStorage.consultation}"]`).find('[name="radio"]').prop('checked', true);
-            consultationNotificationSwap(localStorage.consultation);
+        const consultation = JSON.parse(localStorage.consultation);
+        for (let id in consultation) {
+            if (consultation.hasOwnProperty(id) && consultation[id])
+                $(`.ah-checkbox[data-queue-id="${id}"]`).find('[name="checkbox"]').prop('checked', true);
         }
+
+        consultationNotificationHot(consultation);
     }
 }
 
-function consultationNotificationSwap(id) {
-    const $radio = $(`.ah-radio[data-queue-id="${id}"]`);
-    const count = $radio.find('.ah-consultation-count').text();
-    const name = $radio.find('.ah-consultation-name').text();
-
+function consultationNotificationHot(list) {
     const $consultationMain = $('.ah-consultation-main');
 
-    $consultationMain.find('.ah-consultation-count').show().text(count);
-    $consultationMain.find('.ah-consultation-name').text(name);
-    $consultationMain.find('.ah-consultation-link').find('a').attr('href', `${global.connectInfo.adm_url}/helpdesk?fid=${id}`);
+    $consultationMain.html(`<div class="ah-consultation-name ah-cons-name-empty">Выберите консультацию</div>`);
+
+    for (let id in list) {
+        if (list.hasOwnProperty(id) && list[id]) {
+            const $checkbox = $(`.ah-checkbox[data-queue-id="${id}"]`);
+            const count = $checkbox.find('.ah-consultation-count').text();
+            const name = $checkbox.find('.ah-consultation-name').text();
+
+            $consultationMain.find('.ah-cons-name-empty').remove();
+            $consultationMain.append(`
+                <a class="ah-cons-link" href="${global.connectInfo.adm_url}/helpdesk?fid=${id}" target="_blank">
+                    <div class="ah-consultation-name ah-cons-name">${(name[0] + name[name.length - 1]).toUpperCase()}</div>
+                    <div class="ah-consultation-count ah-cons-count">${count}</div>
+                </a>
+            `);
+        }
+    }
 }
 
 function hideTestItemsSearch() {
