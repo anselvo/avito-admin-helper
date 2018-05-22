@@ -5459,6 +5459,8 @@ input:checked + .ah-slider:before {
     background: rgb(255, 255, 255);
     border: 1px solid #dedede;
     border-radius: 4px;
+    max-height: 300px;
+    overflow: auto;
 }
 .ah-cons-link:first-child {
     border-top: none;
