@@ -431,7 +431,7 @@ function getEmailHistory(id) {
 
 function ymapapi(address) {
     let script = document.createElement('script');
-    script.src = "https://api-maps.yandex.ru/2.1.17/?lang=ru-RU&onload=avito.ymapsReady";
+    script.src = "https://api-maps.yandex.ru/2.1/?lang=ru-RU&onload=avito.ymapsReady&apikey=1220b4af-ae8e-4506-ab3a-c6329234066f";
     script.onload = function () {
         let script = document.createElement('script');
         script.textContent = '(' + function (address) {
