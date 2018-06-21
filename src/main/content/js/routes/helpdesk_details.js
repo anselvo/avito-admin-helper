@@ -2196,8 +2196,10 @@ function infoAboutUser(searchInUsers = true) {
 
     // ИЗМЕНЕНИЯ ПРАВОЙ ПАНЕЛИ
     if ($('#sh-AddRightPanel').length == 0) {
-        $('.ah-hd-global-settings-wrapper').append('<br><input type="checkbox" class="ah-alternate-search-checkbox" id="sh-AddRightPanel">');
-        $('.ah-hd-global-settings-wrapper').append('<label for="sh-AddRightPanel" title="Показывать правую панель из Скрипта">Add right Panel</label>');
+        $('.ah-hd-global-settings-wrapper').append(`
+            <input type="checkbox" class="ah-alternate-search-checkbox" id="sh-AddRightPanel">
+            <label for="sh-AddRightPanel" class="ah-hd-global-settings-label" title="Использовать альтернативную правую панель">Add Right Panel</label>
+        `);
     }
 
     if (localStorage.shAddRightPanel == "true") {
@@ -2263,6 +2265,13 @@ function addRightPanelSettings(response, assume, currentTicketId) {
 }
 
 function addRightPanelSettingsBody(response, assume, currentTicketId) {
+    const holder = $('#ah-fixed-tools-holder');
+    const $stopWatchNode = $('.container-fluid table:contains(Просмотр)').parent();
+    const stopWatchHeight = $stopWatchNode.outerHeight();
+    const indent = stopWatchHeight ? stopWatchHeight + 2 : 2;
+
+    checkFooterVisibility(holder, indent);
+
     $('#ah-rightPanel').append('<div id="ah-rightPanelSettingsBody"></div>');
 
     $('#ah-rightPanelSettingsBody').append('<div title="Замечание: чем больше информации вы загружаете, тем дольше загрузка панели." style="text-align:center; color: rgb(0, 136, 204); font-weight:bold;">Right panel settings</div>');

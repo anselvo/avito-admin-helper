@@ -355,7 +355,7 @@ function checkFooterVisibility(elem, indent) {
     var bottomValue = (windowHeight + scrollTop + indent) - offset.top;
 
     var isFooterVisible = isInWindow('.js-footer-gotop', footerHeight);
-    if (isFooterVisible) {
+    if (isFooterVisible && bottomValue >= indent) {
         $(elem).css('bottom', '' + bottomValue + 'px');
     } else {
         $(elem).css('bottom', indent + 'px');
@@ -575,7 +575,11 @@ function addFixedTools(elem, tools) {
 
     $(elem).append('<div id="ah-fixed-tools-holder"></div>');
     let holder = $('#ah-fixed-tools-holder');
-    setFixedElemUnderFooter(holder, 2);
+    const $stopWatchNode = $('.container-fluid table:contains(Просмотр)').parent();
+    const stopWatchHeight = $stopWatchNode.outerHeight();
+    const indent = stopWatchHeight ? stopWatchHeight + 2 : 2;
+
+    setFixedElemUnderFooter(holder, indent);
     
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();
@@ -593,11 +597,11 @@ function addHdSettings() {
 
     $(holder).append('<div class="ah-hd-global-settings-wrapper"></div>');
 
-    $(holder).append(''+
-        '<button type="button" '+
-        'class="ah-default-btn sh-settings-btn-bottom-right" '+
-        'id="ah-settings-bottom-right-btn">Настройки'+
-        '</button>');
+    $(holder).append(`
+        <button type="button" class="btn btn-default btn-xs " id="ah-settings-bottom-right-btn">
+            <span class="glyphicon glyphicon-cog ah-hd-global-settings-icon"></span>
+        </button>
+    `);
 
     $('#ah-settings-bottom-right-btn').click(function() {
         $('div.ah-hd-global-settings-wrapper').toggle();
@@ -611,7 +615,7 @@ function addScrollTopBtn() {
     let holder = $('#ah-fixed-tools-holder');
     $(holder).append('' +
         '<button type="button" ' +
-        'class="ah-default-btn" id="ah-scrolltop-btn" ' +
+        'class="ah-default-btn ah-fixed-tools-item" id="ah-scrolltop-btn" ' +
         'title="Прокрутить страницу вверх">↑' +
         '</button>');
 

@@ -955,7 +955,7 @@ div.ah-illumination-btn-box input.btn-default {
 	display:none; 
 	position:relative; 
 	width:100%;
-	padding-top: 4px;
+	padding: 4px 0 100px;
 }
 
 #ah-userInfoTable > tbody > tr > td:nth-child(2) {
@@ -3353,23 +3353,28 @@ select.ah-form-control:focus {
 }
 
 #ah-fixed-tools-holder {
-    display: block;
+    display: flex;
+    align-items: flex-end;
     position: fixed;
     z-index: 5;
-    right: 6px;
+    right: 4px;
     bottom: 6px;
-    box-shadow: 0 0 0px 6px rgba(221, 221, 224, .6);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 #ah-scrolltop-btn {
-    border-radius: 0;
     transition: none;
     line-height: 20px;
     width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid rgb(204, 204, 204);
 }
 
 .ah-hd-global-settings-wrapper {
+    position: absolute;
+    right: calc(100% + 5px);
+    width: 170px;
     color: black;
     font-size: 14px;
     line-height: 20px;
@@ -3377,13 +3382,18 @@ select.ah-form-control:focus {
     border: 1px solid rgb(204, 204, 204);
     padding: 4px;
     background-color: white;
+    border-radius: 4px;
+}
+
+.glyphicon.ah-hd-global-settings-icon {
+    top: 2px;
 }
 
 #ah-settings-bottom-right-btn {
-    border-radius: 0;
+    border-radius: 50%;
     transition: none;
-    line-height: 20px;
-    width: 145px;
+    outline: none;
+    margin-right: 6px;
 }
 
 .ah-item-user-info {
