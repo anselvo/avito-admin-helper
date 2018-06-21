@@ -914,6 +914,13 @@ function getParamsShopInfo(html) {
             if (!label) return;
 
             const labelName = label.textContent;
+
+            if (labelName === 'AB Группа') {
+                const formControlNode = label.nextElementSibling;
+                const number = formControlNode.querySelector('.text-muted').textContent;
+                const version = formControlNode.querySelector('.label-info').textContent;
+                res.subscription.abGroup = `${number} (${version})`;
+            }
             if (labelName === 'Статус') {
                 res.subscription.status = label.nextElementSibling.textContent.trim();
             }
