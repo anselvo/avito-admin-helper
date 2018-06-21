@@ -253,10 +253,14 @@ function AhIndicators(indicatorsArr, container) {
 
     function renderSubscriptionInfo() {
         let subscription = shopIndicators.getSubscriptionInfo();
+        console.log(subscription);
         if (subscription) {
             fireUp(indicators.subscription);
+
+            const { status, vertical, tariffPlan, abGroup } = subscription;
             indicators.subscription.node.append(`<br><span class="ah-indicators-subtext">
-                ${subscription.status}, ${subscription.vertical}, ${subscription.tariffPlan}
+                ${status}, ${vertical}, ${tariffPlan}<br>
+                <b>АБ группа:</b> ${abGroup}
             </span>`);
         }
     }
