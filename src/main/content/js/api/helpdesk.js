@@ -364,6 +364,56 @@ function renderCreateNewTicketWindow(route) {
                        Claimline
                     </a>
                 </li>
+                <li>
+                    <a class="ah-create-ticket-dropdown__item" data-fill="nps_call"
+                        data-placement="left" data-toggle="tooltip" data-html="true" 
+                        title="
+                        <table class='ah-create-ticket-tooltip__table'>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Источник</td>
+                                <td class='ah-create-ticket-tooltip__col'>support@avito.ru</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Описание</td>
+                                <td class='ah-create-ticket-tooltip__col'>Запрос обратной связи от Службы поддержки Авито</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Теги</td>
+                                <td class='ah-create-ticket-tooltip__col'>nps_call</td>
+                            </tr>
+                        </table>">
+                       Nps call
+                    </a>
+                </li>
+                <li>
+                    <a class="ah-create-ticket-dropdown__item" data-fill="nps_mail"
+                        data-placement="left" data-toggle="tooltip" data-html="true" 
+                        title="
+                        <table class='ah-create-ticket-tooltip__table'>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Источник</td>
+                                <td class='ah-create-ticket-tooltip__col'>support@avito.ru</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Описание</td>
+                                <td class='ah-create-ticket-tooltip__col'>Запрос обратной связи от Службы поддержки Авито</td>
+                            </tr>
+                            <tr>
+                                <td class='ah-create-ticket-tooltip__col'>Теги</td>
+                                <td class='ah-create-ticket-tooltip__col'>nps_mail</td>
+                            </tr>
+                        </table>">
+                       Nps mail
+                    </a>
+                </li>
             </ul>
         </div>
     </div>`);
@@ -1180,6 +1230,38 @@ function autoFillCreateTicket(fill) {
 
             // description
             $descriptionBlock.val('Телефонное обращение в службу поддержки Пользователей');
+
+            // theme
+            $themeBlock.val('').change();
+
+            // sourceId
+            $sourceIdBlock.val(2); // support@avito.ru
+            break;
+
+        case 'nps_call':
+            // tag nps_call
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1498">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">nps_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            createTicketRemoveTagBtnHandler();
+
+            // description
+            $descriptionBlock.val('Запрос обратной связи от Службы поддержки Авито');
+
+            // theme
+            $themeBlock.val('').change();
+
+            // sourceId
+            $sourceIdBlock.val(2); // support@avito.ru
+            break;
+
+        case 'nps_mail':
+            // tag nps_mail
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="2095">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">nps_mail</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            createTicketRemoveTagBtnHandler();
+
+            // description
+            $descriptionBlock.val('Запрос обратной связи от Службы поддержки Авито');
 
             // theme
             $themeBlock.val('').change();
