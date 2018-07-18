@@ -3223,7 +3223,7 @@ select.ah-form-control:focus {
     justify-content: center;
     margin: auto;
     bottom: 0;
-    z-index: 1100;
+    z-index: 1000;
     left: 50%;
     transform: translateX(-50%);
 }
