@@ -1026,6 +1026,7 @@ function getParamsUserInfo(node) {
     res.metro = (+$metroSelected.val() !== 0) ? $metroSelected.text() : null;
     res.district = (+$districtSelected.val() !== 0) ? $districtSelected.text() : null;
     res.userAgent = $userAgentLabel.next().find('.help-block').text();
+    res.subscription = $searchNode.find('.form-group:contains(Подписка)').find('div').html().trim() || null;
     res.phones = [].map.call($searchNode.find('.controls-phone'), row => {
         const res = {};
         res.value = $(row).find('[name^="phone"]').val();

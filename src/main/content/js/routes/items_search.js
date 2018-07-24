@@ -224,7 +224,10 @@ function addChooseButton() {
             .append(`<div class="ah-post-userAgent">
                         <div><b>Статус: </b><span ah-post-block-status="${id}"></span></div>
                         <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}"></span></div>
-                        </div>`);
+                     </div>`)
+            .append(`<div class="ah-post-userAgent">
+                        <div><b>Подписка: </b><span ah-post-block-subscription="${id}">-</span></div>
+                     </div>`);
 
         $(loginList[i])
             .parents('tr')
