@@ -111,18 +111,18 @@ function countMoneyWalletlog() {
 
     let rows = $('.billing .table tbody tr');
     $(rows).each(function(){
-        let amountClassList = $(this).find('td:eq(8) span').attr('class');
+        let amountClassList = $(this).find('td:eq(9) span').attr('class');
         let btnData = {
-            itemLink: $(this).find('td:eq(4) a').attr('href'),
-            amount: $(this).find('td:eq(8) span').text().replace(',', '.').replace(/[^\d.]/g, '').replace(/.$/, ''),
-            description: $(this).find('td:eq(4)').text().replace(/\n/g, ""),
+            itemLink: $(this).find('td:eq(5) a').attr('href'),
+            amount: $(this).find('td:eq(9) span').text().replace(',', '.').replace(/[^\d.]/g, '').replace(/.$/, ''),
+            description: $(this).find('td:eq(5)').text().replace(/\n/g, ""),
             oid: $(this).find('td:eq(0)').text().trim(),
-            date: $(this).find('td:eq(2)').html().split('<br>')[0].trim(),
-            method: $(this).find('td:eq(6)').text().trim(),
-            methodProvider: $(this).find('td:eq(7)').html().replace(/<br>(?:\s+)?/g, ' ').trim(),
+            date: $(this).find('td:eq(3)').html().split('<br>')[0].trim(),
+            method: $(this).find('td:eq(7)').text().trim(),
+            methodProvider: $(this).find('td:eq(8)').html().replace(/<br>(?:\s+)?/g, ' ').trim(),
             status: $(this).find('td:last').text().trim(),
             amountType: getCountMoneyAmountType(amountClassList),
-            userId: $(this).find('td:eq(3) a:first').text().trim()
+            userId: $(this).find('td:eq(4) a:first').text().trim()
         };
 
         btnData.wlLink = (function() {
