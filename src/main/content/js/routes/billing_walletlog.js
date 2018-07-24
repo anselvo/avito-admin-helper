@@ -14,7 +14,7 @@ function statusItemWalletlog(options) {
 
     let allItems = [];
     $(rows).each(function (i, row) {
-        let itemLinkNode = $(row).find('td:eq(4) a');
+        let itemLinkNode = $(row).find('td:eq(5) a');
         let itemLink = $(itemLinkNode).attr('href');
 
         if (itemLink) {
@@ -47,15 +47,15 @@ function addPackageInfoWalletlog() {
     let packageReg = /((из|по|покупка) пакет[ау])|(пакет «)/i;
     rows.each(function() {
         let row = $(this);
-        let descriptionCell = row.find('td:eq(4)');
+        let descriptionCell = row.find('td:eq(5)');
         let descriptionText = descriptionCell.text();
-        let statusCell = row.find('td:eq(9)');
+        let statusCell = row.find('td:eq(10)');
         let statusText = statusCell.text().trim();
         if (packageReg.test(descriptionText) && ~statusText.indexOf('Исполнено')) {
             let ids = descriptionText.match(/\d+/);
             if (ids) {
                 let packageId = ids[0];
-                let userId = row.find('td:eq(3)').text().trim();
+                let userId = row.find('td:eq(4)').text().trim();
 
                 descriptionCell.append(`<div data-package-id="${packageId}" data-user-id="${userId}" 
                     class="ah-package-info"></div>`);
