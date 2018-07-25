@@ -2061,18 +2061,20 @@ function addElementsTicketTitle() {
     $('.sh-links').detach();
 
     let ticketTitle = $('.hd-ticket-header-title').text();
-    let email = $('.hd-ticket-header-metadata:eq(0) a[href^="/helpdesk"]').text();
-    email = email.replace(/[\(\)]/g, '');
 
     if (ticketTitle.indexOf('Заблокированное объявление №')+1) {
         ticketTitle = ticketTitle.replace(/[0-9]+\b/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
         $('.hd-ticket-header-title').html(ticketTitle);
     }
-    if (email !== '') {
-        $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left').append('<span class="sh-links"></span>');
-        $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank">in users</a>`);
-        $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/items/search?user=${email}" target="_blank">in items</a>`);
-    }
+
+    // let email = $('.hd-ticket-header-metadata:eq(0) a[href^="/helpdesk"]').text();
+    // email = email.replace(/[\(\)]/g, '');
+    //
+    // if (email !== '') {
+    //     $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left').append('<span class="sh-links"></span>');
+    //     $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank">in users</a>`);
+    //     $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/items/search?user=${email}" target="_blank">in items</a>`);
+    // }
 }
 //++++++++++ элементы в тайтле тикета ++++++++++//
 
