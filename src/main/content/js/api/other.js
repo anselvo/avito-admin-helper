@@ -575,11 +575,8 @@ function addFixedTools(elem, tools) {
 
     $(elem).append('<div id="ah-fixed-tools-holder"></div>');
     let holder = $('#ah-fixed-tools-holder');
-    const $stopWatchNode = $('.container-fluid table:contains(Просмотр)').parent();
-    const stopWatchHeight = $stopWatchNode.outerHeight();
-    const indent = stopWatchHeight ? stopWatchHeight + 2 : 2;
 
-    setFixedElemUnderFooter(holder, indent);
+    setFixedElemUnderFooter(holder, 2);
     
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();

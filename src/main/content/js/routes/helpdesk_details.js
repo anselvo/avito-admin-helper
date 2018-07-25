@@ -2265,13 +2265,6 @@ function addRightPanelSettings(response, assume, currentTicketId) {
 }
 
 function addRightPanelSettingsBody(response, assume, currentTicketId) {
-    const holder = $('#ah-fixed-tools-holder');
-    const $stopWatchNode = $('.container-fluid table:contains(Просмотр)').parent();
-    const stopWatchHeight = $stopWatchNode.outerHeight();
-    const indent = stopWatchHeight ? stopWatchHeight + 2 : 2;
-
-    checkFooterVisibility(holder, indent);
-
     $('#ah-rightPanel').append('<div id="ah-rightPanelSettingsBody"></div>');
 
     $('#ah-rightPanelSettingsBody').append('<div title="Замечание: чем больше информации вы загружаете, тем дольше загрузка панели." style="text-align:center; color: rgb(0, 136, 204); font-weight:bold;">Right panel settings</div>');
