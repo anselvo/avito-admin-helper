@@ -2473,7 +2473,33 @@ function displayUserNotFound() {
     $('#rightPanelBody').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
     $('#sh-expected-hacked-userid').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
 
+    copyOriginalFormsToRightPanel();
+
     $('.ah-cssload-loader').detach();
+}
+
+function copyOriginalFormsToRightPanel() {
+    // формы поиска на оригинальной панели + поиск по соцсети
+    const $originalPanel = $('.helpdesk-additional-info-panel');
+    const $rightPanel = $('#rightPanelBody');
+    const $userSearchForm = $originalPanel.find('form[action="/users/search"]').clone();
+    const $itemSearchForms = $originalPanel.find('form[action="/items/search"]').clone();
+
+    $rightPanel.append('<hr>');
+    $rightPanel.append($userSearchForm);
+
+    // Поиск по соц сети +++
+    // $('#rightPanelBody').append('<div class="input-group search-user-by-social-wrapper"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><span class="input-group-btn"><input type="button" class="btn btn-primary social-search-btn" value="Найти" title="Поиск пользователя" id="rp-search-by-social-btn"></span></div>');
+    $rightPanel.append('<div class="form-group search-user-by-social-wrapper" style="margin-top: 15px;"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><button class="btn btn-primary social-search-btn" type="button" style="margin-top: 15px;" id="rp-search-by-social-btn"><i aria-hidden="true" class="glyphicon  glyphicon-search"></i> Search</button></div>');
+    const searchBtn = $('#rp-search-by-social-btn');
+    $(searchBtn).unbind('click').click(function() {
+        searchBySocialBtnHandler($(this));
+    });
+    // Поиск по соц сети ---
+
+    $rightPanel.append('<h4>Объявления</h4>');
+    $itemSearchForms.first().append('<br><br>');
+    $rightPanel.append($itemSearchForms);
 }
 
 function displaySuggestUser(admIdUser, statusUser, mail) {
@@ -2782,26 +2808,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         }
     }
 
-    // формы поиска на оригинальной панели + поиск по соцсети
-    const $originalPanel = $('.helpdesk-additional-info-panel');
-    const $userSearchForm = $originalPanel.find('form[action="/users/search"]').clone();
-    const $itemSearchForms = $originalPanel.find('form[action="/items/search"]').clone();
-
-    $('#rightPanelBody').append('<hr>');
-    $('#rightPanelBody').append($userSearchForm);
-
-    // Поиск по соц сети +++
-    // $('#rightPanelBody').append('<div class="input-group search-user-by-social-wrapper"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><span class="input-group-btn"><input type="button" class="btn btn-primary social-search-btn" value="Найти" title="Поиск пользователя" id="rp-search-by-social-btn"></span></div>');
-    $('#rightPanelBody').append('<div class="form-group search-user-by-social-wrapper" style="margin-top: 15px;"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><button class="btn btn-primary social-search-btn" type="button" style="margin-top: 15px;" id="rp-search-by-social-btn"><i aria-hidden="true" class="glyphicon  glyphicon-search"></i> Search</button></div>');
-    var searchBtn = $('#rp-search-by-social-btn');
-    $(searchBtn).unbind('click').click(function() {
-        searchBySocialBtnHandler($(this));
-    });
-    // Поиск по соц сети ---
-
-    $('#rightPanelBody').append('<h4>Объявления</h4>');
-    $itemSearchForms.first().append('<br><br>');
-    $('#rightPanelBody').append($itemSearchForms);
+    copyOriginalFormsToRightPanel();
 
     $('.ah-cssload-loader').detach();
 }
