@@ -2061,18 +2061,20 @@ function addElementsTicketTitle() {
     $('.sh-links').detach();
 
     let ticketTitle = $('.hd-ticket-header-title').text();
-    let email = $('.hd-ticket-header-metadata:eq(0) a[href^="/helpdesk"]').text();
-    email = email.replace(/[\(\)]/g, '');
 
     if (ticketTitle.indexOf('Заблокированное объявление №')+1) {
         ticketTitle = ticketTitle.replace(/[0-9]+\b/g, `<a href="${global.connectInfo.adm_url}/items/item/info/$&" target="_blank">$&</a>`);
         $('.hd-ticket-header-title').html(ticketTitle);
     }
-    if (email !== '') {
-        $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left').append('<span class="sh-links"></span>');
-        $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank">in users</a>`);
-        $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/items/search?user=${email}" target="_blank">in items</a>`);
-    }
+
+    // let email = $('.hd-ticket-header-metadata:eq(0) a[href^="/helpdesk"]').text();
+    // email = email.replace(/[\(\)]/g, '');
+    //
+    // if (email !== '') {
+    //     $('.hd-ticket-header-metadata:eq(0) .hd-ticket-header-metadata-left').append('<span class="sh-links"></span>');
+    //     $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank">in users</a>`);
+    //     $('.sh-links').append(` | <a href="${global.connectInfo.adm_url}/items/search?user=${email}" target="_blank">in items</a>`);
+    // }
 }
 //++++++++++ элементы в тайтле тикета ++++++++++//
 
@@ -2265,13 +2267,6 @@ function addRightPanelSettings(response, assume, currentTicketId) {
 }
 
 function addRightPanelSettingsBody(response, assume, currentTicketId) {
-    const holder = $('#ah-fixed-tools-holder');
-    const $stopWatchNode = $('.container-fluid table:contains(Просмотр)').parent();
-    const stopWatchHeight = $stopWatchNode.outerHeight();
-    const indent = stopWatchHeight ? stopWatchHeight + 2 : 2;
-
-    checkFooterVisibility(holder, indent);
-
     $('#ah-rightPanel').append('<div id="ah-rightPanelSettingsBody"></div>');
 
     $('#ah-rightPanelSettingsBody').append('<div title="Замечание: чем больше информации вы загружаете, тем дольше загрузка панели." style="text-align:center; color: rgb(0, 136, 204); font-weight:bold;">Right panel settings</div>');
@@ -2478,7 +2473,33 @@ function displayUserNotFound() {
     $('#rightPanelBody').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
     $('#sh-expected-hacked-userid').append('<div class="ah-user-not-found">Учетная запись не найдена</div>');
 
+    copyOriginalFormsToRightPanel();
+
     $('.ah-cssload-loader').detach();
+}
+
+function copyOriginalFormsToRightPanel() {
+    // формы поиска на оригинальной панели + поиск по соцсети
+    const $originalPanel = $('.helpdesk-additional-info-panel');
+    const $rightPanel = $('#rightPanelBody');
+    const $userSearchForm = $originalPanel.find('form[action="/users/search"]').clone();
+    const $itemSearchForms = $originalPanel.find('form[action="/items/search"]').clone();
+
+    $rightPanel.append('<hr>');
+    $rightPanel.append($userSearchForm);
+
+    // Поиск по соц сети +++
+    // $('#rightPanelBody').append('<div class="input-group search-user-by-social-wrapper"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><span class="input-group-btn"><input type="button" class="btn btn-primary social-search-btn" value="Найти" title="Поиск пользователя" id="rp-search-by-social-btn"></span></div>');
+    $rightPanel.append('<div class="form-group search-user-by-social-wrapper" style="margin-top: 15px;"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><button class="btn btn-primary social-search-btn" type="button" style="margin-top: 15px;" id="rp-search-by-social-btn"><i aria-hidden="true" class="glyphicon  glyphicon-search"></i> Search</button></div>');
+    const searchBtn = $('#rp-search-by-social-btn');
+    $(searchBtn).unbind('click').click(function() {
+        searchBySocialBtnHandler($(this));
+    });
+    // Поиск по соц сети ---
+
+    $rightPanel.append('<h4>Объявления</h4>');
+    $itemSearchForms.first().append('<br><br>');
+    $rightPanel.append($itemSearchForms);
 }
 
 function displaySuggestUser(admIdUser, statusUser, mail) {
@@ -2786,15 +2807,9 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             linksOnComments('.ah-commentStyle', id);
         }
     }
-	
-	// Поиск по соц сети
-	$('#rightPanelBody').append('<hr><h4>Пользователи</h4><div class="input-group search-user-by-social-wrapper"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><span class="input-group-btn"><input type="button" class="btn btn-primary social-search-btn" value="Найти" title="Поиск пользователя" id="rp-search-by-social-btn"></span></div>');
-	
-	var searchBtn = $('#rp-search-by-social-btn');
-    $(searchBtn).unbind('click').click(function() {
-		searchBySocialBtnHandler($(this));
-    });
-	
+
+    copyOriginalFormsToRightPanel();
+
     $('.ah-cssload-loader').detach();
 }
 
@@ -3320,7 +3335,7 @@ function sanctionIPTechInfo() {
 function addSearchUserBySocialBlock() {
     $('#search-user-by-social-form').remove();
 
-    var formBlock = $('form[action="/users/search"]');
+    var formBlock = $('.helpdesk-additional-info-panel form[action="/users/search"]');
 
 	$(formBlock).after('<div class="form-group search-user-by-social-wrapper" style="margin-top: 15px;" id="search-user-by-social-form"><input type="text" class="form-control" name="socialId" placeholder="ID социальной сети"><button class="btn btn-primary social-search-btn" type="button" style="margin-top: 15px;" id="search-by-social-btn"><i aria-hidden="true" class="glyphicon  glyphicon-search"></i> Search</button></div>');
 
