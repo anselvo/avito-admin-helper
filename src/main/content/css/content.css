@@ -3358,8 +3358,7 @@ select.ah-form-control:focus {
     position: fixed;
     z-index: 5;
     right: 4px;
-    bottom: 6px;
-    margin-bottom: 2px;
+    bottom: 40px;
 }
 
 #ah-scrolltop-btn {
@@ -3393,7 +3392,6 @@ select.ah-form-control:focus {
     border-radius: 50%;
     transition: none;
     outline: none;
-    margin-right: 6px;
 }
 
 .ah-item-user-info {
