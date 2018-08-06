@@ -574,17 +574,17 @@ function addFixedTools(elem, tools) {
         return;
 
     $(elem).append('<div id="ah-fixed-tools-holder"></div>');
-    let holder = $('#ah-fixed-tools-holder');
+    // let holder = $('#ah-fixed-tools-holder');
 
-    setFixedElemUnderFooter(holder, 2);
+    // setFixedElemUnderFooter(holder, 2);
     
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();
     }
-    
-    if (~tools.indexOf('scroll-top')) {
-        addScrollTopBtn();
-    }
+
+    // if (~tools.indexOf('scroll-top')) {
+    //     addScrollTopBtn();
+    // }
 }
 // инструменты справа внизу (настройки в HD, кнопка вверх) +++
 
@@ -608,6 +608,10 @@ function addHdSettings() {
 // показывать/скрывать настройки HD ---
 
 // кнопка вверх ---
+/**
+ * Перенос в Helpdesk
+ * @deprecated
+ */
 function addScrollTopBtn() {
     let holder = $('#ah-fixed-tools-holder');
     $(holder).append('' +
