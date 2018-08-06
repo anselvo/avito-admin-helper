@@ -45,7 +45,8 @@ function antifraudLinks(page) {
             if (flagId) {
                 let flagAction = $(flagInfo).parents('[data-title]').attr('data-title');
                 let flagStatus = 'block_id[]';
-                if (~flagAction.indexOf('reject')) flagStatus = 'reject_id[]';
+                if (~flagAction.indexOf('Все прич. отклонения')) flagStatus = 'reject_id[]';
+                if (~flagAction.indexOf('all user block reasons')) flagStatus = 'user_block_id[]';
 
                 let flagLink = `${global.connectInfo.adm_url}/items/search?date=${formatDateStart}+-+${formatDateEnd}&location_id[]=${locationItemID}&cid[]=${categoryItemID}&price_min=${itemPriceMin}&price_max=${itemPriceMax}&${flagStatus}=${flagId}&percent_min=${percentMin}&percent_max=${percentMax}&params[${firstParam[0]}]=${firstParamMap}&s_type=2`;
 

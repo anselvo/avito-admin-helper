@@ -272,7 +272,7 @@ function addComparisonInfo() {
         if (localStorage.imageSearchComparison === 'true') {
             let imageList = $(comparisonImageList[i]).find('.js-gallery-prev-img');
             for (let j = 0; j < imageList.length; ++j) {
-                let url = $(imageList[j]).attr('src').replace('140x105', '640x480').substr(2);
+                let url = $(imageList[j]).attr('data-original-image').substr(2);
 
                 $(imageList[j]).parent().append('<div class="ah-searchByImageLinks" style="font-size: 9px; font-weight: bold; margin: 0px; padding: 0px;">' +
                     '<a class="ah-google" href="https://www.google.ru/searchbyimage?image_url=' + url + '" target="_blank"><span>G</span></a>' +

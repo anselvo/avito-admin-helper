@@ -271,6 +271,8 @@ function usersInfo(id, itemid, offset, query) {
 
                     let startTime = $(ritem).find('[title="Start time"]').text();
                     let ipItem = $(ritem).find('[data-ip]:eq(0)').html();
+                    let ipItemZero = ipItem.split('.');
+                    ipItemZero[3] = '0';
                     let categoryItem = $(ritem).find('.form-group:contains(Категория) option:selected').parents('.category').attr('label');
                     let categoryItemID = $(ritem).find('#fld_category_id option:selected').attr('value');
                     let history = $(ritem).find('a[href^="/items/search?user_id="]').attr('target', '_blank');
@@ -310,7 +312,10 @@ function usersInfo(id, itemid, offset, query) {
 
                     $('#startTime').append(startTime);
                     $('#activeItems').append(history);
-                    $('#ipItem').append(`<a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${ipItem}</a>`);
+                    $('#ipItem').append(`
+                        <a href="${global.connectInfo.adm_url}/items/search?ip=${ipItem}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${ipItem}</a>
+                        <a href="${global.connectInfo.adm_url}/items/search?ip=${ipItemZero.join('.')}&cid[]=${categoryItemID}&query=${query}&date=${formatDate}&s_type=2" target="_blank">${ipItemZero.join('.')}</a>
+                    `);
                     $(phoneInItem+" .ah-phoneInItem").append('&#9733;').attr('title', 'Номер телефона в объявлении');
                     $('#proprietary').append(' ' + proprietary);
                     $('#yanMap').append(' ' + addressItem);
@@ -440,7 +445,7 @@ function ymapapi(address) {
             let myMap;
 
             function init() {
-                $('#yanMap').append('<div id="ymap"  style="width: 350px; height: 200px; border: 1px solid rgba(0,0,0,.2);"></div>');
+                $('#yanMap').append('<div id="ymap" style="width: 350px; height: 200px; border: 1px solid rgba(0,0,0,.2);"></div>');
 
                 myMap = new ymaps.Map("ymap", {
                     center: [55.76, 37.64],
