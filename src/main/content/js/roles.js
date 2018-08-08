@@ -84,10 +84,10 @@ function handleRoles() {
         //     roleHandler.helpdeskTechInfoSanctionIp();
         // }
 
-        // поиск юзера по айди в соцсети
-        if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
-            roleHandler.helpdeskSearchBySocial();
-        }
+        // // поиск юзера по айди в соцсети
+        // if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
+        //     roleHandler.helpdeskSearchBySocial();
+        // }
 
         // // копирование ссылки на тикет
         // if (isAuthority('ROLE_HELPDESK_COPY_TICKET_LINK')) {
@@ -553,11 +553,11 @@ function handleRoles() {
 
                     // рендер правой панели завершен
                     if (mutation.target.classList.contains('helpdesk-additional-info-panel')) {
-                        const addedNode = mutation.addedNodes[0];
-                        if (!addedNode) return;
+                        const removedNode = mutation.removedNodes[0];
+                        if (!removedNode) return;
 
-                        if ( (addedNode.nodeName === 'DIV' && addedNode.className === '')
-                            || addedNode.nodeName === '#comment') {
+                        if (removedNode.classList.contains('text-center')) {
+                            console.log('helpdeskUserInfoEvent');
                             helpdeskUserInfoEvent();
                         }
                     }
@@ -669,9 +669,9 @@ RoleHandler.prototype.helpdeskDescriptionIp = function() {
 //     sanctionIPTechInfo();
 // };
 
-RoleHandler.prototype.helpdeskSearchBySocial = function() {
-    addSearchUserBySocialBlock();
-};
+// RoleHandler.prototype.helpdeskSearchBySocial = function() {
+//     addSearchUserBySocialBlock();
+// };
 
 // RoleHandler.prototype.helpdeskCopyTicketLink = function() {
 //     copyCurrentTicketLink();
