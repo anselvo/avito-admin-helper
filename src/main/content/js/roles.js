@@ -328,9 +328,9 @@ function handleRoles() {
     if (isAuthority('ROLE_CREATE_TICKET')) { // создание тикета на юзере
         roleHandler.userCreateTicket();
     }
-    if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
-        roleHandler.userHDLink();
-    }
+    // if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
+    //     roleHandler.userHDLink();
+    // }
     if (isAuthority('ROLE_USER_COUNTRY_IP')) { // просмотр страны для IP на юзере
         roleHandler.userShowCountryIP();
     }
@@ -991,11 +991,11 @@ RoleHandler.prototype.userLinkedPaymentSources = function() {
     }
 };
 
-RoleHandler.prototype.userHDLink = function() {
-    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
-        linkToHDOnUser();
-    }
-};
+// RoleHandler.prototype.userHDLink = function() {
+//     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
+//         linkToHDOnUser();
+//     }
+// };
 
 RoleHandler.prototype.userShowCountryIP = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
