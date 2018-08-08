@@ -557,7 +557,6 @@ function handleRoles() {
                         if (!removedNode) return;
 
                         if (removedNode.classList.contains('text-center')) {
-                            console.log('helpdeskUserInfoEvent');
                             helpdeskUserInfoEvent();
                         }
                     }
