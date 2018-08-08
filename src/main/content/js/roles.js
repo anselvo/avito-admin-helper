@@ -84,10 +84,10 @@ function handleRoles() {
         //     roleHandler.helpdeskTechInfoSanctionIp();
         // }
 
-        // поиск юзера по айди в соцсети
-        if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
-            roleHandler.helpdeskSearchBySocial();
-        }
+        // // поиск юзера по айди в соцсети
+        // if (isAuthority('ROLE_SEARCH_BY_SOCIAL')) {
+        //     roleHandler.helpdeskSearchBySocial();
+        // }
 
         // // копирование ссылки на тикет
         // if (isAuthority('ROLE_HELPDESK_COPY_TICKET_LINK')) {
@@ -328,9 +328,9 @@ function handleRoles() {
     if (isAuthority('ROLE_CREATE_TICKET')) { // создание тикета на юзере
         roleHandler.userCreateTicket();
     }
-    if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
-        roleHandler.userHDLink();
-    }
+    // if (isAuthority('ROLE_USER_HD_LINK')) { // переход в HD на юзере
+    //     roleHandler.userHDLink();
+    // }
     if (isAuthority('ROLE_USER_COUNTRY_IP')) { // просмотр страны для IP на юзере
         roleHandler.userShowCountryIP();
     }
@@ -553,11 +553,10 @@ function handleRoles() {
 
                     // рендер правой панели завершен
                     if (mutation.target.classList.contains('helpdesk-additional-info-panel')) {
-                        const addedNode = mutation.addedNodes[0];
-                        if (!addedNode) return;
+                        const removedNode = mutation.removedNodes[0];
+                        if (!removedNode) return;
 
-                        if ( (addedNode.nodeName === 'DIV' && addedNode.className === '')
-                            || addedNode.nodeName === '#comment') {
+                        if (removedNode.classList.contains('text-center')) {
                             helpdeskUserInfoEvent();
                         }
                     }
@@ -669,9 +668,9 @@ RoleHandler.prototype.helpdeskDescriptionIp = function() {
 //     sanctionIPTechInfo();
 // };
 
-RoleHandler.prototype.helpdeskSearchBySocial = function() {
-    addSearchUserBySocialBlock();
-};
+// RoleHandler.prototype.helpdeskSearchBySocial = function() {
+//     addSearchUserBySocialBlock();
+// };
 
 // RoleHandler.prototype.helpdeskCopyTicketLink = function() {
 //     copyCurrentTicketLink();
@@ -992,11 +991,11 @@ RoleHandler.prototype.userLinkedPaymentSources = function() {
     }
 };
 
-RoleHandler.prototype.userHDLink = function() {
-    if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
-        linkToHDOnUser();
-    }
-};
+// RoleHandler.prototype.userHDLink = function() {
+//     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
+//         linkToHDOnUser();
+//     }
+// };
 
 RoleHandler.prototype.userShowCountryIP = function() {
     if (global.admUrlPatterns.users_user_info.test(global.currentUrl)) {
