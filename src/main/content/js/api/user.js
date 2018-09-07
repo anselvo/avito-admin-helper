@@ -243,7 +243,7 @@ function usersInfo(id, itemid, offset, query) {
             if (status.indexOf('Unconfirmed')+1) color = 'orange';
 
             let colorChance = '#2e8b57';
-            if (chance >= 7) {
+            if (chance >= 5) {
                 colorChance = '#e00';
                 $('.ah-userInfo').css({ 'box-shadow': 'rgb(255, 8, 8) 0px 0px 10px 0px' });
             }
