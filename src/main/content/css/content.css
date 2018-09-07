@@ -5158,7 +5158,8 @@ select.ah-form-control:focus {
 }
 
 
-.ah-online-photo-check {
+.ah-online-photo-check,
+.ah-pro-user-toggle {
     margin: 0 5px;
 }
 
@@ -5197,15 +5198,15 @@ select.ah-form-control:focus {
     transition: .4s;
 }
 
-input:checked + .ah-slider {
+.ah-switch input:checked + .ah-slider {
     background-color: #2196F3;
 }
 
-input:focus + .ah-slider {
+.ah-switch input:focus + .ah-slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .ah-slider:before {
+.ah-switch input:checked + .ah-slider:before {
     transform: translateX(12px);
 }
 

@@ -454,9 +454,10 @@ function addElementsForEachItemNew() {
 
     let trList = $('#items').find('tr');
     for (let i = 0; i < trList.length; i++) {
-        let trItemId = $(trList[i]).data("id");
-        let itemVersion = $(trList[i]).find('input[name="version"]').val();
-        let prob = $(trList[i]).data('pathProbs');
+        const trItemId = $(trList[i]).data("id");
+        const trUserId = $(trList[i]).data("userId");
+        const itemVersion = $(trList[i]).find('input[name="version"]').val();
+        const prob = $(trList[i]).data('pathProbs');
 
         let paramId = null;
         let paramsArr = $(trList[i]).data('params');
@@ -571,6 +572,7 @@ function addElementsForEachItemNew() {
 
         ledItem(trList[i], trItemId, itemVersion);
         onlinePhotoCheck(trList[i], trItemId);
+        proUserInCategory(trList[i], trUserId);
     }
 
     $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
@@ -655,6 +657,29 @@ function ledItem($itemInfo, trItemId, itemVersion) {
     }
 }
 
+
+function proUserInCategory($itemInfo, trUserId) {
+    for (let i = 0; i < global.proUserInCategory.length; ++i) {
+        const categoryId = global.proUserInCategory[i];
+
+        if ($($itemInfo).data('category') === categoryId && $($itemInfo).find('.ah-pro-user-toggle').length === 0) {
+            $($itemInfo).find('.item-info-name').append(`
+                <label class="ah-pro-user-toggle ah-switch">
+                    <input type="checkbox" data-user-id="${trUserId}">
+                    <span class="ah-slider ah-round" title="Pro User In Category"></span>
+                </label>
+            `);
+
+            $(`.ah-pro-user-toggle input[data-user-id="${trUserId}"]`).change(function () {
+                const userId = this.dataset.userId;
+                const toggle = this.checked;
+
+                updateUserProCheck(userId, toggle);
+            });
+        }
+    }
+}
+
 function onlinePhotoCheck($itemInfo, trItemId) {
     for (let i = 0; i < global.onlinePhotoCheck.length; ++i) {
         const flagName = global.onlinePhotoCheck[i].flagName;
@@ -671,6 +696,8 @@ function onlinePhotoCheck($itemInfo, trItemId) {
             $(`.ah-online-photo-check input[data-item-id="${trItemId}"]`).change(function () {
                 const itemId = this.dataset.itemId;
                 const toggle = this.checked;
+
+                console.log(toggle);
 
                 updateOnlinePhotoCheck(itemId, toggle);
             });

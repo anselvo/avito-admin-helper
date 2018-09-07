@@ -62,6 +62,9 @@ const global = {
     onlinePhotoCheck: [
         { flagName: "Нет фото с ID" }
     ],
+    proUserInCategory: [
+        89 // собаки
+    ],
     compareDropdownItemBlock: [
         { id: 384, text: "Неактуальное предложение" },
         { id: 20, text: "Повторная подача объявления" },
