@@ -415,12 +415,34 @@ function updateOnlinePhotoCheck(id, status) {
     xhr.open("POST", `${global.connectInfo.adm_url}/items/item/${id}/online_mark_toggle`, true);
     xhr.send(formDate);
     xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            if (status) outTextFrame(`У объявления ${id} успешно включена Online-проверка`);
-            else outTextFrame(`У объявления ${id} успешно отключена Online-проверка`);
-        } else {
-            $(`.ah-online-photo-check input[data-item-id="${id}"]`).prop('checked', false);
-            outTextFrame(`У объявления ${id} возникли проблемы с влючением онлайн проверки. Попробуйте еще раз.`);
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                if (status) outTextFrame(`У объявления ${id} успешно включена Online-проверка`);
+                else outTextFrame(`У объявления ${id} успешно отключена Online-проверка`);
+            } else {
+                $(`.ah-online-photo-check input[data-item-id="${id}"]`).prop('checked', false);
+                outTextFrame(`У объявления ${id} возникли проблемы с влючением онлайн проверки. Попробуйте еще раз.`);
+            }
+        }
+    }
+}
+
+function updateUserProCheck(id, status) {
+    const formDate = new FormData();
+    formDate.append('toggle', status);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${global.connectInfo.adm_url}/users/user/${id}/user_pro_flag_toggle`, true);
+    xhr.send(formDate);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                if (status) outTextFrame(`У пользователя ${id} успешно включен функционал Pro`);
+                else outTextFrame(`У пользователя ${id} успешно отключен функционал Pro`);
+            } else {
+                $(`.ah-pro-user-toggle input[data-user-id="${id}"]`).prop('checked', false);
+                outTextFrame(`У пользователя ${id} возникли проблемы с влючением функционал Pro. Попробуйте еще раз.`);
+            }
         }
     }
 }

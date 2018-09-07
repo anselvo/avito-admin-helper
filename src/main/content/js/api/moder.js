@@ -298,29 +298,35 @@ function addActionButton() {
 
 
     $('body')
-        .append('<div class="ah-postBlockChoose ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>' +
-            '<div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>' +
-            '<div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>' +
-            '<div class="ah-post-block-users ah-postBlockModerComment"><i class="glyphicon glyphicon-pencil"></i> <input id="ah-post-block-comment" type="text" placeholder="доп. комментарий"></div>' +
-            '</div>')
-        .append('<div class="postBlockInfo ah-post-block-user" style="display: none;">' +
-            '<div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>' +
-            '<hr style="margin-bottom: 10px; margin-top: 0">' +
-            '<table id="ah-postBlockTable">' +
-            '<thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>' +
-            '<tbody></tbody>' +
-            '</table>' +
-            '</div>');
+        .append(`
+            <div class="ah-postBlockChoose ah-post-block-user" style="display: none;">
+                <div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>
+                <div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>
+                <div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>
+                <div class="ah-post-block-users ah-postBlockModerComment"><i class="glyphicon glyphicon-pencil"></i> <input id="ah-post-block-comment" type="text" placeholder="доп. комментарий"></div>
+            </div>
+        `).append(`
+            <div class="postBlockInfo ah-post-block-user" style="display: none;">
+                <div class="ah-post-block-users ah-compareUsers"><i class="glyphicon glyphicon-random"></i> <span>Сранить учетные записи</span></div>
+                <div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>
+                <hr style="margin-bottom: 10px; margin-top: 0">
+                <table id="ah-postBlockTable">
+                    <thead><tr><th>ID</th><th>Request</th><th>Response</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        `);
 
     $('#ah-user-info-show')
         .find('ul')
-        .append('<li>' +
-            '<div class="ah-show-info ah-postUserAgent">' +
-            '<i class="glyphicon glyphicon-phone"></i> ' +
-            '<span class="ah-menu-name">Показать User Info</span><span class="ah-hot-keys">Alt+U</span>' +
-            '</div>' +
-            '</li>');
+        .append(`
+            <li>
+                <div class="ah-show-info ah-postUserAgent">
+                    <i class="glyphicon glyphicon-phone"></i> 
+                    <span class="ah-menu-name">Показать User Info</span><span class="ah-hot-keys">Alt+U</span>
+                </div>
+            </li>
+         `);
 
     clickActionButton();
 }
@@ -347,6 +353,23 @@ function clickActionButton() {
         $('.ah-showUsers').click();
 
         postBlockReasonList(reasonId);
+    });
+
+    $('.ah-compareUsers').click(function () {
+        const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
+        const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
+        const allUsers = activeUsers.concat(blockedUsers);
+        const users = {};
+        users.abutment = allUsers[0];
+        users.compared = allUsers;
+
+        btnLoaderOn(this.children[0]);
+        const comparison = new UsersComparison(users);
+        comparison.render()
+            .then(() => {
+                comparison.showModal();
+            }, error => alert(error))
+            .then(() => btnLoaderOff(this.children[0]));
     });
 
     $('.ah-postClearList').click(function () {
