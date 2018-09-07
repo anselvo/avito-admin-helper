@@ -356,7 +356,9 @@ function clickActionButton() {
     });
 
     $('.ah-compareUsers').click(function () {
-        const allUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g).concat(sessionStorage.postBlockID.match(/\d{5,}/g));
+        const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
+        const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
+        const allUsers = activeUsers.concat(blockedUsers);
         const users = {};
         users.abutment = allUsers[0];
         users.compared = allUsers;
