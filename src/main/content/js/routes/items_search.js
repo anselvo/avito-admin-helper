@@ -86,23 +86,17 @@ function loadItemInfo(id) {
             let lastStatus = null;
             let lastTime = null;
 
-            let refundWallet = false;
-            let refundWalletTime = null;
-            let refundPackage = false;
-            let refundPackageTime = null;
+            let refund = false;
+            let refundTime = null;
 
             for (let i = 0, statusCnt = 0; i < historyTable.length; ++i) {
                 let time = $(historyTable[i]).find('td:eq(0)').text();
+                let adminEvent = $(historyTable[i]).find('td:eq(1)').text();
                 let status = $(historyTable[i]).find('td:eq(2)').text();
-                let payEvent = $(historyTable[i]).find('td:eq(3)').text();
 
-                if (payEvent === 'Refund to wallet' && !refundWallet) {
-                    refundWallet = true;
-                    refundWalletTime = time;
-                }
-                if (payEvent === 'Refund to package' && !refundPackage) {
-                    refundPackage = true;
-                    refundPackageTime = time;
+                if (adminEvent.includes('Refund') && !refund) {
+                    refund = true;
+                    refundTime = time;
                 }
 
                 if (status !== '' && !lastStatus) {
@@ -113,16 +107,10 @@ function loadItemInfo(id) {
                     }
                 }
             }
-
-            if (refundWallet) $('.ah-auto-refund[itemid="' + id + '"')
+            if (refund) $('.ah-auto-refund[itemid="' + id + '"')
                 .append('<div class="ah-auto-refund-label" ' +
-                    'title="Refund to wallet\nLast refund to wallet at ' + refundWalletTime+ '" ' +
-                    'style="background: #ffe168">RW</div>');
-
-            if (refundPackage) $('.ah-auto-refund[itemid="' + id + '"')
-                .append('<div class="ah-auto-refund-label" ' +
-                    'title="Refund to package\nLast refund to package at ' + refundPackageTime + '" ' +
-                    'style="background: #90CAF9; width: 25px">RP</div>');
+                    'title="Last refund at ' + refundTime + '" ' +
+                    'style="background: #90CAF9; width: 25px">R</div>');
 
             if (address) $('.ah-item-info-main[itemid="' + id + '"').append(
                 '<hr style="margin: 3px 0 3px">' +
