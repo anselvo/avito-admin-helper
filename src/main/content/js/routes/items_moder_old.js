@@ -107,7 +107,7 @@ function closePre() {
 
 function comparePhotoPre() {
 
-    var photoSelector = $('a:contains(Чужое фото), a:contains(Похожее фото)');
+    var photoSelector = $('a:containsCI(чужое фото), a:containsCI(похожее фото), a:containsCI(кража реал), a:containsCI(кража фейк)');
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
@@ -136,7 +136,7 @@ function comparePhotoPre() {
 
 function comparePhotoPreNew() {
 
-    var photoSelector = $('a:contains(Чужое фото), a:contains(Похожее фото)');
+    var photoSelector = $('a:containsCI(чужое фото), a:containsCI(похожее фото), a:containsCI(кража реал), a:containsCI(кража фейк)');
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
@@ -165,7 +165,7 @@ function comparePhotoPreNew() {
 
 function comparePhotoPost() {
 
-    var photoSelector = $('a:contains(Чужое фото), a:contains(Похожее фото)');
+    var photoSelector = $('a:containsCI(чужое фото), a:containsCI(похожее фото), a:containsCI(кража реал), a:containsCI(кража фейк)');
     var len = photoSelector.length;
 
     for (var i = 0; i < len; ++i) {
