@@ -427,9 +427,10 @@ function updateOnlinePhotoCheck(id, status) {
     }
 }
 
-function updateUserProCheck(id, status) {
+function updateUserProCheck(id, status, categoryId) {
     const formDate = new FormData();
     formDate.append('toggle', status);
+    formDate.append('categoryId', categoryId);
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${global.connectInfo.adm_url}/users/user/${id}/user_pro_flag_toggle`, true);

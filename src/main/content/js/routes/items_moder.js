@@ -193,16 +193,17 @@ function addComparisonInfo() {
 
     let basedItemID = $('.js-comparison').attr('data-based-item');
     let basedItemInfo = $('tr[data-id="'+basedItemID+'"]');
+    let baseItemToggle = basedItemInfo.find('.ah-pro-user-toggle [data-user-id]');
 
     let content = $('[data-based-item="'+basedItemID+'"]');
 
     let comparisonItemParamList = $(content).find('.details-info');
 
+    let comparisonNamesList = $(content).find('.comparison-item-name').parent();
     let comparisonUserList = $(content).find('.comparison-user-wrap');
     let comparisonImageList = $(content).find('.gallery-prev');
     let comparisonDescriptionList = $(content).find('.comparison-description-text');
-    let comparisonRejectOtherList = $(content).find('.js-moderation-reject-other');
-    let comparisonBlockListItem = $(content).find('.btn-group-reject');
+    let comparisonCategoriesList = $(content).find('.js-param-1a .details-info-value');
 
     // AB test в комперисоне
     if ($(basedItemInfo).find('.ah-ab-test-mark').length !== 0) {
@@ -217,6 +218,18 @@ function addComparisonInfo() {
             .after('<div class="ah-led-yellow" title="Обратите внимание на флаги!"></div>');
     }
 
+    comparisonNamesList.change(({ target }) => {
+        const userId = target.dataset.userId;
+        const toggle = target.checked;
+        const categoryId = target.dataset.categoryId;
+
+        updateUserProCheck(userId, toggle, categoryId);
+
+        const similarUsersToggles = comparisonNamesList.find(`.ah-pro-user-toggle_comparison [data-user-id="${userId}"]`);
+        similarUsersToggles.prop('checked', toggle);
+        baseItemToggle.prop('checked', toggle);
+    });
+
     // добавить причины отклонения
     optionOtherReasons('.btn-group-reject .moderate-block', '.moderate-block-list-item:not(.moderate-block-list-item_nested-list)', '.js-moderation-reject-other');
 
@@ -225,6 +238,7 @@ function addComparisonInfo() {
     for (let i = 0; i < comparisonUserList.length; ++i) {
         const comparisonDescriptionListChildren = $(comparisonDescriptionList[i]).find('span');
         const comparisonItemCategory = $(comparisonItemParamList[i]).find('[data-param-id="1a"]').attr("title");
+        const categoryName = $(comparisonCategoriesList[i]).text().trim();
 
         if (comparisonDescriptionListChildren.length === 0)
             find_words(wordsParse, $(comparisonDescriptionList[i]), comparisonItemCategory);
@@ -240,6 +254,21 @@ function addComparisonInfo() {
         let userid = tmp[3].split('-')[2];
         let itemid = tmp[2].split('-')[2];
         const $comparisonUserListParent = $(comparisonUserList[i]).parents('.'+tmp[2]);
+
+        global.proUserInCategory.forEach(({ id, name }) => {
+            if (categoryName === name) {
+                const toggle = $(`
+                    <label class="ah-pro-user-toggle_comparison ah-switch">
+                        <input type="checkbox" data-user-id="${userid}" data-category-id="${id}">
+                        <span class="ah-slider ah-round" title="Pro User In Category"></span>
+                    </label>
+                `);
+                const baseItemChecked = baseItemToggle.prop('checked');
+
+                toggle.find('[data-user-id]').prop('checked', baseItemChecked);
+                $(comparisonNamesList[i]).append(toggle);
+            }
+        });
 
         if (isAuthority('ROLE_USER_INFO_INFO'))
             $comparisonUserListParent.prepend('<span class="ah-userInfoActionButton userInfoComparison ah-user-api" data-user-id="'+userid+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
@@ -659,10 +688,10 @@ function ledItem($itemInfo, trItemId, itemVersion) {
 
 
 function proUserInCategory($itemInfo, trUserId) {
-    for (let i = 0; i < global.proUserInCategory.length; ++i) {
-        const categoryId = global.proUserInCategory[i];
+    global.proUserInCategory.forEach(({ id }) => {
+        const itemCategoryId = $($itemInfo).data('category');
 
-        if ($($itemInfo).data('category') === categoryId && $($itemInfo).find('.ah-pro-user-toggle').length === 0) {
+        if (itemCategoryId === id && $($itemInfo).find('.ah-pro-user-toggle').length === 0) {
             $($itemInfo).find('.item-info-name').append(`
                 <label class="ah-pro-user-toggle ah-switch">
                     <input type="checkbox" data-user-id="${trUserId}">
@@ -674,10 +703,10 @@ function proUserInCategory($itemInfo, trUserId) {
                 const userId = this.dataset.userId;
                 const toggle = this.checked;
 
-                updateUserProCheck(userId, toggle);
+                updateUserProCheck(userId, toggle, itemCategoryId);
             });
         }
-    }
+    });
 }
 
 function onlinePhotoCheck($itemInfo, trItemId) {

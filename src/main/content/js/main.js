@@ -63,7 +63,8 @@ const global = {
         { flagName: "Нет фото с ID" }
     ],
     proUserInCategory: [
-        89 // собаки
+        { id: 89, name: 'Собаки' },
+        { id: 90, name: 'Кошки' }
     ],
     compareDropdownItemBlock: [
         { id: 384, text: "Неактуальное предложение" },

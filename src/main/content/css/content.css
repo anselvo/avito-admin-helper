@@ -5163,6 +5163,10 @@ select.ah-form-control:focus {
     margin: 0 5px;
 }
 
+.ah-pro-user-toggle_comparison {
+    margin: 0 5px -3px;
+}
+
 /* The switch - the box around the slider */
 .ah-switch {
     position: relative;
