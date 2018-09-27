@@ -660,9 +660,9 @@ function ledItem($itemInfo, trItemId, itemVersion) {
 
 function proUserInCategory($itemInfo, trUserId) {
     for (let i = 0; i < global.proUserInCategory.length; ++i) {
-        const categoryId = global.proUserInCategory[i];
+        const itemCategoryId = $($itemInfo).data('category');
 
-        if ($($itemInfo).data('category') === categoryId && $($itemInfo).find('.ah-pro-user-toggle').length === 0) {
+        if (itemCategoryId === global.proUserInCategory[i] && $($itemInfo).find('.ah-pro-user-toggle').length === 0) {
             $($itemInfo).find('.item-info-name').append(`
                 <label class="ah-pro-user-toggle ah-switch">
                     <input type="checkbox" data-user-id="${trUserId}">
@@ -674,7 +674,7 @@ function proUserInCategory($itemInfo, trUserId) {
                 const userId = this.dataset.userId;
                 const toggle = this.checked;
 
-                updateUserProCheck(userId, toggle);
+                updateUserProCheck(userId, toggle, itemCategoryId);
             });
         }
     }
