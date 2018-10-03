@@ -3322,6 +3322,10 @@ select.ah-form-control:focus {
     z-index: 10;
 }
 
+.ah-currentTimeInCity-header {
+    margin-top: 0;
+}
+
 .ah-input-copy-top-clip-btn-group .ah-btn {
     position: relative;
     margin-left: -1px;
