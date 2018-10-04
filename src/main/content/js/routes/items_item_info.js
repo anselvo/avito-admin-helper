@@ -177,27 +177,18 @@ function rejectByCall() {
 }
 
 function timeInCity() {
-    const city = $('#region').find('option:selected').text();
+    let city = $('#region').find('option:selected').text();
 
-    const url = 'https://www.google.ru/search?q=Время в ' + city;
+    let url = 'https://yandex.ru/search/?text=Время в ' + city;
 
     chrome.runtime.sendMessage({
         action: 'XMLHttpRequest',
         method: "GET",
         url: url
     }, function(response) {
-        const $timeNode = $(response).find('#rso div:eq(0)');
-        const $clockNode = $timeNode.find('[role="heading"]');
+        let time = $(response).find('.fact-answer').html();
 
-        $timeNode.find('h2').remove();
-        $timeNode.find($clockNode).remove();
-
-        $('body').append(`
-            <div class="ah-currentTimeInCity">
-                <h5 class="ah-currentTimeInCity-header">Местное время: ${$clockNode.text()}</h5>
-                ${$timeNode.html()}
-            </div>
-        `);
+        $('body').append('<div class="ah-currentTimeInCity">' + time + '</div>');
     });
 }
 
