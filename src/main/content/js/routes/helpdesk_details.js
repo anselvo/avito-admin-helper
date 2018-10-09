@@ -2960,7 +2960,7 @@ function addTicketTlHelp() {
     button.id = 'ah-tl-help-btn';
     button.setAttribute('data-fullname', agentTlFullName);
     button.setAttribute('data-adm-user-id', agentTlAdmUserId);
-    button.innerHTML = `Помощь ТЛ <span class=" text-muted ah-tl-help__current-tl">(${agentTlFullName})</span>`;
+    button.innerHTML = `Помощь <span class=" text-muted ah-tl-help__current-tl">(${agentTlFullName})</span>`;
 
     const list = document.createElement('ul');
     list.className = 'dropdown-menu dropdown-menu-right ah-tl-help__list';
@@ -2968,10 +2968,10 @@ function addTicketTlHelp() {
     if (global.allUsersInfo.isLoading) {
         list.innerHTML = `<li class="text-muted text-center">Загрузка...</li>`;
     } else if (global.allUsersInfo.fail) {
-        list.innerHTML = `<li  class="text-danger text-center">Не удалось загрузить список ТЛ</li>`;
+        list.innerHTML = `<li  class="text-danger text-center">Не удалось загрузить список</li>`;
     } else if (global.allUsersInfo.list.length > 0) {
         list.innerHTML = global.allUsersInfo.list.reduce((html, user) => {
-            if (user.position_id === '882f3674-081a-4962-b34c-0b5bf67fc391' && // Саппортские лиды
+            if (global.tlHelpPositionIds.includes(user.position_id) &&
                 user.adm_user_id &&
                 user.adm_user_id !== agentTlAdmUserId) {
 
