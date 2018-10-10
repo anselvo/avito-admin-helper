@@ -253,7 +253,6 @@ function AhIndicators(indicatorsArr, container) {
 
     function renderSubscriptionInfo() {
         let subscription = shopIndicators.getSubscriptionInfo();
-        console.log(subscription);
         if (subscription) {
             fireUp(indicators.subscription);
 
@@ -342,7 +341,8 @@ function UserInfoIndicators(options) {
     const innInfoBlock = innParentBlock.find('div.i-verify');
     const proInput = searchNode.find('#isPro');
     const companyInfoForm = searchNode.find('#company-info');
-    const convertHelpBlock = companyInfoForm.find('.help-block');
+    const convertLabel = companyInfoForm.find('.control-label')
+        .filter((indes, label) => $(label).text().includes('Конвертация'));
     const autoInput = searchNode.find('#isAutoupload');
     const autoBanIcon = autoInput.parents('.checkbox').next().find('.glyphicon-ban-circle');
     const shopInput = searchNode.find('.control-label:contains(Магазин)').next().find('a');
@@ -377,8 +377,9 @@ function UserInfoIndicators(options) {
 
     this.getLegalEntityInfo = function() {
         let res = {};
-        res.isFired = (companyInfoForm.length !== 0 && ~convertHelpBlock.text().indexOf('converted on'));
-        res.scrollTo = convertHelpBlock.parents('.form-group');
+        res.isFired = (companyInfoForm.length !== 0
+            && convertLabel.next().text().includes('конвертирован'));
+        res.scrollTo = convertLabel.parents('.form-group');
         return res;
     };
 
