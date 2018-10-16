@@ -3384,6 +3384,21 @@ select.ah-form-control:focus {
     border-radius: 4px;
 }
 
+.sh-unblockUsers {
+    margin-bottom: 10px;
+}
+
+.sh-unblockUsers-buttons {
+    margin-bottom: 5px;
+}
+
+.form-control.ah-hd-unblock-chance-control {
+    display: inline-block;
+    width: 25px;
+    height: 20px;
+    padding: 1px 2px;
+}
+
 .glyphicon.ah-hd-global-settings-icon {
     top: 2px;
 }
