@@ -1845,6 +1845,9 @@ function showReasonBlockedUser() {
                 var response = xhr.responseText;
                 var reason = $(response).find('.form-group:contains(Причины) div').text();
                 var time = $(response).find('h4:contains(История админки)').next().find('tr:contains(User is blocked):eq(0) td:eq(0)').text();
+                const chance = getParamsUserInfo($(response)).chance || 0;
+                let chanceColor = '#65a947';
+                if (chance === 10) chanceColor = '#b3263c';
 
                 var ticketId = getCurrentTicketId(window.location.href)
                 if (ticketId !== startTicketId) return;
@@ -1854,7 +1857,12 @@ function showReasonBlockedUser() {
                 if (!time) {
                     time = '<span class="ah-pseudo-link" id="get-user-block-time-from-history" title="Показать дату">> 1,5 месяца назад</span>';
                 }
-                $('div.helpdesk-usersidebar-status:first').append('<span class="sh-reason-blocked-user" style="color:black;"> | </span><span class="sh-reason-blocked-user" title="' + blockedUserId + '" style="color:#A52A2A;">' + reason + '</span><span class="sh-reason-blocked-user" style="color:black;">| '+time+'</span>');
+                $('div.helpdesk-usersidebar-status:first').append(`
+                    <span class="sh-reason-blocked-user" style="color: black;"> | </span>
+                    <span style="color: ${chanceColor}">${chance}</span>/<span style="color:red;">10</span></span> | 
+                    <span class="sh-reason-blocked-user" title="${blockedUserId}" style="color:#A52A2A;">${reason}</span>
+                    <span class="sh-reason-blocked-user" style="color:black;">| ${time}</span>
+                `);
                 $('#get-user-block-time-from-history').click(function () {
                     btnLoaderOn($(this));
                     getUserBlockTimeFromHistory(blockedUserId, $(this));
@@ -1933,9 +1941,27 @@ function unblockUserHD() {
 
     if ($('div.helpdesk-usersidebar-status:first').text().indexOf("Blocked") + 1) {
         $('.helpdesk-usersidebar-status:first').after('<div class="sh-unblockUsers"></div>');
-        $('.sh-unblockUsers').append('<input type="button" class="btn btn-default btn-xs green" value="Активировать" id="activeUser"/> ');
-        $('.sh-unblockUsers').append('<input type="button" class="btn btn-default btn-xs green" value="Разблокировать + объявления" id="activeUserItem"/><br>');
-        $('.sh-unblockUsers').append('<input type="button" class="btn btn-default btn-xs green" value="Разблокировать + релевантные объявления" id="activeUserReItem" style="margin-top: 5px;"/>');
+        $('.sh-unblockUsers').append('<div class="sh-unblockUsers-buttons"></div>')
+        $('.sh-unblockUsers-buttons').append('<input type="button" class="btn btn-default btn-xs green" value="Активировать" id="activeUser"/> ');
+        $('.sh-unblockUsers-buttons').append('<input type="button" class="btn btn-default btn-xs green" value="Разблокировать + объявления" id="activeUserItem"/><br>');
+        $('.sh-unblockUsers-buttons').append('<input type="button" class="btn btn-default btn-xs green" value="Разблокировать + релевантные объявления" id="activeUserReItem" style="margin-top: 5px;"/>');
+
+        $('.sh-unblockUsers').append(`
+            <div>
+                <label>
+                    <input
+                        type="checkbox"
+                        id="ah-hdUnblockWithChance"
+                        checked>
+                С шансом 
+                </label>
+                <input
+                    class="form-control ah-hd-unblock-chance-control"
+                    id="ah-hdUnblockChance"
+                    value="1">
+            </div>
+        `);
+
     }
 
     $('#activeUser').click(function() {
@@ -1943,16 +1969,17 @@ function unblockUserHD() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, 1); //RK всегда первый шанс
+
+        if ($('#ah-hdUnblockWithChance').prop('checked')) {
+            chanceUser(id, $('#ah-hdUnblockChance').val());
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/activate/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
-        // $('.helpdesk-usersidebar-status:first').text('Active');
         $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
-        // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
 
@@ -1961,16 +1988,17 @@ function unblockUserHD() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, 1); //RK всегда первый шанс
+
+        if ($('#ah-hdUnblockWithChance').prop('checked')) {
+            chanceUser(id, $('#ah-hdUnblockChance').val());
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
-        // $('.helpdesk-usersidebar-status:first').text('Active');
         $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
-        // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
 
@@ -1979,16 +2007,17 @@ function unblockUserHD() {
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, 1); //RK всегда первый шанс
+
+        if ($('#ah-hdUnblockWithChance').prop('checked')) {
+            chanceUser(id, $('#ah-hdUnblockChance').val());
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock_relevant/${id}`, true);
         request.send();
 
         $('.sh-unblockUsers').detach();
-        // $('.helpdesk-usersidebar-status:first').text('Active');
         $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
-        // $('.helpdesk-usersidebar-status:first').addClass('helpdesk-usersidebar-status-active');
         outTextFrame($(this).val() + '<br>' + id);
     });
 }
@@ -2608,7 +2637,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         let colorChance = '#65a947';
         if (chance === '10') colorChance = '#b3263c';
 
-        $(mainTable).append('<tr class="ah-grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser" style="float:right;"></div></td></tr>');
+        $(mainTable).append('<tr class="ah-grayBlock"><td>Status</td><td><span style="color:'+colorStatus+';font-weight:bold;">'+status+'</span> <span style="font-weight:bold;">(<span style="color:'+colorChance+';">'+chance+'</span>/<span style="color:red;">10</span>)</span><div id="unblockUser"></div></td></tr>');
 
 
         if (status === 'Blocked') {
@@ -2828,10 +2857,23 @@ function rightPanelAddComment(id) {
 }
 
 function rightPanelUnblockUser() {
-    $('#unblockUser').append('<input type="text" id="rpChance" class="btn btn-default btn-xs" title="Chance on user" value="1" size="1" style="font-size: 12px">')
+    $('#unblockUser')
         .append('<input type="button" id="rpAU" class="btn btn-default btn-xs green" title="Active user" value="A">')
         .append('<input type="button" id="rpHI" class="btn btn-default btn-xs green" title="Unblock user and his items" value="I">')
-        .append('<input type="button" id="rpRI" class="btn btn-default btn-xs green" title="Unblock user and relevant items" value="R">');
+        .append('<input type="button" id="rpRI" class="btn btn-default btn-xs green" title="Unblock user and relevant items" value="R">')
+        .append(`
+            <label style="margin-left: 4px;">
+                <input
+                    type="checkbox"
+                    id="ah-rpUnblockWithChance"
+                    checked>
+            С шансом 
+            </label>
+            <input
+                class="form-control ah-hd-unblock-chance-control"
+                id="rpChance"
+                value="1">
+        `);
 
     $('#rpAU').click(function() {
         var ticketid = getCurrentTicketId(window.location.href);
@@ -2839,14 +2881,17 @@ function rightPanelUnblockUser() {
         var chance = $('#rpChance').val();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, chance); //RK всегда первый шанс
+
+        if ($('#ah-rpUnblockWithChance').prop('checked')) {
+            chanceUser(id, chance);
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/activate/${id}`, true);
         request.send();
 
         infoAboutUser();
-        outTextFrame($(this).attr('title') + ' with ' + chance + ' chance<br>' + id);
+        outTextFrame($(this).attr('title') + '<br>' + id);
     });
 
     $('#rpHI').click(function() {
@@ -2855,14 +2900,17 @@ function rightPanelUnblockUser() {
         var chance = $('#rpChance').val();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, chance); //RK всегда первый шанс
+
+        if ($('#ah-rpUnblockWithChance').prop('checked')) {
+            chanceUser(id, chance);
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock/${id}`, true);
         request.send();
 
         infoAboutUser();
-        outTextFrame($(this).attr('title') + ' with ' + chance + ' chance<br>' + id);
+        outTextFrame($(this).attr('title') + '<br>' + id);
     });
 
     $('#rpRI').click(function() {
@@ -2871,14 +2919,17 @@ function rightPanelUnblockUser() {
         var chance = $('#rpChance').val();
 
         commentOnUserSupport(id, '[Admin.Helper.Helpdesk] Восстановил по обращению №'+ticketid);
-        chanceUser(id, chance); //RK всегда первый шанс
+
+        if ($('#ah-rpUnblockWithChance').prop('checked')) {
+            chanceUser(id, chance);
+        }
 
         var request = new XMLHttpRequest();
         request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock_relevant/${id}`, true);
         request.send();
 
         infoAboutUser();
-        outTextFrame($(this).attr('title') + ' with ' + chance + ' chance<br>' + id);
+        outTextFrame($(this).attr('title') + '<br>' + id);
     });
 }
 //++++++++++ предполагаемая УЗ ++++++++++//
