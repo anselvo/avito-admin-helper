@@ -253,6 +253,8 @@ function smartSNP(id) {
 
     let cancelLoadSNP = 0;
 
+    const $snp =  $('#snp');
+
     const hrefPassHistory = `${global.connectInfo.adm_url}/users/user/info/${id}`;
     const xhrPassHistory = new XMLHttpRequest();
     xhrPassHistory.open("GET", hrefPassHistory, true);
@@ -263,10 +265,11 @@ function smartSNP(id) {
 
             const email = $(r).find('.js-fakeemail-field').text();
             const name = $(r).find('[name="name"]').val();
+            const $verifyPhones = $(r).find('.phone-verify .i-verify-checked').parents('.controls-phone');
+
             const comments = $(r).find('#dataTable td.is-break');
 
-            $('#snp').attr('email', email).attr('name', name);
-
+            $snp.attr('email', email).attr('name', name);
             let countPass = 0;
             for (let i = 0; i < comments.length; ++i) {
                 const com = comments.slice(i, i+1).text();
@@ -275,11 +278,30 @@ function smartSNP(id) {
                     $('#isUseSNP').css('background','#fb615f');
                     break;
                 }
+
+            }
+
+            const lastVerifyPhone = {
+                phone: $($verifyPhones[0]).find('input').val(),
+                time: parsePhoneTime($($verifyPhones[0]).find('.phone-verify-date div').text()),
+            };
+            for (let i = 1; i < $verifyPhones.length; ++i) {
+                const phone = $($verifyPhones[i]).find('input').val();
+                const time = parsePhoneTime($($verifyPhones[i]).find('.phone-verify-date div').text());
+
+                if (time > lastVerifyPhone.time) {
+                    lastVerifyPhone.phone = phone;
+                    lastVerifyPhone.time = time;
+                }
+            }
+
+            if (lastVerifyPhone.phone) {
+                $snp.attr('last-phone', lastVerifyPhone.phone);
             }
 
             ++cancelLoadSNP;
             if (cancelLoadSNP === 2) {
-                $('#snp').prop('disabled', false);
+                $snp.prop('disabled', false);
             }
         }
     };
@@ -305,9 +327,10 @@ function smartSNP(id) {
         }
     };
 
-    $('#snp').click(function () {
+    $snp.on("click", function () {
         const email = $(this).attr('email');
         const name = $(this).attr('name');
+        const phone = $(this).attr('last-phone');
 
         sendNewPassword(id);
 
@@ -317,13 +340,12 @@ function smartSNP(id) {
             url: `${global.connectInfo.ext_url}/journal/include/php/load/create_ticket_avito_adm.php`,
             data: 'email='+email+'&name='+name,
         }, function(response) {
-            console.log(response);
-
             if (response === 'error') alert('При создании обращения возникла ошибка.');
         });
 
-        commentOnUserModer(id, '[Admin.Helper.SNP] Отправил(а) новый пароль пользователю и уведомление о взломе');
-        outTextFrame('Пользователю отправлен новый пароль и уведомление о взломе');
+        unverify({ id, phone }, false);
+        commentOnUserModer(id, '[Admin.Helper.SNP] Отправил(а) новый пароль пользователю, уведомление о взломе и отвязал(а) последний прикрепленный номер');
+        outTextFrame('Пользователю отправлен новый пароль, уведомление о взломе и отвязан последний прикрепленный номер');
     });
 }
 
