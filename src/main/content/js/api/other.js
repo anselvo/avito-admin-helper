@@ -1525,3 +1525,10 @@ function haversineDistance(a, b) {
 
     return R * c;
 }
+
+function parsePhoneTime(timeText) {
+    timeText = timeText.replace(',', '').split(' ')
+    const date = timeText[0].split('.');
+    const time = timeText[1].split(':');
+    return new Date(Number(date[2]), Number(date[1]), Number(date[0]), Number(time[0]), Number(time[1]));
+}

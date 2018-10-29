@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Admin.Helper",
 	"short_name": "AH", 
-    "version": "5.4.9",
+    "version": "5.5.0",
 
 	"background": {
 		"scripts": [
