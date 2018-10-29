@@ -299,8 +299,10 @@ function createTicket(data) {
         filesArr[i] = newslide[i];
         formData.append('attaches[]', filesArr[i]);
     }
+    formData.append('attachProcessor', 'ticket_default');
+    formData.append('method', 'ticket/admin_add');
 
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/ticket/add`;
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/proxyWithAttaches`;
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
@@ -319,7 +321,7 @@ function createTicket(data) {
                     }, 100);
                     return;
                 }
-                var ticketId = response.id;
+                var ticketId = response.result.id;
 
                 var modal = $('#ah-layer-blackout-modal').find('[data-modal-info="modal-create-new-ticket"]');
                 var closeBtn = $(modal).find('.ah-modal-close');
