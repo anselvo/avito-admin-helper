@@ -755,7 +755,8 @@ function requestListener(tabId, url) {
 		sendMessage(tabId, 'ticketEnter');
 	}
 	
-	if (~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/)) {
+	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/))
+        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/comments/list`)) {
 		sendMessage(tabId, 'ticketComments');
 	}
 
