@@ -744,7 +744,7 @@ function requestListener(tabId, url) {
         sendMessage(tabId, 'ticketUser');
     }
 
-	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/search`)+1) {
+	if (url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/search`) || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/search/filter`)) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
