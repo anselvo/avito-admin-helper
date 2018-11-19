@@ -714,29 +714,13 @@ function newDay(currentDay) {
 function requestListener(tabId, url) {
 
 	// helpdesk
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/edit/`) ) {
-		sendMessage(tabId, 'ticketEdit');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/)) {
+	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/))
+        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxyWithAttaches?method=ticket/comments/add`)) {
 		sendMessage(tabId, 'ticketComment');
 	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/pending\b/)) {
-		sendMessage(tabId, 'ticketPending');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/solve\b/)) {
-		sendMessage(tabId, 'ticketSolve');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/)) {
+	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/))
+        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxyWithAttaches?method=ticket/scenarios/onhold`)) {
 		sendMessage(tabId, 'ticketOnHold');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/spam\b/)) {
-		sendMessage(tabId, 'ticketSpam');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/duplicate\b/)) {
-		sendMessage(tabId, 'ticketDuplicate');
-	}
-	if ( ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/take\b/)) {
-		sendMessage(tabId, 'ticketTake');
 	}
 
 	let userPattern = /helpdesk\/api\/1\/user\/\d+$/;
