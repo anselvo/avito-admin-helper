@@ -732,11 +732,9 @@ function requestListener(tabId, url) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
-	if (url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`)+1 && url.indexOf('/logs') === -1) {
+	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && !url.includes('/logs'))
+        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/admin_get`)) {
 		sendMessage(tabId, 'ticketInfo');
-	}
-	if ((~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/list\b/)) || ~url.indexOf(`${connectInfo.adm_url}/helpdesk/api/1/ticket/next`)) {
-		sendMessage(tabId, 'ticketEnter');
 	}
 	
 	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/))
