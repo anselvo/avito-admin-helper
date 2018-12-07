@@ -1,4 +1,4 @@
-// Парсер комментов ++++ 
+// Парсер комментов ++++
 function linksOnComments(tableClass, currentUserID) {
     $(tableClass+' .sh-unicode-links').detach();
 
@@ -192,10 +192,29 @@ function linksOnComments(tableClass, currentUserID) {
             text = text.replace('СПАМ', '<b style="color: #ff4545">СПАМ</b>');
             text = text.replace('МОШЕННИК', '<b style="color: #9b3aff">МОШЕННИК</b>');
             text = text.replace('ВЗЛОМ', '<b style="color: #61145c">ВЗЛОМ</b>');
-            text = text.replace('Ссылка открытая модератором при блокировке:', '<b>Ссылка открытая модератором при блокировке:</b>');
-            text = text.replace('Ссылка на активного пользователя:', '<b>Ссылка на активного пользователя:</b>');
-            text = text.replace('Ссылка на заблокированных пользователей в items/search:', '<b>Ссылка на заблокированных пользователей в items/search:</b>');
-            text = text.replace('Ссылки на заблокированные учетные записи:', '<b>Ссылки на заблокированные учетные записи:</b>');
+            text = text.replace('Ссылка открытая модератором при блокировке:', '<b>$&</b>');
+            text = text.replace('Ссылка на активного пользователя:', '<b>$&</b>');
+            text = text.replace('Ссылка на заблокированных пользователей в items/search:', '<b>$&</b>');
+            text = text.replace('Ссылки на заблокированные учетные записи:', '<b>$&</b>');
+            $(commentBlock).html(text);
+        }
+
+        // Выделение текста
+        if (~commentText.indexOf('[Коммерческий статус]')) {
+            let text = $(commentBlock).html();
+            const regIds = /(,\s|\s)\d{3,}/g;
+            const regSpace = /(,\s|\s)/;
+            const ids = text.match(regIds).map(id => id.replace(regSpace, ''));
+
+            text = text.replace(regIds, (pattern, other)=> {
+                return `${other}<a href="${global.connectInfo.adm_url}/items/item/info/${pattern.replace(regSpace, '')}" target="_blank">${pattern.replace(regSpace, '')}</a>`
+            });
+            text = text.replace('[Коммерческий статус]', pattern => {
+                return `<b style="color: dodgerblue">[</b><b>${pattern.substring(1, pattern.length-1)}</b><b style="color: dodgerblue">]</b>`;
+            });
+            text = text.replace('Ссылка, открытая модератором:', '<b>$&</b>');
+            text = text.replace('Связанные пользователи:', `<b>$&</b> (${generateCommentCompareUsers(ids)})`);
+            text = text.replace('Комментарий модератора:', '<b>$&</b>');
             $(commentBlock).html(text);
         }
     }
@@ -227,7 +246,7 @@ function linksOnComments(tableClass, currentUserID) {
 
         const users = {};
         users.abutment = currentUserID;
-        users.compared = [usersIds];
+        users.compared = usersIds;
 
         btnLoaderOn(this);
         const comparison = new UsersComparison(users);
@@ -298,10 +317,10 @@ function loadComperison(itemID, currentUserID) {
                 comperison = compareItems(comperison);
 
                 $('#comperison_box').append(comperison);
-				
+
 				var tableClass = '#comperison_box .comparison-table .row-user-block:last table td';
 				linksOnComments(tableClass, currentUserID);
-				
+
                 var widthComperison = $('#comperison_box').width();
                 var widthBody = $('body').width();
                 var widthLeft = (widthBody-widthComperison)/2;

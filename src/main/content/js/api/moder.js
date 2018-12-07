@@ -300,7 +300,9 @@ function addActionButton() {
     $('body')
         .append(`
             <div class="ah-postBlockChoose ah-post-block-user" style="display: none;">
-                <div class="ah-post-block-users ah-post-com-status ah-disabled-block"><i class="glyphicon glyphicon glyphicon-rub"></i> Коммерческий статус</div>
+                ${isAuthority('ROLE_COMMERCIAL_STATUS') ? 
+                    '<div class="ah-post-block-users ah-post-com-status ah-disabled-block"><i class="glyphicon glyphicon glyphicon-rub"></i> Коммерческий статус</div>' : ''
+                }
                 <hr style="margin: 3px 0 3px"/>
                 <div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>
                 <div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>
@@ -385,7 +387,9 @@ function clickActionButton() {
     });
 
     $('.ah-post-com-status').on('click', () => {
-        const userIds = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
+        const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
+        const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
+        const userIds = blockedUsers.concat(activeUsers)
         const comment = document.getElementById('ah-post-block-comment').value;
         const searchUrl = window.location.href;
         const $category = $('.js-multiselect-search .subcategory.active');
