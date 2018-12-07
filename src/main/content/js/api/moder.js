@@ -293,16 +293,21 @@ function addInfoToItems() {
 
 function addActionButton() {
     $('#apply_all')
-        .append('<input type="button" class="btn btn-default red" id="ah-postBlockChoose" value="Block" title="Choose reason for Block users">')
+        .append('<input type="button" class="btn btn-default green" id="ah-postBlockChoose" value="Action" title="Выбор активных действия с пользователем">')
         .append('<span class="ah-showUsers" title="Show users list">Users: <span class="ah-digit">0</span></span>');
 
 
     $('body')
         .append(`
             <div class="ah-postBlockChoose ah-post-block-user" style="display: none;">
+                ${isAuthority('ROLE_COMMERCIAL_STATUS') ? 
+                    '<div class="ah-post-block-users ah-post-com-status ah-disabled-block"><i class="glyphicon glyphicon glyphicon-rub"></i> Коммерческий статус</div>' : ''
+                }
+                <hr style="margin: 3px 0 3px"/>
                 <div class="ah-post-block-users ah-postBlockReason" reasonId="593"><i class="glyphicon glyphicon-ban-circle"></i> Подозрительная активность</div>
                 <div class="ah-post-block-users ah-postBlockReason" reasonId="91"><i class="glyphicon glyphicon-ban-circle"></i> Несколько учетных записей</div>
                 <div class="ah-post-block-users ah-postBlockReason" reasonId="128"><i class="glyphicon glyphicon-ban-circle"></i> Мошенническая схема</div>
+                <hr style="margin: 3px 0 3px"/>
                 <div class="ah-post-block-users ah-postBlockModerComment"><i class="glyphicon glyphicon-pencil"></i> <input id="ah-post-block-comment" type="text" placeholder="доп. комментарий"></div>
             </div>
         `).append(`
@@ -335,19 +340,28 @@ function clickActionButton() {
     realHideElementOutClicking($('.ah-post-block-user'));
 
     $('#ah-postBlockChoose').click(function () {
-        var position = $(this).position();
+        const position = $(this).position();
+        const $category = $('.js-multiselect-search .subcategory.active');
+        const $button = $('.ah-post-com-status');
+        const categoryName = $category.find('label').text().trim();
+
+        $button.addClass('ah-disabled-block').find('.ah-category-com-status').remove();
+
+        if ($category.length === 1) {
+            $button.append(`<div class="ah-category-com-status">(${categoryName})</div>`).removeClass('ah-disabled-block');
+        }
 
         $('.ah-postBlockChoose').css({bottom: 83, left: position.left - 50}).show();
     });
 
     $('.ah-showUsers').click(function () {
-        var position = $(this).position();
+        const position = $(this).position();
 
         $('.postBlockInfo').css({bottom: 83, left: position.left - 50}).show();
     });
 
     $('.ah-postBlockReason').click(function () {
-        var reasonId = $(this).attr('reasonId');
+        const reasonId = $(this).attr('reasonId');
 
         $('.ah-postBlockChoose').hide();
         $('.ah-showUsers').click();
@@ -370,6 +384,23 @@ function clickActionButton() {
                 comparison.showModal();
             }, error => alert(error))
             .then(() => btnLoaderOff(this.children[0]));
+    });
+
+    $('.ah-post-com-status').on('click', () => {
+        const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
+        const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
+        const userIds = blockedUsers.concat(activeUsers)
+        const comment = document.getElementById('ah-post-block-comment').value;
+        const searchUrl = window.location.href;
+        const $category = $('.js-multiselect-search .subcategory.active');
+
+        if ($category.length === 1) {
+            const category = $category.find('input').val();
+
+            updateUserCommercialStatus({ userIds, category, comment, searchUrl });
+        } else {
+            outTextFrame('Превышено кол-во категорий в поиске. Категория может быть выбрана только одна.')
+        }
     });
 
     $('.ah-postClearList').click(function () {

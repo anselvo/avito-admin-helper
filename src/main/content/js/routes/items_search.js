@@ -203,6 +203,7 @@ function addChooseButton() {
         $(loginList[i]).parent()
 			.css('padding', '5px')
 			.after('<hr class="ah-separate-line">')
+            .append(`<a href="/users/user/info/${id}" target="_blank"><i class="glyphicon glyphicon-link"></i></a>`)
 			.append('<input type="button" userid="' + id + '" class="ah-postBlockButton ah-postPlus" value="+">')
             .append('<div class="ah-post-userAgent" title="User chance">' +
                 '<b>Шанс:</b> ' +

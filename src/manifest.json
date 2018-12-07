@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
     "name": "Admin.Helper",
-	"short_name": "AH", 
-    "version": "5.5.3",
+	"short_name": "AH",
+    "version": "5.5.4",
 
 	"background": {
 		"scripts": [
@@ -112,7 +112,7 @@
 		"webRequest",
 		"webRequestBlocking",
 		"webNavigation",
-		"storage", 
+		"storage",
 		"cookies",
 		"alarms",
 		"notifications",
@@ -127,7 +127,7 @@
 		"300": "include/image/black/logo.png"
     },
 
-    "browser_action": { 
+    "browser_action": {
         "default_title": "Admin.Helper",
         "default_icon": "include/image/black/logo.png",
 		"default_popup": "main/popup/popup.html"

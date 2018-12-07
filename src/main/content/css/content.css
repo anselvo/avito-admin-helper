@@ -101,7 +101,7 @@ button.ah-active-btn:active {
     display: flex;
     flex-grow: 1;
 }
-	
+
 div.ah-tags-group ul.ah-default-list {
     display: flex;
     justify-content: space-between;
@@ -443,8 +443,8 @@ body .ah-default-popup {
 
 .ah-nb-wheel:hover {
 	background-color: rgba(255,255,255,.55);
-} 
-	
+}
+
 .ah-barOn {
     display: inline-block;
 	background: #db4437; /*#db4437*/
@@ -458,17 +458,17 @@ body .ah-default-popup {
 
 #ah-notifications {
 	display: none;
-	position:fixed; 
-	top: 65px; 
-	right: 10px; 
-	z-index: 9999; 
+	position:fixed;
+	top: 65px;
+	right: 10px;
+	z-index: 9999;
 }
-		
+
 #ah-notificationBar {
-	overflow-y: auto; 
+	overflow-y: auto;
 	color: #000;
-	max-height:400px; 
-	width: 400px; 
+	max-height:400px;
+	width: 400px;
 	background: rgba(229, 229, 229, 0.8);
 	animation: gb__a .2s;
 	border-radius: 2px;
@@ -508,7 +508,7 @@ body .ah-default-popup {
 	border-width: 0 8.5px 8.5px;
 	border-bottom-color: rgba(0,0,0,.2);
 }
-	
+
 .ah-notificationBarItem {
 	background: white;
     font: 13px Roboto,arial,sans-serif;
@@ -531,8 +531,8 @@ body .ah-default-popup {
     text-overflow: ellipsis;
 }
 .ah-notificationRemove {
-	float: right; 
-	cursor: pointer; 
+	float: right;
+	cursor: pointer;
 	height: 16px;
     width: 16px;
 	color: #ccc;
@@ -785,9 +785,9 @@ body .ah-default-popup {
 }
 
 .ah-default-label {
-	padding-left: 3px; 
-	font-weight: 400; 
-	cursor: pointer;  
+	padding-left: 3px;
+	font-weight: 400;
+	cursor: pointer;
 	margin-bottom: 0;
 }
 
@@ -885,22 +885,22 @@ body .ah-default-popup {
 }
 
 .ah-moderation-default-btn {
-	outline: none; 
-	color: #333; 
+	outline: none;
+	color: #333;
 	background-color: #fff;
-	padding: 6px 12px; 
-	font-size: 14px; 
-	font-weight: 400; 
-	text-align: center; 
-	vertical-align: middle; 
-	display: inline-block; 
-	cursor: pointer; 
-	border: 1px solid #ccc; 
-	border-radius: 4px; 
+	padding: 6px 12px;
+	font-size: 14px;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	display: inline-block;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 	transition:0.2s;
 }
 .ah-moderation-default-btn:hover {
-	background-color: #ddd; 
+	background-color: #ddd;
 	border: 1px solid #999;
 }
 .ah-moderation-default-btn:active {
@@ -952,8 +952,8 @@ div.ah-illumination-btn-box input.btn-default {
 
 /*RIGHT PANEL ON HD*/
 #ah-rightPanel {
-	display:none; 
-	position:relative; 
+	display:none;
+	position:relative;
 	width:100%;
 	padding: 4px 0 100px;
 }
@@ -1050,8 +1050,8 @@ div.ah-illumination-btn-box input.btn-default {
 }
 
 #ah-rightPanelSettings  {
-	display:inline-block; 
-	position:absolute; 
+	display:inline-block;
+	position:absolute;
 	right: 0px;
 	color: black;
 	cursor: pointer;
@@ -1069,7 +1069,7 @@ div.ah-illumination-btn-box input.btn-default {
 }
 
 .ah-panelSettingsLeft, .ah-panelSettingsRight {
-	list-style: none; 
+	list-style: none;
 	width: 48%;
 	padding:8px 0px;
 	display:flex;
@@ -1163,7 +1163,7 @@ div.ah-illumination-btn-box input.btn-default {
 /* SMILE */
 .ah-class-ticket-container {
 	display: inline-block;
-	border-left: 10px solid transparent; 
+	border-left: 10px solid transparent;
 	float: right;
 }
 
@@ -1271,11 +1271,11 @@ div.ah-illumination-btn-box input.btn-default {
 
 .ah-copy-img {
 	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo3ODkwNzY1QzM1QUVFMDExOUI0MDg3MzJEODFDNjBGNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGRDBDQzYwREI3MDExMUUwQTZDMUFDOTI3OUJBQTFDQSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGRDBDQzYwQ0I3MDExMUUwQTZDMUFDOTI3OUJBQTFDQSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpEOTYyMTNCODAwQjdFMDExQTVFMUI2QkYyMkQyMTM0OSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3ODkwNzY1QzM1QUVFMDExOUI0MDg3MzJEODFDNjBGNyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkLv/D0AAAPdSURBVHja7J1xZFVRHMdvNRFjxBj9G/EoI6KMiFgiYlMkxjIuZURELMvLEkuUniW2f0qpv6Z4pDQmSimmiBhjjMcYMcazfj+7j6m9d+977963e+7v8+ErcXvv7nc+O+/cc07n7VhfX/e2olAobP7rPkleckay13OLkmRe8l7yQvI97Tfs+37L3mtnhGuOS35IBhxsfKVTckRyXfJN8kFy1INIAmiDP5V0ZOhnVqE/SiYl7QhQm2tB959FtEf7JNmPALV/W7JMLpCgFwG2pstADfRj7rVkCAH+Z5eROujPOSEZtCZAWwru4ZdkSvKWMbktAcqSe5KbklWawp4A5yWvaIJ0jwGS4hmNb1cA7e6vUHq7AryRLFN6u2OAn5S9Nv8sxMVCtQWm7RCgFPG6bm9jurYnpe20GIxlipIVeoD6Hv/CuCEZkexOce0OexvL40uSfsksY4B40N/6fMobfzM6Xf5OchkBmkeXZ8cdrKPK+kDSF+HaPQhQnZOem5tOKugeg1zINboxZQgBqnenLtMeSBDWW0wEPQYCZBDdfnYwwnU6ZniCANkkF/E6XX5+hADZo559FDpDcx8BbDO8XU8/CJAMaw38m6uSuwiQDRrd4KK7sMcQwDY6TzCKALYZCYIAhhkNegMEMMxYMDhEAMOMJykBArgjwTAC2EZnC30EcINyQq+r6waDCJB+/iT42rqCOIAA7rIakwQXEcBN1mJ4DV1tnIxDAgRwl4oE5xDAtgR6hlMfAiDBWQSwi240fS45jQC2JXjp1XmwVxt1azl6UunjBF//hGQGAbaXWhNBxSCpgI+AZCi7cqMIYBwESIYOBLBNLwLYRrd3d7twozwFJPdMrkfS35ZMS+aqXKf/m/hATO+54EU/fgcBWoAeBJEP0ir08VKP4PvNR4DdsccXr44pYQTI5hNI5OPvESC76AkkPQhgeyCqi0OdCGAXPXNpGAEYGCKAYfgIAAQABAAEAAQABAAEAAQABAAEQABKgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAA4IwAa5TItgALlMi2ANOUyLYADyVfKZNdAcqSfslnSpVNonx9/LzkmLfxZcT6rdRdTb5nibK7JUClJygEAeYBAAEAAQABAAEAAQABIGPzAL7vt/RGCgWmGBKi7FIPsEJ7xc6SSwLMhhkLDdXUGQF0/8Ed2iw2FsPqmcZB4C1JkbZrmmXJheBPpwTQbWinJJckc7RjQw0/JTkkmQm7+K8AAwDfR4X5o/8A9AAAAABJRU5ErkJggg==");
-	background-position: 50% center; 
-	background-repeat: no-repeat; 
-	background-size: 60%; 
-	width: 20px; 
-	height: 12px;     
+	background-position: 50% center;
+	background-repeat: no-repeat;
+	background-size: 60%;
+	width: 20px;
+	height: 12px;
 	background-color: transparent;
 }
 
@@ -1291,7 +1291,7 @@ div.ah-illumination-btn-box input.btn-default {
 }
 
 .ah-messenger-link-wrapper {
-	display: inline-block; 
+	display: inline-block;
 	margin: 0 4px;
 	vertical-align: middle;
     line-height: 1;
@@ -1357,7 +1357,7 @@ tr.ah-words-selection-result:hover {
 }
 
 .ah-bad-text-highlighting-key, .ah-bad-text-highlighting-foreign {
-	box-shadow: #d9534f 0px 0px 6px 2px !important;	
+	box-shadow: #d9534f 0px 0px 6px 2px !important;
 }
 .ah-bad-text-highlighting-key:focus, .ah-bad-text-highlighting-foreign:focus {
 	border-color: #d9534f !important;
@@ -1457,18 +1457,18 @@ span.ah-words-separator {
 }
 
 .ah-shop-not-moderated {
-	background-color: #d9534f; 
+	background-color: #d9534f;
 }
 .ah-shop-moderated {
 	background-color: #5cb85c;
 }
 
 .ah-shop-notofication-item {
-	display: none; 
-	padding: 8px; 
+	display: none;
+	padding: 8px;
 	background-color: #fbf9b9;
 	border: 1px solid #ccce57;
-	border-radius: 8px; 
+	border-radius: 8px;
 	line-height: normal;
 }
 .ah-shop-error-notification-item {
@@ -1489,9 +1489,9 @@ span.ah-words-separator {
 }
 .ah-default-switch:not(checked) + label {
 	position: relative;
-	padding: 0 0 0 45px; 
-	width: 100%; 
-	background-color: white; 
+	padding: 0 0 0 45px;
+	width: 100%;
+	background-color: white;
 	opacity: .85;
 	height: 20px;
 }
@@ -1526,22 +1526,22 @@ span.ah-words-separator {
 }
 
 .ah-shop-default-btn {
-	outline: none; 
-	color: #333; 
+	outline: none;
+	color: #333;
 	background-color: #fff;
-	padding: 6px 12px; 
-	font-size: 14px; 
-	font-weight: 400; 
-	text-align: center; 
-	vertical-align: middle; 
-	display: inline-block; 
-	cursor: pointer; 
-	border: 1px solid #ccc; 
-	border-radius: 4px; 
+	padding: 6px 12px;
+	font-size: 14px;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	display: inline-block;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 	transition:0.2s;
 }
 .ah-shop-default-btn:hover {
-	background-color: #ddd; 
+	background-color: #ddd;
 	border: 1px solid #999;
 }
 .ah-shop-default-btn:active {
@@ -1564,7 +1564,7 @@ span.ah-words-separator {
 }
 
 .ah-shops-words-volume {
-	margin-left: 4px; 
+	margin-left: 4px;
 	font-size: 12px;
 }
 
@@ -1749,7 +1749,7 @@ span.ah-words-separator {
 }
 
 .ah-info-container .ah-circle-close-btn {
-	float: right; 
+	float: right;
 	margin: 0 0 0 20px;
 }
 .ah-info-container a:visited:not(.btn) {
@@ -2066,9 +2066,9 @@ span.ah-words-separator {
 	z-index: 1080;
 	position: absolute;
     top: 60px;
-	display: none; 
-	background-color: transparent; 
-	box-shadow: none; 
+	display: none;
+	background-color: transparent;
+	box-shadow: none;
 	border: none;
 }
 .ah-layer-flex {
@@ -2290,7 +2290,7 @@ select.ah-form-control:focus {
 	display: inline-block;
 }
 .ah-field-flex {
-	display: flex; 
+	display: flex;
 	position: relative;
 }
 .ah-field-flex .ah-form-control {
@@ -2638,7 +2638,7 @@ select.ah-form-control:focus {
 }
 .ah-transparent-checkbox  + label {
 	position: relative;
-	
+
 }
 .ah-transparent-checkbox  + label:after {
 	content: "\2713";
@@ -3037,9 +3037,9 @@ select.ah-form-control:focus {
 }
 
 #ah-money-counter-block {
-	position: fixed; 
-	bottom: 2px; 
-	margin-bottom: 0; 
+	position: fixed;
+	bottom: 2px;
+	margin-bottom: 0;
 	padding: 0;
 }
 
@@ -3096,7 +3096,7 @@ select.ah-form-control:focus {
 }
 
 .ah-showUsers {
-    background: #ffe4e8;
+    background: #f0fcff;
     color: #737373;
     font-family: Roboto, sans-serif;
     text-shadow: none;
@@ -3158,6 +3158,17 @@ select.ah-form-control:focus {
 
 .ah-post-block-users:hover {
     background: #f2f2f2;
+}
+
+.ah-disabled-block {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.ah-category-com-status {
+    font-style: italic;
+    font-size: 11px;
+    margin-left: 15px;
 }
 
 .ah-postBlockReason {
