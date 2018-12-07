@@ -452,11 +452,12 @@ function updateUserProCheck(id, status, categoryId) {
 
 function updateUserCommercialStatus(body) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${global.connectInfo.adm_url}/commercial-status/set-users`, true);
+    xhr.open("POST", `${global.connectInfo.adm_url}/moderation-service-proxy/commercial-status/set-users`, true);
     xhr.send(JSON.stringify(body));
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
+                body.userIds.forEach(id => chanceUser(id, 8));
                 outTextFrame(`У выбранных пользоветелй был включен коммерческий статус`);
             } else {
                 outTextFrame(`Возникли проблемы с влючением коммерческого статуса`);
@@ -464,4 +465,3 @@ function updateUserCommercialStatus(body) {
         }
     }
 }
-
