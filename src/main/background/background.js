@@ -137,11 +137,21 @@ function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
         setConnectInfo(result.connectInfo);
+
+        getCookieInfo();
     });
 
     chrome.storage.onChanged.addListener(changes => {
         if (changes.script) setBudgetIcon(changes.script.newValue);
-        if (changes.connectInfo) setConnectInfo(changes.connectInfo.newValue);
+        if (changes.connectInfo) {
+            setConnectInfo(changes.connectInfo.newValue);
+
+            if (changes.connectInfo.newValue.spring_url !== changes.connectInfo.oldValue.spring_url ||
+                changes.connectInfo.newValue.adm_url !== changes.connectInfo.oldValue.adm_url ||
+                changes.connectInfo.newValue.ext_url !== changes.connectInfo.oldValue.ext_url) {
+                getCookieInfo();
+            }
+        }
     });
 }
 
@@ -218,7 +228,7 @@ function connect() {
 
 function disconnect() {
     if (!connectInfo.adm_auth) {
-        if (stompClient) stompClient.disconnect();
+        stompClient.disconnect();
         logout();
 
         connectInfo.spring_auth = false;
@@ -298,10 +308,7 @@ function setBudgetIcon(script) {
 }
 
 function setConnectInfo(info) {
-    if (info) {
-        connectInfo = info;
-        getCookieInfo();
-    }
+    if (info) connectInfo = info;
 }
 
 function setAuthoritiesToStorage(authorities) {
