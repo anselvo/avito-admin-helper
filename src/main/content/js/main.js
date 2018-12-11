@@ -6,12 +6,12 @@ const global = {
     admUrlPatterns: {
         main: /\/$/,
         items_search: /\/(?:adm\/)?items\/search/,
-        items_item_info: /\/\d+(?!\/)\b|(?:(?:adm\/)?items\/item\/info)/,
+        items_item_info: /https:\/\/[a-z\d.-]*\/\d+(?!\/)\b|(?:(?:adm\/)?items\/item\/info)/,
         items_comparison: /\/(?:adm\/)?items\/comparison(?!\/\d+\/archive)/,
         items_comparison_archive: /\/(?:adm\/)?items\/comparison\/\d+\/archive/,
         items_moder: /\/(?:adm\/)?items\/moder/,
         users_search: /\/(?:adm\/)?users\/search/,
-        users_user_info: /\/(?:\d+u(?!\/)\b)|(?:(?:adm\/)?users\/user\/info)/,
+        users_user_info: /https:\/\/[a-z\d.-]*\/(?:\d+u(?!\/)\b)|(?:(?:adm\/)?users\/user\/info)/,
         users_account_info: /\/(?:adm\/)?users\/account\/info/,
         billing_walletlog: /\/(?:adm\/)?billing\/walletlog/,
         billing_invoices: /\/(?:adm\/)?billing\/invoices/,
@@ -91,6 +91,7 @@ $(function () {
         global.userInfo = result.connectInfo.spring_user.principal;
 
         if (result.script && global.currentUrl.includes(global.connectInfo.adm_url)) {
+            console.log('test')
             startNotification(result.notifications);
 
             holidays();
