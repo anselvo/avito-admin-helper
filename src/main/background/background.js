@@ -1,5 +1,4 @@
-let stompClient = null;
-let connectInfo = {
+const defaultConnectInfo = {
     adm_auth: false,
     adm_username: null,
     adm_url: "https://adm.avito.ru",
@@ -12,12 +11,12 @@ let connectInfo = {
     error: null
 };
 
+let stompClient = null;
+let connectInfo = defaultConnectInfo;
+
 $(function () {
     // забираем необходимую инфу со стореджа для старта расширения
     getStorageInfo();
-
-    // определяем кто залогинен в админку
-    getCookieInfo();
 
     // запускаем чекер дня
     chrome.alarms.create('day', { delayInMinutes: 1, periodInMinutes: 1 });
@@ -77,7 +76,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 // ЛОВИТ КАКИЕ ОТВЕТЫ ПОЛУЧЕНЫ ОТ СЕРВЕРА
 chrome.webRequest.onCompleted.addListener(detailsURL => {
         requestListener(detailsURL.tabId, detailsURL.url);
-	}, 
+	},
 	{ urls: [`${connectInfo.adm_url}/*`] }
 );
 
@@ -137,6 +136,7 @@ function addChromeNotification(message) {
 function getStorageInfo() {
     chrome.storage.local.get(result => {
         setBudgetIcon(result.script);
+        setConnectInfo(result.connectInfo);
     });
 
     chrome.storage.onChanged.addListener(changes => {
@@ -146,16 +146,16 @@ function getStorageInfo() {
 }
 
 function getCookieInfo() {
-	chrome.cookies.get({'url': `${connectInfo.adm_url}`, 'name': 'adm_username'}, cookie => {
-		if (cookie) {
-			console.log('You login to adm.avito.ru as ' + cookie.value);
+	chrome.cookies.get({'url': connectInfo.adm_url, 'name': 'adm_username'}, cookie => {
+        if (cookie) {
+			console.log(`You login to ${connectInfo.adm_url} as ${cookie.value}`);
 
             connectInfo.adm_auth = true;
             connectInfo.adm_username = cookie.value;
 
             connect();
 		} else {
-			console.log('You not login in adm.avito.ru');
+			console.log(`You not login in ${connectInfo.adm_url}`);
 
             connectInfo.adm_auth = false;
             connectInfo.adm_username = null;
@@ -165,16 +165,16 @@ function getCookieInfo() {
 	});
 
 	chrome.cookies.onChanged.addListener(changeInfo => {
-		if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
-			console.log('You login to adm.avito.ru as ' + changeInfo.cookie.value);
+        if (connectInfo.adm_url.includes(changeInfo.cookie.domain) && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === false) {
+            console.log(`You login to ${connectInfo.adm_url} as ${changeInfo.cookie.value}`);
 
             connectInfo.adm_auth = true;
             connectInfo.adm_username = changeInfo.cookie.value;
 
             connect();
 		}
-        if (changeInfo.cookie.domain === 'adm.avito.ru' && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
-            console.log('You logout from adm.avito.ru as ' + changeInfo.cookie.value);
+        if (connectInfo.adm_url.includes(changeInfo.cookie.domain) && changeInfo.cookie.name === 'adm_username' && changeInfo.removed === true) {
+            console.log(`You logout from ${connectInfo.adm_url} as ${changeInfo.cookie.value}`);
 
             connectInfo.adm_auth = false;
             connectInfo.adm_username = null;
@@ -218,7 +218,7 @@ function connect() {
 
 function disconnect() {
     if (!connectInfo.adm_auth) {
-        stompClient.disconnect();
+        if (stompClient) stompClient.disconnect();
         logout();
 
         connectInfo.spring_auth = false;
@@ -298,7 +298,10 @@ function setBudgetIcon(script) {
 }
 
 function setConnectInfo(info) {
-    if (info) connectInfo = info;
+    if (info) {
+        connectInfo = info;
+        getCookieInfo();
+    }
 }
 
 function setAuthoritiesToStorage(authorities) {
@@ -331,7 +334,7 @@ function errorMessage(status, error) {
 
     switch (status) {
         case null:
-            connectInfo.error = "Для продолжения работы с Admin.Helper, вам необходимо зайти в adm.avito.ru";
+            connectInfo.error = `Для продолжения работы с Admin.Helper, вам необходимо зайти в ${connectInfo.adm_url}`;
             connectInfo.spring_reconnect = false;
             break;
         case "(failed)":
@@ -470,14 +473,14 @@ function moderationListener(details) {
     if (!formData) return;
 
 	if (formData['reasons[]']) reason = formData['reasons[]'].join();
-	
+
 	//pre
 	if (details.url === `${connectInfo.adm_url}/items/moder/submit/all`) {
 		chrome.storage.local.get(function (result) {
             let blockedItemsID;
 			if (!result.blockedItemsID) blockedItemsID = [];
 			else blockedItemsID = result.blockedItemsID;
-			
+
 			for (let key in formData) {
 				if (key.indexOf('[id]')+1) ++count;
 
@@ -485,12 +488,12 @@ function moderationListener(details) {
 					if (formData[key] === blockedItemsID[i]) --count;
 				}
 			}
-			
+
 			sendLogToDB('allow all', reason, count, items_id);
 			chrome.storage.local.set({'blockedItemsID': []});
 		});
 	}
-	
+
 	if (details.url === `${connectInfo.adm_url}/items/moder/submit`) {
 		count = formData['item_id'].length;
         items_id = formData['item_id'].join();
@@ -498,19 +501,19 @@ function moderationListener(details) {
         if (~formData['action'].indexOf('reject')) sendLogToDB('reject item', reason, count, items_id);
 		if (~formData['action'].indexOf('block')) sendLogToDB('block item', reason, count, items_id);
 	}
-	
+
 	//post
 	if (details.url === `${connectInfo.adm_url}/items/item/reject`) {
 		if (formData['id[]']) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
             items_id = ids.join();
-		} else { 
+		} else {
 			count = formData['id'].length;
 			ids = formData['id'];
             items_id = ids.join();
 		}
-		
+
 		sendLogToDB('reject item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
@@ -519,27 +522,27 @@ function moderationListener(details) {
 			count = formData['id[]'].length;
 			ids = formData['id[]'];
             items_id = ids.join();
-		} else { 
+		} else {
 			count = formData['id'].length;
 			ids = formData['id'];
             items_id = ids.join();
 		}
-	
+
 		sendLogToDB('block item', reason, count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
-	
+
 	//comparison
 	if (details.url.indexOf(`${connectInfo.adm_url}/items/comparison/`)+1 && details.url.indexOf('alive')+1) {
 		let alive = details.url.split('/');
 		count = formData['ids[]'].length-1;
 		ids = formData['ids[]'];
         items_id = ids.join();
-		
+
 		let del = ids.indexOf(alive[7]);
-		
+
 		ids.splice(del, 1);
-		
+
 		sendLogToDB('block item', '20', count, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
@@ -548,7 +551,7 @@ function moderationListener(details) {
         items_id = formData['ids[]'].join();
 		let blockItem = details.url.split('/');
 		ids = [blockItem[7]];
-		
+
 		sendLogToDB('block item', '20', 1, items_id);
 		addBlockedItemsIDtoStorage(ids);
 	}
@@ -588,12 +591,12 @@ function moderationListener(details) {
         if (countReject > 0) sendLogToDB('reject item', reason, countReject, items_id);
         addBlockedItemsIDtoStorage(baseItemID);
     }
-	
+
 	//users
 	if (details.url === `${connectInfo.adm_url}/users/user/block`) {
 		count = formData['id'].length;
         items_id = formData['id'].join();
-		
+
 		sendLogToDB('block user', reason, count, items_id);
 	}
 
@@ -608,9 +611,9 @@ function addBlockedItemsIDtoStorage(ids) {
         let blockedItemsID;
 		if (!result.blockedItemsID) blockedItemsID = [];
 		else blockedItemsID = result.blockedItemsID;
-		
+
 		blockedItemsID = blockedItemsID.concat(ids);
-		
+
 		chrome.storage.local.set({'blockedItemsID': blockedItemsID});
 	});
 }
@@ -623,9 +626,9 @@ function sendLogToDB(type, reason, count, items_id) {
         reason: reason,
         count: count
 	};
-	
+
 	let jsonRow = JSON.stringify(row);
-	
+
 	let xhr = new XMLHttpRequest();
 	xhr.open('POST', `${connectInfo.ext_url}/journal/include/php/mod_stat/add.php`, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -736,7 +739,7 @@ function requestListener(tabId, url) {
         || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/admin_get`)) {
 		sendMessage(tabId, 'ticketInfo');
 	}
-	
+
 	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/))
         || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/comments/list`)) {
 		sendMessage(tabId, 'ticketComments');
@@ -761,6 +764,6 @@ function requestListener(tabId, url) {
     }
 }
 
-function sendMessage(tabId, msg) {	
+function sendMessage(tabId, msg) {
 	chrome.tabs.sendMessage(tabId, { onUpdated: msg });
 }

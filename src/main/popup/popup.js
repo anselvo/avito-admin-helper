@@ -112,9 +112,14 @@ function addInfoElementWithTitle(name, option) {
 
 // СТРАНИЦА ОШИБОК
 function errorPage(status, message) {
+    let count = 0;
     const div = document.createElement('div');
     div.className = 'ah-error ah-body-block';
     div.innerHTML = `<div class="ah-error-message">${message}</div>`;
+    div.onclick = () => {
+        count++;
+        if (count === 5) pageGenerator([div, urlSettingsBlock()], false);
+    };
 
     if (status === 401) {
         const form = document.createElement('form');
@@ -151,17 +156,7 @@ function settingsPage() {
 
     try {
         if (authorities.ROLE_DEV_TOOLS_DOMAIN) {
-            const domainSettings = document.createElement('div');
-            domainSettings.className = 'ah-settings-user ah-body-block';
-
-            const headerSelector = document.createElement('h2');
-            headerSelector.textContent = 'Домены';
-
-            domainSettings.appendChild(headerSelector);
-            domainSettings.appendChild(addSettingsDomain('Avito Admin Url', 'adm_url'));
-            domainSettings.appendChild(addSettingsDomain('Extension Url', 'ext_url'));
-            domainSettings.appendChild(addSettingsDomain('Extension Spring Url', 'spring_url'));
-            body.push(domainSettings);
+            body.push(urlSettingsBlock());
         }
     } catch (e) {
         console.log(e);
@@ -190,6 +185,21 @@ function settingsPage() {
     }
 
     pageGenerator(body, true);
+}
+
+function urlSettingsBlock() {
+    const domainSettings = document.createElement('div');
+    domainSettings.className = 'ah-settings-user ah-body-block';
+
+    const headerSelector = document.createElement('h2');
+    headerSelector.textContent = 'Домены';
+
+    domainSettings.appendChild(headerSelector);
+    domainSettings.appendChild(addSettingsDomain('Avito Admin Url', 'adm_url'));
+    domainSettings.appendChild(addSettingsDomain('Extension Url', 'ext_url'));
+    domainSettings.appendChild(addSettingsDomain('Extension Spring Url', 'spring_url'));
+
+    return domainSettings
 }
 
 function addSettingsDomain(name, key) {

@@ -323,7 +323,7 @@ function unlinkPaymentSource(url) {
 }
 
 function getPermissions() {
-    return fetch('https://adm.avito.ru/helpdesk/api/1/permissions', {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/permissions`, {
         credentials: 'include'
     }).then(response =>  {
         if (response.status !== 200) {

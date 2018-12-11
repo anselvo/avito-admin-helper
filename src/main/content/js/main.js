@@ -4,24 +4,24 @@ const global = {
     userInfo: null,
     currentUrl: null,
     admUrlPatterns: {
-        main: /https:\/\/adm\.avito\.ru\/$/,
-        items_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?items\/search/,
-        items_item_info: /https:\/\/adm\.avito\.ru\/\d+(?!\/)\b|(?:(?:adm\/)?items\/item\/info)/,
-        items_comparison: /https:\/\/adm\.avito\.ru\/(?:adm\/)?items\/comparison(?!\/\d+\/archive)/,
-        items_comparison_archive: /https:\/\/adm\.avito\.ru\/(?:adm\/)?items\/comparison\/\d+\/archive/,
-        items_moder: /https:\/\/adm\.avito\.ru\/(?:adm\/)?items\/moder/,
-        users_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?users\/search/,
-        users_user_info: /https:\/\/adm\.avito\.ru\/(?:\d+u(?!\/)\b)|(?:(?:adm\/)?users\/user\/info)/,
-        users_account_info: /https:\/\/adm\.avito\.ru\/(?:adm\/)?users\/account\/info/,
-        billing_walletlog: /https:\/\/adm\.avito\.ru\/(?:adm\/)?billing\/walletlog/,
-        billing_invoices: /https:\/\/adm\.avito\.ru\/(?:adm\/)?billing\/invoices/,
-        shops_info_view: /https:\/\/adm\.avito\.ru\/(?:adm\/)?shops\/info\/view/,
-        shops_moderation: /https:\/\/adm\.avito\.ru\/(?:adm\/)?shops\/moderation/,
-        helpdesk: /https:\/\/adm\.avito\.ru\/helpdesk/,
-        system_access: /https:\/\/adm\.avito\.ru\/(?:adm\/)?system\/access/,
-        detectives_queue_search: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search/,
-        detectives_queue_search_call: /https:\/\/adm\.avito\.ru\/(?:adm\/)?detectives\/queue\/search\/call/,
-        messenger_user: /https:\/\/adm\.avito\.ru\/(?:adm\/)?messenger\/user/
+        main: /\/$/,
+        items_search: /\/(?:adm\/)?items\/search/,
+        items_item_info: /\/\d+(?!\/)\b|(?:(?:adm\/)?items\/item\/info)/,
+        items_comparison: /\/(?:adm\/)?items\/comparison(?!\/\d+\/archive)/,
+        items_comparison_archive: /\/(?:adm\/)?items\/comparison\/\d+\/archive/,
+        items_moder: /\/(?:adm\/)?items\/moder/,
+        users_search: /\/(?:adm\/)?users\/search/,
+        users_user_info: /\/(?:\d+u(?!\/)\b)|(?:(?:adm\/)?users\/user\/info)/,
+        users_account_info: /\/(?:adm\/)?users\/account\/info/,
+        billing_walletlog: /\/(?:adm\/)?billing\/walletlog/,
+        billing_invoices: /\/(?:adm\/)?billing\/invoices/,
+        shops_info_view: /\/(?:adm\/)?shops\/info\/view/,
+        shops_moderation: /\/(?:adm\/)?shops\/moderation/,
+        helpdesk: /\/helpdesk/,
+        system_access: /\/(?:adm\/)?system\/access/,
+        detectives_queue_search: /\/(?:adm\/)?detectives\/queue\/search/,
+        detectives_queue_search_call: /\/(?:adm\/)?detectives\/queue\/search\/call/,
+        messenger_user: /\/(?:adm\/)?messenger\/user/
     },
     // globals from support helper
     existGlobal: null,
@@ -86,12 +86,11 @@ $(function () {
     global.currentUrl = location.href;
 
     chrome.storage.local.get(result => {
-            global.connectInfo = result.connectInfo;
-            global.authorities = result.authorities;
-            global.userInfo = result.connectInfo.spring_user.principal;
+        global.connectInfo = result.connectInfo;
+        global.authorities = result.authorities;
+        global.userInfo = result.connectInfo.spring_user.principal;
 
-
-        if (result.script) {
+        if (result.script && global.currentUrl.includes(global.connectInfo.adm_url)) {
             startNotification(result.notifications);
 
             holidays();
