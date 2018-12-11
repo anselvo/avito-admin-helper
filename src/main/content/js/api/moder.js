@@ -389,15 +389,15 @@ function clickActionButton() {
     $('.ah-post-com-status').on('click', () => {
         const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
         const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
-        const userIds = blockedUsers.concat(activeUsers)
+        const userIds = blockedUsers.concat(activeUsers).map(id => Number(id));
         const comment = document.getElementById('ah-post-block-comment').value;
         const searchUrl = window.location.href;
         const $category = $('.js-multiselect-search .subcategory.active');
 
         if ($category.length === 1) {
-            const category = $category.find('input').val();
+            const categoryId = Number($category.find('input').val());
 
-            updateUserCommercialStatus({ userIds, category, comment, searchUrl });
+            updateUserCommercialStatus({ userIds, categoryId, comment, searchUrl });
         } else {
             outTextFrame('Превышено кол-во категорий в поиске. Категория может быть выбрана только одна.')
         }
