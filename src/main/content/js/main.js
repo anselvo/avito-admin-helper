@@ -91,7 +91,6 @@ $(function () {
         global.userInfo = result.connectInfo.spring_user.principal;
 
         if (result.script && global.currentUrl.includes(global.connectInfo.adm_url)) {
-            console.log('test')
             startNotification(result.notifications);
 
             holidays();
