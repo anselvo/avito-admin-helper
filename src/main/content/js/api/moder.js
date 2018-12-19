@@ -312,7 +312,7 @@ function addActionButton() {
             </div>
         `).append(`
             <div class="postBlockInfo ah-post-block-user" style="display: none;">
-                <div class="ah-post-block-users ah-compareUsers"><i class="glyphicon glyphicon-random"></i> <span>Сранить учетные записи</span></div>
+                <div class="ah-post-block-users ah-compareUsers"><i class="glyphicon glyphicon-random"></i> <span>Сравнить учетные записи</span></div>
                 <div class="ah-post-block-users ah-postClearList"><i class="glyphicon glyphicon-tint"></i> <span>Очистить список</span></div>
                 <hr style="margin-bottom: 10px; margin-top: 0">
                 <table id="ah-postBlockTable">
@@ -386,7 +386,7 @@ function clickActionButton() {
             .then(() => btnLoaderOff(this.children[0]));
     });
 
-    $('.ah-post-com-status').on('click', () => {
+    $('.ah-post-com-status').on('click', function () {
         const activeUsers = sessionStorage.postBlockActiveUserID.match(/\d{5,}/g) || [];
         const blockedUsers = sessionStorage.postBlockID.match(/\d{5,}/g) || [];
         const userIds = blockedUsers.concat(activeUsers).map(id => Number(id));
@@ -396,8 +396,10 @@ function clickActionButton() {
 
         if ($category.length === 1) {
             const categoryId = Number($category.find('input').val());
+            const selector = this.children[0];
 
-            updateUserCommercialStatus({ userIds, categoryId, comment, searchUrl });
+            btnLoaderOn(selector);
+            updateUserCommercialStatus({ userIds, categoryId, comment, searchUrl }, selector);
         } else {
             outTextFrame('Превышено кол-во категорий в поиске. Категория может быть выбрана только одна.')
         }
