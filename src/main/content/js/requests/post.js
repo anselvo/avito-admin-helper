@@ -450,18 +450,39 @@ function updateUserProCheck(id, status, categoryId) {
     }
 }
 
-function updateUserCommercialStatus(body) {
+function updateUserCommercialStatus(body, selector = null) {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${global.connectInfo.adm_url}/moderation-service-proxy/commercial-status/set-users`, true);
     xhr.send(JSON.stringify(body));
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                body.userIds.forEach(id => chanceUser(id, 8));
-                outTextFrame(`У выбранных пользоветелй был включен коммерческий статус`);
+                const { userIds } = body;
+                const badChance = [];
+                userIds.forEach((id, index) => chanceUserFetch(id, 8).then(response => {
+                    if (!response) badChance.push(id);
+                    if (index === userIds.length - 1) {
+                        if (badChance.length === 0) outTextFrame('У выбранных пользоветелй был включен коммерческий статус и был проставлен 8 шанс.');
+                        else outTextFrame(`У выбранных пользоветелй был включен коммерческий статус, но что-то пошло не так и шанс не проставился: ${badChance}`);
+
+                        btnLoaderOff(selector);
+                    }
+                }).catch(() => btnLoaderOff(selector)));
             } else {
                 outTextFrame(`Возникли проблемы с влючением коммерческого статуса`);
             }
         }
     }
+}
+
+function chanceUserFetch(id, chance) {
+    const headers = new Headers({
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    });
+    return fetch(`${global.connectInfo.adm_url}/users/user/save/chance`, {
+        credentials: 'include',
+        method: 'POST',
+        headers,
+        body: `chance=${chance}&user=${id}`,
+    }).then(response => response.status === 200);
 }
