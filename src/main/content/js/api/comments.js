@@ -207,7 +207,7 @@ function linksOnComments(tableClass, currentUserID) {
             const ids = text.match(regIds).map(id => id.replace(regSpace, ''));
 
             text = text.replace(regIds, (pattern, other)=> {
-                return `${other}<a href="${global.connectInfo.adm_url}/items/item/info/${pattern.replace(regSpace, '')}" target="_blank">${pattern.replace(regSpace, '')}</a>`
+                return `${other}<a href="${global.connectInfo.adm_url}/users/user/info/${pattern.replace(regSpace, '')}" target="_blank">${pattern.replace(regSpace, '')}</a>`
             });
             text = text.replace('[Коммерческий статус]', pattern => {
                 return `<b style="color: dodgerblue">[</b><b>${pattern.substring(1, pattern.length-1)}</b><b style="color: dodgerblue">]</b>`;
