@@ -61,8 +61,8 @@ function getItemInfoRequest(itemId, options) {
                         secondStatus = $(doc).find('.table-striped:contains(Статус) tbody tr:eq(2) td:eq(2)').text();
                         if (secondStatus === 'Blocked') {
                             var time = $(doc).find('.table-striped:contains(Статус) tbody tr:eq(2) td:eq(0)').text();
-                            var tmp0 = $(doc).find('#adminTable tbody tr:contains(' + time + ') td:eq(1)').text().split('(');
-                            reason = tmp0[1].replace(')', '');
+                            var tmp0 = $(doc).find('.loadable-history:eq(1) tbody tr:contains(' + time + ') td:eq(1)').text().split('(');
+                            reason = tmp0[1] ? tmp0[1].replace(')', '') : '';
                         }
                     }
                 } else {
