@@ -301,8 +301,12 @@ function getHDTags() {
 }
 
 function getHDProblems() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/ticket/problems`, {
-        credentials: 'include'
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=dictionaries/ticket/problems`, {
+        credentials: 'include',
+        method: 'post',
+        body: JSON.stringify({
+            method: "dictionaries/ticket/problems",
+        })
     }).then(response =>  {
         if (response.status !== 200) {
             return Promise.reject(response);
