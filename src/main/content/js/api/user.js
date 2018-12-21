@@ -322,7 +322,7 @@ function usersInfo(id, itemid, offset, query) {
 
                     if (categoryItem === 'Недвижимость') {
                         let bleach = $(ritem).find('a[href^="/items/item/soil"]');
-                        let reasonBlock = $(ritem).find('#adminTable:contains(Блокировка учётной записи)');
+                        let reasonBlock = $(ritem).find('.loadable-history:eq(1):contains(Блокировка учётной записи)');
 
                         if (bleach.length !== 0 && reasonBlock.length !== 0) $('#nameuser').after('<div style="text-align: center; color: #31b4ff; font-weight: bold;">Объявление на прозвоне</div>')
                     }

@@ -749,7 +749,7 @@ function getActiveItems(selector) {
 
             if (categoryItem === 'Недвижимость') {
                 var bleach = $(r).find('a[href^="/items/item/soil"]');
-                var reasonBlock = $(r).find('#adminTable:contains(Блокировка учётной записи)');
+                var reasonBlock = $(r).find('.loadable-history:eq(1):contains(Блокировка учётной записи)');
 
                 if (bleach.length !== 0 && reasonBlock.length !== 0) $(selector).find('h3.item-info-name').append('<span title="Данное объявление находится на прозвоне" style="font-weight: bold; color: #099f00; font-size: 19px; margin-left: 10px;">&#9742;</span>');
             }
