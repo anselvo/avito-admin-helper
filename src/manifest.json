@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Admin.Helper",
 	"short_name": "AH",
-    "version": "5.6.0",
+    "version": "5.6.1",
 
 	"background": {
 		"scripts": [
@@ -70,7 +70,9 @@
 				"main/content/js/routes/billing_walletlog.js",
 				"main/content/js/routes/billing_invoices.js",
 				"main/content/js/routes/detectives_queue_search.js",
-				"main/content/js/routes/detectives_queue_search_call.js"
+				"main/content/js/routes/detectives_queue_search_call.js",
+
+				"main/content/js/utils/helpdesk/helpers.js"
 			],
 			"run_at": "document_start"
 		}

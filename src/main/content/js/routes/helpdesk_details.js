@@ -258,7 +258,7 @@ function showQBWindow() {
     var modal = $('[data-modal-info="qb-modal-create"]');
     var closeBtn = $(modal).find('.ah-modal-close');
 
-    let helpdeskProblems = getHelpdeskProblems();
+    let helpdeskProblems = getHelpdeskProblems(true);
 
     if (!helpdeskProblems) {
         helpdeskProblems = [];
@@ -269,13 +269,17 @@ function showQBWindow() {
 
     let problemsArr = helpdeskProblems;
     problemsArr.forEach(function(problem) {
-        if (problem.parentId && !problem.isArchive) {
-            $('#sh-qb-problems-select').append('<option value="'+ problem.id +'" data-parent-id="'+ problem.parentId +'">--'+ problem.name +'</option>');
-        }
-    });
-    problemsArr.forEach(function(problem) {
-        if (!problem.parentId && !problem.isArchive) {
-            $('#sh-qb-problems-select option[data-parent-id="'+ problem.id +'"]:eq(0)').before('<option disabled></option><option value="'+ problem.id +'" disabled>'+ problem.name +'</option>');
+        if (!problem.isArchive) {
+            const children = getChildrenHelpdeskHelper(helpdeskProblems, problem);
+            const $option = $(`
+                <option value="${problem.id}" data-parent-id="${problem.parentId}">${problem.name}</option>
+            `);
+
+            if (children.length) {
+                $option.prop('disabled', true);
+            }
+
+            $('#sh-qb-problems-select').append($option);
         }
     });
 
@@ -391,7 +395,7 @@ function updateQBInfo() {
             () => {
                 const removedThemesButtons = [];
                 for (let i = 0; i < LSobj.buttons.length; i++) {
-                    const helpdeskProblem = getHelpdeskProblems().find(({ id }) => LSobj.buttons[i].problemId === id);
+                    const helpdeskProblem = getHelpdeskProblems(true).find(({ id }) => LSobj.buttons[i].problemId === id);
 
                     if (helpdeskProblem && helpdeskProblem.isArchive) {
                         removedThemesButtons.push(LSobj.buttons[i].name);

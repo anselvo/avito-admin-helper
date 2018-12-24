@@ -63,10 +63,11 @@ function addExtraAssigneeId(agentId) {
 
 
 //---------- Получить проблемы helpdesk ----------//
-function getHelpdeskProblems() {
+function getHelpdeskProblems(isSorted = false) {
     document.dispatchEvent(new Event('requestHelpdeskStore'));
     try {
-        return global.hdSettings.helpdeskStore.dictionaries.problems;
+        const dictionaryKey = isSorted ? 'problemsParentSorted' : 'problems';
+        return global.hdSettings.helpdeskStore.dictionaries[dictionaryKey];
     } catch (e) {
         return null;
     }
@@ -325,7 +326,7 @@ function renderCreateNewTicketWindow(route) {
                             </tr>
                             <tr>
                                 <td class='ah-create-ticket-tooltip__col'>Тема запроса</td>
-                                <td class='ah-create-ticket-tooltip__col'>Avito Доставка</td>
+                                <td class='ah-create-ticket-tooltip__col'>-</td>
                             </tr>
                             <tr>
                                 <td class='ah-create-ticket-tooltip__col'>Описание</td>
@@ -531,9 +532,31 @@ function renderCreateNewTicketWindow(route) {
         var selectedThemeId = +$(this).find('option:selected').val();
         $(problemsSelect).find('option').remove();
         const problemsArr = getHelpdeskProblems() || global.hdSettings.problems.info;
-        problemsArr.forEach(function (problem) {
-            if (problem.parentId == selectedThemeId && !problem.isArchive) {
-                $(problemsSelect).append('<option value="' + problem.id + '" style="color: #000;">' + problem.name + '</option>');
+        const problemsWithChildren = problemsArr.reduce((resultArray, problem) => {
+            if (problem.parentId !== selectedThemeId) {
+                return resultArray;
+            }
+
+            const children = getChildrenHelpdeskHelper(problemsArr, problem);
+
+            resultArray.push(problem);
+
+            if (children.length) {
+                problem.disabled = true;
+                resultArray.push(
+                    ...getSubChildrenRecursivelyHelpdeskHelper(problemsArr, children, '--')
+                );
+            }
+
+            return resultArray;
+        }, []);
+
+        problemsWithChildren.forEach(function (problem) {
+            if (!problem.isArchive) {
+                const $option = $(`<option style="color: #000;" value="${problem.id}">${problem.name}</option>`);
+                $option.prop('disabled', problem.disabled);
+
+                $(problemsSelect).append($option);
                 $(problemsSelect).css('color', '#000');
             }
         });
@@ -644,7 +667,7 @@ function renderCreateNewTicketWindow(route) {
                 value: problem
             }, {
                 name: 'subject',
-                value: $(body).find('[name="create-ticket-problem"] option:selected').text()
+                value: $(body).find('[name="create-ticket-problem"] option:selected').text().replace(/^-+/g, '')
             }, {
                 name: 'statusId',
                 value: statusId
@@ -1083,7 +1106,7 @@ function addCreateTicketBtn(route) {
                             getHDProblems()
                                 .then(response => {
                                     global.hdSettings.problems.isLoaded = true;
-                                    global.hdSettings.problems.info = response;
+                                    global.hdSettings.problems.info = response.result;
                                     showCreateNewTicketWindow();
                                 }, error => {
                                     console.log(error);
@@ -1101,7 +1124,7 @@ function addCreateTicketBtn(route) {
                 getHDProblems()
                     .then(response => {
                         global.hdSettings.problems.isLoaded = true;
-                        global.hdSettings.problems.info = response;
+                        global.hdSettings.problems.info = response.result;
                         showCreateNewTicketWindow();
                     }, error => {
                         console.log(error);
@@ -1214,9 +1237,6 @@ function autoFillCreateTicket(fill) {
 
             // description
             $descriptionBlock.val('Телефонное обращение в службу поддержки Пользователей');
-
-            // theme
-            $themeBlock.val(79).change();
 
             // sourceId
             $sourceIdBlock.val(7); // dostavkasupport@avito.ru
