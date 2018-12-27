@@ -1300,13 +1300,25 @@ function autoFillCreateTicket(fill) {
 }
 
 function searchHDUserNameInTickets(mail) {
+    console.log(mail);
 
-    mail = encodeURIComponent(mail);
-    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/ticket/search?p=1&sortField=createdTxtime&sortType=desc&requesterEmail="${mail}"&statusId%5B%5D=&problemId%5B%5D=&tags%5B%5D=`;
+    var url = `${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/search`;
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.send();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.send(JSON.stringify({
+        limit: 30,
+        method: 'ticket/search',
+        p: 1,
+        problemId: [],
+        requesterEmail: mail,
+        sortField: 'createdTxtime',
+        sortType: 'desc',
+        statusId: [],
+        tags: [],
+        typeId: [],
+    }));
 
     $('#ah-loading-layer').show();
 
@@ -1315,13 +1327,13 @@ function searchHDUserNameInTickets(mail) {
             $('#ah-loading-layer').hide();
             var response = JSON.parse(xhr.responseText);
 
-            if (response.tickets.length == 0) {
+            if (response.result.tickets.length == 0) {
                 setTimeout(() => {
                     alert('Имя не найдено');
                 }, 100);
             } else {
                 outTextFrame('Имя найдено');
-                $('input[name="create-ticket-requesterName"]').val(response.tickets[0].requesterName);
+                $('input[name="create-ticket-requesterName"]').val(response.result.tickets[0].requesterName);
             }
         }
 
