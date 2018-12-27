@@ -204,17 +204,6 @@ function getUserItems(userId, page, searchParam) {
     });
 }
 
-function getGroupFilterCountHD(id) {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/filter/group/${id}/count`, {
-        credentials: 'include'
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.json();
-    });
-}
-
 function getUserMessenger(id) {
     return fetch(`${global.connectInfo.adm_url}/messenger/user/${id}`, {
         credentials: 'include'
@@ -279,8 +268,12 @@ function getItemAntifraudInfo(id) {
 }
 
 function getHDTemplates() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/templates/list`, {
-        credentials: 'include'
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=user/template/list`, {
+        credentials: 'include',
+        method: 'post',
+        body: JSON.stringify({
+            method: 'user/template/list',
+        })
     }).then(response =>  {
         if (response.status !== 200) {
             return Promise.reject(response);
@@ -290,14 +283,18 @@ function getHDTemplates() {
 }
 
 function getHDTags() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/dictionaries/tags`, {
-        credentials: 'include'
-    }).then(response =>  {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=dictionaries/tags`, {
+        credentials: 'include',
+        method: 'post',
+        body: JSON.stringify({
+            method: 'dictionaries/tags',
+        })
+    }).then(response => {
         if (response.status !== 200) {
             return Promise.reject(response);
         }
         return response.json();
-    });
+    }).then(json => Promise.resolve(json.result));
 }
 
 function getHDProblems() {
@@ -305,7 +302,7 @@ function getHDProblems() {
         credentials: 'include',
         method: 'post',
         body: JSON.stringify({
-            method: "dictionaries/ticket/problems",
+            method: 'dictionaries/ticket/problems',
         })
     }).then(response =>  {
         if (response.status !== 200) {
@@ -327,12 +324,16 @@ function unlinkPaymentSource(url) {
 }
 
 function getPermissions() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/permissions`, {
-        credentials: 'include'
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=agent/permissions`, {
+        credentials: 'include',
+        method: 'post',
+        body: JSON.stringify({
+            method: 'agent/permissions',
+        })
     }).then(response =>  {
         if (response.status !== 200) {
             return Promise.reject(response);
         }
         return response.json();
-    });
+    }).then(json => Promise.resolve(json.result));
 }
