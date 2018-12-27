@@ -1300,8 +1300,6 @@ function autoFillCreateTicket(fill) {
 }
 
 function searchHDUserNameInTickets(mail) {
-    console.log(mail);
-
     var url = `${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/search`;
 
     var xhr = new XMLHttpRequest();
