@@ -334,7 +334,7 @@ function renderCreateNewTicketWindow(route) {
                             </tr>
                             <tr>
                                 <td class='ah-create-ticket-tooltip__col'>Теги</td>
-                                <td class='ah-create-ticket-tooltip__col'>delivery_call</td>
+                                <td class='ah-create-ticket-tooltip__col'>delivery_call, delivery_2nd</td>
                             </tr>
                         </table>">
                        C2C
@@ -1233,6 +1233,8 @@ function autoFillCreateTicket(fill) {
             // tag delivery_call
             $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[0]" value="1549">');
             $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_call</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
+            $addedTagIdsBlock.append('<input type="hidden" name="create-ticket-tags[1]" value="1292">');
+            $addedTagsBlock.append('<div class="ah-helpdesk-tag"><span class="ah-helpdesk-tag-label">delivery_2nd</span><button type="button" class="ah-helpdesk-tag-remove">×</button></div>');
             createTicketRemoveTagBtnHandler();
 
             // description
