@@ -113,23 +113,23 @@ function userInfoOnItem() {
 
     if (isAuthority('ROLE_USER_INFO_INFO')) {
         $blockUserInfo
-            .prepend('<span class="ah-userInfoActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+            .prepend(`<span class="ah-userInfoActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>`);
     }
     if (isAuthority('ROLE_USER_INFO_ABUSES')) {
         $blockUserInfo
-            .prepend('<span class="ah-userAbuseActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+            .prepend(`<span class="ah-userAbuseActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>`);
     }
     if (isAuthority('ROLE_USER_INFO_WL')) {
         $blockUserInfo
-            .prepend('<span class="ah-userWalletActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+            .prepend(`<span class="ah-userWalletActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" data-cid="${category}" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>`);
     }
     if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
         $blockUserInfo
-            .prepend('<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+            .prepend(`<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" data-email="${email}" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>`);
     }
     if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
         $blockUserInfo
-            .prepend('<span class="ah-userMessengerActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+            .prepend(`<span class="ah-userMessengerActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>`);
     }
 
 
@@ -204,7 +204,7 @@ function allowItem() {
 
 function allowItemRequest(id) {
     let href = `${global.connectInfo.spring_url}/admin/item/activate?id=${id}`;
-    
+
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
             url: href,

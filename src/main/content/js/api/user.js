@@ -12,7 +12,9 @@ function usersInfoAction() {
 
     $('.ah-userWalletActionButton').click(function () {
         const offset = $(this).offset();
-        usersWallet($(this).data("userId"), offset);
+        const userId = $(this).data("userId");
+        const cid = $(this).data("cid");
+        usersWallet(userId, cid, offset);
     });
 
     $('.ah-userShowItemsActionButton').click(function () {
@@ -30,7 +32,8 @@ function userShowItems(userId, email, offset) {
     openInfoWindow(1000, offset);
 
     const formatDate = dateForSearch(2.592e+9);
-    const searchParam = `user=${email}&sort_field=sort_time&date=${formatDate}`;
+    const emailParam = email ? `user=${email}&` : '';
+    const searchParam = `${emailParam}sort_field=sort_time&date=${formatDate}`;
 
     $('.userInfoMain')
         .append(`<a href="${global.connectInfo.adm_url}/items/search?p=1&user_id=${userId}&${searchParam || ''}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
@@ -39,6 +42,12 @@ function userShowItems(userId, email, offset) {
     const $body = $('.ah-user-show-item-body');
     const $title = $('.ah-user-show-item-title');
 
+    if (!email || email === '') {
+        $body.append('<div style="font-weight: bold; text-align: center">Не удалось найти email пользователя, воспользуйтесь ссылкой выше</div>');
+
+        closeLoadBarInfoWindow();
+        return;
+    }
 
     getUserItems(userId, 1, searchParam).then(response => {
         const $responseTitle = $(response).find('.header__title');
@@ -93,7 +102,7 @@ function userMessenger(userId, offset) {
     });
 }
 
-function usersWallet(userId, offset) {
+function usersWallet(userId, cid, offset) {
     openInfoWindow(300, offset);
 
     $('.userInfoMain')
@@ -102,6 +111,7 @@ function usersWallet(userId, offset) {
 
 
     let href = `${global.connectInfo.spring_url}/admin/user/wallet/log?id=${userId}`;
+    const cidParam = cid ? `cid[]=${cid}&` : '';
 
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
@@ -118,7 +128,7 @@ function usersWallet(userId, offset) {
                 } else {
                     $('.ah-userTransactions').append('<table><thead><tr><th>Транзакции</th><th>Учетки</th></tr></thead><tbody></tbody></table>');
                     for (let row of json) {
-                        let link = `${global.connectInfo.adm_url}/items/search?user=`;
+                        let link = `${global.connectInfo.adm_url}/items/search?${cidParam}user=`;
                         let usersLink = '';
                         for (let userId of row.userIds) {
                             link += userId + '|';

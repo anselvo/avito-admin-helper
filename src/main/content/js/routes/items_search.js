@@ -154,27 +154,27 @@ function userInfoForPost() {
 
         if (isAuthority('ROLE_USER_INFO_INFO')) {
             $(itemList[i])
-                .prepend('<span class="ah-userInfoActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>');
+                .prepend(`<span class="ah-userInfoActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Info"><i class="glyphicon glyphicon-info-sign"></i></span>`);
         }
 
         if (isAuthority('ROLE_USER_INFO_ABUSES')) {
             $(itemList[i])
-                .prepend('<span class="ah-userAbuseActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>');
+                .prepend(`<span class="ah-userAbuseActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Abuse"><i class="glyphicon glyphicon-fire"></i></span>`);
         }
 
         if (isAuthority('ROLE_USER_INFO_WL')) {
             $(itemList[i])
-                .prepend('<span class="ah-userWalletActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>');
+                .prepend(`<span class="ah-userWalletActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" data-cid="${category}" title="WalletLog"><i class=" glyphicon glyphicon-ruble"></i></span>`);
 		}
 
         if (isAuthority('ROLE_USER_INFO_SHOW_ITEMS')) {
             $(itemList[i])
-                .prepend('<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" data-email="'+email+'" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>');
+                .prepend(`<span class="ah-userShowItemsActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" data-email="${email}" title="Show items"><i class="glyphicon glyphicon-list-alt"></i></span>`);
         }
 
         if (isAuthority('ROLE_USER_INFO_MESSENGER')) {
             $(itemList[i])
-                .prepend('<span class="ah-userMessengerActionButton ah-user-api" data-user-id="'+id+'" data-item-id="'+itemid+'" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>');
+                .prepend(`<span class="ah-userMessengerActionButton ah-user-api" data-user-id="${id}" data-item-id="${itemid}" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>`);
         }
     }
 
@@ -215,6 +215,9 @@ function addChooseButton() {
                         <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}"></span></div>
                      </div>`)
             .append(`<div class="ah-post-userAgent">
+                        <div><b>Зареган: </b><span ah-post-block-regist="${id}">-</span></div>
+                     </div>`)
+            .append(`<div class="ah-post-userAgent">
                         <div><b>Подписка: </b><span ah-post-block-subscription="${id}">-</span></div>
                      </div>`);
 
@@ -240,8 +243,8 @@ function smartSNP(id) {
 
     const titlePass = `
     Информирует о смене пароля:
-        - СЕРЫЙ - пароль (snp) был отправлен менее 3 раз
-        - КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз
+        - СЕРЫЙ - пароль (snp) не отправлялся
+        - КРАСНЫЙ - пароль (snp) отправлялся
     `;
 
     const titleSnp = `Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана`;
@@ -271,15 +274,12 @@ function smartSNP(id) {
             const comments = $(r).find('#dataTable td.is-break');
 
             $snp.attr('email', email).attr('name', name);
-            let countPass = 0;
             for (let i = 0; i < comments.length; ++i) {
                 const com = comments.slice(i, i+1).text();
-                if (com.indexOf('SNP')+1) ++countPass;
-                if (countPass >= 3) {
+                if (com.indexOf('SNP') + 1) {
                     $('#isUseSNP').css('background','#fb615f');
                     break;
                 }
-
             }
 
             const lastVerifyPhone = {
