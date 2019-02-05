@@ -311,8 +311,8 @@ function addComparisonInfo() {
             }
         }
 
-        $('.compareUserOnComparison[itemid='+itemid+']').click(function (e) {
-            const similarUserID = $(this).attr('userid');
+        $('.compareUserOnComparison[data-item-id='+itemid+']').click(function (e) {
+            const similarUserID = $(this).data('userId');
 
             const btn = this;
             const users = {};
