@@ -215,6 +215,9 @@ function addChooseButton() {
                         <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}"></span></div>
                      </div>`)
             .append(`<div class="ah-post-userAgent">
+                        <div><b>Зареган: </b><span ah-post-block-regist="${id}">-</span></div>
+                     </div>`)
+            .append(`<div class="ah-post-userAgent">
                         <div><b>Подписка: </b><span ah-post-block-subscription="${id}">-</span></div>
                      </div>`);
 
