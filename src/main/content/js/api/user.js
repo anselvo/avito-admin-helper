@@ -32,7 +32,8 @@ function userShowItems(userId, email, offset) {
     openInfoWindow(1000, offset);
 
     const formatDate = dateForSearch(2.592e+9);
-    const searchParam = `user=${email}&sort_field=sort_time&date=${formatDate}`;
+    const emailParam = email ? `user=${email}&` : '';
+    const searchParam = `${emailParam}sort_field=sort_time&date=${formatDate}`;
 
     $('.userInfoMain')
         .append(`<a href="${global.connectInfo.adm_url}/items/search?p=1&user_id=${userId}&${searchParam || ''}" target="_blank"><div class="ah-user-show-item-title" style="text-align: center; color: #009c96; font-weight: bold">User Items</div></a>`)
@@ -41,6 +42,12 @@ function userShowItems(userId, email, offset) {
     const $body = $('.ah-user-show-item-body');
     const $title = $('.ah-user-show-item-title');
 
+    if (!email || email === '') {
+        $body.append('<div style="font-weight: bold; text-align: center">Не удалось найти email пользователя, воспользуйтесь ссылкой выше</div>');
+
+        closeLoadBarInfoWindow();
+        return;
+    }
 
     getUserItems(userId, 1, searchParam).then(response => {
         const $responseTitle = $(response).find('.header__title');
