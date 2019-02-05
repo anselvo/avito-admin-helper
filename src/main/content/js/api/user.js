@@ -12,7 +12,9 @@ function usersInfoAction() {
 
     $('.ah-userWalletActionButton').click(function () {
         const offset = $(this).offset();
-        usersWallet($(this).data("userId"), offset);
+        const userId = $(this).data("userId");
+        const cid = $(this).data("cid");
+        usersWallet(userId, cid, offset);
     });
 
     $('.ah-userShowItemsActionButton').click(function () {
@@ -93,7 +95,7 @@ function userMessenger(userId, offset) {
     });
 }
 
-function usersWallet(userId, offset) {
+function usersWallet(userId, cid, offset) {
     openInfoWindow(300, offset);
 
     $('.userInfoMain')
@@ -102,6 +104,7 @@ function usersWallet(userId, offset) {
 
 
     let href = `${global.connectInfo.spring_url}/admin/user/wallet/log?id=${userId}`;
+    const cidParam = cid ? `cid[]=${cid}&` : '';
 
     chrome.runtime.sendMessage({
             action: 'XMLHttpRequest',
@@ -118,7 +121,7 @@ function usersWallet(userId, offset) {
                 } else {
                     $('.ah-userTransactions').append('<table><thead><tr><th>Транзакции</th><th>Учетки</th></tr></thead><tbody></tbody></table>');
                     for (let row of json) {
-                        let link = `${global.connectInfo.adm_url}/items/search?user=`;
+                        let link = `${global.connectInfo.adm_url}/items/search?${cidParam}user=`;
                         let usersLink = '';
                         for (let userId of row.userIds) {
                             link += userId + '|';
