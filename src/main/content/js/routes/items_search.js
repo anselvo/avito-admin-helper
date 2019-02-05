@@ -240,8 +240,8 @@ function smartSNP(id) {
 
     const titlePass = `
     Информирует о смене пароля:
-        - СЕРЫЙ - пароль (snp) был отправлен менее 3 раз
-        - КРАСНЫЙ - пароль (snp) был отправлено 3 и более раз
+        - СЕРЫЙ - пароль (snp) не отправлялся
+        - КРАСНЫЙ - пароль (snp) отправлялся
     `;
 
     const titleSnp = `Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана`;
@@ -271,15 +271,12 @@ function smartSNP(id) {
             const comments = $(r).find('#dataTable td.is-break');
 
             $snp.attr('email', email).attr('name', name);
-            let countPass = 0;
             for (let i = 0; i < comments.length; ++i) {
                 const com = comments.slice(i, i+1).text();
-                if (com.indexOf('SNP')+1) ++countPass;
-                if (countPass >= 3) {
+                if (com.indexOf('SNP') + 1) {
                     $('#isUseSNP').css('background','#fb615f');
                     break;
                 }
-
             }
 
             const lastVerifyPhone = {
