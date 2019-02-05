@@ -519,7 +519,7 @@ function addCompareItemsItemInfo() {
             </div>
         </form>
     `);
-    $('.col-xs-5').prepend($comparisonForm);
+    $('.item-page').next().prepend($comparisonForm);
 
     $('#compare-items-info').tooltip({
         container: 'body'
