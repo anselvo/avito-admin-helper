@@ -322,24 +322,55 @@ function copyDataToClipboard(data) {
 
     // e-mail
     if (~data.indexOf('e-mail')) {
-        $('.js-fakeemail-field').after('<button id="ah-autoEmail" class="ah-default-btn" type="button" title="Скопировать E-mail со звездочками" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">О</span>В ответ</button>');
-        $('#ah-autoEmail').click(function () {
-            var emailText = $('.js-fakeemail-field').text();
-            var text = getMailForAnswer(emailText);
+        const allLabels = document.querySelectorAll('.control-label');
+        const emailLabel = [].find.call(allLabels, label => label.textContent === 'E-mail');
+        const $emailNode = $('.js-fakeemail-field');
+        const emailText = $emailNode.text();
+        const altEmailLabel = [].find.call(allLabels, label => label.textContent === 'Alt E-mail');
+        const $altEmailNode = $(altEmailLabel).next().find('.help-block > span');
+        const altEmailText = $altEmailNode.text();
 
-            localStorage.autoEmail = text;
-            chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+        if ($emailNode && emailText) {
+            $emailNode.after('<button id="ah-autoEmail" class="ah-default-btn" type="button" title="Скопировать E-mail со звездочками" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">О</span>В ответ</button>');
+            $('#ah-autoEmail').click(function () {
+                const text = getMailForAnswer(emailText);
 
-            outTextFrame('Email ' + text + ' скопирован!');
+                localStorage.autoEmail = text;
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
 
-        });
+                outTextFrame('Email ' + text + ' скопирован!');
 
-        $('label:contains("E-mail")').next().find('span:eq(0)').after('<button id="ah-copyEmailJH" class="ah-default-btn" type="button" title="Скопировать E-mail" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; margin-left: -30px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
-        $('#ah-copyEmailJH').click(function () {
-            var text = $(this).prev().text();
-            chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
-            outTextFrame('Email ' + text + ' скопирован!');
-        });
+            });
+
+            $(emailLabel).next().find('span:eq(0)').after('<button id="ah-copyEmailJH" class="ah-default-btn" type="button" title="Скопировать E-mail" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; margin-left: -30px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
+            $('#ah-copyEmailJH').click(function () {
+                const text = $(this).prev().text();
+
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+                outTextFrame('Email ' + text + ' скопирован!');
+            });
+        }
+
+        if ($altEmailNode && altEmailText) {
+            $altEmailNode.after('<button id="ah-autoEmail-alt" class="ah-default-btn" type="button" title="Скопировать E-mail со звездочками" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-left-radius: 0; border-bottom-left-radius: 0; position: relative;"><span class="ah-support-button-label ah-support-green-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">О</span>В ответ</button>');
+            $('#ah-autoEmail-alt').click(function () {
+                const text = getMailForAnswer(altEmailText);
+
+                localStorage.autoEmail = text;
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+
+                outTextFrame('Alt-Email ' + text + ' скопирован!');
+
+            });
+
+            $(altEmailLabel).next().find('span:eq(0)').after('<button id="ah-copyEmailJH-alt" class="ah-default-btn" type="button" title="Скопировать E-mail" style="height:30px;padding: 5px 10px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; margin-left: 10px; position: relative;"><span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; line-height: 16px;">Б</span>В буфер</button>');
+            $('#ah-copyEmailJH-alt').click(function () {
+                const text = $(this).prev().text();
+
+                chrome.runtime.sendMessage({action: 'copyToClipboard', text: text});
+                outTextFrame('Alt-Email ' + text + ' скопирован!');
+            });
+        }
     }
 
     // phones
