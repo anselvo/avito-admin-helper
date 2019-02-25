@@ -49,16 +49,14 @@ function notificationRemoveWS(notifications) {
 //---------- Allow List Checker ----------//
 
 function startAllowList() {
-	allowListCheck(global.userInfo.subdivision.subdivision, global.userInfo.username);
+	if (global.userInfo.subdivision) allowListCheck(global.userInfo.subdivision.subdivision, global.userInfo.username);
 }
 
 function allowListCheck(agentLine, agentlogin) {
 	if (agentLine === 'S1' || agentLine === 'SD') {
-		
 		findItemsFromAllowList(agentlogin);
 	}
 	if (agentLine === 'S2' || agentLine === 'SD') {
-		
 		parseAllowListCheckingItems(agentlogin);
 	}
 }
@@ -66,21 +64,21 @@ function allowListCheck(agentLine, agentlogin) {
 function findItemsFromAllowList(agentlogin) {
 	if (localStorage.allowList) {
 		var len = $('.allowListItemHeaderChecked').length;
-		
+
 		for (var i = 0; i < len; ++i) {
 			var itemChecked = $('.allowListItemHeaderChecked span').slice(i, i+1).attr('id').replace('checked', '');
 			if (localStorage.allowList.indexOf(itemChecked) === -1) $('#checked'+itemChecked).click();
 		}
-		
+
 		if (localStorage.allowList !== '') {
 			var myItems = localStorage.allowList.split('|');
 			var myItemsLen = myItems.length;
-			
+
 			for (var i = 1; i < myItemsLen; i++) {
 				var tmp = myItems[i].split('&');
 				var item = tmp[0];
 				var time = tmp[1];
-				
+
 				if ($('#checked'+item).length === 0) isItemChecked('status', 'checked', item, time);
 			}
 		}
@@ -98,14 +96,14 @@ function isItemChecked(reason, reasonText, item, time) {
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
 			var len = jsonParse.length;
-			
-			if (len > 0) {		
+
+			if (len > 0) {
 				var itemID = jsonParse[0].itemID;
 				var msg = jsonParse[0].msg;
 				var modAgentID = jsonParse[0].modAgentID;
-				
+
 				notificationBarAdd('checked'+itemID,'allowListItemHeaderChecked', 'Allow List', 'allowListItemBodyChecked', `<span style="color:black;"><a href="${global.connectInfo.adm_url}/items/item/info/${itemID}" target="_blank">${itemID}</a> is checked by </span><span style="color:#9C27B0;">${modAgentID}</span><br><span>MSG: ${msg}</span>`);
-			
+
 				$('#checked'+itemID).click(function () {
 					localStorage.allowList = localStorage.allowList.replace('|'+item+'&'+time,'');
 				});
@@ -165,7 +163,7 @@ function parseAllowListCheckingItems(agentlogin) {
 function allowListButtonListener(currentItem, agentlogin) {
 	$('[item='+currentItem+']').click(function () {
 		var startTime = $('[item='+currentItem+']').attr('startTime');
-		
+
 		checkAllowListItem('status', 'check', currentItem, startTime, agentlogin);
 	});
 }
@@ -181,7 +179,7 @@ function checkAllowListItem(reason, reasonText, item, time, agentlogin) {
 		}, function(response) {
 			var jsonParse = JSON.parse(response);
 			var len = jsonParse.length;
-			
+
 			if (len > 0) {
 				window.open(`${global.connectInfo.adm_url}/items/item/info/${item}?st=${encodeURIComponent(time)}`);
 				changeAllowListItem(item, time, 'modAgentID', agentlogin);
@@ -229,7 +227,7 @@ function notificationBar() {
 	$('#ah-notificationBar')
         .append('<div id="noNotifications" style="text-align: center; width: 100%">no notifications</div>')
         .append('<div class="ah-notificationBarCloseAll"><a id="ah-notificationBarCloseAll">close all</a></div>');
-	
+
 	$('.ah-nb-wheel').click(() => $notification.toggle());
 
     $('#ah-notificationBarCloseAll').click(() => {
