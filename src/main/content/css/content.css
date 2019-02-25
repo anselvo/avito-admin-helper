@@ -3728,6 +3728,13 @@ select.ah-form-control:focus {
     vertical-align: middle;
 }
 
+.ah-other-reasons-input {
+    height: 20px;
+    margin: 5px 3px 0 20px;
+    padding: 3px;
+    border: 1px solid darkgray;
+}
+
 .ah-copy-tooltip-pseudo-link {
     border-bottom: 1px dotted rgba(158, 158, 158, 0.75);
 }

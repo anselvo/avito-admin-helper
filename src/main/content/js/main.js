@@ -55,6 +55,13 @@ const global = {
             'Праздники, мероприятия', 'Реклама, полиграфия', 'Ремонт и обслуживание техники', 'Ремонт, строительство', 'Сад, благоустройство',
             'Транспорт, перевозки', 'Уборка', 'Установка техники', 'Уход за животными', 'Фото- и видеосъёмка', 'Другое']
     },
+    blockFakeComments: [
+        { comment: 'Фотофейк', hasInput: true },
+        { comment: 'Дизайнерские фото', hasInput: false },
+        { comment: 'Фотошоп', hasInput: false },
+        { comment: 'Изменил адрес', hasInput: false },
+        { comment: 'Загрузил фото с чужим ID', shortName: 'Чужое фото с ID', hasInput: false },
+    ],
     ledItem: [
         { flagName: "Вид объявления", button: { reason: 715, value: "ItemType", action: "reject" } },
         { flagName: "Нет фото с ID", button: { reason: 774, value: "NoPhotoID", action: "reject" } }
