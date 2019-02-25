@@ -205,6 +205,7 @@ function addComparisonInfo() {
     let comparisonImageList = $(content).find('.gallery-prev');
     let comparisonDescriptionList = $(content).find('.comparison-description-text');
     let comparisonCategoriesList = $(content).find('.js-param-1a .details-info-value');
+    const comparisonGroupBlockBtn = $(content).find('.btn-group-block .moderate-block');
 
     // AB test в комперисоне
     if ($(basedItemInfo).find('.ah-ab-test-mark').length !== 0) {
@@ -290,6 +291,8 @@ function addComparisonInfo() {
             $comparisonUserListParent
                 .prepend(`<span class="ah-userMessengerActionButton userMessengerComparison ah-user-api" data-user-id="${userid}" data-item-id="${itemid}" title="Messenger"><i class="glyphicon glyphicon-send"></i></span>`);
 
+        // дополнительные причины проставления фейка
+        optionFakeComments(itemid, comparisonGroupBlockBtn[i],'.moderate-block-list-item:not(.moderate-block-list-item_nested-list)','.js-comparison-modal .modal-footer .btn-apply', '.moderate-block-list-item', true);
 
         if (i === 0) mainUserId = userid;
 

@@ -1260,6 +1260,7 @@ RoleHandler.prototype.moderatorSettings = function() {
 
 RoleHandler.prototype.fillOtherReasonField = function() {
     autoOtherReasons();
+    fakeComments();
 };
 
 RoleHandler.prototype.spamLinks = function() {
