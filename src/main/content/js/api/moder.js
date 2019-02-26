@@ -58,6 +58,7 @@ function antifraudLinks(page) {
 
 function fakeComments() {
     $('button[name="block"], input.internBlock').click(function () {
+        $(`input.btn.red[type="submit"]`).unbind();
         const buttonSelector = $(this);
         const findReason = setInterval(function () {
             if ($('.moderate-modal').length) {
@@ -114,20 +115,20 @@ function optionFakeComments(itemId, blockSelector, reasonSelector, clickSelector
     $(reasonSelectorContain)
         .find('[type="checkbox"]')
         .change(function () {
-            const $checked = $(this).closest(parentSelector).find('[type="checkbox"]:checked');
+            // TODO косячная строчка, нужно передавать предка в функцию addOtherReasons()
+            const difParent = '.moderateBox_item, .ah-other-reason-block, .moderate-block-list-item';
 
-            if ($checked.length === 1) {
-                if ($(this).prop('checked')) {
-                    const $parentSelector = $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]');
+            if ($(this).prop('checked')) {
+                $(this).parents().find('>label input[type="checkbox"], >.moderateBox_check input[type="checkbox"]').prop('checked', true);
+            } else {
+                $(this).closest(difParent).find('[type="checkbox"]').prop('checked', false);
 
-                    if (click) $parentSelector.click();
-                    else $parentSelector.prop('checked', true);
-                } else {
-                    if (click) $checked.click();
-                    else $checked.prop('checked', false);
+                let notCheckedReasons = $(this).parents(difParent);
+
+                for (let i = 0; i < notCheckedReasons.length; ++i) {
+                    if ($(notCheckedReasons[i]).find(':checked').length === 1) $(notCheckedReasons[i]).find('[type="checkbox"]').prop('checked', false);
                 }
             }
-
         });
 
 
@@ -150,7 +151,7 @@ function optionFakeComments(itemId, blockSelector, reasonSelector, clickSelector
                 if (inputText) commentReasons.push('Ссылка на сайт с фейком: ' + inputText);
             }
 
-            commentOnItem(itemId, `Блокировка за 'Фейк', Причины: ${commentReasons.join(', ')}`);
+            if (commentReasons.length) commentOnItem(itemId, `Блокировка за 'Фейк', Причины: ${commentReasons.join(', ')}`);
         }
 
         $(clickSelector).unbind();
