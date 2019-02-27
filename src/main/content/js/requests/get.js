@@ -268,11 +268,11 @@ function getItemAntifraudInfo(id) {
 }
 
 function getHDTemplates() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=user/template/list`, {
+    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=template/list/active`, {
         credentials: 'include',
         method: 'post',
         body: JSON.stringify({
-            method: 'user/template/list',
+            method: 'template/list/active',
         })
     }).then(response =>  {
         if (response.status !== 200) {
