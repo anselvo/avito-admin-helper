@@ -765,7 +765,7 @@ function createTicketGetHDTemplates() {
 
             var tempItem = getTemplateListItem(temp);
 
-            $(list).append('<li class="ah-hidden" data-temp-id="' + temp.id + '" data-temp-parentId="' + temp.parentId + '" data-temp-haschild="' + temp.hasChild + '"><a style="overflow : hidden; text-overflow : ellipsis; position : relative; white-space : normal;">' + tempItem.number + '<span style="">' + tempItem.name + '</span><span style="float: right;">' + tempItem.arrow + '</span></a></li>');
+            $(list).append('<li class="ah-hidden" data-temp-id="' + temp.id + '" data-temp-parentId="' + temp.parentId + '" data-temp-haschild="' + temp.hasChildren + '"><a style="overflow : hidden; text-overflow : ellipsis; position : relative; white-space : normal;">' + tempItem.number + '<span style="">' + tempItem.name + '</span><span style="float: right;">' + tempItem.arrow + '</span></a></li>');
         });
 
 
@@ -1061,7 +1061,7 @@ function getTemplateListItem(temp) {
     var tempName = temp.name.replace(regTempNumber, '');
 
     var tempArrow = '';
-    if (temp.hasChild) {
+    if (temp.hasChildren) {
         tempArrow = '<i class="glyphicon  glyphicon-menu-right" style="position: absolute; right: 5px;top: 6px;"></i>';
     }
 
