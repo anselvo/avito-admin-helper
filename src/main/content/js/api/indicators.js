@@ -259,7 +259,7 @@ function AhIndicators(indicatorsArr, container) {
             const { status, vertical, tariffPlan, abGroup } = subscription;
             indicators.subscription.node.append(`<br><span class="ah-indicators-subtext">
                 ${status}, ${vertical}, ${tariffPlan}<br>
-                <b>АБ группа:</b> ${abGroup}
+                ${abGroup ? `<b>АБ группа:</b> ${abGroup}` : ''}
             </span>`);
         }
     }
