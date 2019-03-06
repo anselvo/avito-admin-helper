@@ -577,7 +577,7 @@ function addFixedTools(elem, tools) {
     // let holder = $('#ah-fixed-tools-holder');
 
     // setFixedElemUnderFooter(holder, 2);
-    
+
     if (~tools.indexOf('hd-settings')) {
         addHdSettings();
     }
@@ -1016,6 +1016,7 @@ function getParamsUserInfo(node) {
 
     res.id = $searchNode.find('a[data-user-id]').data('userId');
     res.mail = $searchNode.find('.js-fakeemail-field').text();
+    res.altmail = $searchNode.find('.form-group:contains(Alt E-mail)').find('.help-block span').text();
     res.chance = ($chanceId) ? +$chanceId.replace(/\D/g, '') : null;
     res.chanceTime = $searchNode.find('.form-group:contains(Chance) b').text() || null;
     res.status = $statusLabel.next().find('b:eq(0)').text() || $statusLabel.next().text().trim();
