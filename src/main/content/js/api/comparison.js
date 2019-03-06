@@ -1085,8 +1085,8 @@ UsersComparison.prototype.renderEntities = function(parsedEntities) {
 
         cellMailChance.insertAdjacentHTML('beforeend',`
             ${(+info.id === +abutmentId) ? '<span class="label label-primary ah-compare-label-abutment">Опорная</span> ': ''}
-            <a class="ah-compare-users-user-mail ah-visitable-link" data-entity-id="${info.id}" target="_blank" 
-                href="${global.connectInfo.adm_url}/users/user/info/${info.id}">${info.mail}</a>,
+            <a class="ah-compare-users-user-mail ah-visitable-link" data-compare="email" data-compare-formatted="Почта" data-entity-id="${info.id}" target="_blank" 
+                href="${global.connectInfo.adm_url}/users/user/info/${info.id}">${info.mail || info.altmail}</a>${info.mail ? '' : ' (ALT)'},
             <span> Шанс -</span> ${chance}
         `);
 
