@@ -1106,7 +1106,7 @@ function addCreateTicketBtn(route) {
                             getHDProblems()
                                 .then(response => {
                                     global.hdSettings.problems.isLoaded = true;
-                                    global.hdSettings.problems.info = response.result;
+                                    global.hdSettings.problems.info = remapProblemsForABTestHelpdeskHelper(response.result);
                                     showCreateNewTicketWindow();
                                 }, error => {
                                     console.log(error);
@@ -1124,7 +1124,7 @@ function addCreateTicketBtn(route) {
                 getHDProblems()
                     .then(response => {
                         global.hdSettings.problems.isLoaded = true;
-                        global.hdSettings.problems.info = response.result;
+                        global.hdSettings.problems.info = remapProblemsForABTestHelpdeskHelper(response.result);
                         showCreateNewTicketWindow();
                     }, error => {
                         console.log(error);
