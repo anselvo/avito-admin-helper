@@ -44,3 +44,15 @@ function getSubChildrenRecursivelyHelpdeskHelper(options, children, prefix = '')
         return resultArray;
     }, []);
 }
+
+/**
+ * Изменить имена проблем для нового классификатора
+ * @param {Array} problems массив проблем
+ * @return {Array}
+ */
+function remapProblemsForABTestHelpdeskHelper(problems) {
+    return problems.map(problem => ({
+        ...problem,
+        name: problem.id > 103 ? `${problem.name} [new]` : problem.name,
+    }));
+}
