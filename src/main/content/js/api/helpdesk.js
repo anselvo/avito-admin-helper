@@ -667,7 +667,7 @@ function renderCreateNewTicketWindow(route) {
                 value: problem
             }, {
                 name: 'subject',
-                value: $(body).find('[name="create-ticket-problem"] option:selected').text().replace(/^-+/g, '')
+                value: $(body).find('[name="create-ticket-problem"] option:selected').text().replace(/(^-+)|(\[new\])/g, '')
             }, {
                 name: 'statusId',
                 value: statusId
