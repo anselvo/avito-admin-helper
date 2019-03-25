@@ -620,18 +620,27 @@ function renderCreateNewTicketWindow(route) {
     var createTicketBtn = $(footer).find('.ah-action-btn');
     $(createTicketBtn).click(function () {
         var errors = [];
+        var subjectReplaceRegexp = /(^-+)|(\[new\])/g;
 
         var sourceId = $(body).find('[name="create-ticket-sourceId"]').val();
         if (!sourceId)
             errors.push('Источник');
+
+        var subject = $(body).find('[name="create-ticket-problem"] option:selected').text().replace(subjectReplaceRegexp, '');
 
         var theme = $(body).find('[name="create-ticket-theme"]').val();
         if (!theme)
             errors.push('Тема запроса');
 
         var problem = $(body).find('[name="create-ticket-problem"]').val();
-        if (!problem)
+        var problemsArr = getHelpdeskProblems() || global.hdSettings.problems.info;
+        var themeObject = problemsArr.find(({ id }) => id === Number(theme));
+        var themeChildren = getChildrenHelpdeskHelper(problemsArr, themeObject);
+        if (!problem && themeChildren.length)
             errors.push('Тип проблемы (вопрос)');
+
+        if (!problem && !themeChildren.length)
+            subject = $(body).find('[name="create-ticket-theme"] option:selected').text().replace(subjectReplaceRegexp, '');
 
         var statusId = $(body).find('[name="create-ticket-statusId"]:checked').val();
         if (!statusId)
@@ -646,8 +655,8 @@ function renderCreateNewTicketWindow(route) {
             errors.push('Имя');
 
         var description = $(body).find('[name="create-ticket-description"]').val();
-        descrReplaced = description.replace(/\s/g, '');
-        if (descrReplaced == '')
+        var descrReplaced = description.replace(/\s/g, '');
+        if (descrReplaced === '')
             errors.push('Описание');
 
         var data = [{
@@ -667,7 +676,7 @@ function renderCreateNewTicketWindow(route) {
                 value: problem
             }, {
                 name: 'subject',
-                value: $(body).find('[name="create-ticket-problem"] option:selected').text().replace(/(^-+)|(\[new\])/g, '')
+                value: subject
             }, {
                 name: 'statusId',
                 value: statusId
