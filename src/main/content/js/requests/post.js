@@ -486,3 +486,15 @@ function chanceUserFetch(id, chance) {
         body: `chance=${chance}&user=${id}`,
     }).then(response => response.status === 200);
 }
+
+function activateUser(userId) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/users/user/activate',
+            data: { userId: userId },
+            type: 'POST'
+        })
+        .done(data => resolve(data))
+        .fail(data =>  reject(data));
+    });
+}

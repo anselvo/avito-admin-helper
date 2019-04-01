@@ -1978,13 +1978,13 @@ function unblockUserHD() {
             chanceUser(id, $('#ah-hdUnblockChance').val());
         }
 
-        var request = new XMLHttpRequest();
-        request.open("GET", `${global.connectInfo.adm_url}/users/user/activate/${id}`, true);
-        request.send();
-
-        $('.sh-unblockUsers').detach();
-        $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
-        outTextFrame($(this).val() + '<br>' + id);
+        activateUser(id)
+            .then(() => {
+                $('.sh-unblockUsers').detach();
+                $('.helpdesk-usersidebar-status:first').removeClass('ah-blocked-user');
+                outTextFrame($(this).val() + '<br>' + id);
+            })
+            .catch(error => alert(error));
     });
 
     $('#activeUserItem').click(function() {
@@ -2890,12 +2890,12 @@ function rightPanelUnblockUser() {
             chanceUser(id, chance);
         }
 
-        var request = new XMLHttpRequest();
-        request.open("GET", `${global.connectInfo.adm_url}/users/user/activate/${id}`, true);
-        request.send();
-
-        infoAboutUser();
-        outTextFrame($(this).attr('title') + '<br>' + id);
+        activateUser(id)
+            .then(() => {
+                infoAboutUser();
+                outTextFrame($(this).attr('title') + '<br>' + id);
+            })
+            .catch(error => alert(error));
     });
 
     $('#rpHI').click(function() {
