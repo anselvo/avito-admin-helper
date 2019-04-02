@@ -74,6 +74,14 @@ function getHelpdeskProblems(isSorted = false) {
 }
 //++++++++++ Получить проблемы helpdesk ++++++++++//
 
+//---------- Проверить право в helpdesk ----------//
+function hasHelpdeskPermission(permission) {
+    document.dispatchEvent(new Event('requestHelpdeskStore'));
+
+    return global.hdSettings.helpdeskStore.auth.permissions.includes(permission);
+}
+//++++++++++ Проверить право в helpdesk ++++++++++//
+
 //---------- Agent ID ----------//
 function getAgentId() {
     document.dispatchEvent(new Event('requestHelpdeskStore'));
@@ -1143,6 +1151,11 @@ function addCreateTicketBtn(route) {
 
             showCreateNewTicketWindow();
         } else {
+            if (!hasHelpdeskPermission('helpdesk-ticket-create')) {
+                alert('На данный момент эта операция недоступна. Возможно, нужно сменить статус.');
+                return;
+            }
+
             showCreateNewTicketWindow();
         }
 
