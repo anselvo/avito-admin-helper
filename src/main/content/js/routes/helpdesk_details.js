@@ -10,6 +10,11 @@ function addTags() {
     $(tagLabel).append('<button id="ah-tags-btn" type="button" class="ah-default-btn" style="" title="Выбрать теги">Выбор</button>');
 
     $('#ah-tags-btn').click(function() {
+        if (!hasHelpdeskPermission('helpdesk-ticket-modify')) {
+            alert('На данный момент эта операция недоступна. Возможно, нужно сменить статус.');
+            return;
+        }
+
         if (!global.hdSettings.helpdeskTags) {
             alert('Теги еще не загрузились.\nПопробуйте подождать несколько секунд и повторить попытку.\nЕсли проблема сохраняется в течение длительного времени, попробуйте перезагрузить страницу.');
             return;
@@ -243,6 +248,11 @@ function addQuickButtons() {
     // Кнопки
     var btns = $(QBHolder).find('.ah-qb-btn');
     $(btns).unbind('click').click(function() {
+        if (!hasHelpdeskPermission('helpdesk-ticket-modify')) {
+            alert('На данный момент эта операция недоступна. Возможно, нужно сменить статус.');
+            return;
+        }
+
 		$('#ah-loading-layer').show();
         sidePanelQBHandler( JSON.parse($(this).attr('data-full-obj')) );
     });
@@ -2963,6 +2973,11 @@ function changeAssignee() {
     
     let changeBtns = $('#ah-change-assignee-to-me-btn, #ah-clear-assignee-btn');
     $(changeBtns).click(function () {
+        if (!hasHelpdeskPermission('helpdesk-ticket-modify')) {
+            alert('На данный момент эта операция недоступна. Возможно, нужно сменить статус.');
+            return;
+        }
+
         let ticketStatus = getTicketStatusText();
         if ((~ticketStatus.indexOf('закрытое')
             || ticketStatus === 'решенное')
@@ -3067,6 +3082,11 @@ function addTicketTlHelp() {
         const target = e.target;
 
         if (target.closest('#ah-tl-help-btn')) {
+            if (!hasHelpdeskPermission('helpdesk-ticket-modify')) {
+                alert('На данный момент эта операция недоступна. Возможно, нужно сменить статус.');
+                return;
+            }
+
             const btn = target.closest('#ah-tl-help-btn');
             tlHelpButtonHandler(btn);
         }
