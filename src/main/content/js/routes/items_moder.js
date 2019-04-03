@@ -608,6 +608,7 @@ function addElementsForEachItemNew() {
         ledItem(trList[i], trItemId, itemVersion);
         onlinePhotoCheck(trList[i], trItemId);
         proUserInCategory(trList[i], trUserId);
+        openAntifraudLinks(trList[i]);
     }
 
     $('div.ah-mh-items input.ah-mh-action-btn').click(function() {
@@ -659,6 +660,33 @@ function addElementsForEachItemNew() {
     $("#textaclass").keypress(function(){
         $("#mbuttonS").removeAttr('disabled');
     });
+}
+
+/**
+ * Добавляет кнопку, которая открывает все ссылки в описании к флагу
+ */
+function openAntifraudLinks($trListElement) {
+    const $flagItemType = $($trListElement).find(`.b-antifraud-section_block-user .b-antifraud:contains(Мошенническая схема)`);
+
+    for (let i = 0; i < $flagItemType.length; ++i) {
+        const $description = $($flagItemType[i]).find(`.description`);
+        const $linksSelector = $($description).find(`a`);
+
+        if ($linksSelector.length > 0) {
+            const links = [];
+            for (let j = 0; j < $linksSelector.length; ++j) {
+                links.push($linksSelector[j].attributes.href)
+            }
+
+            const a = document.createElement('a');
+            a.href = '#';
+            a.style.paddingRight = '5px';
+            a.innerHTML = "&#128279";
+            a.addEventListener('click', () => links.forEach(link => window.open(link.nodeValue)));
+
+            $description.prepend(a);
+        }
+    }
 }
 
 /**
