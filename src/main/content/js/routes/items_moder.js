@@ -672,19 +672,19 @@ function openAntifraudLinks($trListElement) {
         const $description = $($flagItemType[i]).find(`.description`);
         const $linksSelector = $($description).find(`a`);
 
-        if ($linksSelector.length > 0) {
+        if ($linksSelector.length > 1) {
             const links = [];
             for (let j = 0; j < $linksSelector.length; ++j) {
                 links.push($linksSelector[j].attributes.href)
             }
 
-            const a = document.createElement('a');
-            a.href = '#';
-            a.style.paddingRight = '5px';
-            a.innerHTML = "&#128279";
-            a.addEventListener('click', () => links.forEach(link => window.open(link.nodeValue)));
+            const span = document.createElement('span');
+            span.classList.add('ah-af-concat-links_button');
+            span.title = 'Открытие всех ссылок в новых вкладках';
+            span.innerHTML = "&#128279";
+            span.addEventListener('click', () => links.forEach(link => window.open(link.nodeValue)));
 
-            $description.prepend(a);
+            $description.prepend(span);
         }
     }
 }
