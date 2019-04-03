@@ -5623,3 +5623,9 @@ select.ah-form-control:focus {
 .ah-linked-payment-sources-popover__error {
     font-size: 13px;
 }
+
+.ah-af-concat-links_button {
+    margin-right: 5px;
+    background: yellow;
+    cursor: pointer;
+}
