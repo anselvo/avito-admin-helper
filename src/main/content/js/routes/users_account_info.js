@@ -112,46 +112,29 @@ function addCompensationBtns() {
     let moneyCounterValue = $('#money-counter-value');
 
     // автозаполнение полей в форме пэй ин +++
-    $('button[value=payin]').after('<div class="btn-group" style="margin-left: 10px;"><input type="button" id="calculate" value="Calculate" class="btn btn-default btn-fill-fields" style="outline: none;"><input type="button" id="calculateShort" value="Short" class="btn btn-default btn-fill-fields" style="outline: none;"></div>');
+    $('button[value=payin]').after('<div class="btn-group" style="margin-left: 10px;"><input type="button" id="calculate" value="Calculate" class="btn btn-default" style="outline: none;"></div>');
 
     $('.payin input[name=comment]').after('<div class="form-warning-field" id="no-compensation-reasons-warning" style="display: none; color: #8a6d3b; margin-top: 6px;">Не указаны причины компенсации</div>');
 
-    $('.btn-fill-fields').click(function () {
+    $('#calculate').click(function () {
         let lsObj = JSON.parse(localStorage['users/account/info/countMoney']);
-        let btnId = $(this).attr('id');
-        let comment = '';
-        switch (btnId) {
-            case 'calculate':
-                let allWlLinks = lsObj.operations.map(function (operation) {
-                    return operation.wlLink;
-                });
-                let allDescriptions = lsObj.operations.map(function (operation) {
-                    return operation.description;
-                });
+        let allWlLinks = lsObj.operations.map(function (operation) {
+            return operation.wlLink;
+        });
+        let allDescriptions = lsObj.operations.map(function (operation) {
+            return operation.description;
+        });
 
-                comment = allDescriptions.join('; ');
-                try {
-                    var joinedLink = joinWalletLogLinks(allWlLinks);
-                } catch (e) {
-                    if (allWlLinks.length > 0) {
-                        outTextFrame('Не удалось сформировать ссылку на Wallet Log');
-                    }
-                    var joinedLink = '';
-                }
-
-                comment = allDescriptions.join('; ') + '; ' + joinedLink;
-                break;
-
-            case 'calculateShort':
-                let allItems = [];
-                lsObj.operations.forEach(function(operation) {
-                    if (!operation.itemId) return;
-                    allItems.push(operation.itemId);
-                });
-                let uniqueItems = unique(allItems);
-                comment = uniqueItems.join('|');
-                break;
+        try {
+            var joinedLink = joinWalletLogLinks(allWlLinks);
+        } catch (e) {
+            if (allWlLinks.length > 0) {
+                outTextFrame('Не удалось сформировать ссылку на Wallet Log');
+            }
+            var joinedLink = '';
         }
+
+        let comment = allDescriptions.join('; ') + '; ' + joinedLink;
 
         let allReasons = [];
         lsObj.operations.forEach(function (operation) {
