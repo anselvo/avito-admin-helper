@@ -225,7 +225,7 @@ function addChooseButton() {
             .parents('tr')
             .find('.description-cell')
             .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>User-Agent:</b> <span userAgent="'+id+'"></span></div>')
-            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>VAS:</b> <span ah-vas="'+id+'"></span></div>');
+            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>VAS:</b> <span ah-vas="'+id+'"></span> <b>Счет:</b> <span ah-money="'+id+'"></span></div>');
     }
 
     clickChooseButton();

@@ -1037,6 +1037,7 @@ function getParamsUserInfo(node) {
     }).filter(item => !!item.value);
     res.ips = [].map.call($searchNode.find('.js-ip-info'), item => item.textContent);
     res.vas = $searchNode.find('.discounts span div').toArray().map(info => info.innerText);
+    res.money = $searchNode.find('.form-group:contains(Счёт) a[href*="account"]').text();
 
     res.activeLFPackagesTableHtml = ($activeLFPackagesTable.length) ? $activeLFPackagesTable[0].outerHTML : null;
     res.expiredLFPackagesTableHtml = ($expiredLFPackagesTable.length) ? $expiredLFPackagesTable[0].outerHTML : null;
