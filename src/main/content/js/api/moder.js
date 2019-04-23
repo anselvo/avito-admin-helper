@@ -337,7 +337,7 @@ function eyeLinks(list) {
     for (let i = 0; i < list.length; ++i) {
         let param = $(list[i]).parents('tr').attr('data-params');
         let paramMap = $(list[i]).parents('tr').attr('data-params-map');
-        let cid = $(list[i]).parents('tr').find('[data-category]').attr('data-category');
+        let cid = $(list[i]).parents('tr').attr('data-category') || $(list[i]).parents('tr').find('[data-category]').attr('data-category');
         let city = $(list[i]).parents('tr').attr('data-location');
 
         let link = `${global.connectInfo.adm_url}/items/search?status[]=active&cid[]=${cid}`;
