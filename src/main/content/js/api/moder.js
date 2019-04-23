@@ -685,9 +685,23 @@ function usersInfoForManyItems(id) {
             if (json.subscription) $('[ah-post-block-subscription="' + id + '"]').html(json.subscription).parents('.ah-post-userAgent').show();
             $('[ah-vas="' + id + '"]').text(json.vas.length).parents('.ah-post-userAgent').show();
             $('[ah-money="' + id + '"]').text(json.money).parents('.ah-post-userAgent').show();
+            $('[ah-lf="' + id + '"]').text(findLfCount(json.activeLFPackagesTableHtml)).parents('.ah-post-userAgent').show();
             $('[userAgent="' + id + '"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
     };
+}
+
+function findLfCount(table) {
+    let left = 0, all = 0;
+    const $tds = $(table).find('tr.js-fees-package-row td.size-col');
+
+    for (let i = 0; i < $tds.length; ++i) {
+        const [l, r] = $($tds[i]).text().split(' / ');
+        left += parseInt(l);
+        all += parseInt(r);
+    }
+
+    return `${left} / ${all}`
 }
 
 // запрос на отображения информации о юзере для большого кол-во

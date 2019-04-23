@@ -211,8 +211,8 @@ function addChooseButton() {
                 '<span ah-post-block-chance-time="'+id+'"></span>' +
                 '</div>')
             .append(`<div class="ah-post-userAgent">
-                        <div><b>Статус: </b><span ah-post-block-status="${id}"></span></div>
-                        <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}"></span></div>
+                        <div><b>Статус: </b><span ah-post-block-status="${id}">...</span></div>
+                        <div style="display: none"><b>Причина: </b><span ah-post-block-reason="${id}">...</span></div>
                      </div>`)
             .append(`<div class="ah-post-userAgent">
                         <div><b>Зареган: </b><span ah-post-block-regist="${id}">-</span></div>
@@ -224,8 +224,14 @@ function addChooseButton() {
         $(loginList[i])
             .parents('tr')
             .find('.description-cell')
-            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>User-Agent:</b> <span userAgent="'+id+'"></span></div>')
-            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>VAS:</b> <span ah-vas="'+id+'"></span> <b>Счет:</b> <span ah-money="'+id+'"></span></div>');
+            .append('<div class="ah-post-userAgent"><hr class="ah-separate-line"><b>User-Agent:</b> <span userAgent="'+id+'">...</span></div>')
+            .append(`
+                    <div class="ah-post-userAgent"><hr class="ah-separate-line">
+                        <b>VAS:</b> <span ah-vas="${id}">...</span> 
+                        <b>Счет:</b> <span ah-money="${id}">...</span> 
+                        <b>LF:</b> <span ah-lf="${id}" title="Active fees packages count">...</span> 
+                    </div>
+            `);
     }
 
     clickChooseButton();
