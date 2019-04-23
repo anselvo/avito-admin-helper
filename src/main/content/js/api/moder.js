@@ -337,7 +337,7 @@ function eyeLinks(list) {
     for (let i = 0; i < list.length; ++i) {
         let param = $(list[i]).parents('tr').attr('data-params');
         let paramMap = $(list[i]).parents('tr').attr('data-params-map');
-        let cid = $(list[i]).parents('tr').find('[data-category]').attr('data-category');
+        let cid = $(list[i]).parents('tr').attr('data-category') || $(list[i]).parents('tr').find('[data-category]').attr('data-category');
         let city = $(list[i]).parents('tr').attr('data-location');
 
         let link = `${global.connectInfo.adm_url}/items/search?status[]=active&cid[]=${cid}`;
@@ -683,9 +683,25 @@ function usersInfoForManyItems(id) {
             if (json.blockReasons) $('[ah-post-block-reason="' + id + '"]').text(json.blockReasons).parent().show();
             if (json.chanceTime) $('[ah-post-block-chance-time="' + id + '"]').text(' - ' + json.chanceTime).parents('.ah-post-userAgent').show();
             if (json.subscription) $('[ah-post-block-subscription="' + id + '"]').html(json.subscription).parents('.ah-post-userAgent').show();
+            $('[ah-vas="' + id + '"]').text(json.vas.length).parents('.ah-post-userAgent').show();
+            $('[ah-money="' + id + '"]').text(json.money).parents('.ah-post-userAgent').show();
+            $('[ah-lf="' + id + '"]').text(findLfCount(json.activeLFPackagesTableHtml)).parents('.ah-post-userAgent').show();
             $('[userAgent="' + id + '"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
     };
+}
+
+function findLfCount(table) {
+    let left = 0, all = 0;
+    const $tds = $(table).find('tr.js-fees-package-row td.size-col');
+
+    for (let i = 0; i < $tds.length; ++i) {
+        const [l, r] = $($tds[i]).text().split(' / ');
+        left += parseInt(l);
+        all += parseInt(r);
+    }
+
+    return `${left} / ${all}`
 }
 
 // запрос на отображения информации о юзере для большого кол-во
@@ -1073,6 +1089,13 @@ function getSettings() {
         action: 'reject',
         value: 'ParamAddress'
     });
+    var chbx3T = $('<input/>', {
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
+        type: 'checkbox',
+        id: 'chbx3T',
+        action: 'reject',
+        value: '867'
+    });
 
     //RK Блокировка Общее
     var chbxPovtorka = $('<input/>', {
@@ -1172,6 +1195,13 @@ function getSettings() {
         id: 'chbxBuy',
         action: 'block',
         value: '26'
+    });
+    var chbxChandedContent = $('<input/>', {
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
+        type: 'checkbox',
+        id: 'chbxChandedContent',
+        action: 'block',
+        value: '801'
     });
 
     // RK Блокировка запрещенка
@@ -1280,6 +1310,7 @@ function getSettings() {
     $('.reject-chbx-common').append(chbxParamAddress, '<label for="chbxParamAddress" class="ah-default-label">Параметр "Адрес"</label>', '<br>');
     $('.reject-chbx-common').append(chbxParamVidYsl, '<label for="chbxParamVidYsl" class="ah-default-label">Параметр "Вид услуги"</label>', '<br>');
     $('.reject-chbx-common').append(chbxParamProb, '<label for="chbxParamProb" class="ah-default-label">Параметр "Пробег"</label>', '<br>');
+    $('.reject-chbx-common').append(chbx3T, '<label for="chbx3T" class="ah-default-label">Упоминание ЗТ в объявлении</label>', '<br>');
 
     //RK Отклонение название
     $('.reject-chbx').append('<div class="reject-chbx-names" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
@@ -1469,6 +1500,7 @@ function getSettings() {
     $('.block-chbx-common').append(chbxAutoupload, '<label for="chbxAutoupload" class="ah-default-label">Автовыгрузка</label>', '<br>');
     $('.block-chbx-common').append(chbxFraudScheme, '<label for="chbxFraudScheme" class="ah-default-label">Мошенническая схема</label>', '<br>');
     $('.block-chbx-common').append(chbxFake, '<label for="chbxFake" class="ah-default-label">Фейк</label>', '<br>');
+    $('.block-chbx-common').append(chbxChandedContent, '<label for="chbxChandedContent" class="ah-default-label">Подмена контента</label>', '<br>');
 
     // RK Блокировка запрещенка
     $('.block-chbx').append('<div class="block-chbx-taboo" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
