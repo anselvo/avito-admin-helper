@@ -1073,6 +1073,13 @@ function getSettings() {
         action: 'reject',
         value: 'ParamAddress'
     });
+    var chbx3T = $('<input/>', {
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
+        type: 'checkbox',
+        id: 'chbx3T',
+        action: 'reject',
+        value: '867'
+    });
 
     //RK Блокировка Общее
     var chbxPovtorka = $('<input/>', {
@@ -1172,6 +1179,13 @@ function getSettings() {
         id: 'chbxBuy',
         action: 'block',
         value: '26'
+    });
+    var chbxChandedContent = $('<input/>', {
+        class: 'ah-divOptions ah-default-checkbox addOld-button-checkbox',
+        type: 'checkbox',
+        id: 'chbxChandedContent',
+        action: 'block',
+        value: '801'
     });
 
     // RK Блокировка запрещенка
@@ -1280,6 +1294,7 @@ function getSettings() {
     $('.reject-chbx-common').append(chbxParamAddress, '<label for="chbxParamAddress" class="ah-default-label">Параметр "Адрес"</label>', '<br>');
     $('.reject-chbx-common').append(chbxParamVidYsl, '<label for="chbxParamVidYsl" class="ah-default-label">Параметр "Вид услуги"</label>', '<br>');
     $('.reject-chbx-common').append(chbxParamProb, '<label for="chbxParamProb" class="ah-default-label">Параметр "Пробег"</label>', '<br>');
+    $('.reject-chbx-common').append(chbx3T, '<label for="chbx3T" class="ah-default-label">Упоминание ЗТ в объявлении</label>', '<br>');
 
     //RK Отклонение название
     $('.reject-chbx').append('<div class="reject-chbx-names" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
@@ -1469,6 +1484,7 @@ function getSettings() {
     $('.block-chbx-common').append(chbxAutoupload, '<label for="chbxAutoupload" class="ah-default-label">Автовыгрузка</label>', '<br>');
     $('.block-chbx-common').append(chbxFraudScheme, '<label for="chbxFraudScheme" class="ah-default-label">Мошенническая схема</label>', '<br>');
     $('.block-chbx-common').append(chbxFake, '<label for="chbxFake" class="ah-default-label">Фейк</label>', '<br>');
+    $('.block-chbx-common').append(chbxChandedContent, '<label for="chbxChandedContent" class="ah-default-label">Подмена контента</label>', '<br>');
 
     // RK Блокировка запрещенка
     $('.block-chbx').append('<div class="block-chbx-taboo" style="display: inline-block; vertical-align: top; margin-left: 20px;"></div>');
