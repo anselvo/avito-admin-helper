@@ -1036,6 +1036,7 @@ function getParamsUserInfo(node) {
         return res;
     }).filter(item => !!item.value);
     res.ips = [].map.call($searchNode.find('.js-ip-info'), item => item.textContent);
+    res.vas = $searchNode.find('.discounts span div').toArray().map(info => info.innerText);
 
     res.activeLFPackagesTableHtml = ($activeLFPackagesTable.length) ? $activeLFPackagesTable[0].outerHTML : null;
     res.expiredLFPackagesTableHtml = ($expiredLFPackagesTable.length) ? $expiredLFPackagesTable[0].outerHTML : null;

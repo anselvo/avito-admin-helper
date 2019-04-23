@@ -683,6 +683,7 @@ function usersInfoForManyItems(id) {
             if (json.blockReasons) $('[ah-post-block-reason="' + id + '"]').text(json.blockReasons).parent().show();
             if (json.chanceTime) $('[ah-post-block-chance-time="' + id + '"]').text(' - ' + json.chanceTime).parents('.ah-post-userAgent').show();
             if (json.subscription) $('[ah-post-block-subscription="' + id + '"]').html(json.subscription).parents('.ah-post-userAgent').show();
+            if (json.vas) $('[ah-vas="' + id + '"]').text(json.vas.length).parents('.ah-post-userAgent').show();
             $('[userAgent="' + id + '"]').text(json.userAgent).parents('.ah-post-userAgent').show();
         }
     };
