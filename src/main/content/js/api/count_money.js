@@ -117,7 +117,7 @@ function countMoneyWalletlog() {
             amount: $(this).find('td:eq(9) span').text().replace(',', '.').replace(/[^\d.]/g, '').replace(/.$/, ''),
             description: $(this).find('td:eq(5)').text().replace(/\n/g, ""),
             oid: $(this).find('td:eq(0)').text().trim(),
-            date: $(this).find('td:eq(3) .operation-paid-time').text().trim(),
+            date: $(this).find('[data-marker="operation-paid-time"]').text().trim(),
             method: $(this).find('td:eq(7)').text().trim(),
             methodProvider: $(this).find('td:eq(8)').html().replace(/<br>(?:\s+)?/g, ' ').trim(),
             status: $(this).find('td:last').text().trim(),
