@@ -1444,9 +1444,13 @@ function getParamsOperationInfo(operationRow) {
     return result;
 }
 
-function handleCheckVasUsage(btn) {
+function handleCheckVasUsage(btn, logFeatureName = null) {
 
     btn.addEventListener('click', function() {
+        if (logFeatureName) {
+            logHDFeature(logFeatureName);
+        }
+
         btnLoaderOn(this);
 
         let maxDate = currentTime().split(' ')[0];

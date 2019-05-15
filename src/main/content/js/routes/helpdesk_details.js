@@ -131,6 +131,7 @@ function renderTagsPopup() {
 function popupTagsAddListener() { // обработчик попапа тегов
     // быстрая простановка тегов
     $('button.ah-fast-tag-add-btn').click(function() {
+        logHDFeature(global.helpdeskFeatures.addTags);
 		$('#ah-loading-layer').show();
         checkTagInTicket($(this).data('tagId'));
         $('#ah-layer-blackout-popup').removeClass('ah-layer-flex');
@@ -140,6 +141,7 @@ function popupTagsAddListener() { // обработчик попапа тего�
 
     // массовая простановка тегов
     $('#sh-add-tag-btn').click(function() {
+        logHDFeature(global.helpdeskFeatures.addTags);
         var currentTagsArr = [];
         for (var i = 0; i < $('input[name ^= "tags"]').length; i++) {
             currentTagsArr[i] = $('input[name ^= "tags"]:eq(' + i + ')').val();
@@ -253,6 +255,7 @@ function addQuickButtons() {
             return;
         }
 
+        logHDFeature(global.helpdeskFeatures.quickButton);
 		$('#ah-loading-layer').show();
         sidePanelQBHandler( JSON.parse($(this).attr('data-full-obj')) );
     });
@@ -1930,7 +1933,8 @@ function addCommentOnUserFromTicket() {
 			alert('Введите комментарий.');
 			return;
 		}
-		
+
+        logHDFeature(global.helpdeskFeatures.commentUser);
 		$('#ah-loading-layer').show();
         commentOnUserSupport(userId, comment, 'fromTicket');
     });
@@ -1979,6 +1983,8 @@ function unblockUserHD() {
     }
 
     $('#activeUser').click(function() {
+        logHDFeature(global.helpdeskFeatures.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
@@ -1998,6 +2004,8 @@ function unblockUserHD() {
     });
 
     $('#activeUserItem').click(function() {
+        logHDFeature(global.helpdeskFeatures.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
@@ -2017,6 +2025,8 @@ function unblockUserHD() {
     });
 
     $('#activeUserReItem').click(function() {
+        logHDFeature(global.helpdeskFeatures.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
 
@@ -2200,7 +2210,7 @@ function addHelpdeskCheckVasUsage() {
 
     itemsLinkHolder.insertAdjacentElement('afterend', btnHolder);
 
-    handleCheckVasUsage(btn);
+    handleCheckVasUsage(btn, global.helpdeskFeatures.checkVas);
 }
 
 //---------- предполагаемая УЗ ----------//
@@ -2591,12 +2601,24 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
     }
 
     if (rightPanelSettings.indexOf('rp-id')+1) {
-        $(mainTable).append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank">'+id+'</a><span style="" class="ah-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="ah-messenger-link"></a></span></td></tr>');
+        $(mainTable).append('<tr><td>ID</td><td><a href="/users/user/info/'+id+'" target="_blank" class="ah-js-rp-id-link">'+id+'</a><span style="" class="ah-messenger-link-wrapper"><a title="Мессенджер" href="/messenger/user/'+id+'" target="_blank" style="" class="ah-messenger-link ah-js-rp-messenger-link"></a></span></td></tr>');
+
+        $('.ah-js-rp-id-link').click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.userLink);
+        });
+
+        $('.ah-js-rp-messenger-link').click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.messengerLink);
+        });
     }
 
     if (rightPanelSettings.indexOf('rp-login')+1) {
         let login = $(response).find('.form-group:contains(Логин) .form-control-static').text();
-        $(mainTable).append(`<tr><td>Login</td><td><a href="${global.connectInfo.adm_url}/items/search?user=${login}" target="_blank">${login}</a></td></tr>`);
+        $(mainTable).append(`<tr><td>Login</td><td><a href="${global.connectInfo.adm_url}/items/search?user=${login}" target="_blank" class="ah-js-rp-login-link">${login}</a></td></tr>`);
+
+        $('.ah-js-rp-login-link').click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.itemsLoginLink);
+        });
     }
 
     if (rightPanelSettings.indexOf('rp-email')+1) {
@@ -2604,7 +2626,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         $(mainTable).append(`<tr>
                 <td>E-mail</td>
                 <td><div id="ah-rp-email">
-                    <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank">${email}</a>
+                    <a href="${global.connectInfo.adm_url}/users/search?email=${email}" target="_blank" class="ah-js-rp-email-link">${email}</a>
                     <span id="changedEmailTimes" title="Кол-во изменения E-mail адреса" style="color:blue; font-weight:bold;"></span>
                     <button id="sh-copy-mail-right-panel" class="ah-default-btn" type="button" title="Скопировать E-mail в буфер обмена" style="margin-left: 4px; padding: 2px; font-size: 12px; border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: -1px; position: relative;">
                         <span class="ah-support-button-label ah-orange-background" style="border-radius: 0; font-size: 12px; min-width: 15px; top: 0px; margin-right: 0;">Б</span>
@@ -2615,9 +2637,20 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 </div></td>
             </tr>`);
 
-        emailHistory('#ah-rp-email', id, false);
+        $('.ah-js-rp-email-link').click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.itemsEmailLink);
+        });
+
+        emailHistory(
+            '#ah-rp-email',
+            id,
+            false,
+            () => logHDFeature(global.helpdeskFeatures.rightPanel.emailHistory),
+        );
 
         $('#sh-automail-right-panel').click(function () {
+            logHDFeature(global.helpdeskFeatures.rightPanel.copyEmailAnswer);
+
             let text = getMailForAnswer(email);
             localStorage.autoEmail = text;
             chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
@@ -2625,6 +2658,8 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         });
 
         $('#sh-copy-mail-right-panel').click(function () {
+            logHDFeature(global.helpdeskFeatures.rightPanel.copyEmailFull);
+
             let text = email;
             chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
             outTextFrame('Email '+ text +' скопирован!');
@@ -2690,6 +2725,10 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         $(subscriptionLinkNode).attr('target', '_blank');
         $(mainTable).append('<tr><td>Subscription</td><td data-rp-filed-name="subscription"></td></tr>');
         $('[data-rp-filed-name="subscription"]').append(subscriptionLinkNode);
+
+        $(subscriptionLinkNode).click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.subscriptionCreate);
+        });
     }
 
     if (rightPanelSettings.indexOf('rp-acc')+1) {
@@ -2705,7 +2744,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         if (isAuthority('ROLE_CHECK_VAS_USAGE')) {
             const checkVasUsageBtn = document.querySelector('.ah-rp-check-vas-usage-btn');
             if (checkVasUsageBtn) {
-                handleCheckVasUsage(checkVasUsageBtn);
+                handleCheckVasUsage(checkVasUsageBtn, global.helpdeskFeatures.rightPanel.checkVas);
             }
         }
     }
@@ -2729,7 +2768,12 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 '</tr>');
             $(mainTable).find('tr:contains(Last IP) a').attr('target', '_blank');
 
-            ipHistory('#ah-rp-ip', id, response);
+            ipHistory(
+                '#ah-rp-ip',
+                id,
+                response,
+                () => logHDFeature(global.helpdeskFeatures.rightPanel.ipHistory),
+            );
         }
     }
 
@@ -2762,6 +2806,8 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
         }
 
         $('.ah-rightPanelTypeChange').click(function () {
+            logHDFeature(global.helpdeskFeatures.rightPanel.changeType);
+
             let type = $(this).attr("typeStatus");
 
             changeUserType(id, type);
@@ -2801,7 +2847,7 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             }
 
             $('#ah-phoneHistory').append(`<div id="${number}" ah-phone-status="${statusPhone}" style="padding: 3px">
-                ${verify} <a href="${global.connectInfo.adm_url}/users/search?phone=${number}" target="_blank">${number}</a> 
+                ${verify} <a href="${global.connectInfo.adm_url}/users/search?phone=${number}" target="_blank" class="ah-js-rp-phone-link">${number}</a> 
                 <span class="ah-phone-verify-date" title="Время верификации">(${phoneVerifyDate})</span> 
                 ${unVerify}
                 </div>`);
@@ -2811,6 +2857,10 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             }
         }
 
+        $('.ah-js-rp-phone-link').click(() => {
+            logHDFeature(global.helpdeskFeatures.rightPanel.phoneLink);
+        });
+
         $('.ah-show-unverify-phone').click(function () {
             let text = $(this).text();
             $(this).text(text === "show unverify phone" ? "hide unverify phone" : "show unverify phone");
@@ -2818,7 +2868,12 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
             $('[ah-phone-status="unverify"]').toggle();
         });
 
-        unverifyPhones(id);
+        unverifyPhones(
+            id,
+            {
+                multi: () => logHDFeature(global.helpdeskFeatures.rightPanel.phoneUnverify),
+            },
+        );
     }
 
     $('#rightPanelBody').append('<hr>');
@@ -2847,7 +2902,19 @@ function displayUserInfoOnRightPanel(response, assume, currentTicketId) {
                 $('.ah-commentList').append('<div class="ah-commentBlockStyle"><div class="ah-commentStyle">'+comment+'</div><div class="ah-commentInfoStyle"><span>'+username+'</span><span style="float: right;">'+date+'</span></div></div>');
             }
 
-            linksOnComments('.ah-commentStyle', id);
+            const {
+                item: itemComparisonFeature,
+                user: userComparisonFeature,
+            } = global.helpdeskFeatures.rightPanel.comparison;
+
+            linksOnComments(
+                '.ah-commentStyle',
+                id,
+                {
+                    item: () => logHDFeature(itemComparisonFeature),
+                    user: () => logHDFeature(userComparisonFeature),
+                }
+            );
         }
     }
 
@@ -2863,6 +2930,8 @@ function rightPanelAddComment(id) {
     $('#rpAreaComment').val(ticketLink + ' ');
 
     $('#rpAddComment').click(function() {
+        logHDFeature(global.helpdeskFeatures.rightPanel.commentUser);
+
         var comment = $('#rpAreaComment').val();
 
         commentOnUserSupport(id, comment);
@@ -2890,6 +2959,8 @@ function rightPanelUnblockUser() {
         `);
 
     $('#rpAU').click(function() {
+        logHDFeature(global.helpdeskFeatures.rightPanel.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
@@ -2909,6 +2980,8 @@ function rightPanelUnblockUser() {
     });
 
     $('#rpHI').click(function() {
+        logHDFeature(global.helpdeskFeatures.rightPanel.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
@@ -2928,6 +3001,8 @@ function rightPanelUnblockUser() {
     });
 
     $('#rpRI').click(function() {
+        logHDFeature(global.helpdeskFeatures.rightPanel.unblockUser);
+
         var ticketid = getCurrentTicketId(window.location.href);
         var id = $('.helpdesk-additional-info-panel:eq(0) a[href *= "/users/search?user_id="]').text();
         var chance = $('#rpChance').val();
@@ -2990,10 +3065,12 @@ function changeAssignee() {
         let agentId;
         switch (btn) {
             case 'ah-change-assignee-to-me-btn':
+                logHDFeature(global.helpdeskFeatures.selfAssign);
                 agentId = getAgentId();
                 break;
                 
             case 'ah-clear-assignee-btn':
+                logHDFeature(global.helpdeskFeatures.clearAssign);
                 agentId = '';
                 break;
         }
@@ -3208,7 +3285,6 @@ function setInternalNoteMode(btn) {
 			
 			var openAnswerInput = $(commentsToggleBlock).find('[name="type-selector"][value="2"]');
 			$(openAnswerInput).unbind('click').click(function() {
-                console.log('test');
 				if (!$(btn).hasClass('ah-active-btn')) return;
 				$(btn).toggleClass('ah-active-btn');
 				$('#attendant-tl-notification').remove();
@@ -3255,7 +3331,8 @@ function checkAdmUserIdTlHelp($btn) {
 		}, 100);
         return;
     }
-	
+
+    logHDFeature(global.helpdeskFeatures.help);
 	addTagTLlHelp($btn);
 }
 
@@ -3308,10 +3385,14 @@ function parseIPInDetailsPanel(block, className) {
 
             var itemHtml = $(item).html();
             if ( ~itemHtml.search(regForIp) ) {
-                $(item).html( itemHtml.replace(regForIp, `<span class="ah-matched-ip-container"><a target="_blank" href="${global.connectInfo.adm_url}/system/access?ip=$&" class="${className}">$&</a></span>`) );
+                $(item).html( itemHtml.replace(regForIp, `<span class="ah-matched-ip-container"><a target="_blank" href="${global.connectInfo.adm_url}/system/access?ip=$&" class="${className}" data-info="system-access-ip-link">$&</a></span>`) );
             }
         });
     }
+
+    $('[data-info="system-access-ip-link"]').unbind('click').click(() => {
+        logHDFeature(global.helpdeskFeatures.parseIps.link);
+    });
 
     $('.'+ className +'').each(function(i, item) {
         let parentBlock = $(item).parents('.ah-matched-ip-container');
@@ -3337,6 +3418,7 @@ function parseIPInDetailsPanel(block, className) {
                 let self = $(this);
 
                 $(infoBtn).unbind('click').click(function () {
+                    logHDFeature(global.helpdeskFeatures.parseIps.info);
                     let ip = $(this).data('ip');
                     let btn = $(this);
                     btnLoaderOn($(btn));
@@ -3356,6 +3438,7 @@ function parseIPInDetailsPanel(block, className) {
 
                 let copyBtn = $(popover).find('.copy-ip-ticket-details');
                 $(copyBtn).unbind('click').click(function () {
+                    logHDFeature(global.helpdeskFeatures.parseIps.copy);
                     let text = $(this).data('copyText');
                     chrome.runtime.sendMessage( { action: 'copyToClipboard', text: text } );
                     outTextFrame(`IP ${text} скопирован!`);
@@ -3363,6 +3446,7 @@ function parseIPInDetailsPanel(block, className) {
 
                 let sanctionBtn = $(popover).find('.ah-sanction-ip-btn');
                 $(sanctionBtn).unbind('click').click(function() {
+                    logHDFeature(global.helpdeskFeatures.parseIps.allow);
                     let ip = $(this).attr('data-ip');
                     let ticketLink = window.location.href;
                     renderSanctionIPPopup(ip, ticketLink);
@@ -3711,12 +3795,19 @@ function addNegativeUsersAbusesNotification() {
             <strong>Не закрывайте данное обращение со статусом "Решено".</strong>` :
             `Жалобы данного клиента обрабатываются в 
                 <strong>
-                    <a target="_blank" href="/helpdesk/details/${info.root_ticket_id}">отдельном обращении 
+                    <a target="_blank" href="/helpdesk/details/${info.root_ticket_id}" class="ah-js-negative-user-root-link">
+                        отдельном обращении 
                         <span class="glyphicon glyphicon-new-window"></span></a>
                 </strong>`;
 
         notification.innerHTML = `${notificationTextHtml} 
             (<i>Клиент: </i><span class="label label-default ah-user-type-label">${info.type_name}</span>)`;
+
+        const rootLink = notification.querySelector('.ah-js-negative-user-root-link');
+
+        rootLink.addEventListener('click', () => {
+            logHDFeature(global.helpdeskFeatures.negativeUsersLink);
+        });
 
         if (isFromCache) {
             const cache = doc.createElement('span');
@@ -3879,6 +3970,7 @@ function claimReevaluation(teamleadLogin) {
     let btnContainer = $('#reevaluate-ticket-container');
     if ($(starsFired).length >= 1 && $(starsFired).length <=3 && teamleadLogin) {
         $(btn).prop('disabled', false).click(function() {
+            logHDFeature(global.helpdeskFeatures.claimReevaluation);
             $('#ah-loading-layer').show();
             getReevaluateTLTagId(teamleadLogin);
         });
@@ -3983,6 +4075,7 @@ function parseItemIdsInTicket() {
     }
 
     $('.ah-get-item-ids').click(function() {
+        logHDFeature(global.helpdeskFeatures.parseItemIds.get);
         var ids = $(this).attr('data-item-ids').split(', ');
         showParsedItemIdsInTicket(ids);
     });
@@ -4048,6 +4141,7 @@ function showParsedItemIdsInTicket(ids) {
     });
 
     $(checkUsers).click(function() {
+        logHDFeature(global.helpdeskFeatures.parseItemIds.checkUser);
 
         var checked = $(body).find('[id^="parsed-item"]:checked');
         var checkedIds = [];

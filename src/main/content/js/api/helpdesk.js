@@ -240,8 +240,12 @@ function renderCreateNewTicketWindow(route) {
     $(body).append('<div class="ah-field-group ah-horizontal-group-united" style="padding: 0 0 0 10px; margin-bottom: 0;"><div class="ah-field-title" style="">Имя</div><div class="ah-field-horizontal ah-field-flex"><input type="text" class="ah-form-control" name="create-ticket-requesterName"></div></div>');
     $(body).append('<div class="ah-clearfix" style="margin-bottom: 15px;"></div>');
 
+    let logFeatureName = global.helpdeskFeatures.createTicket.helpdesk;
+
     // на странице юзера +++
     if (route === '/users/user/info') {
+        logFeatureName = global.helpdeskFeatures.createTicket.user;
+
         var requesterNameInput = $(body).find('[name="create-ticket-requesterName"]');
         $(requesterNameInput).css({
             'border-top-right-radius': '0',
@@ -627,6 +631,7 @@ function renderCreateNewTicketWindow(route) {
 
     var createTicketBtn = $(footer).find('.ah-action-btn');
     $(createTicketBtn).click(function () {
+        logHDFeature(logFeatureName);
         var errors = [];
         var subjectReplaceRegexp = /(^-+)|(\[new\])/g;
 

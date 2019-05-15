@@ -267,51 +267,6 @@ function getItemAntifraudInfo(id) {
     });
 }
 
-function getHDTemplates() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=template/list/active`, {
-        credentials: 'include',
-        method: 'post',
-        body: JSON.stringify({
-            method: 'template/list/active',
-        })
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.json();
-    });
-}
-
-function getHDTags() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=dictionaries/tags`, {
-        credentials: 'include',
-        method: 'post',
-        body: JSON.stringify({
-            method: 'dictionaries/tags',
-        })
-    }).then(response => {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.json();
-    }).then(json => Promise.resolve(json.result));
-}
-
-function getHDProblems() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=dictionaries/ticket/problems`, {
-        credentials: 'include',
-        method: 'post',
-        body: JSON.stringify({
-            method: 'dictionaries/ticket/problems',
-        })
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.json();
-    });
-}
-
 function unlinkPaymentSource(url) {
     return fetch(url, {
         credentials: 'include'
@@ -321,19 +276,4 @@ function unlinkPaymentSource(url) {
         }
         return response.text();
     });
-}
-
-function getPermissions() {
-    return fetch(`${global.connectInfo.adm_url}/helpdesk/api/1/proxy?method=agent/permissions`, {
-        credentials: 'include',
-        method: 'post',
-        body: JSON.stringify({
-            method: 'agent/permissions',
-        })
-    }).then(response =>  {
-        if (response.status !== 200) {
-            return Promise.reject(response);
-        }
-        return response.json();
-    }).then(json => Promise.resolve(json.result));
 }

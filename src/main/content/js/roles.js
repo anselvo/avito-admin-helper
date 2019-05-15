@@ -702,7 +702,19 @@ RoleHandler.prototype.helpdeskBlockedReason = function() {
 
 RoleHandler.prototype.helpdeskLinksOnComments = function() {
     const userId = $('a[href *= "/users/search?user_id="]').text();
-    linksOnComments('.helpdesk-additional-info-comment-text', userId);
+    const {
+        item: itemComparisonFeature,
+        user: userComparisonFeature,
+    } = global.helpdeskFeatures.comparison;
+
+    linksOnComments(
+        '.helpdesk-additional-info-comment-text',
+        userId,
+        {
+            item: () => logHDFeature(itemComparisonFeature),
+            user: () => logHDFeature(userComparisonFeature),
+        }
+    );
 };
 
 RoleHandler.prototype.helpdeskCommentUser = function() {
