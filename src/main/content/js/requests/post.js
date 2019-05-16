@@ -566,7 +566,8 @@ function logHDFeature(feature) {
         body: JSON.stringify({
             method: 'frontend/metrics/helper/feature',
             feature,
-        })
+        }),
+        headers: {'Content-Type': 'application/json'}
     }).then(response =>  {
         if (response.status !== 200) {
             return Promise.reject(response);
