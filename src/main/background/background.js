@@ -722,33 +722,36 @@ function newDay(currentDay) {
 }
 
 function requestListener(tabId, url) {
+    const baseHelpdeskUrl = '/helpdesk/api';
+    const gatewayHelpdeskUrl = `/gw${baseHelpdeskUrl}`;
 
 	// helpdesk
-	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comment\b/))
-        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxyWithAttaches?method=ticket/comments/add`)) {
+	if ((url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/ticket/comments/add`))
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxyWithAttaches?method=ticket/comments/add`)) {
 		sendMessage(tabId, 'ticketComment');
 	}
-	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/onHold\b/))
-        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxyWithAttaches?method=ticket/scenarios/onhold`)) {
+	if ((url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/ticket/scenarios/onhold`))
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxyWithAttaches?method=ticket/scenarios/onhold`)) {
 		sendMessage(tabId, 'ticketOnHold');
 	}
 
-	let userPattern = /helpdesk\/api\/1\/user\/\d+$/;
-    if (userPattern.test(url)) {
+    if ((url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/user/avito/get`))
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxy?method=user/avito/get`)) {
         sendMessage(tabId, 'ticketUser');
     }
 
-	if (url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/search`) || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/search/filter`)) {
+	if (url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/ticket/search`)
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxy?method=ticket/search`)) {
 		sendMessage(tabId, 'ticketQueue');
 	}
 
-	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && !url.includes('/logs'))
-        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/admin_get`)) {
+	if ((url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/ticket/admin_get`))
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxy?method=ticket/admin_get`)) {
 		sendMessage(tabId, 'ticketInfo');
 	}
 
-	if ((url.includes(`${connectInfo.adm_url}/helpdesk/api/1/ticket/`) && ~url.search(/\/comments\b/))
-        || url.includes(`${connectInfo.adm_url}/helpdesk/api/1/proxy?method=ticket/comments/list`)) {
+	if ((url.includes(`${connectInfo.adm_url}${gatewayHelpdeskUrl}/ticket/comments/list`))
+        || url.includes(`${connectInfo.adm_url}${baseHelpdeskUrl}/1/proxy?method=ticket/comments/list`)) {
 		sendMessage(tabId, 'ticketComments');
 	}
 
