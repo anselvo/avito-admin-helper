@@ -1,5 +1,5 @@
 // Парсер комментов ++++
-function linksOnComments(tableClass, currentUserID) {
+function linksOnComments(tableClass, currentUserID, onClickComparisons = null) {
     $(tableClass+' .sh-unicode-links').detach();
 
     const $tableList = $(tableClass);
@@ -220,6 +220,10 @@ function linksOnComments(tableClass, currentUserID) {
     }
 
     $('.ah-compare-item-action-link').click(function () {
+        if (onClickComparisons && onClickComparisons.item) {
+            onClickComparisons.item();
+        }
+
         const itemsIds = $(this).data('compared');
         if (~currentUserID.indexOf('https')) {
             currentUserID = currentUserID.replace(/\D/gi, '');
@@ -239,6 +243,10 @@ function linksOnComments(tableClass, currentUserID) {
     });
 
     $('.ah-compare-user-action-link').click(function () {
+        if (onClickComparisons && onClickComparisons.user) {
+            onClickComparisons.user();
+        }
+
         const usersIds = $(this).data('compared');
         if (~currentUserID.indexOf('https')) {
             currentUserID = currentUserID.replace(/\D/gi, '');

@@ -356,7 +356,7 @@ function dateForSearch(period) {
 }
 
 
-function ipHistory(selector, id, response) {
+function ipHistory(selector, id, response, onRequest = null) {
     $(selector)
         .append('<span class="ah-info-history-ip-link ah-info-link" user-id="' + id + '" title="История ip адресов и информация о них">' +
                 '<i class="glyphicon glyphicon-list-alt"></i>' +
@@ -369,6 +369,10 @@ function ipHistory(selector, id, response) {
         $('.ah-info-history-ip').toggle("slow");
 
         if (count === 0) {
+            if (onRequest) {
+                onRequest();
+            }
+
             $('.ah-info-history-ip').append('<table class="ah-info-history-ip-table ah-info-table">' +
                 '<thead><tr><th>IP</th><th>Страна</th><th>Время</th></tr></thead>' +
                 '<tbody></tbody>' +
@@ -394,7 +398,7 @@ function ipHistory(selector, id, response) {
 
 // ЗАПРОС НА ИСТОРИЮ МЫЛЬНИКА
 
-function emailHistory(selector, id, autoload = true) {
+function emailHistory(selector, id, autoload = true, onRequest = null) {
     let wasRequestSent = false;
 
     $(selector)
@@ -406,6 +410,10 @@ function emailHistory(selector, id, autoload = true) {
 
     $('.ah-info-history-email-link').click(function () {
         if (!autoload && !wasRequestSent) {
+            if (onRequest) {
+                onRequest();
+            }
+
             $('#ah-loading-layer').show();
             getEmailHistory(id);
             wasRequestSent = true;

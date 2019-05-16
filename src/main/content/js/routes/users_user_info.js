@@ -499,7 +499,7 @@ function addUnverifyPhonesButtons() {
 }
 
 // отвязка номеров с комментами
-function unverifyPhones(id) {
+function unverifyPhones(id, onClicks = null) {
     // попап с затемнением
     $('body').append('<div id="ah-popup-layer-blackout-btn"></div>');
 
@@ -617,6 +617,10 @@ function unverifyPhones(id) {
 
         // action btns
         $('.sh-multi-unverify-btn').unbind().click(function () {
+            if (onClicks && onClicks.multi) {
+                onClicks.multi();
+            }
+
             var phrase = 'отвязаны';
             if ($('.sh-added-phone-multi-unverify').length == 1) {
                 phrase = 'отвязан';

@@ -86,7 +86,58 @@ const global = {
         '882f3674-081a-4962-b34c-0b5bf67fc391', // Руководитель группы поддержки пользователей
         '4a8cbd05-7616-4121-80a3-bf4dadf8a9c6', // Супервайзер поддержки пользователей
         'cf9d62a5-b12e-4276-be43-3c8702b936ca', // Старший супервайзер поддержки пользователей
-    ]
+    ],
+    helpdeskFeatures: {
+        selfAssign: 'hd.selfAssign',
+        clearAssign: 'hd.clearAssign',
+        addTags: 'hd.addTags',
+        quickButton: 'hd.quickButton',
+        negativeUsersLink: 'hd.negativeUsersLink',
+        parseItemIds: {
+            get: 'hd.parseItemIds.get',
+            checkUser: 'hd.parseItemIds.checkUser',
+        },
+        parseIps: {
+            link: 'hd.parseIps.link',
+            allow: 'hd.parseIps.allow',
+            copy: 'hd.parseIps.copy',
+            info: 'hd.parseIps.info',
+        },
+        createTicket: {
+            helpdesk: 'hd.createTicket.helpdesk',
+            user: 'hd.createTicket.user',
+        },
+        claimReevaluation: 'hd.claimReevaluation',
+        help: 'hd.help',
+        checkVas: 'hd.checkVas',
+        comparison: {
+            item: 'hd.comparison.item',
+            user: 'hd.comparison.user',
+        },
+        unblockUser: 'hd.unblockUser',
+        commentUser: 'hd.commentUser',
+        rightPanel: {
+            userLink: 'hd.rightPanel.userLink',
+            messengerLink: 'hd.rightPanel.messengerLink',
+            itemsLoginLink: 'hd.rightPanel.itemsLoginLink',
+            itemsEmailLink: 'hd.rightPanel.itemsEmailLink',
+            copyEmailFull: 'hd.rightPanel.copyEmailFull',
+            copyEmailAnswer: 'hd.rightPanel.copyEmailAnswer',
+            emailHistory: 'hd.rightPanel.emailHistory',
+            unblockUser: 'hd.rightPanel.unblockUser',
+            subscriptionCreate: 'hd.rightPanel.subscriptionCreate',
+            checkVas: 'hd.rightPanel.checkVas',
+            ipHistory: 'hd.rightPanel.ipHistory',
+            changeType: 'hd.rightPanel.changeType',
+            phoneLink: 'hd.rightPanel.phoneLink',
+            phoneUnverify: 'hd.rightPanel.phoneUnverify',
+            commentUser: 'hd.rightPanel.commentUser',
+            comparison: {
+                item: 'hd.rightPanel.comparison.item',
+                user: 'hd.rightPanel.comparison.user',
+            },
+        },
+    },
 };
 
 $(function () {
