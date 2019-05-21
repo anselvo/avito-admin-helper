@@ -256,7 +256,7 @@ function smartSNP(id) {
 
     const titleSnp = `Отправляет пользователю новый пароль, а также уведомляет его о том, что данная учетная запись была взломана`;
 
-    $('.pull-right').append(`
+    $('.header__title .header-right').append(`
         <span id="isEmailChange" class="ah-wheelSNP" title="${titleEmail}">EML</span>
         <span id="isUseSNP" class="ah-wheelSNP" title="${titlePass}">SNP</span>
         <input id="snp" type="button" class="btn btn-primary" value="SNP" title="${titleSnp}" style="margin-left: 5px;" disabled/>
