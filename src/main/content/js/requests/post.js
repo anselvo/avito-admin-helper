@@ -89,7 +89,7 @@ function getVerificationLog(phone) {
     }
 }
 
-function changeEmail(email, domen, id, status) {
+function changeEmail(email, domen, id) {
     var href = `${global.connectInfo.adm_url}/users/user/change_email/${id}`;
 
     var request = new XMLHttpRequest();
@@ -105,16 +105,7 @@ function changeEmail(email, domen, id, status) {
                 notfake(email, domen);
                 sendNewPassword(id);
                 commentOnUserHack(id, email, domen, " вернул, взлом.");
-                if (status.indexOf("Blocked") + 1) {
-                    unblockUserHack(id);
-                }
                 changeName();
-
-                function unblockUserHack(id) {
-                    var request = new XMLHttpRequest();
-                    request.open("GET", `${global.connectInfo.adm_url}/users/user/unblock_relevant/${id}`, true);
-                    request.send();
-                }
 
                 function changeName() {
                     var formElem = $('.js-user-info-form-user');

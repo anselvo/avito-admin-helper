@@ -4,6 +4,17 @@ function changeUserType(id, type) {
     request.send('reasons%5B%5D=128&id='+id);
 }
 
+function unblockUserRelevant(userId) {
+    return fetch(`${global.connectInfo.adm_url}/users/user/unblock_relevant/${userId}`, {
+            credentials: 'include'
+        }).then(response => {
+            if (response.status !== 200) {
+                return Promise.reject(response);
+            }
+            return response.text();
+        });
+}
+
 // item info
 function getItemInfo(id) {
      return fetch(`${global.connectInfo.adm_url}/items/item/info/${id}`, {
