@@ -107,6 +107,7 @@ function userChangeEmail() {
 
         if (!status.includes('Blocked')) {
             changeEmail(checkemail[0], checkemail[1], id, status);
+            return;
         }
 
         unblockUserRelevant(id)
