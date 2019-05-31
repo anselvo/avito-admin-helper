@@ -105,7 +105,16 @@ function userChangeEmail() {
         var id = $('.js-user-id').attr('data-user-id');
         var status = $('.js-user-info-form-user .form-group label:contains(Статус)').next().find('b').text();
 
-        changeEmail(checkemail[0], checkemail[1], id, status);
+        if (!status.includes('Blocked')) {
+            changeEmail(checkemail[0], checkemail[1], id, status);
+        }
+
+        unblockUserRelevant(id)
+            .then(() => {
+                changeEmail(checkemail[0], checkemail[1], id, status);
+            }).catch(error => {
+                alert(`Произошла ошибка:\n${error.status}\n${error.statusText}`)
+            })
     });
 }
 
