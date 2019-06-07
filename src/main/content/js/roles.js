@@ -556,7 +556,7 @@ function handleRoles() {
                         const removedNode = mutation.removedNodes[0];
                         if (!removedNode) return;
 
-                        if (removedNode.classList.contains('text-center')) {
+                        if (removedNode.querySelector('.helpdesk-loader')) {
                             helpdeskUserInfoEvent();
                         }
                     }
